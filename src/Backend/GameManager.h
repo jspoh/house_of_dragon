@@ -3,11 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "AEEngine.h"
-
+#include "../Backend/Pch.h"
 #include "../Scenes/SceneManager.h"
-#include "SoundManager.h"
-//#include "../Scenes/SceneBase.h" //Cause Errors
+#include "../Backend/SoundManager.h"
 
 class GameManager
 {
