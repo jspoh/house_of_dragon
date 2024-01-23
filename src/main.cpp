@@ -28,7 +28,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
 
 	// Changing the window title
-	AESysSetWindowTitle("My New Demo!");
+	AESysSetWindowTitle("Version Alpha 0.0.1!");
+
+	//Set Full Screen
+	//AESysSetFullScreen(true);
 
 	// reset the system modules
 	AESysReset();
