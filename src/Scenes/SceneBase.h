@@ -2,127 +2,62 @@
 #define SCENE_BASE_H
 
 #include "Scene.h"
-//#include "Mtx44.h"
-//#include "Camera.h"
-//#include "Mesh.h"
-//#include "MatrixStack.h"
-//#include "Light.h"
 #include "../GameObject/GameObject.h"
 #include <vector>
 
+class SceneManager;
 class SceneBase : public Scene
 {
-	/*enum UNIFORM_TYPE
-	{
-		U_MVP = 0,
-		U_MODELVIEW,
-		U_MODELVIEW_INVERSE_TRANSPOSE,
-		U_MATERIAL_AMBIENT,
-		U_MATERIAL_DIFFUSE,
-		U_MATERIAL_SPECULAR,
-		U_MATERIAL_SHININESS,
-		U_LIGHTENABLED,
-		U_NUMLIGHTS,
-		U_LIGHT0_TYPE,
-		U_LIGHT0_POSITION,
-		U_LIGHT0_COLOR,
-		U_LIGHT0_POWER,
-		U_LIGHT0_KC,
-		U_LIGHT0_KL,
-		U_LIGHT0_KQ,
-		U_LIGHT0_SPOTDIRECTION,
-		U_LIGHT0_COSCUTOFF,
-		U_LIGHT0_COSINNER,
-		U_LIGHT0_EXPONENT,
-		U_COLOR_TEXTURE_ENABLED,
-		U_COLOR_TEXTURE,
-		U_TEXT_ENABLED,
-		U_TEXT_COLOR,
-		U_TOTAL,
-	};*/
-public:
-	/*enum GEOMETRY_TYPE
-	{
-		GEO_MENU,
-		//GEO_PLAYER,
-		GEO_CROSSHAIR,
-		GEO_HEARTS,
-		GEO_HALF_HEARTS,
-		GEO_EMPTY_HEARTS,
-		GEO_CHAIN,
-		GEO_MACEBALL,
-		GEO_MACEBALLAURA,
-		GEO_SURVIVALFLOOR,
-		GEO_POWERUPHEADER,
-
-		GEO_ScatterShot,
-		GEO_MagicMushroom,
-		GEO_DarkMatter,
-		GEO_ShotgunCoffee,
-		GEO_CascadingCascada,
-		GEO_InfinityOrb,
-		GEO_HellRounds,
-		GEO_HeartBackpack,
-		GEO_CrystalHeart,
-		GEO_PaydayMask,
-
-		//GEO_GAMESCRN,
-		GEO_GAMEOVER,
-
-		GEO_ENEMY1,
-		GEO_ENEMY2,
-		GEO_ENEMY3,
-		GEO_ENEMYBULLET,
-		GEO_ENEMYBOUNCINGBULLET,
-
-		GEO_BOX,
-		GEO_BOXPART,
-
-		GEO_GRAVITYARROW,
-
-		GEO_AXES,
-		GEO_TEXT,
-		GEO_BALL,
-		GEO_QUAD,
-		GEO_BOUNDARYWALLS,
-		//GEO_ENEMYBALL,
-		//GEO_PULSEBULLET,
-		//GEO_MISSILE,
-		GEO_CUBE,
-		NUM_GEOMETRY,
-	};*/
 public:
 	SceneBase();
 	~SceneBase();
 
+	virtual void Load();
 	virtual void Init();
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
 
-	//void RenderText(Mesh* mesh, std::string text, Color color);
-	//void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	//void RenderMesh(Mesh *mesh, bool enableLight);
-	//void RenderGO(GameObject *go);
+private:
+	SceneBase(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
-	GameObject* FetchGO();
-protected:
-	//unsigned m_vertexArrayID;
-	//Mesh* meshList[NUM_GEOMETRY];
-	//unsigned m_programID;
-	//unsigned m_parameters[U_TOTAL];
+	static SceneBase* sInstance; // The pointer to the object that gets registered
 
-	//Camera camera;
+	//// Tile information
+	//const int kiHalfTileWidth = 12;
+	//const int kiHalfTileHeight = 12;
 
-	//MS modelStack;
-	//MS viewStack;
-	//MS projectionStack;
+	//// Scene2D images
+	//SpriteEntity* Scene2D_Background;
+	//SpriteEntity* Scene2D_Hero;
+	//SpriteEntity* Scene2D_TileGround;
+	//SpriteEntity* Scene2D_TileTree;
+	//SpriteEntity* Scene2D_RearStructure;
+	//SpriteEntity** Scene2D_Hero_Animated;
+	//SpriteEntity* Scene2D_Goodies_TreasureChest;
 
-	//Light lights[1];
+	//// Handle to the tilemaps
+	//CMap* m_cMap;
+	//CMap* m_cRearMap;	// Pointer to the rear map
 
-	//bool bLightEnabled;
+	//// This class stores all information about the player / avatar
+	//CPlayerInfo2D* thePlayerInfo;
 
-	float fps;
+	//// The enemies
+	//CEnemy** theEnemy;
+	//int m_iNumEnemy;
+	//SpriteEntity* Scene2D_Enemy;
+
+	//// Render the tile map
+	//void RenderTileMap(void);
+	//// Render the rear tile map
+	//void RenderRearTileMap(void);
+	//// Render the player
+	//void RenderPlayer(void);
+	//// Render the enemy
+	//void RenderEnemy(void);
+	//// Create the Goodies
+	//void CreateGoodies(void);
 };
 
 #endif

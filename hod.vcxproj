@@ -155,6 +155,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
   <ItemGroup>
     <ClCompile Include="src\Backend\Application.cpp" />
     <ClCompile Include="src\Backend\SoundManager.cpp" />
+    <ClCompile Include="src\Backend\GameManager.cpp" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
@@ -169,6 +170,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\MyMath.h" />
     <ClInclude Include="src\Backend\SingletonTemplate.h" />
     <ClInclude Include="src\Backend\SoundManager.h" />
+    <ClInclude Include="src\Backend\GameManager.h" />
     <ClInclude Include="src\Backend\Vector3.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\GameObject\GameObjectManager.h" />

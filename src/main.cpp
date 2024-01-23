@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // includes
 #include <crtdbg.h> // To check for memory leaks
-#include "AEEngine.h"
+#include "Backend/GameManager.h"
 // ---------------------------------------------------------------------------
 // main
 
@@ -26,16 +26,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//Show Cursor - Disable when have custom cursor
 	AEInputShowCursor(1);
 
-	//Initialise Game System
-	
+	//Load & Initialise Game System
+	GameManager& Game = GameManager::GetInstance();
+	Game.Init();
+
 	// Game System Loop
 	while (gGameRunning)
 	{
 		// Informing the system about the loop's start
 		AESysFrameStart();
-	
+		
+		//Update & Render Game System
+		//Game.Run();
 
-	
 		// Informing the system about the loop's end
 		AESysFrameEnd();
 	
@@ -48,6 +51,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		if (AEInputCheckTriggered(AEVK_2))
 			AESysSetFullScreen(0);
 	}
+
+	//Free & Unload Game System
+	//Game.Exit();
 
 	// free the system
 	AESysExit();

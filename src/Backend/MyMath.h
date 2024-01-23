@@ -1,3 +1,5 @@
+#ifndef MY_MATH_H
+#define MY_MATH_H
 /*!************************************************************************
 \file  MyMath.h
 \author Soh Wei Jie (weijie.soh)
@@ -7,8 +9,6 @@
 \date 23-1-2024
 \brief Header file for math helper functions
 **************************************************************************/
-#ifndef MY_MATH_H
-#define MY_MATH_H
 
 #include <cmath>
 #include <exception>

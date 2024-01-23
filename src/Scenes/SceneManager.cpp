@@ -99,3 +99,9 @@ bool SceneManager::CheckSceneExist(const std::string& _name)
 {
 	return sceneMap.count(_name) != 0;
 }
+
+//SceneManager& SceneManager::GetCurrScene(void)
+//{
+//	static Scene scene;
+//	return scene;
+//}

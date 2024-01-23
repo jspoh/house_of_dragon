@@ -13,7 +13,7 @@
 #include <map>
 #include <string>
 
-class CSoundEngine : public Singleton<CSoundEngine>
+class SoundManager : public Singleton<SoundManager>
 {
 protected:
 	// Destructor
@@ -27,8 +27,8 @@ protected:
 
 public:
 	// Constructor
-	CSoundEngine();
-	virtual ~CSoundEngine();
+	SoundManager();
+	virtual ~SoundManager();
 
 	// Init this class and it will create the Sound Engine
 	bool Init(void);
