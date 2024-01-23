@@ -1,1 +1,2 @@
-#pragma once
+#ifndef PARTICLE_MANAGER
+#define SCENE_STAGE1_H

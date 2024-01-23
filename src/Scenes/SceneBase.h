@@ -4,7 +4,7 @@
 #include "Scene.h"
 #include "../GameObject/GameObject.h"
 #include <vector>
-
+//Testing SpriteAnimation
 class SceneManager;
 class SceneBase : public Scene
 {
@@ -23,6 +23,8 @@ private:
 
 	static SceneBase* sInstance; // The pointer to the object that gets registered
 
+	
+	
 	//// Tile information
 	//const int kiHalfTileWidth = 12;
 	//const int kiHalfTileHeight = 12;
