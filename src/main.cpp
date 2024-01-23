@@ -36,7 +36,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// reset the system modules
 	AESysReset();
 
-	//Testing
+	//Testing 2nd
 
 	// Game Loop
 	while (gGameRunning)
