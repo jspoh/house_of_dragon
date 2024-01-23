@@ -37,7 +37,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		AESysFrameStart();
 		
 		//Update & Render Game System
-		//Game.Run();
+		Game.Run();
 
 		// Informing the system about the loop's end
 		AESysFrameEnd();
@@ -53,7 +53,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	}
 
 	//Free & Unload Game System
-	//Game.Exit();
+	Game.Exit();
 
 	// free the system
 	AESysExit();

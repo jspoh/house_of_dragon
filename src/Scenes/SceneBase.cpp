@@ -1,23 +1,55 @@
-//#include "SceneBase.h"
-//#include "GL\glew.h"
-//
-//#include "shader.hpp"
-//#include "MeshBuilder.h"
-//#include "Application.h"
-//#include "Utility.h"
-//#include "LoadTGA.h"
-//#include <sstream>
-//
-//SceneBase::SceneBase()
-//{
-//}
-//
-//SceneBase::~SceneBase()
-//{
-//}
-//
-//void SceneBase::Init()
-//{
+#include "SceneBase.h"
+
+#include "../Backend/GameManager.h" //? Still thinking
+#include "SceneManager.h"
+
+SceneBase* SceneBase::sInstance = new SceneBase(SceneManager::GetInstance());
+
+SceneBase::SceneBase()
+{
+}
+
+SceneBase::SceneBase(SceneManager* _sceneMgr)
+{
+	_sceneMgr->AddScene("SceneBase", this);
+}
+
+SceneBase::~SceneBase()
+{
+}
+
+void SceneBase::Load()
+{
+	//Still debating whether need this
+}
+
+void SceneBase::Init()
+{
+	std::cout << "Loading Scene Base" << std::endl;
+}
+
+void SceneBase::Update(double dt)
+{
+	std::cout << "Updating Scene Base" << std::endl;
+}
+
+void SceneBase::Render()
+{
+	std::cout << "Rendering Scene Base" << std::endl;
+}
+
+void SceneBase::Exit()
+{
+	std::cout << "Exiting Scene Base" << std::endl;
+}
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+// IGNORE
 //	// Black background
 //	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 //	// Enable depth test

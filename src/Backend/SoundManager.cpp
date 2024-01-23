@@ -13,37 +13,36 @@
 
 using namespace std;
 
-//NEED REWRITE TO USE INSTEAD OF SETTING UP
 // Constructor
-//CSoundEngine::CSoundEngine()
-//	: theSoundEngine(NULL)
-//{
-//}
-//
-//// Destructor
-//CSoundEngine::~CSoundEngine()
-//{
-//	// Clear out the sound map
-//	soundMap.clear();
-//
-//	// Delete the sound engine
-//	if (theSoundEngine)
-//	{
-//		delete theSoundEngine;
-//		theSoundEngine = NULL;
-//	}
-//}
-//
-//// Init this class and it will create the Sound Engine
-//bool CSoundEngine::Init(void)
-//{
-//	// Create the sound engine
-//	theSoundEngine = createIrrKlangDevice();
-//	if (!theSoundEngine)
-//		return false;	// error starting up the sound engine
-//
-//	return true;
-//}
+SoundManager::SoundManager()
+	//: theSoundEngine(NULL)
+{
+}
+
+// Destructor
+SoundManager::~SoundManager()
+{
+	// Clear out the sound map
+	soundMap.clear();
+
+	// Delete the sound engine
+	//if (theSoundEngine)
+	//{
+	//	delete theSoundEngine;
+	//	theSoundEngine = NULL;
+	//}
+}
+
+// Init this class and it will create the Sound Engine
+bool SoundManager::Init(void)
+{
+	// Create the sound engine
+	//theSoundEngine = createIrrKlangDevice();
+	//if (!theSoundEngine)
+	//	return false;	// error starting up the sound engine
+	std::cout << "SoundManager is running" << std::endl;
+	return true;
+}
 //
 //// Get the handler to the sound engine
 //ISoundEngine* CSoundEngine::GetSoundEngine(void)
