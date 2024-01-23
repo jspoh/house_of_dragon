@@ -153,24 +153,30 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\Backend\Application.cpp" />
+    <ClCompile Include="src\Backend\SoundManager.cpp" />
+    <ClCompile Include="src\Backend\Vector3.cpp" />
+    <ClCompile Include="src\GameObject\GameObject.cpp" />
+    <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
+    <ClCompile Include="src\GameObject\ParticleManager.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\SceneBase.cpp" />
-    <ClCompile Include="src\SceneManager.cpp" />
-    <ClCompile Include="src\ScenePractical.cpp" />
-    <ClCompile Include="src\SoundManager.cpp" />
-    <ClCompile Include="src\Vector3.cpp" />
+    <ClCompile Include="src\Scenes\SceneBase.cpp" />
+    <ClCompile Include="src\Scenes\SceneManager.cpp" />
+    <ClCompile Include="src\Scenes\ScenePractical.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GameObject.h" />
-    <ClInclude Include="src\MyMath.h" />
-    <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\SceneBase.h" />
-    <ClInclude Include="src\SceneManager.h" />
-    <ClInclude Include="src\ScenePractical.h" />
-    <ClInclude Include="src\SingletonTemplate.h" />
-    <ClInclude Include="src\SoundManager.h" />
-    <ClInclude Include="src\Vector3.h" />
+    <ClInclude Include="src\Backend\Application.h" />
+    <ClInclude Include="src\Backend\MyMath.h" />
+    <ClInclude Include="src\Backend\SingletonTemplate.h" />
+    <ClInclude Include="src\Backend\SoundManager.h" />
+    <ClInclude Include="src\Backend\Vector3.h" />
+    <ClInclude Include="src\GameObject\GameObject.h" />
+    <ClInclude Include="src\GameObject\GameObjectManager.h" />
+    <ClInclude Include="src\GameObject\ParticleManager.h" />
+    <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Scenes\SceneBase.h" />
+    <ClInclude Include="src\Scenes\SceneManager.h" />
+    <ClInclude Include="src\Scenes\ScenePractical.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

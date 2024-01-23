@@ -1,12 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////
-/*!
-\file   MyMath.h
-\author Soh Wei Jie
-\par	email: tang_wen_sheng\@nyp.edu.sg
-\brief
-Header file for math helper functions
-*/
-///////////////////////////////////////////////////////////////////////////////
+/*!************************************************************************
+\file  MyMath.h
+\author Soh Wei Jie (weijie.soh)
+\par DP email: weijie.soh\@digipen.edu
+\par Course: csd1451
+\par House 0F Dragons
+\date 23-1-2024
+\brief Header file for math helper functions
+**************************************************************************/
 #ifndef MY_MATH_H
 #define MY_MATH_H
 

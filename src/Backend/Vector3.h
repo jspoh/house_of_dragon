@@ -1,12 +1,12 @@
-/******************************************************************************/
-/*!
-\file	Vector3.h
-\author Wen Sheng Tang
-\par	email: tang_wen_sheng\@nyp.edu.sg
-\brief
-Struct to define a 3D vector
-*/
-/******************************************************************************/
+/*!************************************************************************
+\file  Vector3.h
+\author Soh Wei Jie (weijie.soh)
+\par DP email: weijie.soh\@digipen.edu
+\par Course: csd1451
+\par House 0F Dragons
+\date 23-1-2024
+\brief Header file to use Vector3
+**************************************************************************/
 
 #ifndef VECTOR3_H
 #define VECTOR3_H

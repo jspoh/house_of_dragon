@@ -7,7 +7,7 @@
 //#include "Mesh.h"
 //#include "MatrixStack.h"
 //#include "Light.h"
-#include "GameObject.h"
+#include "../GameObject/GameObject.h"
 #include <vector>
 
 class SceneBase : public Scene

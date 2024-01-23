@@ -1,7 +1,7 @@
 #ifndef SCENE_MANAGER_H
 #define SCENE_MANAGER_H
 
-#include "SingletonTemplate.h"
+#include "../Backend/SingletonTemplate.h"
 #include <map>
 #include <string>
 

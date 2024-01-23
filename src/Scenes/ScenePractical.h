@@ -1,7 +1,7 @@
 #ifndef SCENE_COLLISION_H
 #define SCENE_COLLISION_H
 
-#include "GameObject.h"
+#include "../GameObject/GameObject.h"
 #include <vector>
 #include "SceneBase.h"
 

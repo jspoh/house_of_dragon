@@ -3,9 +3,9 @@
 \file SoundManager.h
 \author Soh Wei Jie (weijie.soh)
 \par DP email: weijie.soh\@digipen.edu
-\par Course: csd1171
+\par Course: csd1451
 \par House 0F Dragons
-\date 18-1-2024
+\date 23-1-2024
 \brief This source file manages sounds from AEAudio to play sounds from Fmod.
 **************************************************************************/
 
