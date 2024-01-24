@@ -1,36 +1,36 @@
 
-//#include "../GameObject/GameObject.h"
-//
-//GameObject::GameObject() 
-//	:m_Scale(1, 1, 1), 
-//	m_LocalPos(0.0, 0.0, 0.0), 
-//	m_WorldPos(0.0, 0.0, 0.0),
-//	m_Lifetime(0.0),
-//	m_Active(false)
-//{
-//}
-//
-//GameObject::~GameObject()
-//{
-//}
-//
-//
-//void Init()
-//{
-//
-//}
-//void Update(double dt)
-//{
-//
-//}
-//void Render()
-//{
-//
-//}
-//void Exit()
-//{
-//
-//}
+#include "../GameObject/GameObject.h"
+
+GameObject::GameObject() 
+	:m_Scale(1, 1, 1), 
+	m_LocalPos(0.0, 0.0, 0.0), 
+	m_WorldPos(0.0, 0.0, 0.0),
+	m_Lifetime(0.0),
+	m_Active(false)
+{
+}
+
+GameObject::~GameObject()
+{
+}
+
+
+void GameObject::Init()
+{
+
+}
+void GameObject::Update(double dt)
+{
+
+}
+void GameObject::Render()
+{
+
+}
+void GameObject::Exit()
+{
+
+}
 //
 ////void GameObject::InsertPowerupDetails()
 ////{

@@ -153,12 +153,15 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Backend\2DCollider.cpp" />
     <ClCompile Include="src\Backend\Application.cpp" />
+    <ClCompile Include="src\Backend\MouseController.cpp" />
     <ClCompile Include="src\Backend\SoundManager.cpp" />
     <ClCompile Include="src\Backend\GameManager.cpp" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
+    <ClCompile Include="src\GameObject\GenericEntity.cpp" />
     <ClCompile Include="src\GameObject\Particle.cpp" />
     <ClCompile Include="src\GameObject\ParticleManager.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -170,7 +173,9 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Scenes\SceneStage1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Backend\2DCollider.h" />
     <ClInclude Include="src\Backend\Application.h" />
+    <ClInclude Include="src\Backend\MouseController.h" />
     <ClInclude Include="src\Backend\MyMath.h" />
     <ClInclude Include="src\Backend\Pch.h" />
     <ClInclude Include="src\Backend\SingletonTemplate.h" />
@@ -179,6 +184,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\Vector3.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\GameObject\GameObjectManager.h" />
+    <ClInclude Include="src\GameObject\GenericEntity.h" />
     <ClInclude Include="src\GameObject\Particle.h" />
     <ClInclude Include="src\GameObject\ParticleManager.h" />
     <ClInclude Include="src\Scenes\Scene.h" />

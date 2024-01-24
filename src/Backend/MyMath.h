@@ -9,7 +9,7 @@
 \date 23-1-2024
 \brief Header file for math helper functions
 **************************************************************************/
-
+//if math cause an error, its due to include file - include loop
 #include <cmath>
 #include <exception>
 #include <ctime>

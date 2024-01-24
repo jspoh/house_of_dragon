@@ -22,6 +22,8 @@ void GameManager::Init()
 	// 
 	//Init Scene Manager
 	SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
+	//Init GameObject Manager
+	//GameObjectManager::GetInstance()->AddEntity();
 	//Init Sound Manager
 	SoundManager::GetInstance()->Init();
 }
@@ -50,7 +52,11 @@ void GameManager::Run()
 	if (AEInputCheckTriggered(AEVK_3))
 		SceneManager::GetInstance()->SetActiveScene("SceneBase");
 	SceneManager::GetInstance()->Update(AEGetTime(NULL));
+	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
+
+	//Render
 	SceneManager::GetInstance()->Render();
+	//GameObjectManager::GetInstance()->Render();
 }
 
 void GameManager::Exit()
@@ -58,6 +64,6 @@ void GameManager::Exit()
 	//Free Textures
 	//End Scene Manager
 	SceneManager::GetInstance()->Exit();
-
+	//GameObjectManager::GetInstance()->Destroy();
 	//Sound Manager will destroy itself when program ends
 }
