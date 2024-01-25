@@ -6,7 +6,8 @@ GameObject::GameObject()
 	m_LocalPos(0.0, 0.0, 0.0), 
 	m_WorldPos(0.0, 0.0, 0.0),
 	m_Lifetime(0.0),
-	m_Active(true)
+	m_Active(true),
+	m_RefName("NIL")
 {
 }
 

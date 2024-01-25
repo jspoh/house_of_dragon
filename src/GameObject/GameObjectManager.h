@@ -1,4 +1,13 @@
 #pragma once
+/*!************************************************************************
+\file GameObjectManager.h
+\author Soh Wei Jie (weijie.soh)
+\par DP email: weijie.soh\@digipen.edu
+\par Course: csd1451
+\par House 0F Dragons
+\date 25-1-2024
+\brief This source file handles GameObjects.
+**************************************************************************/
 #ifndef GAMEOBJECT_MANAGER_H
 #define GAMEOBJECT_MANAGER_H
 
@@ -19,6 +28,7 @@ public:
 	void AddEntity(GameObject* _newEntity);
 	bool RemoveEntity(GameObject* _existingEntity);
 
+	GameObject* FindObjectByReference(const std::string& _RefName);
 private:
 	GameObjectManager();
 	virtual ~GameObjectManager();

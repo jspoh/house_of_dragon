@@ -117,3 +117,16 @@ bool GameObjectManager::CheckForCollision(void)
 {
 	return false;
 }
+
+GameObject* GameObjectManager::FindObjectByReference(const std::string& _RefName)
+{
+	std::list<GameObject*>::iterator it, end;
+	end = entityList.end();
+	for (it = entityList.begin(); it != end; ++it)
+	{
+		if(_RefName == (*it)->m_RefName)
+			return *it;
+	}
+
+	return nullptr;
+}

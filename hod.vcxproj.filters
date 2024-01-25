@@ -69,6 +69,9 @@
     <ClCompile Include="src\Backend\MouseController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Scenes\Scene.h">
@@ -132,6 +135,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Backend\MouseController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\GameObject_AmeTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -50,7 +50,7 @@ void GameManager::Run()
 	//scene->Exit();
 	//delete scene;
 
-	SceneManager::GetInstance()->Update(AEGetTime(NULL));
+	SceneManager::GetInstance()->Update((f32)AEFrameRateControllerGetFrameTime());
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 
 	//Render
