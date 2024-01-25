@@ -7,7 +7,7 @@
 \date 23-1-2024
 \brief Header file to use Vector3
 **************************************************************************/
-
+#pragma once
 #ifndef VECTOR3_H
 #define VECTOR3_H
 

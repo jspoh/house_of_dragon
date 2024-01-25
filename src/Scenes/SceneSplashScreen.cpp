@@ -32,6 +32,8 @@ void SceneSplashScreen::Init()
 void SceneSplashScreen::Update(double dt)
 {
 	std::cout << "Updating Scene SplashScreen" << std::endl;
+	if (AEInputCheckTriggered(AEVK_3))
+		SceneManager::GetInstance()->SetActiveScene("SceneBase");
 }
 
 void SceneSplashScreen::Render()

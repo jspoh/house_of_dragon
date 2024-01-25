@@ -24,11 +24,11 @@ Math namespace
 namespace Math
 {
 
-	const float	EPSILON    =	0.00001f;  ///Used for error checking
-	const float	PI         = 3.1415926535897932384626433832795f;
-	const float TWO_PI     = PI * 2.0f;
-	const float HALF_PI    = PI / 2.0f;
-	const float QUARTER_PI = PI / 4.0f;
+	const float	m_EPSILON    =	0.00001f;  ///Used for error checking
+	const float	m_PI         = 3.1415926535897932384626433832795f;
+	const float TWO_m_PI     = m_PI * 2.0f;
+	const float HALF_m_PI    = m_PI / 2.0f;
+	const float QUARTER_m_PI = m_PI / 4.0f;
 
 	inline float FAbs(float value)
 	{
@@ -48,7 +48,7 @@ namespace Math
 /******************************************************************************/
 	inline float DegreeToRadian(float value)
 	{
-		return value * PI / 180.0f;
+		return value * m_PI / 180.0f;
 	}
 /******************************************************************************/
 	/*!
@@ -63,7 +63,7 @@ namespace Math
 /******************************************************************************/
 	inline float RadianToDegree(float value)
 	{
-		return value * 180.0f / PI;
+		return value * 180.0f / m_PI;
 	}
 /******************************************************************************/
 	/*!

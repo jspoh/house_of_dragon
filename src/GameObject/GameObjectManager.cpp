@@ -62,6 +62,7 @@ void GameObjectManager::RenderUI()
 void GameObjectManager::AddEntity(GameObject* _newEntity)
 {
 	entityList.push_back(_newEntity);
+	cout << "GameObject Add" << endl;
 }
 
 // Remove an entity from this GameObjectManager
@@ -100,14 +101,14 @@ bool GameObjectManager::CheckOverlap(Vector3 thisMinAABB, Vector3 thisMaxAABB, V
 // Check if this entity's bounding sphere collided with that entity's bounding sphere 
 bool GameObjectManager::CheckSphereCollision(GameObject* ThisEntity, GameObject* ThatEntity)
 {
-
+	//Ignore Warnings
 	return false;
 }
 
 // Check if this entity collided with another entity, but both must have collider
 bool GameObjectManager::CheckAABBCollision(GameObject* ThisEntity, GameObject* ThatEntity)
 {
-
+	//Ignore Warnings
 	return false;
 }
 

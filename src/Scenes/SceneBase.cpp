@@ -1,7 +1,10 @@
-#include "SceneBase.h"
+#include "../Scenes/SceneBase.h"
 
-#include "../Backend/GameManager.h" //? Still thinking
-#include "SceneManager.h"
+//#include "../Backend/GameManager.h" //? Still thinking
+#include "../Scenes/SceneManager.h"
+#include "../Backend/Pch.h"
+#include "../GameObject/GenericEntity.h"
+#include "../GameObject/GameObjectManager.h"
 
 SceneBase* SceneBase::sInstance = new SceneBase(SceneManager::GetInstance());
 const u32 spritesheet_rows = 5;
@@ -63,6 +66,8 @@ void SceneBase::Init()
 
     // Load texture
     pTex = AEGfxTextureLoad("Assets/ame.png");
+
+    Create::Entity("reference", Vector3(0.0f, 0.0f, 0.0f));
 }
 
 void SceneBase::Update(double dt)
@@ -89,6 +94,7 @@ void SceneBase::Update(double dt)
 
         }
 
+        GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 }
 
 void SceneBase::Render()
@@ -121,10 +127,13 @@ void SceneBase::Render()
 
     // Actually drawing the mesh 
     AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+    GameObjectManager::GetInstance()->Render();
 }
 
 void SceneBase::Exit()
 {
+    GameObjectManager::GetInstance()->Destroy();
 	std::cout << "Exiting Scene Base" << std::endl;
 }
 

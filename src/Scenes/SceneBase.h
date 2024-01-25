@@ -2,7 +2,7 @@
 #define SCENE_BASE_H
 
 #include "../Scenes/Scene.h"
-#include "../GameObject/GameObject.h"
+
 #include <vector>
 //Testing SpriteAnimation
 class SceneManager;

@@ -8,11 +8,11 @@
 \brief Header file to use Vector3
 **************************************************************************/
 #include <cmath>
-#include "Vector3.h"
+#include "../Backend/Vector3.h"
 
 bool Vector3::IsEqual(float a, float b) const
 {
-	return a - b <= Math::EPSILON && b - a <= Math::EPSILON;
+	return a - b <= Math::m_EPSILON && b - a <= Math::m_EPSILON;
 }
 
 /******************************************************************************/
@@ -83,7 +83,7 @@ void Vector3::SetZero( void )
 
 /******************************************************************************/
 /*!
-\brief	Check if vector is zero, using Math::Epsilon
+\brief	Check if vector is zero, using Math::m_EPSILON
 
 \return TRUE if vector is zero
 */
@@ -228,7 +228,7 @@ Vector3 Vector3::operator/(float scalar) const
 /******************************************************************************/
 /*!
 \brief
-operator== overload for equality check, using Math::EPSILON
+operator== overload for equality check, using Math::m_EPSILON
 
 \param rhs
 	vector to compare with
@@ -245,7 +245,7 @@ bool Vector3::operator==( const Vector3& rhs ) const
 /******************************************************************************/
 /*!
 \brief
-operator!= overload for inequality check, using Math::EPSILON
+operator!= overload for inequality check, using Math::m_EPSILON
 
 \param rhs
 	vector to compare with
@@ -308,18 +308,18 @@ float Vector3::Angle (void ) const
 		angle = asin(Math::FAbs(d.y));
 		if (d.x < 0 && d.y < 0)
 		{
-			angle += Math::PI;
+			angle += Math::m_PI;
 		}
 		else if (d.x < 0 && d.y >= 0)
 		{
-			angle = Math::PI - angle;
+			angle = Math::m_PI - angle;
 		}
 		else if (d.x >= 0 && d.y < 0)
 		{
 			angle = -angle;
 		}
 	}
-	angle -= Math::PI / 2.f;
+	angle -= Math::m_PI / 2.f;
 	return angle;
 }
 /******************************************************************************/
@@ -383,7 +383,7 @@ Return a copy of this vector, normalized
 Vector3 Vector3::Normalized( void ) const throw( DivideByZero )
 {
 	float d = Length();
-	if(d <= Math::EPSILON && -d <= Math::EPSILON)
+	if(d <= Math::m_EPSILON && -d <= Math::m_EPSILON)
 	  throw DivideByZero();
 	return Vector3(x / d, y / d, z / d);
 }
@@ -404,7 +404,7 @@ Normalize this vector and return a reference to it
 Vector3& Vector3::Normalize( void ) throw( DivideByZero )
 {
 	float d = Length();
-	if(d <= Math::EPSILON && -d <= Math::EPSILON)
+	if(d <= Math::m_EPSILON && -d <= Math::m_EPSILON)
 	  throw DivideByZero();
 	x /= d;
 	y /= d;

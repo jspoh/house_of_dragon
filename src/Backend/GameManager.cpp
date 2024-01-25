@@ -1,6 +1,5 @@
 #include "GameManager.h"
 
-
 ////Define an error callback
 //static void error_callback(int error, const char* description)
 //{
@@ -23,6 +22,7 @@ void GameManager::Init()
 	//Init Scene Manager
 	SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
 	//Init GameObject Manager
+	//Create::Entity("reference", Vector3(0.0f, 0.0f, 0.0f));
 	//GameObjectManager::GetInstance()->AddEntity();
 	//Init Sound Manager
 	SoundManager::GetInstance()->Init();
@@ -49,8 +49,7 @@ void GameManager::Run()
 	//} //Check if the ESC key had been pressed or if the window had been closed
 	//scene->Exit();
 	//delete scene;
-	if (AEInputCheckTriggered(AEVK_3))
-		SceneManager::GetInstance()->SetActiveScene("SceneBase");
+
 	SceneManager::GetInstance()->Update(AEGetTime(NULL));
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 
