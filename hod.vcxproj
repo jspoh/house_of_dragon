@@ -165,6 +165,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\GameObject\GenericEntity.cpp" />
     <ClCompile Include="src\GameObject\Particle.cpp" />
     <ClCompile Include="src\GameObject\ParticleManager.cpp" />
+    <ClCompile Include="src\GameObject\Player\GameObject_Player.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Scenes\SceneBase.cpp" />
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
@@ -189,6 +190,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\GameObject\GenericEntity.h" />
     <ClInclude Include="src\GameObject\Particle.h" />
     <ClInclude Include="src\GameObject\ParticleManager.h" />
+    <ClInclude Include="src\GameObject\Player\GameObject_Player.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="src\Scenes\SceneBase.h" />
     <ClInclude Include="src\Scenes\SceneManager.h" />
