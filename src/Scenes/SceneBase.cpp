@@ -3,6 +3,7 @@
 //#include "../Backend/GameManager.h" //? Still thinking
 #include "../Scenes/SceneManager.h"
 #include "../Backend/Pch.h"
+#include "../GameObject/Player/GameObject_Player.h"
 #include "../GameObject/GameObject_AmeTest.h"
 #include "../GameObject/GameObjectManager.h"
 
@@ -28,30 +29,33 @@ void SceneBase::Load()
 
 void SceneBase::Init()
 {
-    Create::Ame("reference", Vector3(0.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference1", Vector3(100.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference2", Vector3(200.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference3", Vector3(300.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference4", Vector3(400.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference5", Vector3(500.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference6", Vector3(600.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference7", Vector3(700.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference8", Vector3(800.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference9", Vector3(0.0f, 100.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference0", Vector3(-100.0f, 200.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference11", Vector3(-200.0f, 300.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference12", Vector3(400.0f, 400.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference13", Vector3(-600.0f, 500.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference15", Vector3(-800.0f, 600.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
-    Create::Ame("reference16", Vector3(0.0f, 700.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference", Vector3(0.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference1", Vector3(100.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference2", Vector3(200.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference3", Vector3(300.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference4", Vector3(400.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference5", Vector3(500.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference6", Vector3(600.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference7", Vector3(700.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference8", Vector3(800.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference9", Vector3(0.0f, 100.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference0", Vector3(-100.0f, 200.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference11", Vector3(-200.0f, 300.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference12", Vector3(400.0f, 400.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference13", Vector3(-600.0f, 500.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference15", Vector3(-800.0f, 600.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::Ame("reference16", Vector3(0.0f, 700.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+
+    Create::test("gg", Vector3(0.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+
 
     //GameObjectManager::GetInstance()->FindObjectByReference("")
-    GameObject* deletetest = GameObjectManager::GetInstance()->FindObjectByReference("reference");
-    deletetest->m_Active = false;
-    deletetest = GameObjectManager::GetInstance()->FindObjectByReference("reference2");
-    deletetest->m_Active = false;
-    deletetest = GameObjectManager::GetInstance()->FindObjectByReference("reference3");
-    deletetest->m_Active = false;
+    GameObject* deletetest = GameObjectManager::GetInstance()->FindObjectByReference("gg");
+    //deletetest->m_Active = false;
+    //deletetest = GameObjectManager::GetInstance()->FindObjectByReference("reference2");
+    //deletetest->m_Active = false;
+    //deletetest = GameObjectManager::GetInstance()->FindObjectByReference("reference3");
+    //deletetest->m_Active = false;
 }
 
 
