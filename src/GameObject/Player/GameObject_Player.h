@@ -4,6 +4,7 @@
 #include "../../GameObject/GameObject.h"
 #include "../../Backend/2DCollider.h"
 #include"../../Backend/Pch.h"
+
 class GameObject_Player : public GameObject, public CCollider
 {
 public:
@@ -14,9 +15,12 @@ public:
 	virtual void Update(double _dt);
 	virtual void Render();
 	virtual void Exit();
+	bool getIspplaying();
+	void setIsplaying(bool check);
 
 	// Set the maxAABB and minAABB
 	void SetAABB(Vector3 maxAABB, Vector3 minAABB);
+	f32 timer = 0;
 
 private:
 
@@ -37,6 +41,7 @@ private:
 	// Pointer to Mesh
 	AEGfxVertexList* pMesh = 0;
 	AEGfxTexture* pTex;
+	bool isPlaying = false;
 
 };
 
@@ -47,3 +52,5 @@ namespace Create
 		const Vector3& _scale = Vector3(1.0f, 1.0f, 1.0f));
 
 };
+
+void movement_dash(GameObject_Player* player, Vector3 destination, float speed, double _dt);

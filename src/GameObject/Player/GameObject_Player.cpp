@@ -1,5 +1,6 @@
 #include "../../GameObject/Player/GameObject_Player.h"
 #include "../../GameObject/GameObjectManager.h"
+#include "../../src/Backend/MyMath.h"
 //#include"../../Backend/Pch.h"
 GameObject_Player::GameObject_Player()
 {
@@ -35,12 +36,29 @@ void GameObject_Player::Init()
 
 }
 
+bool GameObject_Player::getIspplaying()
+{
+	return isPlaying;
+
+}
+
+void GameObject_Player::setIsplaying(bool check) 
+{
+	isPlaying = check;
+}
+
 void GameObject_Player::Update(double _dt)
 {
 	// Does nothing here, can inherit & override or create your own version of this class :D
 	// Update the animation timer.
-	   // animation_timer should go up to animation_duration_per_frame.
+	// animation_timer should go up to animation_duration_per_frame.
 	animation_timer += (f32)AEFrameRateControllerGetFrameTime() * 2;
+	timer += (f32)AEFrameRateControllerGetFrameTime();
+	
+	if (getIspplaying() == true)
+	{
+		movement_dash(this, Vector3(1000, 1000), 100, _dt);
+	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
 		this->m_LocalPos.x -= speed * _dt;
@@ -58,9 +76,12 @@ void GameObject_Player::Update(double _dt)
 			current_sprite_uv_offset_y = sprite_uv_height * current_sprite_row;
 		}
 	}
+	//correct direction 
 
-	if (AEInputCheckCurr(AEVK_D)) {
-		this->m_LocalPos.x += speed * _dt;
+	if (AEInputCheckTriggered(AEVK_D)) {
+		//this->m_LocalPos.x += speed * _dt;
+		//
+		setIsplaying(true);
 		if (animation_timer >= animation_duration_per_frame)
 		{
 			animation_timer = 0;
@@ -78,10 +99,11 @@ void GameObject_Player::Update(double _dt)
 
 	if (AEInputCheckCurr(AEVK_W)) {
 		this->m_LocalPos.y += speed * _dt;
+
 		if (animation_timer >= animation_duration_per_frame)
 		{
 			animation_timer = 0;
-
+			
 			// Calculate the next sprite UV
 			current_sprite_index = ++current_sprite_index % spritesheet_max_sprites;
 
@@ -110,6 +132,9 @@ void GameObject_Player::Update(double _dt)
 		}
 	}
 
+
+
+	//nearly equal
 
 	//if (AEInputCheckTriggered(AEVK_A))
 	//	this->m_LocalPos.x -= speed * _dt;
@@ -214,4 +239,32 @@ GameObject_Player* Create::test(const std::string& _refName,
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
 	return result;
+}
+
+
+void movement_dash(GameObject_Player* player, Vector3 destination, float speed, double _dt)
+{
+	Vector3 angle = destination - player->m_LocalPos;
+
+	float game_X = angle.x / sqrt(Math::Square(destination.x) + (destination.y));
+	float game_Y = angle.y / sqrt(Math::Square(destination.x) + (destination.y));
+
+	Vector3 direction_p(game_X, game_Y);
+
+
+	
+	if (player->timer <= 3.0f)
+	{
+
+		player->m_LocalPos += direction_p * speed * _dt;
+
+
+	}
+
+	if (player->timer >= 3.0f)
+	{
+		player->setIsplaying(false);
+		player->timer = 0;
+	}
+
 }
