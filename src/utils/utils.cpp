@@ -20,9 +20,8 @@ bool areRectsIntersecting() {
 
 /* screen coordinates to world coordinates */
 Point stow(float x, float y) {
-	std::cout << AEGfxGetWindowWidth() << ", " << AEGfxGetWindowHeight() << "\n";
 	float wX = x - (AEGfxGetWindowWidth() / 2);
-	float wY = y + (AEGfxGetWindowHeight() / 2);
+	float wY = (AEGfxGetWindowHeight() / 2) - y;  // Corrected this line
 	return Point{ wX, wY };
 }
 
@@ -67,7 +66,7 @@ void Draw::rect(f32 transX, f32 transY, Color color, f32 scaleX, f32 scaleY, f32
 	AEMtx33Rot(&rotate, rotation);
 
 	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, transX, transY / 2);
+	AEMtx33Trans(&translate, transX, transY);
 
 	AEMtx33 transform = { 0 };
 	AEMtx33Concat(&transform, &rotate, &scale);

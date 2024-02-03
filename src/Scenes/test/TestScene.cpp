@@ -30,30 +30,43 @@ void TestScene::Init()
     //GameObjectManager::AddEntity(GameObject)
 }
 
-int speed = 1000;  // pixels per 
-Point rectPos1 = { 0,0 };
+int speed = 1000;  // pixels per
+std::vector<Point> rects = { Point{0,0}, Point{100,100} };
+Controls ipts[] = { Controls{AEVK_W, AEVK_S, AEVK_A, AEVK_D}, Controls{AEVK_UP, AEVK_DOWN, AEVK_LEFT, AEVK_RIGHT} };
 
 void TestScene::Update(double dt)
 {
-    if (AEInputCheckCurr(AEVK_W)) {
-        rectPos1.y -= dt * speed;
+    int i{};
+    for (Point& rect : rects) {
+        if (AEInputCheckCurr(ipts[i].UP)) {
+            rect.y -= dt * speed;
+        }
+        if (AEInputCheckCurr(ipts[i].DOWN)) {
+            rect.y += dt * speed;
+        }
+        if (AEInputCheckCurr(ipts[i].LEFT)) {
+            rect.x -= dt * speed;
+        }
+        if (AEInputCheckCurr(ipts[i].RIGHT)) {
+            rect.x += dt * speed;
+        }
+        i++;
     }
-    if (AEInputCheckCurr(AEVK_S)) {
-        rectPos1.y += dt * speed;
-    }
-    if (AEInputCheckCurr(AEVK_A)) {
-        rectPos1.x -= dt * speed;
-    }
-    if (AEInputCheckCurr(AEVK_D)) {
-        rectPos1.x += dt * speed;
+
+    if (AEInputCheckCurr(AEVK_LBUTTON)) {
+        s32 mx, my;
+        AEInputGetCursorPosition(&mx, &my);
+        std::cout << mx << ", " << my << "\n";
+        std::cout << stow(mx,0).x << ", " << stow(0,my).y << "\n";
     }
 }
 
 void TestScene::Render()
 {
-    //std::cout << "rect screen pos: " << rectPos1.x << ", " << rectPos1.y << "\n";
-    Point rpt1 = stow(rectPos1.x, rectPos1.y);
-    Draw::getInstance()->rect(rpt1.x, rpt1.y);
+    for (Point& rect : rects) {
+        Point rpt = stow(rect.x, rect.y);
+        Draw::getInstance()->rect(rpt.x, rpt.y);
+    }
     
 }
 

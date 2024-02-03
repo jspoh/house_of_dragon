@@ -2,7 +2,7 @@
 
 
 #include "../../Extern/AlphaEngine/include/AEEngine.h"
-#include "../Backend/SingletonTemplate.h"
+//#include "../Backend/SingletonTemplate.h"
 
 
 /**
@@ -14,6 +14,10 @@ struct Color {
 
 struct Point {
 	float x, y;
+};
+
+struct Controls {
+	int UP, DOWN, LEFT, RIGHT;
 };
 
 
