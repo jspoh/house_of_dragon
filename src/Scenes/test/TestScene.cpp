@@ -30,9 +30,10 @@ void TestScene::Init()
     //GameObjectManager::AddEntity(GameObject)
 }
 
-int speed = 1000;  // pixels per
+int speed = 100;  // pixels per
 std::vector<Point> rects = { Point{0,0}, Point{100,100} };
 Controls ipts[] = { Controls{AEVK_W, AEVK_S, AEVK_A, AEVK_D}, Controls{AEVK_UP, AEVK_DOWN, AEVK_LEFT, AEVK_RIGHT} };
+int j{};
 
 void TestScene::Update(double dt)
 {
@@ -58,6 +59,10 @@ void TestScene::Update(double dt)
         AEInputGetCursorPosition(&mx, &my);
         std::cout << mx << ", " << my << "\n";
         std::cout << stow(mx,0).x << ", " << stow(0,my).y << "\n";
+    }
+
+    if (CollisionChecker::areRectsIntersecting(rects[0].x, rects[0].y, 50, 50, rects[1].x, rects[1].y, 50, 50)) {
+        std::cout << j++ << "colliding\n";
     }
 }
 
