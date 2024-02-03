@@ -1,3 +1,19 @@
+/* Start Header ************************************************************************/
+/*!
+\file Draw.h
+\author Poh Jing Seng, jingseng.poh, 2301363
+\par jingseng.poh\@digipen.edu
+\date 3 Feb 2024
+\brief abstracts away drawing of shapes
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 #pragma once
 
 #include "../utils.h"
