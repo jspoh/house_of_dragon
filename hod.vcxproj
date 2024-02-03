@@ -160,6 +160,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Backend\GameManager.cpp" />
     <ClCompile Include="src\Backend\Utils_EaseFunctions.c" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
+    <ClCompile Include="src\db\db.cpp" />
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
@@ -174,6 +175,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Scenes\ScenePractical.cpp" />
     <ClCompile Include="src\Scenes\SceneSplashScreen.cpp" />
     <ClCompile Include="src\Scenes\SceneStage1.cpp" />
+    <ClCompile Include="src\Scenes\test\TestScene.cpp" />
+    <ClCompile Include="src\utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Backend\2DCollider.h" />
@@ -186,6 +189,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\GameManager.h" />
     <ClInclude Include="src\Backend\Utils_EaseFunctions.h" />
     <ClInclude Include="src\Backend\Vector3.h" />
+    <ClInclude Include="src\db\db.h" />
     <ClInclude Include="src\GameObject\GameObject_AmeTest.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\GameObject\GameObjectManager.h" />
@@ -200,6 +204,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Scenes\ScenePractical.h" />
     <ClInclude Include="src\Scenes\SceneSplashScreen.h" />
     <ClInclude Include="src\Scenes\SceneStage1.h" />
+    <ClInclude Include="src\Scenes\test\TestScene.h" />
+    <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -124,8 +124,12 @@ void SceneSplashScreen::Init()
 void SceneSplashScreen::Update(double dt)
 {
 	std::cout << "Updating Scene SplashScreen" << std::endl;
-	if (AEInputCheckTriggered(AEVK_3))
+	if (AEInputCheckTriggered(AEVK_3)) {
 		SceneManager::GetInstance()->SetActiveScene("SceneBase");
+	}
+	if (AEInputCheckTriggered(AEVK_4)) {
+		SceneManager::GetInstance()->SetActiveScene("TestScene");
+	}
 
 //	static int x = 2940.f, y = 616.f;
 //if (AEInputCheckCurr(AEVK_W))
@@ -162,8 +166,9 @@ void SceneSplashScreen::Update(double dt)
 	//UPDATE FLOOR MOVEMENT
 	//////////////////////////////////////////////////////////////////////////
 	static bool start = false;
-	if (AEInputCheckReleased(AEVK_SPACE))
+	if (AEInputCheckReleased(AEVK_SPACE)) {
 		start = true;
+	}
 
 	if (start)
 	{
