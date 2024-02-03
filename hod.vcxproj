@@ -158,6 +158,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Backend\MouseController.cpp" />
     <ClCompile Include="src\Backend\SoundManager.cpp" />
     <ClCompile Include="src\Backend\GameManager.cpp" />
+    <ClCompile Include="src\Backend\Utils_EaseFunctions.c" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
@@ -183,6 +184,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\SingletonTemplate.h" />
     <ClInclude Include="src\Backend\SoundManager.h" />
     <ClInclude Include="src\Backend\GameManager.h" />
+    <ClInclude Include="src\Backend\Utils_EaseFunctions.h" />
     <ClInclude Include="src\Backend\Vector3.h" />
     <ClInclude Include="src\GameObject\GameObject_AmeTest.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />

@@ -39,6 +39,7 @@ typedef enum
 	AE_GFX_BM_NONE = 0,     //!< No blending
 	AE_GFX_BM_BLEND,        //!< Color blending
 	AE_GFX_BM_ADD,          //!< Additive blending
+    AE_GFX_BM_MULTIPLY,     //!< Multiply blending
 
 	AE_GFX_BM_NUM
 }AEGfxBlendMode;
