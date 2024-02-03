@@ -72,6 +72,9 @@
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Backend\Utils_EaseFunctions.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Scenes\Scene.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\GameObject_AmeTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Backend\Utils_EaseFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
