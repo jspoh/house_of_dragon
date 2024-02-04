@@ -114,8 +114,8 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, Color color, 
 	AEMtx33Concat(&transform, &translate, &transform);
 
 	// prep texture
-	AEGfxTexture* pTex = getTextureByRef(textureRef);
-	//pTex = AEGfxTextureLoad("./Assets/PlanetTexture.png");
+	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
+	pTex = AEGfxTextureLoad("./Assets/PlanetTexture.png");  // works
 	std::cout << pTex << "\n";
 
 
