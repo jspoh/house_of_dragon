@@ -130,6 +130,9 @@ void SceneSplashScreen::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_4)) {
 		SceneManager::GetInstance()->SetActiveScene("TestScene");
 	}
+	if (AEInputCheckTriggered(AEVK_5)) {
+		SceneManager::GetInstance()->SetActiveScene("CombatScene");
+	}
 
 //	static int x = 2940.f, y = 616.f;
 //if (AEInputCheckCurr(AEVK_W))

@@ -31,10 +31,10 @@ void TestScene::Init()
     //GameObjectManager::AddEntity(GameObject
 }
 
-int speed = 100;  // pixels per
-std::vector<Point> rects = { Point{0,0}, Point{100,100} };
-Controls ipts[] = { Controls{AEVK_W, AEVK_S, AEVK_A, AEVK_D}, Controls{AEVK_UP, AEVK_DOWN, AEVK_LEFT, AEVK_RIGHT} };
-int j{};
+static int speed = 100;  // pixels per
+static std::vector<Point> rects = { Point{0,0}, Point{100,100} };
+static Controls ipts[] = { Controls{AEVK_W, AEVK_S, AEVK_A, AEVK_D}, Controls{AEVK_UP, AEVK_DOWN, AEVK_LEFT, AEVK_RIGHT} };
+static int j{};
 
 void TestScene::Update(double dt)
 {
@@ -78,6 +78,6 @@ void TestScene::Render()
 
 void TestScene::Exit()
 {
-    std::cout << "Exiting Scene Base" << std::endl;
+    std::cout << "Exiting TestScene" << std::endl;
     Draw::getInstance()->removeTextureByRef("planet");
 }
