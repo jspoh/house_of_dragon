@@ -72,11 +72,11 @@ void Event::updateLoop(EVENT_RESULTS& result, double dt, float screenX, float sc
 /*private*/
 
 void Event::_resetState() {
+	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
 	_elapsedTimeMs = 0;
 	_totalElapsedMs = 0;
 	_useOutline = true;
 	_size = _minSize;
-	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
 	_isRenderingEventResult = false;
 }
 
@@ -92,6 +92,7 @@ void Event::_showEventResult(EVENT_RESULTS& result, double dt, float screenX, fl
 	if (_totalElapsedMs - timeout * 1000 >= _eventResultDuration * 1000) {
 		result = _eventResult;  // update result passed by caller so that they know event is over
 		_resetState();
+		return;
 	}
 
 	if (_eventResult == EVENT_RESULTS::SUCCESS) {
@@ -112,6 +113,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
 		_showEventResult(result, dt, screenX, screenY, timeout);
+		return;
 	}
 
 	// check if user succeeded on spamming key
