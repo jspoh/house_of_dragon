@@ -20,6 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
 
+	//AESysSetFullScreen(true);
 	// Changing the window title
 	AESysSetWindowTitle("Version Alpha 0.0.1 - White Screen");
 

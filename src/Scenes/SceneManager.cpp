@@ -25,14 +25,16 @@ void SceneManager::Update(double _dt)
 		activeScene->Init();
 	}
 
-	if (activeScene)
+	if (activeScene) {
 		activeScene->Update(_dt);
+	}
 }
 
 void SceneManager::Render()
 {
-	if (activeScene)
+	if (activeScene) {
 		activeScene->Render();
+	}
 }
 
 void SceneManager::Exit()

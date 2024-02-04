@@ -11,7 +11,7 @@
         However, files listed here are ALL re-compiled if any one of them is updated between builds.
         Do not add files here that you will be updating frequently as this negates the performance advantage.
 /*
-Copyright (C) 20xx DigiPen Institute of Technology.
+Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
 without the prior written consent of DigiPen Institute of
 Technology is prohibited.
@@ -27,6 +27,6 @@ Technology is prohibited.
 #include "AEEngine.h"
 #include <iostream>
 #include <fstream>
-using namespace std;
+using namespace std;  // we shouldnt do this, crowds namespace
 
 #endif //PCH_H
