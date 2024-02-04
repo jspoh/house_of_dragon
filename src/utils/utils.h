@@ -44,6 +44,9 @@ struct Controls {
  */
 Point stow(float x, float y);
 
+/* screen coordinates to normalized coordinates */
+Point ston(float x, float y);
+
 
 /*for ease of inclusion*/
 #include "./Draw/Draw.h"

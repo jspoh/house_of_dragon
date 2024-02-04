@@ -27,6 +27,8 @@ class Draw /*: Singleton<Draw>*/ {
 private:
 	static Draw* _instance;
 	AEGfxVertexList* _mesh;
+	s8 _font;
+	int _fontSize = 32;
 
 	std::unordered_map<std::string, AEGfxTexture*> _textureRef;
 
@@ -82,6 +84,10 @@ public:
 	void removeTextureByRef(std::string reference);
 
 	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,0 }, f32 rotation = 0);
+
+	void text(std::string s, float screenX=800, float screenY=450);
+
+	void setFontSize(int size);
 };
 
 /*
