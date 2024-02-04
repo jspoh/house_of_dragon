@@ -8,6 +8,7 @@
 #include "../../utils/utils.h"
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
+EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 
 CombatScene::CombatScene()
 {
@@ -30,14 +31,18 @@ void CombatScene::Load()
 
 void CombatScene::Init()
 {
-    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+    /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 }
 
-EVENT_RESULTS eresult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 void CombatScene::Update(double dt)
 {
+    if (AEInputCheckTriggered(AEVK_3)) {
+        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    }
+
     Point p = stow(100, 100);
-    Event::getInstance()->updateLoop(eresult, dt, p.x, p.y);
+    Event::getInstance()->updateLoop(combatEventResult, dt, p.x, p.y);
     //f64 time;
     //AEGetTime(&time);
     //std::cout << dt << "\n";

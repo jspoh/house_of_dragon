@@ -89,7 +89,7 @@ void Event::_updateTime(double dt) {
 
 void Event::_showEventResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
 	/*event result duration over*/
-	if (_totalElapsedMs - timeout * 1000 >= _eventResultDuration * 1000) {
+	if (_elapsedTimeMs >= _eventResultDuration * 1000) {
 		result = _eventResult;  // update result passed by caller so that they know event is over
 		_resetState();
 		return;
@@ -119,11 +119,13 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	// check if user succeeded on spamming key
 	if (_size >= _targetSize) {
 		_eventResult = EVENT_RESULTS::SUCCESS;
+		_elapsedTimeMs = 0;
 		_isRenderingEventResult = true;
 		return;
 	}
 	else if (_totalElapsedMs >= timeout * 1000) {
 		_eventResult = EVENT_RESULTS::FAILURE;
+		_elapsedTimeMs = 0;
 		_isRenderingEventResult = true;
 		return;
 	}
