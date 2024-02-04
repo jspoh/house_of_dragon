@@ -40,7 +40,11 @@ Draw::Draw() {
 Draw::~Draw() {
 	AEGfxMeshFree(_mesh);
 	delete _instance;
-	//AEGfxTextureUnload();
+	
+	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
+		AEGfxTextureUnload(map.second);
+	}
+	_textureRef.clear();
 }
 
 Draw* Draw::getInstance() {
