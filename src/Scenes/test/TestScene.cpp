@@ -23,11 +23,12 @@ TestScene::~TestScene()
 void TestScene::Load()
 {
     //Still debating whether need this
+    Draw::getInstance()->registerTexture("planet", "./Assets/PlanetTexture.png");
 }
 
 void TestScene::Init()
 {
-    //GameObjectManager::AddEntity(GameObject)
+    //GameObjectManager::AddEntity(GameObject
 }
 
 int speed = 100;  // pixels per
@@ -70,7 +71,7 @@ void TestScene::Render()
 {
     for (Point& rect : rects) {
         Point rpt = stow(rect.x, rect.y);
-        Draw::getInstance()->rect(rpt.x, rpt.y);
+        Draw::getInstance()->texture("planet", rpt.x, rpt.y);
     }
     
 }
@@ -78,4 +79,5 @@ void TestScene::Render()
 void TestScene::Exit()
 {
     std::cout << "Exiting Scene Base" << std::endl;
+    Draw::getInstance()->removeTextureByRef("planet");
 }
