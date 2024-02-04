@@ -54,6 +54,9 @@ Draw* Draw::getInstance() {
 	return _instance;
 }
 
+void Draw::background(Color color) {
+	AEGfxSetBackgroundColor(color.r, color.g, color.b);
+}
 
 void Draw::rect(f32 transX, f32 transY, Color color, f32 scaleX, f32 scaleY, f32 rotation, f32 opacity) {
 	// create matrix
@@ -135,3 +138,7 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, Color color, 
 	AEGfxTextureSet(pTex, 0, 0);
 	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
 }
+
+
+/*class DrawSpritesheet*/
+

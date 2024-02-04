@@ -23,7 +23,6 @@ Technology is prohibited.
 
 struct Color;
 
-
 class Draw /*: Singleton<Draw>*/ {
 private:
 	static Draw* _instance;
@@ -40,6 +39,13 @@ public:
 	static Draw* getInstance();
 
 	//Draw* getInstance();
+
+	/**
+	 * Sets background color.
+	 * 
+	 * \param color
+	 */
+	void background(Color color);
 
 	/**
 	 * .
@@ -77,3 +83,14 @@ public:
 
 	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, Color color = Color{ 0,0,0,0 }, f32 scaleX = 50, f32 scaleY = 50, f32 rotation = 0, f32 opacity = 1);
 };
+
+/*
+class DrawSpritesheet {
+private:
+	std::vector<AEGfxVertexList*> _meshes;
+
+public:
+	DrawSpritesheet();
+	~DrawSpritesheet();
+};
+*/

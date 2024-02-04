@@ -161,6 +161,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Backend\Utils_EaseFunctions.c" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\db\db.cpp" />
+    <ClCompile Include="src\Event\Event.cpp" />
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
@@ -169,6 +170,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\GameObject\ParticleManager.cpp" />
     <ClCompile Include="src\GameObject\Player\GameObject_Player.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Scenes\CombatScene\CombatScene.cpp" />
     <ClCompile Include="src\Scenes\SceneBase.cpp" />
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
     <ClCompile Include="src\Scenes\SceneMenu.cpp" />
@@ -192,6 +194,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\Utils_EaseFunctions.h" />
     <ClInclude Include="src\Backend\Vector3.h" />
     <ClInclude Include="src\db\db.h" />
+    <ClInclude Include="src\Event\Event.h" />
     <ClInclude Include="src\GameObject\GameObject_AmeTest.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\GameObject\GameObjectManager.h" />
@@ -199,6 +202,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\GameObject\Particle.h" />
     <ClInclude Include="src\GameObject\ParticleManager.h" />
     <ClInclude Include="src\GameObject\Player\GameObject_Player.h" />
+    <ClInclude Include="src\Scenes\CombatScene\CombatScene.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="src\Scenes\SceneBase.h" />
     <ClInclude Include="src\Scenes\SceneManager.h" />
