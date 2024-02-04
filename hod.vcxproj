@@ -161,6 +161,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Backend\Utils_EaseFunctions.c" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\db\db.cpp" />
+    <ClCompile Include="src\GameObject\Animals\Elements.cpp" />
+    <ClCompile Include="src\GameObject\Animals\ZodiacAnimals.cpp" />
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
@@ -192,6 +194,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\Utils_EaseFunctions.h" />
     <ClInclude Include="src\Backend\Vector3.h" />
     <ClInclude Include="src\db\db.h" />
+    <ClInclude Include="src\GameObject\Animals\Elements.hpp" />
+    <ClInclude Include="src\GameObject\Animals\ZodiacAnimals.hpp" />
     <ClInclude Include="src\GameObject\GameObject_AmeTest.h" />
     <ClInclude Include="src\GameObject\GameObject.h" />
     <ClInclude Include="src\GameObject\GameObjectManager.h" />
