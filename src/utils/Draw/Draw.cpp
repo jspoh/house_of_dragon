@@ -79,14 +79,17 @@ void Draw::rect(f32 transX, f32 transY, Color color, f32 scaleX, f32 scaleY, f32
 bool Draw::registerTexture(std::string reference, std::string path) {
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
+		std::cerr << "Texture failed to load\n";
+		exit(1);
 		return false;
 	}
 	_textureRef[reference] = pTex;
+	std::cout << "Loaded texture at location " << pTex << "\n";
 	return true;
 }
 
 AEGfxTexture* Draw::getTextureByRef(std::string reference) {
-	auto map = _textureRef.find(reference);
+	auto map = _textureRef.find(reference.c_str());
 	if (map == _textureRef.end()) {  // does not exist
 		return nullptr;
 	}
@@ -115,8 +118,6 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, Color color, 
 
 	// prep texture
 	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
-	pTex = AEGfxTextureLoad("./Assets/PlanetTexture.png");  // works
-	std::cout << pTex << "\n";
 
 
 	// prepare to draw
@@ -129,6 +130,4 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, Color color, 
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
 	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
-
-	free(pTex);
 }
