@@ -71,10 +71,37 @@ void Event::updateLoop(EVENT_RESULTS& result, double dt, float screenX, float sc
 
 /*private*/
 
+void Event::_resetState() {
+	_elapsedTimeMs = 0;
+	_totalElapsedMs = 0;
+	_useOutline = true;
+	_size = _minSize;
+	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
+	_isRenderingEventResult = false;
+}
+
 void Event::_updateTime(double dt) {
+	// integer delta time
 	int idt = static_cast<int>(dt * 1000);
 	_elapsedTimeMs += idt;
 	_totalElapsedMs += idt;
+}
+
+void Event::_showEventResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
+	/*event result duration over*/
+	if (_totalElapsedMs - timeout * 1000 >= _eventResultDuration * 1000) {
+		result = _eventResult;  // update result passed by caller so that they know event is over
+		_resetState();
+	}
+
+	if (_eventResult == EVENT_RESULTS::SUCCESS) {
+		// draw success
+		Draw::getInstance()->texture("pass", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
+	}
+	else if (_eventResult == EVENT_RESULTS::FAILURE) {
+		// draw failure
+		Draw::getInstance()->texture("fail", screenX, screenY, _minSize, _minSize);
+	}
 }
 
 void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key, double timeout) {
@@ -82,21 +109,20 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	std::cout << _totalElapsedMs << "\n";
 
 	/*logic*/
+	// if event is over, is rendering event result
+	if (_isRenderingEventResult) {
+		_showEventResult(result, dt, screenX, screenY, timeout);
+	}
+
 	// check if user succeeded on spamming key
 	if (_size >= _targetSize) {
-		_elapsedTimeMs = 0;
-		result = EVENT_RESULTS::SUCCESS;
-
-		// draw success
-		Draw::getInstance()->texture("pass", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
+		_eventResult = EVENT_RESULTS::SUCCESS;
+		_isRenderingEventResult = true;
 		return;
 	}
 	else if (_totalElapsedMs >= timeout * 1000) {
-		_elapsedTimeMs = 0;
-		result = EVENT_RESULTS::FAILURE;
-
-		// draw failure
-		Draw::getInstance()->texture("fail", screenX, screenY, _minSize, _minSize);
+		_eventResult = EVENT_RESULTS::FAILURE;
+		_isRenderingEventResult = true;
 		return;
 	}
 
@@ -125,6 +151,8 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 
 	/*rendering*/
 	//std::cout << _elapsedTimeMs << "\n";
+
+	// key in string format
 	std::string skey = eKeyToStr.find(key)->second;
 
 	if (_elapsedTimeMs > _changeMs) {

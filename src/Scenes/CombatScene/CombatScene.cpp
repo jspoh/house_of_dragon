@@ -5,6 +5,7 @@
 #include "../../Backend/Pch.h"
 #include "../../utils/utils.h"
 #include "../../Event/Event.h"
+#include "../../utils/utils.h"
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
@@ -35,7 +36,8 @@ void CombatScene::Init()
 EVENT_RESULTS eresult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 void CombatScene::Update(double dt)
 {
-    Event::getInstance()->updateLoop(eresult, dt, 100, 100);
+    Point p = stow(100, 100);
+    Event::getInstance()->updateLoop(eresult, dt, p.x, p.y);
     //f64 time;
     //AEGetTime(&time);
     //std::cout << dt << "\n";

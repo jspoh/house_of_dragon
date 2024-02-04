@@ -23,6 +23,9 @@ enum EVENT_TYPES {
 	NUM_EVENT_TYPES
 };
 
+/**
+ * event is over only when event results is not `NONE_EVENT_RESULTS`.
+ */
 enum EVENT_RESULTS {
 	NONE_EVENT_RESULTS,
 	SUCCESS,
@@ -35,12 +38,15 @@ class Event {
 private:
 	static Event* _instance;
 	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
+	EVENT_RESULTS _eventResult = NONE_EVENT_RESULTS;
+	bool _isRenderingEventResult = false;  // is render success/failure animation
+	double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
 
 	int _elapsedTimeMs = 0;
 	int _totalElapsedMs = 0;
 	bool _useOutline = true;
 	/*how many milliseconds before key type changes*/
-	int _changeMs = 100;
+	const int _changeMs = 100;
 
 	/*spam key vars*/
 	const float _minSize = 100;
@@ -55,6 +61,11 @@ private:
 	~Event();
 
 	void _updateTime(double dt);
+	void _resetState();
+
+	void _showEventResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout);
+
+	/*events*/
 
 	/**
 	 * renders spamkey event.
