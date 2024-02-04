@@ -43,7 +43,7 @@ void CombatScene::Update(double dt)
 
     Point p = stow(100, 100);
     Event::getInstance()->updateLoop(combatEventResult, dt, p.x, p.y);
-    Draw::getInstance()->text("IM SO TIRED");
+    Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth(), AEGfxGetWindowHeight());
     //f64 time;
     //AEGetTime(&time);
     //std::cout << dt << "\n";
