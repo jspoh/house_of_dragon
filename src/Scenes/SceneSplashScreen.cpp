@@ -12,7 +12,8 @@ struct Floor
 	AEMtx33 m_TransformFloorData;
 	AEMtx33 m_TransformFloorCurr;
 	int m_currFloorNum = 0;
-	double m_currFloorTimer = 0.0;
+	//double m_currFloorTimer = 0.0;
+	AEMtx33 m_currFloorSpeed={0};
 };
 Floor m_Floor[8];
 double m_FloorSpeedTimer = 2.0;
@@ -76,8 +77,8 @@ void SceneSplashScreen::Init()
 	//Setting the trasnform for the floor
 	AEMtx33 scale = { 0 }, trans = { 0 };
 	//Out of Screen Floor
-	AEMtx33Scale(&scale, 4362.f, 1200.f);
-	AEMtx33Trans(&trans, 0, -1300);
+	AEMtx33Scale(&scale, 6000.f, 1262.f);
+	AEMtx33Trans(&trans, 0, -1629);
 	AEMtx33Concat(&m_Floor[0].m_TransformFloorData, &trans, &scale);
 	m_Floor[0].m_currFloorNum = 0;
 	//First floor
@@ -127,7 +128,7 @@ void SceneSplashScreen::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_3))
 		SceneManager::GetInstance()->SetActiveScene("SceneBase");
 
-//	static int x = 2940.f, y = 616.f;
+//	static int x = 4362.f, y = 1200.f;
 //if (AEInputCheckCurr(AEVK_W))
 //{
 //	y++;
@@ -144,7 +145,7 @@ void SceneSplashScreen::Update(double dt)
 //{
 //	x++;
 //}
-//static int mx = 0, my = -696;
+//static int mx = 0, my = -300;
 //if (AEInputCheckCurr(AEVK_UP))
 //{
 //	my++;
@@ -164,67 +165,92 @@ void SceneSplashScreen::Update(double dt)
 	static bool start = false;
 	if (AEInputCheckReleased(AEVK_SPACE))
 		start = true;
-
+	
 	if (start)
 	{
-		AEMtx33 m_LastFloorData = m_Floor[6].m_TransformFloorData;
-		for (int i = 1; i < 9; i++)
+		AEMtx33 m_LastFloorData = m_Floor[7].m_TransformFloorData;
+		for (int i = 7; i > -1; i--)
 		{
-			AEMtx33 m_NextFloorData = m_Floor[m_Floor[i].m_currFloorNum - 1].m_TransformFloorData;
+			AEMtx33 m_NextFloorData = m_Floor[i].m_currFloorNum != 0 ? m_Floor[m_Floor[i].m_currFloorNum - 1].m_TransformFloorData : m_Floor[i].m_TransformFloorCurr = m_LastFloorData;
 			AEMtx33 m_CurrFloorData = m_Floor[m_Floor[i].m_currFloorNum].m_TransformFloorData;
+			//Minimum Speed of next floor
+			AEMtx33 m_MinimumNextFloorSpeed = {
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 100,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 100,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 100,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 100,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 100,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 100,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 100,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 100,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 100
+			};
 
-			if (!((m_NextFloorData.m[0][0] - m_Floor[i].m_TransformFloorCurr.m[0][0]) < 5.0f &&
-				(m_NextFloorData.m[1][0] - m_Floor[i].m_TransformFloorCurr.m[1][0]) < 5.0f &&
-				(m_NextFloorData.m[2][0] - m_Floor[i].m_TransformFloorCurr.m[2][0]) < 5.0f &&
-				(m_NextFloorData.m[0][1] - m_Floor[i].m_TransformFloorCurr.m[0][1]) < 5.0f &&
-				(m_NextFloorData.m[1][1] - m_Floor[i].m_TransformFloorCurr.m[1][1]) < 5.0f &&
-				(m_NextFloorData.m[2][1] - m_Floor[i].m_TransformFloorCurr.m[2][1]) < 5.0f &&
-				(m_NextFloorData.m[0][2] - m_Floor[i].m_TransformFloorCurr.m[0][2]) < 5.0f &&
-				(m_NextFloorData.m[1][2] - m_Floor[i].m_TransformFloorCurr.m[1][2]) < 5.0f &&
-				(m_NextFloorData.m[2][2] - m_Floor[i].m_TransformFloorCurr.m[2][2]) < 5.0f))
-			{
+			if (!((m_NextFloorData.m[0][0] - m_Floor[i].m_TransformFloorCurr.m[0][0]) < 20.0f &&
+				(m_NextFloorData.m[1][0] - m_Floor[i].m_TransformFloorCurr.m[1][0]) < 20.0f &&
+				(m_NextFloorData.m[2][0] - m_Floor[i].m_TransformFloorCurr.m[2][0]) < 20.0f &&
+				(m_NextFloorData.m[0][1] - m_Floor[i].m_TransformFloorCurr.m[0][1]) < 20.0f &&
+				(m_NextFloorData.m[1][1] - m_Floor[i].m_TransformFloorCurr.m[1][1]) < 20.0f &&
+				(m_NextFloorData.m[2][1] - m_Floor[i].m_TransformFloorCurr.m[2][1]) < 20.0f &&
+				(m_NextFloorData.m[0][2] - m_Floor[i].m_TransformFloorCurr.m[0][2]) < 20.0f &&
+				(m_NextFloorData.m[1][2] - m_Floor[i].m_TransformFloorCurr.m[1][2]) < 20.0f &&
+				(m_NextFloorData.m[2][2] - m_Floor[i].m_TransformFloorCurr.m[2][2]) < 20.0f))
+			{																	
 
-				if (m_Floor[i].m_currFloorNum != 0)
-				{
-					m_Floor[i].m_TransformFloorCurr.m[0][0] += (m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[0][1] += (m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[0][2] += (m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[1][0] += (m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[1][1] += (m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[1][2] += (m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[2][0] += (m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[2][1] += (m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 100;
-					m_Floor[i].m_TransformFloorCurr.m[2][2] += (m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 100;
-				}
-				else
-				{
-					m_Floor[i].m_TransformFloorCurr.m[0][0] = m_LastFloorData.m[0][0];
-					m_Floor[i].m_TransformFloorCurr.m[0][1] = m_LastFloorData.m[0][1];
-					m_Floor[i].m_TransformFloorCurr.m[0][2] = m_LastFloorData.m[0][2];
-					m_Floor[i].m_TransformFloorCurr.m[1][0] = m_LastFloorData.m[1][0];
-					m_Floor[i].m_TransformFloorCurr.m[1][1] = m_LastFloorData.m[1][1];
-					m_Floor[i].m_TransformFloorCurr.m[1][2] = m_LastFloorData.m[1][2];
-					m_Floor[i].m_TransformFloorCurr.m[2][0] = m_LastFloorData.m[2][0];
-					m_Floor[i].m_TransformFloorCurr.m[2][1] = m_LastFloorData.m[2][1];
-					m_Floor[i].m_TransformFloorCurr.m[2][2] = m_LastFloorData.m[2][2];
+				//Incrementing speed
+				m_Floor[i].m_currFloorSpeed.m[0][0] += m_Floor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0]:m_Floor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0]? dt* m_MinimumNextFloorSpeed.m[0][0] : 0;
+				m_Floor[i].m_currFloorSpeed.m[0][1] += m_Floor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_Floor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
+				m_Floor[i].m_currFloorSpeed.m[0][2] += m_Floor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_Floor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
+				m_Floor[i].m_currFloorSpeed.m[1][0] += m_Floor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_Floor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
+				m_Floor[i].m_currFloorSpeed.m[1][1] += m_Floor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_Floor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
+				m_Floor[i].m_currFloorSpeed.m[1][2] += m_Floor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_Floor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
+				m_Floor[i].m_currFloorSpeed.m[2][0] += m_Floor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_Floor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
+				m_Floor[i].m_currFloorSpeed.m[2][1] += m_Floor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_Floor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
+				m_Floor[i].m_currFloorSpeed.m[2][2] += m_Floor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_Floor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] :0;
+				//Adding to floor
+				m_Floor[i].m_TransformFloorCurr.m[0][0] += m_Floor[i].m_currFloorSpeed.m[0][0];
+				m_Floor[i].m_TransformFloorCurr.m[0][1] += m_Floor[i].m_currFloorSpeed.m[0][1];
+				m_Floor[i].m_TransformFloorCurr.m[0][2] += m_Floor[i].m_currFloorSpeed.m[0][2];
+				m_Floor[i].m_TransformFloorCurr.m[1][0] += m_Floor[i].m_currFloorSpeed.m[1][0];
+				m_Floor[i].m_TransformFloorCurr.m[1][1] += m_Floor[i].m_currFloorSpeed.m[1][1];
+				m_Floor[i].m_TransformFloorCurr.m[1][2] += m_Floor[i].m_currFloorSpeed.m[1][2];
+				m_Floor[i].m_TransformFloorCurr.m[2][0] += m_Floor[i].m_currFloorSpeed.m[2][0];
+				m_Floor[i].m_TransformFloorCurr.m[2][1] += m_Floor[i].m_currFloorSpeed.m[2][1];
+				m_Floor[i].m_TransformFloorCurr.m[2][2] += m_Floor[i].m_currFloorSpeed.m[2][2];
 
-				}
-
+				//Moving code
+				//      m_Floor[i].m_TransformFloorCurr.m[0][0] += (m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[0][1] += (m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[0][2] += (m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[1][0] += (m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[1][1] += (m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[1][2] += (m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 100;
+				//		m_Floor[i].m_TransformFloorC urr.m[2][0] += (m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[2][1] += (m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 100;
+				//		m_Floor[i].m_TransformFloorCurr.m[2][2] += (m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 100;
 			}
 			else
 			{
 				if (m_Floor[i].m_currFloorNum != 0)
-		        	m_Floor[i].m_currFloorNum--;
-		        else
-		        	m_Floor[i].m_currFloorNum = 6; //Loop to the top
-			}
-			//Change CurrFloorNum
-			//Based On Dist
+				{
+					m_Floor[i].m_currFloorNum--;
+				}
+				else
+				{
+					m_Floor[i].m_currFloorNum = 7; //Loop to the top
+					m_Floor[i].m_currFloorSpeed = { 0 };
+				}
+					
 
-			//cout << (m_Floor[1].m_TransformFloorData.m[0][0] - m_Floor[2].m_TransformFloorData.m[0][0]) / (m_FloorSpeedTimer / dt) << endl;
+			}
+		//Change CurrFloorNum
+		//Based On Dist
+
+		//cout << (m_Floor[1].m_TransformFloorData.m[0][0] - m_Floor[2].m_TransformFloorData.m[0][0]) / (m_FloorSpeedTimer / dt) << endl;
 		}
 	}
 }
+
 
 void SceneSplashScreen::Render()
 {
@@ -251,24 +277,11 @@ void SceneSplashScreen::Render()
 
 	AEGfxTextureSet(pTex, 0, 0);
 
-	for (int i = 1; i < 8; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		AEGfxSetTransform(m_Floor[i].m_TransformFloorCurr.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
-
-
-	//Working
-	//m_Floor[1].m[0][0] += (m_Floor[0].m[0][0] - m_Floor[1].m[0][0]) / 100;
-	//m_Floor[1].m[0][1] += (m_Floor[0].m[0][1] - m_Floor[1].m[0][1]) / 100;
-	//m_Floor[1].m[0][2] += (m_Floor[0].m[0][2] - m_Floor[1].m[0][2]) / 100;
-	//m_Floor[1].m[1][0] += (m_Floor[0].m[1][0] - m_Floor[1].m[1][0]) / 100;
-	//m_Floor[1].m[1][1] += (m_Floor[0].m[1][1] - m_Floor[1].m[1][1]) / 100;
-	//m_Floor[1].m[1][2] += (m_Floor[0].m[1][2] - m_Floor[1].m[1][2]) / 100;
-	//m_Floor[1].m[2][0] += (m_Floor[0].m[2][0] - m_Floor[1].m[2][0]) / 100;
-	//m_Floor[1].m[2][1] += (m_Floor[0].m[2][1] - m_Floor[1].m[2][1]) / 100;
-	//m_Floor[1].m[2][2] += (m_Floor[0].m[2][2] - m_Floor[1].m[2][2]) / 100;
-
 
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
@@ -360,3 +373,60 @@ void SceneSplashScreen::Exit()
 //
 //	//cout << (m_Floor[1].m_TransformFloorData.m[0][0] - m_Floor[2].m_TransformFloorData.m[0][0]) / (m_FloorSpeedTimer / dt) << endl;
 //}
+
+
+
+
+//AEMtx33 m_NextNextFloorData = m_Floor[m_Floor[i].m_currFloorNum - 2].m_TransformFloorData;
+			//AEMtx33 m_NextFloorData = m_Floor[m_Floor[i].m_currFloorNum - 1].m_TransformFloorData;
+			//AEMtx33 m_CurrFloorData = m_Floor[m_Floor[i].m_currFloorNum].m_TransformFloorData;
+			////Add its speed towards the next floor transition speed
+			//m_Floor[i].m_currFloorSpeed += m_Floor[i].m_currFloorSpeed - (m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 100 ? ;
+			//if (!((m_NextFloorData.m[0][0] - m_Floor[i].m_TransformFloorCurr.m[0][0]) < 1.0f &&
+			//	(m_NextFloorData.m[1][0] - m_Floor[i].m_TransformFloorCurr.m[1][0]) < 1.0f &&
+			//	(m_NextFloorData.m[2][0] - m_Floor[i].m_TransformFloorCurr.m[2][0]) < 1.0f &&
+			//	(m_NextFloorData.m[0][1] - m_Floor[i].m_TransformFloorCurr.m[0][1]) < 1.0f &&
+			//	(m_NextFloorData.m[1][1] - m_Floor[i].m_TransformFloorCurr.m[1][1]) < 1.0f &&
+			//	(m_NextFloorData.m[2][1] - m_Floor[i].m_TransformFloorCurr.m[2][1]) < 1.0f &&
+			//	(m_NextFloorData.m[0][2] - m_Floor[i].m_TransformFloorCurr.m[0][2]) < 1.0f &&
+			//	(m_NextFloorData.m[1][2] - m_Floor[i].m_TransformFloorCurr.m[1][2]) < 1.0f &&
+			//	(m_NextFloorData.m[2][2] - m_Floor[i].m_TransformFloorCurr.m[2][2]) < 1.0f))
+			//{
+
+			//	/*if (m_Floor[i].m_currFloorNum != 0)
+			//	{
+			//		m_Floor[i].m_TransformFloorCurr.m[0][0] += (m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[0][1] += (m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[0][2] += (m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[1][0] += (m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[1][1] += (m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[1][2] += (m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[2][0] += (m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[2][1] += (m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[2][2] += (m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 100;
+			//	}*/
+			//	if (m_Floor[i].m_currFloorNum != 0)
+			//	{
+			//		m_Floor[i].m_TransformFloorCurr.m[0][0] += (m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[0][1] += (m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[0][2] += (m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[1][0] += (m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[1][1] += (m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[1][2] += (m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[2][0] += (m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[2][1] += (m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 100;
+			//		m_Floor[i].m_TransformFloorCurr.m[2][2] += (m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 100;
+			//	}
+			//	else
+			//	{
+			//		m_Floor[i].m_TransformFloorCurr.m[0][0] = m_LastFloorData.m[0][0];
+			//		m_Floor[i].m_TransformFloorCurr.m[0][1] = m_LastFloorData.m[0][1];
+			//		m_Floor[i].m_TransformFloorCurr.m[0][2] = m_LastFloorData.m[0][2];
+			//		m_Floor[i].m_TransformFloorCurr.m[1][0] = m_LastFloorData.m[1][0];
+			//		m_Floor[i].m_TransformFloorCurr.m[1][1] = m_LastFloorData.m[1][1];
+			//		m_Floor[i].m_TransformFloorCurr.m[1][2] = m_LastFloorData.m[1][2];
+			//		m_Floor[i].m_TransformFloorCurr.m[2][0] = m_LastFloorData.m[2][0];
+			//		m_Floor[i].m_TransformFloorCurr.m[2][1] = m_LastFloorData.m[2][1];
+			//		m_Floor[i].m_TransformFloorCurr.m[2][2] = m_LastFloorData.m[2][2];
+
+			//	}
