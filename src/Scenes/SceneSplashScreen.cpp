@@ -593,11 +593,25 @@ void SceneSplashScreen::Init()
 
 void SceneSplashScreen::Update(double dt)
 {
+		std::cout << "Updating Scene SplashScreen" << std::endl;
+	if (AEInputCheckTriggered(AEVK_3)) {
+		SceneManager::GetInstance()->SetActiveScene("SceneBase");
+	}
+	if (AEInputCheckTriggered(AEVK_4)) {
+		SceneManager::GetInstance()->SetActiveScene("TestScene");
+	}
+	if (AEInputCheckTriggered(AEVK_5)) {
+		SceneManager::GetInstance()->SetActiveScene("CombatScene");
+	}
+	
 //	std::cout << "Updating Scene SplashScreen" << std::endl;
 //	if (AEInputCheckTriggered(AEVK_3))
 //		SceneManager::GetInstance()->SetActiveScene("SceneBase");
 //
 //	static int x = 181.0f, y = 14.f;
+
+
+//	static int x = 2940.f, y = 616.f;
 //if (AEInputCheckCurr(AEVK_W))
 //{
 //	y++;
