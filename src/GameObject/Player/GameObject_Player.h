@@ -24,7 +24,7 @@ public:
 
 private:
 
-	float speed=500.f;
+	float speed=5000.f;
 
 	const u32 spritesheet_rows = 1;
 	const u32 spritesheet_cols = 8;
