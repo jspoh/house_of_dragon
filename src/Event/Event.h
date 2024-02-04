@@ -1,22 +1,60 @@
 #pragma once
 
+/**
+ * update `eKeyToStr` too and ensure that the image assets follow this format:
+ * "./Assets/keys/keyboard_<key>.png"
+ * "./Assets/keys/keyboard_<key>_outline.png"
+ * 
+ * other places to udpate:
+ * Event::spamKey -> switch case
+ */
 enum EVENT_KEYS {
 	E,
 	Q,
 	SPACE,
-	MAX_EVENT_KEYS
+	NUM_EVENT_KEYS
+};
+
+enum EVENT_TYPES {
+	NONE_EVENT_TYPES,
+	SPAM_KEY,
+	OSCILLATING_TIMER,
+	CLICK_TIMER,
+	NUM_EVENT_TYPES
+};
+
+enum EVENT_RESULTS {
+	NONE_EVENT_RESULTS,
+	SUCCESS,
+	FAILURE,
+	NUM_EVENT_RESULTS
 };
 
 
 class Event {
 private:
-	Event* _instance;
+	static Event* _instance;
+	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
+
+	int _elapsedTimeMs = 0;
+	int _totalElapsedMs = 0;
+	bool _useOutline = true;
+	/*how many milliseconds before key type changes*/
+	int _changeMs = 100;
+
+	/*spam key vars*/
+	const float _minSize = 100;
+	const float _targetSize = 200;
+	float _size = _minSize;
+	// positive rate of change per click
+	const float proc = 10;
+	// negative rate of change per second
+	const float nroc = 50;
 
 	Event();
 	~Event();
 
-public:
-	Event* getInstance();
+	void _updateTime(double dt);
 
 	/**
 	 * renders spamkey event.
@@ -27,21 +65,43 @@ public:
 	 * \param useMultipleKeys
 	 * \param key2
 	 */
-	void spamKey(float screenX, float screenY, EVENT_KEYS key1 = EVENT_KEYS::E, bool useMultipleKeys = true, EVENT_KEYS key2 = EVENT_KEYS::Q);
+	void _spamKey(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 5);
 
 	/**
 	 * renders an oscillating timer event.
 	 * 
 	 * \param key key to use
-	 * \param cycles oscillation cycles before timer is invalid
+	 * \param timeout
 	 */
-	void oscillatingTimer(EVENT_KEYS key = EVENT_KEYS::SPACE, int cycles = 5);
+	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE, int timeout = 5);
 
 	/**
 	 * .
 	 * 
 	 * \param key key to use
-	 * \param time time in seconds for user to click
+	 * \param timeout time in seconds for user to click
 	 */
-	void clickTimer(EVENT_KEYS key = EVENT_KEYS::E, double time = 1);
+	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 1);
+
+public:
+	static Event* getInstance();
+
+	/**
+	 * used to trigger event.
+	 * 
+	 * \param event
+	 * \param dt
+	 * \param screenX
+	 * \param screenY
+	 * \param key
+	 * \param timeout
+	 * \returns if setting active event is successful
+	 */
+	bool setActiveEvent(EVENT_TYPES event);
+	
+	/**
+	 * put this in update loop. use `setActiveEvent` to trigger events
+	 * 
+	 */
+	void updateLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 5);
 };

@@ -58,7 +58,7 @@ void Draw::background(Color color) {
 	AEGfxSetBackgroundColor(color.r, color.g, color.b);
 }
 
-void Draw::rect(f32 transX, f32 transY, Color color, f32 scaleX, f32 scaleY, f32 rotation, f32 opacity) {
+void Draw::rect(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rotation, Color color, f32 opacity) {
 	// create matrix
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, scaleX, scaleY);
@@ -109,7 +109,7 @@ void Draw::removeTextureByRef(std::string reference) {
 	_textureRef.erase(reference);
 }
 
-void Draw::texture(std::string textureRef, f32 transX, f32 transY, Color color, f32 scaleX, f32 scaleY, f32 rotation, f32 opacity) {
+void Draw::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
 	// create matrix
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, scaleX, scaleY);
