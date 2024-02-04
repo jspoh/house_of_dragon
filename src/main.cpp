@@ -34,7 +34,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Game System Loop
 	while (gGameRunning)
 	{
-		std::cout << AEGfxGetWindowWidth() << " " << AEGfxGetWindowHeight() << "\n";
+		//std::cout << AEGfxGetWindowWidth() << " " << AEGfxGetWindowHeight() << "\n";
 
 		// Informing the system about the loop's start
 		AESysFrameStart();
