@@ -22,7 +22,9 @@ struct Floor
 	AEMtx33 m_currFloorSpeed={0};
 	bool m_IsRender = true;
 };
-Floor m_Floor[10], m_RightSideFloor[10], m_RightSecondSideFloor[10], m_LeftSideFloor[10], m_LeftSecondSideFloor[10];
+Floor m_Floor[10];
+Floor m_RightSideFloor[10], m_RightSecondSideFloor[10], m_RightThirdSideFloor[10], m_RightFourthSideFloor[10];
+Floor m_LeftSideFloor[10], m_LeftSecondSideFloor[10], m_LeftThirdSideFloor[10], m_LeftFourthSideFloor[10];
 AEMtx33 m_TransformSkyData, m_TransformSunData, m_TransformSunOverlayData;
 //Floor m_RightSideFloor[10];
 //double m_FloorSpeedTimer = 0.5;
@@ -214,17 +216,17 @@ void SceneSplashScreen::Init()
 	m_RightSecondSideFloor[3].m_currFloorNum = 3;
 	//Second floor
 	AEMtx33Scale(&scale, 1593.0f, 339.f);
-	AEMtx33Trans(&trans, 2312, -282);
+	AEMtx33Trans(&trans, 2308, -282);
 	AEMtx33Concat(&m_RightSecondSideFloor[4].m_TransformFloorData, &trans, &scale);
 	m_RightSecondSideFloor[4].m_currFloorNum = 4;
 	//Third floor
 	AEMtx33Scale(&scale, 779.0f, 133.f);
-	AEMtx33Trans(&trans, 1109, -50);
+	AEMtx33Trans(&trans, 1104, -50);
 	AEMtx33Concat(&m_RightSecondSideFloor[5].m_TransformFloorData, &trans, &scale);
 	m_RightSecondSideFloor[5].m_currFloorNum = 5;
 	//Fourth floor
 	AEMtx33Scale(&scale, 381.0f, 47.f);
-	AEMtx33Trans(&trans, 549, 39);
+	AEMtx33Trans(&trans, 546, 39);
 	AEMtx33Concat(&m_RightSecondSideFloor[6].m_TransformFloorData, &trans, &scale);
 	m_RightSecondSideFloor[6].m_currFloorNum = 6;
 	//Fifth floor
@@ -247,134 +249,354 @@ void SceneSplashScreen::Init()
 		m_RightSecondSideFloor[i].m_TransformFloorCurr = m_RightSecondSideFloor[i].m_TransformFloorData;
 
 	/*******************************************************************************/
-	//LEFT SIDE FLOORS
+	//RIGHT 3rd SIDE FLOORS
 	//Out of Screen Floor
 	AEMtx33Scale(&scale, 8000.f, 1262.f);
-	AEMtx33Trans(&trans, -16000, -2829);
-	AEMtx33Concat(&m_LeftSideFloor[0].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[0].m_currFloorNum = 0;
+	AEMtx33Trans(&trans, 48000, -2829); //DONT NEED TO CARE
+	AEMtx33Concat(&m_RightThirdSideFloor[0].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[0].m_currFloorNum = 0;
 	AEMtx33Scale(&scale, 7000.f, 1262.f);
-	AEMtx33Trans(&trans, -5750, -2229);
-	AEMtx33Concat(&m_LeftSideFloor[1].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[1].m_currFloorNum = 1;
+	AEMtx33Trans(&trans, 17250, -2229);
+	AEMtx33Concat(&m_RightThirdSideFloor[1].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[1].m_currFloorNum = 1;
 	AEMtx33Scale(&scale, 6000.f, 1262.f);
-	AEMtx33Trans(&trans, -4350, -1629);
-	AEMtx33Concat(&m_LeftSideFloor[2].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[2].m_currFloorNum = 2;
+	AEMtx33Trans(&trans, 13050, -1629);
+	AEMtx33Concat(&m_RightThirdSideFloor[2].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[2].m_currFloorNum = 2;
 	//First floor
 	AEMtx33Scale(&scale, 2940.f, 616.f);
-	AEMtx33Trans(&trans, -2150, -696);
-	AEMtx33Concat(&m_LeftSideFloor[3].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[3].m_currFloorNum = 3;
+	AEMtx33Trans(&trans, 6450, -696);
+	AEMtx33Concat(&m_RightThirdSideFloor[3].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[3].m_currFloorNum = 3;
 	//Second floor
 	AEMtx33Scale(&scale, 1593.0f, 339.f);
-	AEMtx33Trans(&trans, -1158, -282);
-	AEMtx33Concat(&m_LeftSideFloor[4].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[4].m_currFloorNum = 4;
+	AEMtx33Trans(&trans, 3462, -282);
+	AEMtx33Concat(&m_RightThirdSideFloor[4].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[4].m_currFloorNum = 4;
 	//Third floor
 	AEMtx33Scale(&scale, 779.0f, 133.f);
-	AEMtx33Trans(&trans, -556, -50);
-	AEMtx33Concat(&m_LeftSideFloor[5].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[5].m_currFloorNum = 5;
+	AEMtx33Trans(&trans, 1656, -50);
+	AEMtx33Concat(&m_RightThirdSideFloor[5].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[5].m_currFloorNum = 5;
 	//Fourth floor
 	AEMtx33Scale(&scale, 381.0f, 47.f);
-	AEMtx33Trans(&trans, -276, 39);
-	AEMtx33Concat(&m_LeftSideFloor[6].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[6].m_currFloorNum = 6;
+	AEMtx33Trans(&trans, 815, 39);
+	AEMtx33Concat(&m_RightThirdSideFloor[6].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[6].m_currFloorNum = 6;
 	//Fifth floor
 	AEMtx33Scale(&scale, 181.0f, 14.f);
-	AEMtx33Trans(&trans, -131, 69);
-	AEMtx33Concat(&m_LeftSideFloor[7].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[7].m_currFloorNum = 7;
+	AEMtx33Trans(&trans, 388, 69);
+	AEMtx33Concat(&m_RightThirdSideFloor[7].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[7].m_currFloorNum = 7;
 	//Sixth floor
 	AEMtx33Scale(&scale, 85.0f, 4.f);
-	AEMtx33Trans(&trans, -62, 78);
-	AEMtx33Concat(&m_LeftSideFloor[8].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[8].m_currFloorNum = 8;
+	AEMtx33Trans(&trans, 181, 78);
+	AEMtx33Concat(&m_RightThirdSideFloor[8].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[8].m_currFloorNum = 8;
 	//Seventh floor
 	AEMtx33Scale(&scale, 33.0f, 1.f);
-	AEMtx33Trans(&trans, -25, 80);
-	AEMtx33Concat(&m_LeftSideFloor[9].m_TransformFloorData, &trans, &scale);
-	m_LeftSideFloor[9].m_currFloorNum = 9;
+	AEMtx33Trans(&trans, 71, 80);
+	AEMtx33Concat(&m_RightThirdSideFloor[9].m_TransformFloorData, &trans, &scale);
+	m_RightThirdSideFloor[9].m_currFloorNum = 9;
 
 	for (int i = 0; i < 10; i++)
-		m_LeftSideFloor[i].m_TransformFloorCurr = m_LeftSideFloor[i].m_TransformFloorData;
+		m_RightThirdSideFloor[i].m_TransformFloorCurr = m_RightThirdSideFloor[i].m_TransformFloorData;
 
 	/*******************************************************************************/
-	//LEFT 2nd SIDE FLOORS
-	//Out of Screen Floor
+//RIGHT 4th SIDE FLOORS
+//Out of Screen Floor
 	AEMtx33Scale(&scale, 8000.f, 1262.f);
-	AEMtx33Trans(&trans, -16000, -2829);
-	AEMtx33Concat(&m_LeftSecondSideFloor[0].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[0].m_currFloorNum = 0;
+	AEMtx33Trans(&trans, 64000, -2829); //DONT NEED TO CARE
+	AEMtx33Concat(&m_RightFourthSideFloor[0].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[0].m_currFloorNum = 0;
 	AEMtx33Scale(&scale, 7000.f, 1262.f);
-	AEMtx33Trans(&trans, -5750, -2229);
-	AEMtx33Concat(&m_LeftSecondSideFloor[1].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[1].m_currFloorNum = 1;
+	AEMtx33Trans(&trans, 23000, -2229);
+	AEMtx33Concat(&m_RightFourthSideFloor[1].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[1].m_currFloorNum = 1;
 	AEMtx33Scale(&scale, 6000.f, 1262.f);
-	AEMtx33Trans(&trans, -4350, -1629);
-	AEMtx33Concat(&m_LeftSecondSideFloor[2].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[2].m_currFloorNum = 2;
+	AEMtx33Trans(&trans, 17400, -1629);
+	AEMtx33Concat(&m_RightFourthSideFloor[2].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[2].m_currFloorNum = 2;
 	//First floor
 	AEMtx33Scale(&scale, 2940.f, 616.f);
-	AEMtx33Trans(&trans, -2150, -696);
-	AEMtx33Concat(&m_LeftSecondSideFloor[3].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[3].m_currFloorNum = 3;
+	AEMtx33Trans(&trans, 8600, -696);
+	AEMtx33Concat(&m_RightFourthSideFloor[3].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[3].m_currFloorNum = 3;
 	//Second floor
 	AEMtx33Scale(&scale, 1593.0f, 339.f);
-	AEMtx33Trans(&trans, -1158, -282);
-	AEMtx33Concat(&m_LeftSecondSideFloor[4].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[4].m_currFloorNum = 4;
+	AEMtx33Trans(&trans, 4610, -282);
+	AEMtx33Concat(&m_RightFourthSideFloor[4].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[4].m_currFloorNum = 4;
 	//Third floor
 	AEMtx33Scale(&scale, 779.0f, 133.f);
-	AEMtx33Trans(&trans, -556, -50);
-	AEMtx33Concat(&m_LeftSecondSideFloor[5].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[5].m_currFloorNum = 5;
+	AEMtx33Trans(&trans, 2204, -50);
+	AEMtx33Concat(&m_RightFourthSideFloor[5].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[5].m_currFloorNum = 5;
 	//Fourth floor
 	AEMtx33Scale(&scale, 381.0f, 47.f);
-	AEMtx33Trans(&trans, -276, 39);
-	AEMtx33Concat(&m_LeftSecondSideFloor[6].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[6].m_currFloorNum = 6;
+	AEMtx33Trans(&trans, 1078, 39);
+	AEMtx33Concat(&m_RightFourthSideFloor[6].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[6].m_currFloorNum = 6;
 	//Fifth floor
 	AEMtx33Scale(&scale, 181.0f, 14.f);
-	AEMtx33Trans(&trans, -131, 69);
-	AEMtx33Concat(&m_LeftSecondSideFloor[7].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[7].m_currFloorNum = 7;
+	AEMtx33Trans(&trans, 514, 69);
+	AEMtx33Concat(&m_RightFourthSideFloor[7].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[7].m_currFloorNum = 7;
 	//Sixth floor
 	AEMtx33Scale(&scale, 85.0f, 4.f);
-	AEMtx33Trans(&trans, -62, 78);
-	AEMtx33Concat(&m_LeftSecondSideFloor[8].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[8].m_currFloorNum = 8;
+	AEMtx33Trans(&trans, 240, 78);
+	AEMtx33Concat(&m_RightFourthSideFloor[8].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[8].m_currFloorNum = 8;
 	//Seventh floor
 	AEMtx33Scale(&scale, 33.0f, 1.f);
-	AEMtx33Trans(&trans, -25, 80);
-	AEMtx33Concat(&m_LeftSecondSideFloor[9].m_TransformFloorData, &trans, &scale);
-	m_LeftSecondSideFloor[9].m_currFloorNum = 9;
+	AEMtx33Trans(&trans, 96, 80);
+	AEMtx33Concat(&m_RightFourthSideFloor[9].m_TransformFloorData, &trans, &scale);
+	m_RightFourthSideFloor[9].m_currFloorNum = 9;
 
 	for (int i = 0; i < 10; i++)
-		m_LeftSecondSideFloor[i].m_TransformFloorCurr = m_LeftSecondSideFloor[i].m_TransformFloorData;
+		m_RightFourthSideFloor[i].m_TransformFloorCurr = m_RightFourthSideFloor[i].m_TransformFloorData;
 
-	//DO SKY DATA
-	AEMtx33Scale(&scale, 2000.0f, 400.f);
-	AEMtx33Trans(&trans, 0, 200);
-	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
-
-	//Do Sun Data
-	AEMtx33Scale(&scale, 50.0f, 50.f);
-	AEMtx33Trans(&trans, 150, 250);
-	AEMtx33Concat(&m_TransformSunData, &trans, &scale);
-	AEMtx33Scale(&scale, 120.0f, 120.f);
-	AEMtx33Trans(&trans, 149, 250);
-	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
 	
+		
+		/*******************************************************************************/
+		//LEFT SIDE FLOORS
+		//Out of Screen Floor
+		AEMtx33Scale(&scale, 8000.f, 1262.f);
+		AEMtx33Trans(&trans, -16000, -2829);
+		AEMtx33Concat(&m_LeftSideFloor[0].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[0].m_currFloorNum = 0;
+		AEMtx33Scale(&scale, 7000.f, 1262.f);
+		AEMtx33Trans(&trans, -5750, -2229);
+		AEMtx33Concat(&m_LeftSideFloor[1].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[1].m_currFloorNum = 1;
+		AEMtx33Scale(&scale, 6000.f, 1262.f);
+		AEMtx33Trans(&trans, -4350, -1629);
+		AEMtx33Concat(&m_LeftSideFloor[2].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[2].m_currFloorNum = 2;
+		//First floor
+		AEMtx33Scale(&scale, 2940.f, 616.f);
+		AEMtx33Trans(&trans, -2150, -696);
+		AEMtx33Concat(&m_LeftSideFloor[3].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[3].m_currFloorNum = 3;
+		//Second floor
+		AEMtx33Scale(&scale, 1593.0f, 339.f);
+		AEMtx33Trans(&trans, -1158, -282);
+		AEMtx33Concat(&m_LeftSideFloor[4].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[4].m_currFloorNum = 4;
+		//Third floor
+		AEMtx33Scale(&scale, 779.0f, 133.f);
+		AEMtx33Trans(&trans, -556, -50);
+		AEMtx33Concat(&m_LeftSideFloor[5].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[5].m_currFloorNum = 5;
+		//Fourth floor
+		AEMtx33Scale(&scale, 381.0f, 47.f);
+		AEMtx33Trans(&trans, -276, 39);
+		AEMtx33Concat(&m_LeftSideFloor[6].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[6].m_currFloorNum = 6;
+		//Fifth floor
+		AEMtx33Scale(&scale, 181.0f, 14.f);
+		AEMtx33Trans(&trans, -131, 69);
+		AEMtx33Concat(&m_LeftSideFloor[7].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[7].m_currFloorNum = 7;
+		//Sixth floor
+		AEMtx33Scale(&scale, 85.0f, 4.f);
+		AEMtx33Trans(&trans, -62, 78);
+		AEMtx33Concat(&m_LeftSideFloor[8].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[8].m_currFloorNum = 8;
+		//Seventh floor
+		AEMtx33Scale(&scale, 33.0f, 1.f);
+		AEMtx33Trans(&trans, -25, 80);
+		AEMtx33Concat(&m_LeftSideFloor[9].m_TransformFloorData, &trans, &scale);
+		m_LeftSideFloor[9].m_currFloorNum = 9;
+
+		for (int i = 0; i < 10; i++)
+			m_LeftSideFloor[i].m_TransformFloorCurr = m_LeftSideFloor[i].m_TransformFloorData;
+
+		/*******************************************************************************/
+	//LEFT 2nd SIDE FLOORS
+	//Out of Screen Floor
+		AEMtx33Scale(&scale, 8000.f, 1262.f);
+		AEMtx33Trans(&trans, -32000, -2829); //DONT NEED TO CARE
+		AEMtx33Concat(&m_LeftSecondSideFloor[0].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[0].m_currFloorNum = 0;
+		AEMtx33Scale(&scale, 7000.f, 1262.f);
+		AEMtx33Trans(&trans, -11500, -2229);
+		AEMtx33Concat(&m_LeftSecondSideFloor[1].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[1].m_currFloorNum = 1;
+		AEMtx33Scale(&scale, 6000.f, 1262.f);
+		AEMtx33Trans(&trans, -8700, -1629);
+		AEMtx33Concat(&m_LeftSecondSideFloor[2].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[2].m_currFloorNum = 2;
+		//First floor
+		AEMtx33Scale(&scale, 2940.f, 616.f);
+		AEMtx33Trans(&trans, -4300, -696);
+		AEMtx33Concat(&m_LeftSecondSideFloor[3].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[3].m_currFloorNum = 3;
+		//Second floor
+		AEMtx33Scale(&scale, 1593.0f, 339.f);
+		AEMtx33Trans(&trans, -2308, -282);
+		AEMtx33Concat(&m_LeftSecondSideFloor[4].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[4].m_currFloorNum = 4;
+		//Third floor
+		AEMtx33Scale(&scale, 779.0f, 133.f);
+		AEMtx33Trans(&trans, -1104, -50);
+		AEMtx33Concat(&m_LeftSecondSideFloor[5].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[5].m_currFloorNum = 5;
+		//Fourth floor
+		AEMtx33Scale(&scale, 381.0f, 47.f);
+		AEMtx33Trans(&trans, -546, 39);
+		AEMtx33Concat(&m_LeftSecondSideFloor[6].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[6].m_currFloorNum = 6;
+		//Fifth floor
+		AEMtx33Scale(&scale, 181.0f, 14.f);
+		AEMtx33Trans(&trans, -259, 69);
+		AEMtx33Concat(&m_LeftSecondSideFloor[7].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[7].m_currFloorNum = 7;
+		//Sixth floor
+		AEMtx33Scale(&scale, 85.0f, 4.f);
+		AEMtx33Trans(&trans, -121, 78);
+		AEMtx33Concat(&m_LeftSecondSideFloor[8].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[8].m_currFloorNum = 8;
+		//Seventh floor
+		AEMtx33Scale(&scale, 33.0f, 1.f);
+		AEMtx33Trans(&trans, -48, 80);
+		AEMtx33Concat(&m_LeftSecondSideFloor[9].m_TransformFloorData, &trans, &scale);
+		m_LeftSecondSideFloor[9].m_currFloorNum = 9;
+
+		for (int i = 0; i < 10; i++)
+			m_LeftSecondSideFloor[i].m_TransformFloorCurr = m_LeftSecondSideFloor[i].m_TransformFloorData;
+
+
+		/*******************************************************************************/
+	//LEFT 3rd SIDE FLOORS
+	//Out of Screen Floor
+		AEMtx33Scale(&scale, 8000.f, 1262.f);
+		AEMtx33Trans(&trans, -48000, -2829); //DONT NEED TO CARE
+		AEMtx33Concat(&m_LeftThirdSideFloor[0].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[0].m_currFloorNum = 0;
+		AEMtx33Scale(&scale, 7000.f, 1262.f);
+		AEMtx33Trans(&trans, -17250, -2229);
+		AEMtx33Concat(&m_LeftThirdSideFloor[1].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[1].m_currFloorNum = 1;
+		AEMtx33Scale(&scale, 6000.f, 1262.f);
+		AEMtx33Trans(&trans, -13050, -1629);
+		AEMtx33Concat(&m_LeftThirdSideFloor[2].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[2].m_currFloorNum = 2;
+		//First floor
+		AEMtx33Scale(&scale, 2940.f, 616.f);
+		AEMtx33Trans(&trans, -6450, -696);
+		AEMtx33Concat(&m_LeftThirdSideFloor[3].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[3].m_currFloorNum = 3;
+		//Second floor
+		AEMtx33Scale(&scale, 1593.0f, 339.f);
+		AEMtx33Trans(&trans, -3462, -282);
+		AEMtx33Concat(&m_LeftThirdSideFloor[4].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[4].m_currFloorNum = 4;
+		//Third floor
+		AEMtx33Scale(&scale, 779.0f, 133.f);
+		AEMtx33Trans(&trans, -1656, -50);
+		AEMtx33Concat(&m_LeftThirdSideFloor[5].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[5].m_currFloorNum = 5;
+		//Fourth floor
+		AEMtx33Scale(&scale, 381.0f, 47.f);
+		AEMtx33Trans(&trans, -815, 39);
+		AEMtx33Concat(&m_LeftThirdSideFloor[6].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[6].m_currFloorNum = 6;
+		//Fifth floor
+		AEMtx33Scale(&scale, 181.0f, 14.f);
+		AEMtx33Trans(&trans, -388, 69);
+		AEMtx33Concat(&m_LeftThirdSideFloor[7].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[7].m_currFloorNum = 7;
+		//Sixth floor
+		AEMtx33Scale(&scale, 85.0f, 4.f);
+		AEMtx33Trans(&trans, -181, 78);
+		AEMtx33Concat(&m_LeftThirdSideFloor[8].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[8].m_currFloorNum = 8;
+		//Seventh floor
+		AEMtx33Scale(&scale, 33.0f, 1.f);
+		AEMtx33Trans(&trans, -71, 80);
+		AEMtx33Concat(&m_LeftThirdSideFloor[9].m_TransformFloorData, &trans, &scale);
+		m_LeftThirdSideFloor[9].m_currFloorNum = 9;
+
+		for (int i = 0; i < 10; i++)
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr = m_LeftThirdSideFloor[i].m_TransformFloorData;
+
+
+
+		/*******************************************************************************/
+//LEFT 4th SIDE FLOORS
+//Out of Screen Floor
+		AEMtx33Scale(&scale, 8000.f, 1262.f);
+		AEMtx33Trans(&trans, -64000, -2829); //DONT NEED TO CARE
+		AEMtx33Concat(&m_LeftFourthSideFloor[0].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[0].m_currFloorNum = 0;
+		AEMtx33Scale(&scale, 7000.f, 1262.f);
+		AEMtx33Trans(&trans, -23000, -2229);
+		AEMtx33Concat(&m_LeftFourthSideFloor[1].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[1].m_currFloorNum = 1;
+		AEMtx33Scale(&scale, 6000.f, 1262.f);
+		AEMtx33Trans(&trans, -17400, -1629);
+		AEMtx33Concat(&m_LeftFourthSideFloor[2].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[2].m_currFloorNum = 2;
+		//First floor
+		AEMtx33Scale(&scale, 2940.f, 616.f);
+		AEMtx33Trans(&trans, -8600, -696);
+		AEMtx33Concat(&m_LeftFourthSideFloor[3].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[3].m_currFloorNum = 3;
+		//Second floor
+		AEMtx33Scale(&scale, 1593.0f, 339.f);
+		AEMtx33Trans(&trans, -4610, -282);
+		AEMtx33Concat(&m_LeftFourthSideFloor[4].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[4].m_currFloorNum = 4;
+		//Third floor
+		AEMtx33Scale(&scale, 779.0f, 133.f);
+		AEMtx33Trans(&trans, -2204, -50);
+		AEMtx33Concat(&m_LeftFourthSideFloor[5].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[5].m_currFloorNum = 5;
+		//Fourth floor
+		AEMtx33Scale(&scale, 381.0f, 47.f);
+		AEMtx33Trans(&trans, -1078, 39);
+		AEMtx33Concat(&m_LeftFourthSideFloor[6].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[6].m_currFloorNum = 6;
+		//Fifth floor
+		AEMtx33Scale(&scale, 181.0f, 14.f);
+		AEMtx33Trans(&trans, -514, 69);
+		AEMtx33Concat(&m_LeftFourthSideFloor[7].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[7].m_currFloorNum = 7;
+		//Sixth floor
+		AEMtx33Scale(&scale, 85.0f, 4.f);
+		AEMtx33Trans(&trans, -240, 78);
+		AEMtx33Concat(&m_LeftFourthSideFloor[8].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[8].m_currFloorNum = 8;
+		//Seventh floor
+		AEMtx33Scale(&scale, 33.0f, 1.f);
+		AEMtx33Trans(&trans, -96, 80);
+		AEMtx33Concat(&m_LeftFourthSideFloor[9].m_TransformFloorData, &trans, &scale);
+		m_LeftFourthSideFloor[9].m_currFloorNum = 9;
+
+		for (int i = 0; i < 10; i++)
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr = m_LeftFourthSideFloor[i].m_TransformFloorData;
+
+		//DO SKY DATA
+		AEMtx33Scale(&scale, 2000.0f, 400.f);
+		AEMtx33Trans(&trans, 0, 200);
+		AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
+
+		//Do Sun Data
+		AEMtx33Scale(&scale, 50.0f, 50.f);
+		AEMtx33Trans(&trans, 150, 250);
+		AEMtx33Concat(&m_TransformSunData, &trans, &scale);
+		AEMtx33Scale(&scale, 120.0f, 120.f);
+		AEMtx33Trans(&trans, 149, 250);
+		AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
 }
 
 void SceneSplashScreen::Update(double dt)
 {
-	std::cout << "Updating Scene SplashScreen" << std::endl;
-	if (AEInputCheckTriggered(AEVK_3))
-		SceneManager::GetInstance()->SetActiveScene("SceneBase");
-
+//	std::cout << "Updating Scene SplashScreen" << std::endl;
+//	if (AEInputCheckTriggered(AEVK_3))
+//		SceneManager::GetInstance()->SetActiveScene("SceneBase");
+//
 //	static int x = 181.0f, y = 14.f;
 //if (AEInputCheckCurr(AEVK_W))
 //{
@@ -392,7 +614,7 @@ void SceneSplashScreen::Update(double dt)
 //{
 //	x++;
 //}
-//static int mx = 131, my = 69;
+//static int mx = 300, my = 69;
 //if (AEInputCheckCurr(AEVK_UP))
 //{
 //	mx++;
@@ -404,8 +626,8 @@ void SceneSplashScreen::Update(double dt)
 //AEMtx33 scale = { 0 }, trans = { 0 };
 //AEMtx33Scale(&scale, x, y);
 //AEMtx33Trans(&trans, mx, my);
-//AEMtx33Concat(&m_RightSecondSideFloor[8].m_TransformFloorCurr, &trans, &scale);
-//AEMtx33Concat(&m_RightSecondSideFloor[8].m_TransformFloorData, &trans, &scale);
+//AEMtx33Concat(&m_RightThirdSideFloor[8].m_TransformFloorCurr, &trans, &scale);
+//AEMtx33Concat(&m_RightThirdSideFloor[8].m_TransformFloorData, &trans, &scale);
 //cout << mx << endl;
 	///////////////////////////////////////////////////////////////////////////
 	//UPDATE FLOOR MOVEMENT
@@ -540,7 +762,188 @@ void SceneSplashScreen::Update(double dt)
 				m_RightSideFloor[i].m_currFloorTimer += dt;
 		}
 
+		m_LastFloorData = m_RightSecondSideFloor[8].m_TransformFloorData;
+		for (int i = 9; i > -1; i--)
+		{
+			AEMtx33 m_NextFloorData = m_RightSecondSideFloor[i].m_currFloorNum != 0 ? m_RightSecondSideFloor[m_RightSecondSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_RightSecondSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+			AEMtx33 m_CurrFloorData = m_RightSecondSideFloor[m_RightSecondSideFloor[i].m_currFloorNum].m_TransformFloorData;
 
+			//Minimum Speed of next floor
+			AEMtx33 m_MinimumNextFloorSpeed = {
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+			};
+
+			//Incrementing speed
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
+			m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
+			//Adding to floor
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[0][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[0][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[0][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[1][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[1][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[1][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[2][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[2][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1];
+			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[2][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2];
+
+			if (m_RightSecondSideFloor[i].m_currFloorTimer > m_RightSecondSideFloor[i].m_FloorSpeedTimer)
+			{
+				m_RightSecondSideFloor[i].m_currFloorTimer = 0.0;
+				if (m_RightSecondSideFloor[i].m_currFloorNum > 1)
+				{
+					m_RightSecondSideFloor[i].m_currFloorNum--;
+					m_RightSecondSideFloor[i].m_IsRender = true;
+				}
+				else
+				{
+					//Loop to the top
+					m_RightSecondSideFloor[i].m_currFloorNum = 8;
+					m_RightSecondSideFloor[i].m_currFloorSpeed = { 0 };
+					m_RightSecondSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+					m_RightSecondSideFloor[i].m_IsRender = false;
+				}
+			}
+			else
+				m_RightSecondSideFloor[i].m_currFloorTimer += dt;
+		}
+
+		m_LastFloorData = m_RightThirdSideFloor[8].m_TransformFloorData;
+		for (int i = 9; i > -1; i--)
+		{
+			AEMtx33 m_NextFloorData = m_RightThirdSideFloor[i].m_currFloorNum != 0 ? m_RightThirdSideFloor[m_RightThirdSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_RightThirdSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+			AEMtx33 m_CurrFloorData = m_RightThirdSideFloor[m_RightThirdSideFloor[i].m_currFloorNum].m_TransformFloorData;
+
+			//Minimum Speed of next floor
+			AEMtx33 m_MinimumNextFloorSpeed = {
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+			};
+
+			//Incrementing speed
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][0] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][1] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][2] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][0] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][1] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][2] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][0] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][1] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
+			m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][2] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
+			//Adding to floor
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[0][0] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][0];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[0][1] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][1];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[0][2] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[0][2];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[1][0] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][0];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[1][1] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][1];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[1][2] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[1][2];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[2][0] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][0];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[2][1] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][1];
+			m_RightThirdSideFloor[i].m_TransformFloorCurr.m[2][2] += m_RightThirdSideFloor[i].m_currFloorSpeed.m[2][2];
+
+			if (m_RightThirdSideFloor[i].m_currFloorTimer > m_RightThirdSideFloor[i].m_FloorSpeedTimer)
+			{
+				m_RightThirdSideFloor[i].m_currFloorTimer = 0.0;
+				if (m_RightThirdSideFloor[i].m_currFloorNum > 1)
+				{
+					m_RightThirdSideFloor[i].m_currFloorNum--;
+					m_RightThirdSideFloor[i].m_IsRender = true;
+				}
+				else
+				{
+					//Loop to the top
+					m_RightThirdSideFloor[i].m_currFloorNum = 8;
+					m_RightThirdSideFloor[i].m_currFloorSpeed = { 0 };
+					m_RightThirdSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+					m_RightThirdSideFloor[i].m_IsRender = false;
+				}
+			}
+			else
+				m_RightThirdSideFloor[i].m_currFloorTimer += dt;
+		}
+
+		m_LastFloorData = m_RightFourthSideFloor[8].m_TransformFloorData;
+		for (int i = 9; i > -1; i--)
+		{
+			AEMtx33 m_NextFloorData = m_RightFourthSideFloor[i].m_currFloorNum != 0 ? m_RightFourthSideFloor[m_RightFourthSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_RightFourthSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+			AEMtx33 m_CurrFloorData = m_RightFourthSideFloor[m_RightFourthSideFloor[i].m_currFloorNum].m_TransformFloorData;
+
+			//Minimum Speed of next floor
+			AEMtx33 m_MinimumNextFloorSpeed = {
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+			};
+
+			//Incrementing speed
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][0] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][1] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][2] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][0] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][1] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][2] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][0] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][1] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
+			m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][2] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
+			//Adding to floor
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[0][0] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][0];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[0][1] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][1];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[0][2] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[0][2];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[1][0] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][0];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[1][1] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][1];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[1][2] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[1][2];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[2][0] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][0];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[2][1] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][1];
+			m_RightFourthSideFloor[i].m_TransformFloorCurr.m[2][2] += m_RightFourthSideFloor[i].m_currFloorSpeed.m[2][2];
+
+			if (m_RightFourthSideFloor[i].m_currFloorTimer > m_RightFourthSideFloor[i].m_FloorSpeedTimer)
+			{
+				m_RightFourthSideFloor[i].m_currFloorTimer = 0.0;
+				if (m_RightFourthSideFloor[i].m_currFloorNum > 1)
+				{
+					m_RightFourthSideFloor[i].m_currFloorNum--;
+					m_RightFourthSideFloor[i].m_IsRender = true;
+				}
+				else
+				{
+					//Loop to the top
+					m_RightFourthSideFloor[i].m_currFloorNum = 8;
+					m_RightFourthSideFloor[i].m_currFloorSpeed = { 0 };
+					m_RightFourthSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+					m_RightFourthSideFloor[i].m_IsRender = false;
+				}
+			}
+			else
+				m_RightFourthSideFloor[i].m_currFloorTimer += dt;
+		}
 
 		m_LastFloorData = m_LeftSideFloor[8].m_TransformFloorData;
 		for (int i = 9; i > -1; i--)
@@ -604,69 +1007,6 @@ void SceneSplashScreen::Update(double dt)
 		}
 
 
-		m_LastFloorData = m_RightSecondSideFloor[8].m_TransformFloorData;
-		for (int i = 9; i > -1; i--)
-		{
-			AEMtx33 m_NextFloorData = m_RightSecondSideFloor[i].m_currFloorNum != 0 ? m_RightSecondSideFloor[m_RightSecondSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_RightSecondSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
-			AEMtx33 m_CurrFloorData = m_RightSecondSideFloor[m_RightSecondSideFloor[i].m_currFloorNum].m_TransformFloorData;
-
-			//Minimum Speed of next floor
-			AEMtx33 m_MinimumNextFloorSpeed = {
-			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
-			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
-			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
-			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
-			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
-			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
-			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
-			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
-			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
-			};
-
-			//Incrementing speed
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
-			m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
-			//Adding to floor
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[0][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][0];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[0][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][1];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[0][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[0][2];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[1][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][0];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[1][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][1];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[1][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[1][2];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[2][0] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][0];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[2][1] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][1];
-			m_RightSecondSideFloor[i].m_TransformFloorCurr.m[2][2] += m_RightSecondSideFloor[i].m_currFloorSpeed.m[2][2];
-
-			if (m_RightSecondSideFloor[i].m_currFloorTimer > m_RightSecondSideFloor[i].m_FloorSpeedTimer)
-			{
-				m_RightSecondSideFloor[i].m_currFloorTimer = 0.0;
-				if (m_RightSecondSideFloor[i].m_currFloorNum > 1)
-				{
-					m_RightSecondSideFloor[i].m_currFloorNum--;
-					m_RightSecondSideFloor[i].m_IsRender = true;
-				}
-				else
-				{
-					//Loop to the top
-					m_RightSecondSideFloor[i].m_currFloorNum = 8;
-					m_RightSecondSideFloor[i].m_currFloorSpeed = { 0 };
-					m_RightSecondSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
-					m_RightSecondSideFloor[i].m_IsRender = false;
-				}
-			}
-			else
-				m_RightSecondSideFloor[i].m_currFloorTimer += dt;
-		}
-
-
-
 		m_LastFloorData = m_LeftSecondSideFloor[8].m_TransformFloorData;
 		for (int i = 9; i > -1; i--)
 		{
@@ -726,6 +1066,128 @@ void SceneSplashScreen::Update(double dt)
 			}
 			else
 				m_LeftSecondSideFloor[i].m_currFloorTimer += dt;
+		}
+
+		m_LastFloorData = m_LeftThirdSideFloor[8].m_TransformFloorData;
+		for (int i = 9; i > -1; i--)
+		{
+			AEMtx33 m_NextFloorData = m_LeftThirdSideFloor[i].m_currFloorNum != 0 ? m_LeftThirdSideFloor[m_LeftThirdSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_LeftThirdSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+			AEMtx33 m_CurrFloorData = m_LeftThirdSideFloor[m_LeftThirdSideFloor[i].m_currFloorNum].m_TransformFloorData;
+
+			//Minimum Speed of next floor
+			AEMtx33 m_MinimumNextFloorSpeed = {
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+			};
+
+			//Incrementing speed
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][0] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][1] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][2] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][0] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][1] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][2] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][0] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][1] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
+			m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][2] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
+			//Adding to floor
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[0][0] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][0];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[0][1] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][1];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[0][2] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[0][2];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[1][0] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][0];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[1][1] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][1];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[1][2] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[1][2];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[2][0] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][0];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[2][1] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][1];
+			m_LeftThirdSideFloor[i].m_TransformFloorCurr.m[2][2] += m_LeftThirdSideFloor[i].m_currFloorSpeed.m[2][2];
+
+			if (m_LeftThirdSideFloor[i].m_currFloorTimer > m_LeftThirdSideFloor[i].m_FloorSpeedTimer)
+			{
+				m_LeftThirdSideFloor[i].m_currFloorTimer = 0.0;
+				if (m_LeftThirdSideFloor[i].m_currFloorNum > 1)
+				{
+					m_LeftThirdSideFloor[i].m_currFloorNum--;
+					m_LeftThirdSideFloor[i].m_IsRender = true;
+				}
+				else
+				{
+					//Loop to the top
+					m_LeftThirdSideFloor[i].m_currFloorNum = 8;
+					m_LeftThirdSideFloor[i].m_currFloorSpeed = { 0 };
+					m_LeftThirdSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+					m_LeftThirdSideFloor[i].m_IsRender = false;
+				}
+			}
+			else
+				m_LeftThirdSideFloor[i].m_currFloorTimer += dt;
+		}
+
+				m_LastFloorData = m_LeftFourthSideFloor[8].m_TransformFloorData;
+		for (int i = 9; i > -1; i--)
+		{
+			AEMtx33 m_NextFloorData = m_LeftFourthSideFloor[i].m_currFloorNum != 0 ? m_LeftFourthSideFloor[m_LeftFourthSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_LeftFourthSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+			AEMtx33 m_CurrFloorData = m_LeftFourthSideFloor[m_LeftFourthSideFloor[i].m_currFloorNum].m_TransformFloorData;
+
+			//Minimum Speed of next floor
+			AEMtx33 m_MinimumNextFloorSpeed = {
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+			};
+
+			//Incrementing speed
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][0] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][1] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][2] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][0] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][1] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][2] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][0] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][1] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
+			m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][2] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
+			//Adding to floor
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[0][0] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][0];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[0][1] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][1];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[0][2] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[0][2];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[1][0] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][0];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[1][1] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][1];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[1][2] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[1][2];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[2][0] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][0];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[2][1] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][1];
+			m_LeftFourthSideFloor[i].m_TransformFloorCurr.m[2][2] += m_LeftFourthSideFloor[i].m_currFloorSpeed.m[2][2];
+
+			if (m_LeftFourthSideFloor[i].m_currFloorTimer > m_LeftFourthSideFloor[i].m_FloorSpeedTimer)
+			{
+				m_LeftFourthSideFloor[i].m_currFloorTimer = 0.0;
+				if (m_LeftFourthSideFloor[i].m_currFloorNum > 1)
+				{
+					m_LeftFourthSideFloor[i].m_currFloorNum--;
+					m_LeftFourthSideFloor[i].m_IsRender = true;
+				}
+				else
+				{
+					//Loop to the top
+					m_LeftFourthSideFloor[i].m_currFloorNum = 8;
+					m_LeftFourthSideFloor[i].m_currFloorSpeed = { 0 };
+					m_LeftFourthSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
+					m_LeftFourthSideFloor[i].m_IsRender = false;
+				}
+			}
+			else
+				m_LeftFourthSideFloor[i].m_currFloorTimer += dt;
 		}
 	}
 }
@@ -806,6 +1268,28 @@ void SceneSplashScreen::Render()
 		}
 	}
 
+	//Right Third Side Floor
+	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_RightThirdSideFloor[i].m_IsRender)
+		{
+			AEGfxSetTransform(m_RightThirdSideFloor[i].m_TransformFloorCurr.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+	}
+
+	//Right Fourth Side Floor
+	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_RightFourthSideFloor[i].m_IsRender)
+		{
+			AEGfxSetTransform(m_RightFourthSideFloor[i].m_TransformFloorCurr.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+	}
+
 	//Left Side Floor
 	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
 	for (int i = 0; i < 10; i++)
@@ -829,7 +1313,27 @@ void SceneSplashScreen::Render()
 		}
 	}
 
+	//Left Third Side Floor
+	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_LeftThirdSideFloor[i].m_IsRender)
+		{
+			AEGfxSetTransform(m_LeftThirdSideFloor[i].m_TransformFloorCurr.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+	}
 
+	//Left Fourth Side Floor
+	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	for (int i = 0; i < 10; i++)
+	{
+		if (m_LeftFourthSideFloor[i].m_IsRender)
+		{
+			AEGfxSetTransform(m_LeftFourthSideFloor[i].m_TransformFloorCurr.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+	}
 
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
