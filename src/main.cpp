@@ -20,7 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
 
-	//AESysSetFullScreen(true); //Dont do fullscreen
+	AESysSetFullScreen(true); //Dont do fullscreen
 	// Changing the window title
 	AESysSetWindowTitle("Version Alpha 0.0.1 - White Screen");
 
@@ -38,6 +38,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 		// Informing the system about the loop's start
 		AESysFrameStart();
+
+		AEGfxSetRenderMode(AE_GFX_RM_NONE);  // MUST BE CALLED AT LEAST ONCE PER FRAME
 		
 		//Update & Render Game System
 		Game.Run();

@@ -143,6 +143,8 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f
 }
 
 void Draw::text(std::string s, float screenX, float screenY) {
+	AEGfxSetRenderMode(AE_GFX_RM_NONE);
+
 	Point p = ston(screenX, screenY);
 
 	f32 width, height;
