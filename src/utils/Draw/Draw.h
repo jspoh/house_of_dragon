@@ -85,7 +85,16 @@ public:
 
 	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,0 }, f32 rotation = 0);
 
-	void text(std::string s, float screenX=800, float screenY=450);
+	/**
+	 * draws a centered text on screen
+	 * 
+	 * pass the window width to screenX and window height to screenY to get a centered text.
+	 * 
+	 * \param s
+	 * \param screenX
+	 * \param screenY
+	 */
+	void text(std::string s, float screenX, float screenY);
 
 	void setFontSize(int size);
 };

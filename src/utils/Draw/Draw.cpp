@@ -142,7 +142,7 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f
 	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
 }
 
-void Draw::text(std::string s, float screenX, float screenY) {
+void Draw::text(std::string s, float screenX = AEGfxGetWindowWidth(), float screenY = AEGfxGetWindowHeight()) {
 	Point p = ston(screenX, screenY);
 
 	f32 width, height;
