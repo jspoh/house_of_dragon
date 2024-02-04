@@ -1,21 +1,18 @@
-
-#ifndef ELEMENTS_HPP
-#define ELEMENTS_HPP
+#pragma once
 
 #include <string>
 
-enum class Element {
+enum Element {
     Water,
     Earth,
     Metal,
     Fire,
-    Wind
+    Wind,
+    MAX_ELEMENTS
 };
 
 namespace ElementProperties {
     static std::string getElementName(Element element);
-    static std::string getElementAbility(Element element);
+    static std::string getPlayerAbilityNames(Element element);
     static int getEffectiveDamage(Element playerElement, Element targetElement);
 };
-
-#endif // ELEMENTS_HPP

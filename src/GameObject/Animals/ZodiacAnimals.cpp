@@ -16,7 +16,7 @@ void Rat::performMove() const {
     std::cout << "Rat performs digging move." << std::endl;
 }
 
-// Lion class implementation
+// Tiger class implementation
 
 Tiger::Tiger(const std::string& name) : ZodiacAnimals(name, Element::Earth) {}
 
@@ -25,5 +25,5 @@ void Tiger::makeSound() const {
 }
 
 void Tiger::performMove() const {
-    std::cout << "Lion performs hunting move." << std::endl;
+    std::cout << "Tiger performs hunting move." << std::endl;
 }

@@ -1,9 +1,10 @@
 // Elements.cpp
 #include "Elements.hpp"
+#include "../../Backend/Pch.h"
 
 // functions of the elements, can be more interactive with more functions as we go along.
 
-namespace elements{
+namespace ElementProperties {
     std::string getElementName(Element element) {
     switch (element) {
         case Element::Water:
@@ -21,7 +22,7 @@ namespace elements{
     }
 }
 
-    std::string GetPlayerAbilityNames(Element element) {
+    std::string getPlayerAbilityNames(Element element) {
     switch (element) {
         case Element::Water:
             return "Hydro Blast!!";
@@ -34,14 +35,29 @@ namespace elements{
         case Element::Wind:
             return "Aero Slash!!";
         default:
+            std::cerr << "bad boy\n";
             return "Unknown Ability?";
     }
 }
 
-int getEffectiveDamage(Element playerElement, Element targetElement) {
+int getEffectiveDamage(Element playerElement, Element targetElement) {  // use enum instead
     // This functions returns how effective the damage is from the player move element, 1 = default, 2 = effective, 3 = weak.
 
     // Elemental interactions
+    switch (playerElement) {
+    case Element::Water:
+        if (targetElement == Element::Fire) {
+            return 2; // Water is effective against Fire
+        }
+        else if (targetElement == Element::Metal) {
+            return 3; // Water is weak against Metal
+        }
+        break;
+        // continue like this
+    }
+
+
+
     if (playerElement == Element::Water) {
         if (targetElement == Element::Fire) {
             return 2; // Water is effective against Fire

@@ -1,6 +1,4 @@
-
-#ifndef ZodiacAnimals_H
-#define ZodiacAnimals_H
+#pragma once
 
 #include <string>
 #include "Elements.hpp"
@@ -13,12 +11,15 @@ public:
     virtual void makeSound() const = 0;
     virtual void performMove() const = 0;
 
-    void printInfo() const;
 
 protected:
     std::string name;
     Element element;
+    int health;
+    double baseDmg;  // u see how la ok
 };
+
+
 class Rat : public ZodiacAnimals {
 public:
     Rat(const std::string& name);
@@ -27,6 +28,7 @@ public:
     void performMove() const override;
 };
 
+
 class Tiger : public ZodiacAnimals {
 public:
     Tiger(const std::string& name);
@@ -34,5 +36,3 @@ public:
     void makeSound() const override;
     void performMove() const override;
 };
-
-#endif // ANIMAL_H
