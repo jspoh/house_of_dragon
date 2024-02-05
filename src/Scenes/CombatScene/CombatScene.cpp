@@ -52,6 +52,14 @@ Player::Player(double health, double dmg, Element element) : Mob(element, health
 
 }
 
+void Player::_drawHealth(float screenX, float screenY) {
+    Draw::getInstance()->text(std::to_string(this->health), screenX, screenY);
+}
+
+void Player::render() {
+    this->_drawHealth(150, 150);
+}
+
 double Mob::attack(Mob& target) {
     DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
     float multiplier = 1;
@@ -122,6 +130,8 @@ public:
     EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
     //double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
     Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
+
+    bool isPlayingEvent = false;
 
     static CombatManager* getInstance() {
         if (!_instance) {
@@ -203,7 +213,7 @@ namespace {
                     }
                     else if (currentState == ACTION_BTNS::ATTACK) {
                         /*if user presses attack*/
-                        CombatManager::getInstance()->next();
+                        CombatManager::getInstance()->isPlayingEvent = true;
 
                         Event::getInstance()->startRandomEvent();
 
@@ -271,9 +281,9 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
-    if (AEInputCheckTriggered(AEVK_3)) {
-        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
-    }
+    //if (AEInputCheckTriggered(AEVK_3)) {
+    //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    //}
 
     //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
 
@@ -281,6 +291,10 @@ void CombatScene::Update(double dt)
     Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
 
     if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+        // end player's turn
+        CombatManager::getInstance()->next();
+        CombatManager::getInstance()->isPlayingEvent = false;
+
         /*check if success or failure and modify damage accordingly*/
         switch (CombatManager::getInstance()->qtEventResult) {
         case EVENT_RESULTS::SUCCESS:
@@ -296,16 +310,24 @@ void CombatScene::Update(double dt)
         CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     }
 
-    if (CombatManager::getInstance()->turn == TURN::PLAYER) {
+    if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
         renderBtns(btns[currentState]);
     }
-    else {
+    else if (CombatManager::getInstance()->turn == TURN::ENEMY){
         cat->attack(*player);
-        CombatManager::getInstance()->next();
+        CombatManager::getInstance()->next();  // perhaps can implement pause
     }
 
     
     cat->render();
+    player->render();
+
+    if (cat->isDead()) {
+        Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+    }
+    else if (player->isDead()) {
+        Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+    }
 
 
     // !TODO
