@@ -99,7 +99,7 @@
     <ClCompile Include="src\utils\Draw\Draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\Combat.cpp">
+    <ClCompile Include="src\GameObject\CombatManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -197,7 +197,7 @@
     <ClInclude Include="src\utils\Draw\Draw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\Combat.hpp">
+    <ClInclude Include="src\GameObject\CombatManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

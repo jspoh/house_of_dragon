@@ -1,7 +1,7 @@
-#include "Combat.hpp"
+#include "CombatManager.hpp"
 #include <iostream>
 #include "Animals/ZodiacAnimals.hpp"
-
+// need to set up base dmg in zodiac animals, not complete combat.
 void Combat::startBattle(ZodiacAnimals* player, ZodiacAnimals* opponent) {
     while (!isBattleOver(player, opponent)) {
         // Player's turn
@@ -62,13 +62,13 @@ bool Combat::isBattleOver(ZodiacAnimals* player, ZodiacAnimals* opponent) {
 
 int Combat::calculateAttackDamage(ZodiacAnimals* attacker, ZodiacAnimals* target) {
     // Example: Calculate damage based on the attacker's base damage
-    double baseDamage = attacker->getBaseDamage();
+    //double baseDamage = attacker->getBaseDamage();
 
     // Element effectiveness
     int effectiveness = ElementProperties::getEffectiveDamage(attacker->getElement(), target->getElement());
 
     // Apply effectiveness to the base damage
-    int totalDamage = static_cast<int>(baseDamage * effectiveness);
+    int totalDamage = static_cast<int>( effectiveness); // need to add multipler via basedamage which as not been implementation.
 
     return totalDamage;
 }
