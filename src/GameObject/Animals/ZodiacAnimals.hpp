@@ -1,22 +1,27 @@
 #pragma once
-
+//ZodiacAnimals
 #include <string>
 #include "Elements.hpp"
 
 class ZodiacAnimals {
 public:
-    ZodiacAnimals(const std::string& name, Element element);
+    ZodiacAnimals(const std::string& name, Element element, double baseDmg, double health);
     virtual ~ZodiacAnimals();
 
     virtual void makeSound() const = 0;
     virtual void performMove() const = 0;
-
+    virtual void attack() const = 0;
+    virtual Element getElement() const = 0;
+    virtual double getHealth() const = 0;
+    virtual void setHealth(double newHealth) = 0;
+    virtual std::string getName() const;
 
 protected:
-    std::string name;
+    std::string name; 
     Element element;
-    int health;
-    double baseDmg;  // u see how la ok
+    double health;
+    double baseDmg;
+
 };
 
 
@@ -26,6 +31,11 @@ public:
 
     void makeSound() const override;
     void performMove() const override;
+    void attack() const override;
+    virtual Element getElement() const override;
+    virtual double getHealth() const = 0;
+    virtual void setHealth(double newHealth) = 0;
+    virtual std::string getName() const;
 };
 
 
@@ -35,4 +45,5 @@ public:
 
     void makeSound() const override;
     void performMove() const override;
+    void attack() const override;
 };

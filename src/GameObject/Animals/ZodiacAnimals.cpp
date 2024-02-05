@@ -2,11 +2,11 @@
 #include "ZodiacAnimals.hpp"
 #include <iostream>
 
-ZodiacAnimals::ZodiacAnimals(const std::string& name, Element element) : name(name), element(element) {}
+ZodiacAnimals::ZodiacAnimals(const std::string& name, Element element, double baseDmg, double health) : name(name), element(element), baseDmg(baseDmg) , health(health) {}
 
 ZodiacAnimals::~ZodiacAnimals() {}
 
-Rat::Rat(const std::string& name) : ZodiacAnimals(name, Element::Fire) {}
+Rat::Rat(const std::string& name) : ZodiacAnimals(name, Element::Fire,12.5f, 50) {}
 
 void Rat::makeSound() const {
     std::cout << "Squeak! Squeak!" << std::endl;
@@ -18,7 +18,7 @@ void Rat::performMove() const {
 
 // Tiger class implementation
 
-Tiger::Tiger(const std::string& name) : ZodiacAnimals(name, Element::Earth) {}
+Tiger::Tiger(const std::string& name) : ZodiacAnimals(name, Element::Earth,20,100) {}
 
 void Tiger::makeSound() const {
     std::cout << "Roar!" << std::endl;
@@ -26,4 +26,25 @@ void Tiger::makeSound() const {
 
 void Tiger::performMove() const {
     std::cout << "Tiger performs hunting move." << std::endl;
+}
+
+
+void Tiger::attack() const {
+    std::cout << "Animal attacks!" << std::endl;
+}
+
+Element Tiger::getElement() const {
+    return element;
+}
+
+double Tiger::getHealth() const {
+    return health;
+}
+
+void Tiger::setHealth(double newHealth) {
+    health = newHealth;
+}
+
+std::string ZodiacAnimals::getName() const {
+    return name;
 }

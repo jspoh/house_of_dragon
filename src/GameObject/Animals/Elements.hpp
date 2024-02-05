@@ -10,6 +10,11 @@ enum Element {
     Wind,
     MAX_ELEMENTS
 };
+enum DamageMultipler {
+    Weak,
+    Neutral,
+    Strong,
+};
 
 namespace ElementProperties {
     static std::string getElementName(Element element);
