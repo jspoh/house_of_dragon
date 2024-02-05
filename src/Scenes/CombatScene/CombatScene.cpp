@@ -39,12 +39,14 @@ namespace {
     int spacing = 50;
 
     int btnY = 800;
+    int maxBtnHeight = 100;
 
     /*im so sorry this code very spaghet but time crunch!!*/
     // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
     void renderBtns(std::vector<std::string> bvalues) {
         int btnWidth = (AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size();
         int btnHeight = btnWidth / 3;
+        btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
         int lBtnX = padding + btnWidth / 2;
 
         int bPosX = lBtnX;
