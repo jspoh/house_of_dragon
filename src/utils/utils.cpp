@@ -27,3 +27,10 @@ Point stow(float x, float y) {
 	float wY = (AEGfxGetWindowHeight() / 2) - y;  // Corrected this line
 	return Point{ wX, wY };
 }
+
+Point ston(float x, float y) {
+	float nX = (2.0f * x / AEGfxGetWindowWidth()) - 1.0f;
+	float nY = 1.0f - (2.0f * y / AEGfxGetWindowHeight());
+
+	return Point{ nX, nY };
+}

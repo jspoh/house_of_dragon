@@ -18,9 +18,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	int gGameRunning = 1;
 
 	// Using custom window procedure
-	AESysInit(hInstance, nCmdShow, 1600, 900, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 1200, 650, 1, 60, true, NULL);
 
-	//AESysSetFullScreen(true);
+	AESysSetFullScreen(true); //Dont do fullscreen
 	// Changing the window title
 	AESysSetWindowTitle("Version Alpha 0.0.1 - White Screen");
 
@@ -34,8 +34,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// Game System Loop
 	while (gGameRunning)
 	{
+		//std::cout << AEGfxGetWindowWidth() << " " << AEGfxGetWindowHeight() << "\n";
+
 		// Informing the system about the loop's start
 		AESysFrameStart();
+
+		AEGfxSetRenderMode(AE_GFX_RM_NONE);  // MUST BE CALLED AT LEAST ONCE PER FRAME
 		
 		//Update & Render Game System
 		Game.Run();

@@ -22,6 +22,7 @@ void SceneManager::Update(double _dt)
 		}
 		
 		activeScene = nextScene;
+		activeScene->Load();
 		activeScene->Init();
 	}
 

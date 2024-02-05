@@ -23,17 +23,18 @@ TestScene::~TestScene()
 void TestScene::Load()
 {
     //Still debating whether need this
+    Draw::getInstance()->registerTexture("planet", "./Assets/PlanetTexture.png");
 }
 
 void TestScene::Init()
 {
-    //GameObjectManager::AddEntity(GameObject)
+    //GameObjectManager::AddEntity(GameObject
 }
 
-int speed = 100;  // pixels per
-std::vector<Point> rects = { Point{0,0}, Point{100,100} };
-Controls ipts[] = { Controls{AEVK_W, AEVK_S, AEVK_A, AEVK_D}, Controls{AEVK_UP, AEVK_DOWN, AEVK_LEFT, AEVK_RIGHT} };
-int j{};
+static int speed = 100;  // pixels per
+static std::vector<Point> rects = { Point{0,0}, Point{100,100} };
+static Controls ipts[] = { Controls{AEVK_W, AEVK_S, AEVK_A, AEVK_D}, Controls{AEVK_UP, AEVK_DOWN, AEVK_LEFT, AEVK_RIGHT} };
+static int j{};
 
 void TestScene::Update(double dt)
 {
@@ -70,12 +71,13 @@ void TestScene::Render()
 {
     for (Point& rect : rects) {
         Point rpt = stow(rect.x, rect.y);
-        Draw::getInstance()->rect(rpt.x, rpt.y);
+        Draw::getInstance()->texture("planet", rpt.x, rpt.y);
     }
     
 }
 
 void TestScene::Exit()
 {
-    std::cout << "Exiting Scene Base" << std::endl;
+    std::cout << "Exiting TestScene" << std::endl;
+    Draw::getInstance()->removeTextureByRef("planet");
 }
