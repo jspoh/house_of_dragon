@@ -16,6 +16,18 @@ void Rat::performMove() const {
     std::cout << "Rat performs digging move." << std::endl;
 }
 
+void Rat::attack() const {
+
+}
+
+Element Rat::getElement() const {
+    return Element::Earth;  // i not sure, i just returning to fix error
+}
+
+std::string Rat::getName() const {
+    return "";
+}
+
 // Tiger class implementation
 
 Tiger::Tiger(const std::string& name) : ZodiacAnimals(name, Element::Earth,20,100) {}

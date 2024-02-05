@@ -46,4 +46,8 @@ public:
     void makeSound() const override;
     void performMove() const override;
     void attack() const override;
+
+    Element getElement() const;
+    double getHealth() const;
+    void setHealth(double newHealth);
 };
