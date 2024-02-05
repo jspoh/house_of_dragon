@@ -51,10 +51,12 @@ namespace {
 
         int bPosX = lBtnX;
         for (const std::string bv : bvalues) {
-            if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-                int mouseX, mouseY;
-                AEInputGetCursorPosition(&mouseX, &mouseY);
-                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, mouseX, mouseY)) {
+            Point btnPos = stow(bPosX, btnY);  // button rendering position
+
+            int mouseX, mouseY;
+            AEInputGetCursorPosition(&mouseX, &mouseY);
+            if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, mouseX, mouseY)) {
+                if (AEInputCheckTriggered(AEVK_LBUTTON)) {
                     /*click while on main menu*/
                     if (currentState == ACTION_BTNS::MAIN) {
                         currentState = stateMap.find(bv)->second;
@@ -66,10 +68,12 @@ namespace {
                         std::cout << "Fleeing fight\n";
                     }
                 }
+                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5, 0.5, 0.5, 1 });  // render highlight on hover
+            }
+            else {
+                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3, 0.3, 0.3, 1 });  // render normal when no hovering
             }
 
-            Point btnPos = stow(bPosX, btnY);
-            Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3, 0.3, 0.3, 1 });
             Draw::getInstance()->text(bv, bPosX, btnY);
             bPosX += btnWidth + spacing;
         }
