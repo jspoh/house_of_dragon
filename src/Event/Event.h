@@ -30,6 +30,7 @@ enum EVENT_RESULTS {
 	NONE_EVENT_RESULTS,
 	SUCCESS,
 	FAILURE,
+	CUSTOM_MULTIPLIER,  // used for timed events
 	NUM_EVENT_RESULTS
 };
 
@@ -109,6 +110,12 @@ public:
 	 * \returns if setting active event is successful
 	 */
 	bool setActiveEvent(EVENT_TYPES event);
+
+	/**
+	 * Used to start a random event.
+	 * 
+	 */
+	void startRandomEvent();
 	
 	/**
 	 * put this in update loop. use `setActiveEvent` to trigger events

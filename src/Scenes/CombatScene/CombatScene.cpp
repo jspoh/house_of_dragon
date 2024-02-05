@@ -9,6 +9,153 @@
 #include <vector>
 #include <unordered_map>
 
+Player* player;
+Cat* cat;
+
+
+/**
+ * !TODO move these out.
+ */
+
+Mob::Mob(Element element, double health, double dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {
+
+}
+
+Enemy::Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef ,float screenX, float screenY, float size) 
+    : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
+    this->_spos.x = screenX;
+    this->_spos.y = screenY;
+
+    //_spos = Point{ AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
+    this->_wpos = stow(_spos.x, _spos.y);
+
+    Draw::getInstance()->registerTexture(textureRef, texturePath);  // problematic code stopping execution
+
+    //Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
+}
+
+void Enemy::render() {
+    //std::cout << Draw::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
+    Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
+    Draw::getInstance()->text(std::to_string(this->health), this->_spos.x, this->_spos.y - _size / 3 * 2);
+}
+
+Enemy::~Enemy() {
+    Draw::getInstance()->removeTextureByRef(this->_textureRef);
+}
+
+Cat::Cat(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size) : Enemy(element, health, dmg, texturePath, textureRef, screenX, screenY, size) {
+
+}
+
+Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
+
+}
+
+void Player::_drawHealth(float screenX, float screenY) {
+    Draw::getInstance()->text(std::to_string(this->health), screenX, screenY);
+}
+
+void Player::render() {
+    this->_drawHealth(150, 150);
+}
+
+double Mob::attack(Mob& target) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
+    float multiplier = 1;
+    switch (dm) {
+    case Weak:
+        multiplier = 0.5;
+        break;
+    case Strong:
+        multiplier = 2;
+        break;
+    }
+
+    double damage = this->dmg * multiplier;
+    target.health -= damage;
+    return damage;
+}
+
+void Mob::reset() {
+    this->health = maxHealth;
+}
+
+double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
+    float multiplier = 1;
+    std::cout << "attackEl enum: " << attackEl << "\n";
+    std::cout << "targetEl enum: " << target.element << "\n";
+    std::cout << "Damage multiplier enum: " << dm << "\n";
+    switch (dm) {
+    case Weak:
+        multiplier = 0.5;
+        break;
+    case Strong:
+        multiplier = 2;
+        break;
+    }
+
+    double damage = this->dmg * multiplier * qtMultiplier;
+    target.health -= damage;
+    return damage;
+}
+
+bool Mob::isDead() {
+    return this->health <= 0;
+}
+
+namespace {
+    enum TURN {
+        PLAYER,
+        ENEMY,
+        NUM_TURNS
+    };
+}
+
+class CombatManager {
+private:
+    static CombatManager* _instance;
+
+
+    ~CombatManager() {
+        if (_instance) {
+            delete _instance;
+        }
+    }
+
+
+public:
+    TURN turn = TURN::PLAYER;
+    EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
+    //double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
+    Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
+
+    bool isPlayingEvent = false;
+
+    static CombatManager* getInstance() {
+        if (!_instance) {
+            _instance = new CombatManager();
+        }
+        return _instance;
+    }
+
+    void next() {
+        turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
+    }
+
+    static void destroy() {
+        if (_instance) {
+            delete _instance;
+        }
+    }
+};
+CombatManager* CombatManager::_instance = nullptr;
+
+
+
+/*actual combatscene stuff*/
+
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
 
@@ -31,7 +178,7 @@ namespace {
 
     std::vector<std::vector<std::string>> btns = {
         {"ATTACK", "ITEMS", "FLEE"},  // main buttons. the rest are submenu
-        {"FIRE", "WATER", "METAL", "WOOD", "WIND", "BACK"},  // attack elements
+        {"FIRE", "WATER", "METAL", "WOOD", "EARTH", "BACK"},  // attack elements
         {"BACON", "BEEF", "CHICKEN", "CAT(jk pls)", "BACK"},  // items
         {"YES", "NO"}  // confirmation. only used for flee option
     };
@@ -66,31 +213,28 @@ namespace {
                     }
                     else if (currentState == ACTION_BTNS::ATTACK) {
                         /*if user presses attack*/
+                        CombatManager::getInstance()->isPlayingEvent = true;
 
-                        // start a random quicktime event
-                        double time;
-                        AEGetTime(&time);
-                        srand(time);
-                        EVENT_TYPES e = static_cast<EVENT_TYPES>(rand() % NUM_EVENT_TYPES);
-                        e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+                        Event::getInstance()->startRandomEvent();
 
+                        
                         if (bv == "FIRE") {
-                            // fire attack
+                            CombatManager::getInstance()->attackElement = Fire;
                         }
                         else if (bv == "WATER") {
-
+                            CombatManager::getInstance()->attackElement = Water;
                         }
                         else if (bv == "METAL") {
-
+                            CombatManager::getInstance()->attackElement = Metal;
                         }
                         else if (bv == "WOOD") {
-
+                            CombatManager::getInstance()->attackElement = Wood;
                         }
-                        else if (bv == "WIND") {
-
+                        else if (bv == "EARTH") {
+                            CombatManager::getInstance()->attackElement = Earth;
                         }
+                        
 
-                        Event::getInstance()->setActiveEvent(e);
                     }
                     else if (bv == "YES") {
                         std::cout << "Fleeing fight\n";
@@ -124,36 +268,67 @@ CombatScene::~CombatScene()
 void CombatScene::Load()
 {
     Event::getInstance();
-    Draw::getInstance()->registerTexture("cat", "./Assets/animals/cat.jpg");
 }
 
 
 void CombatScene::Init()
 {
-    combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
+
+    player = new Player();
+    cat = new Cat(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
 }
 
 void CombatScene::Update(double dt)
 {
-    if (AEInputCheckTriggered(AEVK_3)) {
-        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
-    }
+    //if (AEInputCheckTriggered(AEVK_3)) {
+    //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    //}
 
     //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
 
     Point p = stow(100, 100);
-    Event::getInstance()->updateLoop(combatEventResult, dt, p.x, p.y);
+    Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
 
-    if (combatEventResult != NONE_EVENT_RESULTS) {
+    if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+        // end player's turn
+        CombatManager::getInstance()->next();
+        CombatManager::getInstance()->isPlayingEvent = false;
+
         /*check if success or failure and modify damage accordingly*/
+        switch (CombatManager::getInstance()->qtEventResult) {
+        case EVENT_RESULTS::SUCCESS:
+            player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
+            break;
+        case EVENT_RESULTS::FAILURE:
+            player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
+            break;
+        case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+            // apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
+            break;
+        }
+        CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     }
 
-    renderBtns(btns[currentState]);
+    if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
+        renderBtns(btns[currentState]);
+    }
+    else if (CombatManager::getInstance()->turn == TURN::ENEMY){
+        cat->attack(*player);
+        CombatManager::getInstance()->next();  // perhaps can implement pause
+    }
 
-    Point catPos = { AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
-    catPos = stow(catPos.x, catPos.y);
-    Draw::getInstance()->texture("cat", catPos.x, catPos.y, 200, 200);
+    
+    cat->render();
+    player->render();
+
+    if (cat->isDead()) {
+        Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+    }
+    else if (player->isDead()) {
+        Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+    }
+
 
     // !TODO
     // draw health of enemy (just use number for now)
@@ -171,5 +346,8 @@ void CombatScene::Render()
 void CombatScene::Exit()
 {
     std::cout << "Exiting CombatScene\n";
-    Draw::getInstance()->removeTextureByRef("cat");
+    CombatManager::destroy();
+    delete cat;
 }
+
+

@@ -15,8 +15,8 @@ namespace ElementProperties {
             return "Metal";
         case Element::Fire:
             return "Fire";
-        case Element::Wind:
-            return "Wind";
+        case Element::Wood:
+            return "Wood";
         default:
             return "Unknown";
     }
@@ -32,66 +32,67 @@ namespace ElementProperties {
             return "Iron cross!!";
         case Element::Fire:
             return "Inferno Burst!!";
-        case Element::Wind:
-            return "Aero Slash!!";
+        case Element::Wood:
+            return "Wooden Splinter!!";
         default:
             std::cerr << "bad boy\n";
             return "Unknown Ability?";
     }
 }
 
-int getEffectiveDamage(Element playerElement, Element targetElement) {  // use enum instead
+    DamageMultiplier getEffectiveDamage(Element playerElement, Element targetElement) {  // use enum instead
     // This functions returns how effective the damage is from the player move element, 1 = default, 2 = effective, 3 = weak.
 
     // Elemental interactions
     switch (playerElement) {
     case Element::Water:
         if (targetElement == Element::Fire) {
-            return DamageMultipler::Strong; // Water is effective against Fire
+            return DamageMultiplier::Strong; // Water is effective against Fire
         }
         else if (targetElement == Element::Metal) {
-            return DamageMultipler::Weak; // Water is weak against Metal
+            return DamageMultiplier::Weak; // Water is weak against Metal
         }
         break;
     case Element::Fire:
-        if (targetElement == Element::Wind) {
-            return DamageMultipler::Strong; // Fire is effective against Wind
+        if (targetElement == Element::Wood) {
+            return DamageMultiplier::Strong; // Fire is effective against Wood
         }
         else if (targetElement == Element::Earth) {
-            return DamageMultipler::Weak; // Fire is weak against Earth
+            return DamageMultiplier::Weak; // Fire is weak against Earth
         }
         break;
-    case Element::Wind:
+    case Element::Wood:
         if (targetElement == Element::Earth) {
-            return DamageMultipler::Strong; // Wind is effective against Earth
+            return DamageMultiplier::Strong; // Wood is effective against Earth
         }
         else if (targetElement == Element::Water) {
-            return DamageMultipler::Weak; // Wind is weak against Water
+            return DamageMultiplier::Weak; // Wood is weak against Water
         }
         break;
     case Element::Earth:
         if (targetElement == Element::Metal) {
-            return DamageMultipler::Strong; // Earth is effective against Metal
+            return DamageMultiplier::Strong; // Earth is effective against Metal
         }
         else if (targetElement == Element::Fire) {
-            return DamageMultipler::Weak; // Earth is weak against Fire
+            return DamageMultiplier::Weak; // Earth is weak against Fire
         }
         break;
     case Element::Metal:
         if (targetElement == Element::Water) {
-            return DamageMultipler::Strong; // Metal is neutral against Water
+            return DamageMultiplier::Strong; // Metal is neutral against Water
         }
-        else if (targetElement == Element::Wind) {
-            return DamageMultipler::Weak; // Metal is weak against Wind
+        else if (targetElement == Element::Wood) {
+            return DamageMultiplier::Weak; // Metal is weak against Wood
         }
         break;
     default:
-        return DamageMultipler::Neutral;
+        return DamageMultiplier::Neutral;
         break;
 
 
         // continue like this
     }
+    return DamageMultiplier::Neutral;
 
 
 

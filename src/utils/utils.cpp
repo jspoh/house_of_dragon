@@ -34,3 +34,14 @@ Point ston(float x, float y) {
 
 	return Point{ nX, nY };
 }
+
+namespace {
+	void _toastHelper(std::string& msg) {
+		//Draw::getInstance()->text(msg);
+
+	}
+}
+
+void toast(std::string msg) {
+
+}

@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include "Animals/ZodiacAnimals.hpp"
 
 
@@ -12,6 +13,5 @@ public:
 
 private:
     static int calculateAttackDamage(ZodiacAnimals* attacker, ZodiacAnimals* target);
-        
 };
-
+*/
