@@ -6,6 +6,9 @@
 
 SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());
 AEGfxVertexList* pMesh = 0;
+
+AEGfxTexture* pDigipenLogoTex;
+
 AEGfxTexture* pFloorTex;
 AEGfxTexture* pSideLeftFloorTex;
 AEGfxTexture* pSideRightFloorTex;
@@ -81,6 +84,7 @@ void SceneSplashScreen::Init()
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
+	pDigipenLogoTex = AEGfxTextureLoad("Assets/DigiPen_Singapore_WEB_RED.png");
 
 	pFloorTex = AEGfxTextureLoad("Assets/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideRight_Sand_3D.png");
@@ -1356,6 +1360,11 @@ void SceneSplashScreen::Render()
 	AEGfxTextureSet(pFogTex, 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Render Digipen Logo
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
 
