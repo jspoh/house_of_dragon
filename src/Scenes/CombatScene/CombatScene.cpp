@@ -32,8 +32,9 @@ Enemy::Enemy(Element element, double health, double dmg, std::string texturePath
 }
 
 void Enemy::render() {
-    std::cout << Draw::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
+    //std::cout << Draw::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
     Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
+    Draw::getInstance()->text(std::to_string(this->health), this->_spos.x, this->_spos.y - _size / 3 * 2);
 }
 
 Enemy::~Enemy() {
