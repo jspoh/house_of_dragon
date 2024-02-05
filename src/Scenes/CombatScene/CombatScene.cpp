@@ -129,7 +129,7 @@ public:
         }
     }
 };
-CombatManager* CombatManager::_instance = nullptr;
+//CombatManager* CombatManager::_instance = nullptr;
 
 
 
