@@ -17,7 +17,7 @@ enum DamageMultipler {
 };
 
 namespace ElementProperties {
-    std::string getElementName(Element element);
-    std::string getPlayerAbilityNames(Element element);
+    static std::string getElementName(Element element);
+    static std::string getPlayerAbilityNames(Element element);
     int getEffectiveDamage(Element playerElement, Element targetElement);
 };

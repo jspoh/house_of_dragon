@@ -2,20 +2,22 @@
 #include "ZodiacAnimals.hpp"
 #include <iostream>
 
-ZodiacAnimals::ZodiacAnimals(const std::string& name, Element element, double baseDmg, double health) : name(name), element(element), baseDmg(baseDmg) , health(health) {}
+ZodiacAnimals::ZodiacAnimals(const std::string& name, Element element, double baseDmg, double* health) : name(name), element(element), baseDmg(baseDmg) , health(health) {}
 
 ZodiacAnimals::~ZodiacAnimals() {}
 
 Rat::Rat(const std::string& name) : ZodiacAnimals(name, Element::Fire,12.5f, 50) {}
 
-void Rat::makeSound() const {
-    std::cout << "Squeak! Squeak!" << std::endl;
+std::string Rat::makeSound() const {
+    return "Squeak! Squeak!";
 }
 
-void Rat::performMove() const {
-    std::cout << "Rat performs digging move." << std::endl;
+std::string Rat::performMove() const {
+    return "Rat performs digging move.";
 }
 
+<<<<<<< Updated upstream
+=======
 void Rat::attack() const {
 
 }
@@ -26,19 +28,20 @@ Element Rat::getElement() const {
 }
 
 std::string Rat::getName() const {
-    return "";
+    return "THE FIRST ALWAYS, THE RAT ARRIVES!!";
 }
 
+>>>>>>> Stashed changes
 // Tiger class implementation
 
-Tiger::Tiger(const std::string& name) : ZodiacAnimals(name, Element::Earth,20,100) {}
+Tiger::Tiger(const std::string& name) : ZodiacAnimals("Tiger", Element::Earth, 20, 100) {}
 
-void Tiger::makeSound() const {
-    std::cout << "Roar!" << std::endl;
+std::string Tiger::makeSound() const {
+    return "Roar!! Fear the king of the jungle!!";
 }
 
-void Tiger::performMove() const {
-    std::cout << "Tiger performs hunting move." << std::endl;
+std::string Tiger::performMove() const {
+    return "Tiger use Blazing Claw!!";
 }
 
 
@@ -50,14 +53,56 @@ Element Tiger::getElement() const {
     return element;
 }
 
-double Tiger::getHealth() const {
-    return health;
+double* Tiger::getHealth() const {
+    return *health;
 }
 
 void Tiger::setHealth(double newHealth) {
-    health = newHealth;
+    *health = newHealth;
 }
 
 std::string ZodiacAnimals::getName() const {
     return name;
 }
+
+
+Player::Player(const std::string& name)
+    : name(name), health(100.0), currentElement(Element::Water) {
+    // Initialize player moves (you can customize these)
+    playerMoves.move1 = "Aqua Blast!";
+    playerMoves.move2 = "Earthquake Strike!";
+    playerMoves.move3 = "Inferno Burst!";
+    playerMoves.move4 = "Gale Slash!";
+    playerMoves.move1 = "Metal Stab!";
+}
+
+
+
+//int Player::performMove(std::string) const {
+//    return;
+//}
+
+
+
+double Player::getHealth() const {
+    return health;
+}
+
+void Player::setHealth(double newHealth) {
+    // Optional: Add validation logic if needed.
+    health = newHealth;
+}
+
+//Element Player::getCurrentElement() const {
+//    return Element::Water;
+//}
+
+void Player::changeElement(Element newElement) {
+    currentElement = newElement;
+}
+
+const PlayerMoves& Player::getPlayerMoves() const {
+    return playerMoves;
+}
+
+

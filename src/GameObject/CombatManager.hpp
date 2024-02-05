@@ -12,6 +12,4 @@ public:
 
 private:
     static int calculateAttackDamage(ZodiacAnimals* attacker, ZodiacAnimals* target);
-        
 };
-
