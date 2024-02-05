@@ -45,7 +45,6 @@ public:
 	 * \return amount of damage dealt
 	 */
 	virtual double attack(Mob& target);
-
 };
 
 class Enemy : Mob {
@@ -65,10 +64,11 @@ public:
 
 	/**
 	 * .
-	 * 
+	 *
 	 * \param target
 	 * \param attackEl element player attacked with
+	 * \param qtMultiplier quicktime event multiplier
 	 * \return damage dealt
 	 */
-	double attack(Mob& target, Element attackEl);
+	double attack(Mob& target, Element attackEl, double qtMultiplier);
 };

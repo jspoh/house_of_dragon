@@ -224,7 +224,7 @@ double Mob::attack(Mob& target) {
     return damage;
 }
 
-double Player::attack(Mob& target, Element attackEl) {
+double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
     DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
     float multiplier = 1;
     switch (dm) {
@@ -236,7 +236,7 @@ double Player::attack(Mob& target, Element attackEl) {
         break;
     }
 
-    double damage = this->dmg * multiplier;
+    double damage = this->dmg * multiplier * qtMultiplier;
     target.health -= damage;
     return damage;
 }
