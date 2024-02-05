@@ -284,7 +284,7 @@ void CombatScene::Update(double dt)
     renderBtns(btns[currentState]);
 
     
-    //cat->render();
+    cat->render();
 
 
     // !TODO
