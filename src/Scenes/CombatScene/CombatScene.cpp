@@ -6,8 +6,13 @@
 #include "../../utils/utils.h"
 #include "../../Event/Event.h"
 #include "../../utils/utils.h"
+#include "../../GameObject/Animals/Elements.hpp"
+#include "../../GameObject/Animals/ZodiacAnimals.hpp"
+#include "../../GameObject/CombatManager.hpp"
 #include <vector>
 #include <unordered_map>
+#include <iomanip>
+#include <sstream>
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
@@ -73,6 +78,8 @@ namespace {
                         e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
 
                         if (bv == "FIRE") {
+                            Draw::getInstance()->text(ElementProperties::getPlayerAbilityNames(Element::Fire), 50, 50);
+
                             // fire attack
                         }
                         else if (bv == "WATER") {
@@ -122,6 +129,11 @@ CombatScene::~CombatScene()
 void CombatScene::Load()
 {
     Event::getInstance();
+<<<<<<< Updated upstream
+=======
+    Draw::getInstance()->registerTexture("cat", "./Assets/animals/cat.jpg");
+
+>>>>>>> Stashed changes
 }
 
 
@@ -133,9 +145,17 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
+<<<<<<< Updated upstream
     //if (AEInputCheckTriggered(AEVK_3)) {
     //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     //}
+=======
+    Tiger myTiger("TigerName");
+    double* healthpointer = (myTiger.getHealth());
+    if (AEInputCheckTriggered(AEVK_3)) {
+        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    }
+>>>>>>> Stashed changes
 
     //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
 
@@ -143,6 +163,25 @@ void CombatScene::Update(double dt)
     Event::getInstance()->updateLoop(combatEventResult, dt, p.x, p.y);
 
     renderBtns(btns[currentState]);
+<<<<<<< Updated upstream
+=======
+
+    Point catPos = { AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
+    catPos = stow(catPos.x, catPos.y);
+    Draw::getInstance()->texture("cat", catPos.x, catPos.y, 200, 200);
+
+    // !TODO
+    // draw health of enemy (just use number for now)
+    // use function `ston` screen to normalized to render text
+    std::stringstream animalhealth;
+    double newone = *healthpointer;
+    animalhealth << std::fixed<< std::setprecision(2) << std::to_string(newone);
+    Draw::getInstance()->text("EARTH TIGER : " + animalhealth.str(), 400, 50); // health.
+    myTiger.setHealth(69);
+
+    // !TODO
+    // draw text describing the action of enemy, disappear after 1 second
+>>>>>>> Stashed changes
 }
 
 void CombatScene::Render()

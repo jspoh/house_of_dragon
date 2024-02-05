@@ -23,7 +23,7 @@ TestScene::~TestScene()
 void TestScene::Load()
 {
     //Still debating whether need this
-    Draw::getInstance()->registerTexture("planet", "./Assets/PlanetTexture.png");
+    Draw::getInstance()->registerTexture("planet", "./Assets/PlanetTexture.png"); 
 }
 
 void TestScene::Init()
