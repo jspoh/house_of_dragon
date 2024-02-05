@@ -9,6 +9,132 @@
 #include <vector>
 #include <unordered_map>
 
+
+/**
+ * !TODO move these out.
+ */
+
+Mob::Mob(Element element, double health, double dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {
+
+}
+
+Enemy::Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef ,float screenX, float screenY, float size) 
+    : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
+    this->_spos.x = screenX;
+    this->_spos.y = screenY;
+
+    //_spos = Point{ AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
+    this->_wpos = stow(_spos.x, _spos.y);
+
+    Draw::getInstance()->registerTexture(textureRef, texturePath);
+
+    //Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
+}
+
+void Enemy::render() {
+    std::cout << Draw::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
+    Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
+}
+
+Enemy::~Enemy() {
+    Draw::getInstance()->removeTextureByRef(this->_textureRef);
+}
+
+Cat::Cat(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size) : Enemy(element, health, dmg, texturePath, textureRef, screenX, screenY, size) {
+
+}
+
+Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
+
+}
+
+double Mob::attack(Mob& target) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
+    float multiplier = 1;
+    switch (dm) {
+    case Weak:
+        multiplier = 0.5;
+        break;
+    case Strong:
+        multiplier = 2;
+        break;
+    }
+
+    double damage = this->dmg * multiplier;
+    target.health -= damage;
+    return damage;
+}
+
+void Mob::reset() {
+    this->health = maxHealth;
+}
+
+double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
+    float multiplier = 1;
+    switch (dm) {
+    case Weak:
+        multiplier = 0.5;
+        break;
+    case Strong:
+        multiplier = 2;
+        break;
+    }
+
+    double damage = this->dmg * multiplier * qtMultiplier;
+    target.health -= damage;
+    return damage;
+}
+
+bool Mob::isDead() {
+    return this->health <= 0;
+}
+
+namespace {
+    enum TURN {
+        PLAYER,
+        ENEMY,
+        NUM_TURNS
+    };
+}
+
+class CombatManager {
+private:
+    static CombatManager* _instance;
+
+    static CombatManager* getInstance() {
+        if (!_instance) {
+            _instance = new CombatManager();
+        }
+        return _instance;
+    }
+
+    ~CombatManager() {
+        if (_instance) {
+            delete _instance;
+        }
+    }
+
+
+public:
+    TURN turn = TURN::PLAYER;
+
+    void next() {
+        turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
+    }
+
+    static void destroy() {
+        if (_instance) {
+            delete _instance;
+        }
+    }
+};
+CombatManager* CombatManager::_instance = nullptr;
+
+
+
+/*actual combatscene stuff*/
+
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
 
@@ -106,6 +232,11 @@ namespace {
             bPosX += btnWidth + spacing;
         }
     }
+
+
+
+    //Enemy* cat = new Cat(Element::Water, 100,10,"./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
+    Enemy* cat = new Cat();
 }
 
 CombatScene::CombatScene()
@@ -124,7 +255,6 @@ CombatScene::~CombatScene()
 void CombatScene::Load()
 {
     Event::getInstance();
-    Draw::getInstance()->registerTexture("cat", "./Assets/animals/cat.jpg");
 }
 
 
@@ -132,6 +262,9 @@ void CombatScene::Init()
 {
     combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
+
+
+
 }
 
 void CombatScene::Update(double dt)
@@ -151,9 +284,9 @@ void CombatScene::Update(double dt)
 
     renderBtns(btns[currentState]);
 
-    Point catPos = { AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
-    catPos = stow(catPos.x, catPos.y);
-    Draw::getInstance()->texture("cat", catPos.x, catPos.y, 200, 200);
+    
+    //cat->render();
+
 
     // !TODO
     // draw health of enemy (just use number for now)
@@ -171,76 +304,8 @@ void CombatScene::Render()
 void CombatScene::Exit()
 {
     std::cout << "Exiting CombatScene\n";
-    Draw::getInstance()->removeTextureByRef("cat");
+    //CombatManager::destroy();
+    //delete cat;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * !TODO move these out.
- */
-
-Mob::Mob(Element element, double health, double dmg) : health(health), dmg(dmg), element(element) {
-
-}
-
-Enemy::Enemy(Element element, double health, double dmg) : Mob(element, health, dmg) {
-
-}
-
-Cat::Cat(Element element, double health, double dmg) : Enemy(element, health, dmg) {
-
-}
-
-Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
-
-}
-
-double Mob::attack(Mob& target) {
-    DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
-    float multiplier = 1;
-    switch (dm) {
-    case Weak:
-        multiplier = 0.5;
-        break;
-    case Strong:
-        multiplier = 2;
-        break;
-    }
-
-    double damage = this->dmg * multiplier;
-    target.health -= damage;
-    return damage;
-}
-
-double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
-    DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
-    float multiplier = 1;
-    switch (dm) {
-    case Weak:
-        multiplier = 0.5;
-        break;
-    case Strong:
-        multiplier = 2;
-        break;
-    }
-
-    double damage = this->dmg * multiplier * qtMultiplier;
-    target.health -= damage;
-    return damage;
-}
-
-bool Mob::isDead() {
-    return this->health <= 0;
-}

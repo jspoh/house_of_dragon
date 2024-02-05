@@ -2,6 +2,7 @@
 
 #include "../../Scenes/Scene.h"
 #include "../../GameObject/Animals/Elements.hpp"
+#include "../../utils/utils.h"
 
 #include <vector>
 //Testing SpriteAnimation
@@ -30,6 +31,7 @@ private:
 class Mob {
 public:
 	double health;
+	double maxHealth;
 	double dmg;
 	Element element;
 
@@ -45,20 +47,33 @@ public:
 	 * \return amount of damage dealt
 	 */
 	virtual double attack(Mob& target);
+
+	virtual void reset();
 };
 
-class Enemy : Mob {
+
+class Enemy : public Mob {
+	private:
+		std::string _textureRef;
+		// screen pos
+		Point _spos;
+		// world pos (rendering only!!!!)
+		Point _wpos;
+		float _size = 50;
+		
+	public:
+		Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+		~Enemy();
+		
+			void render();
+	};
+
+class Cat : public Enemy {
 public:
-
-	Enemy(Element element, double health, double dmg);
+	Cat(Element element = Element::Water, double health = 100, double dmg = 10, std::string texturePath = "", std::string textureRef = "", float screenX = 100, float screenY = 100, float size = 50);
 };
 
-class Cat : Enemy {
-public:
-	Cat(Element element = Element::Water, double health=100, double dmg=10);
-};
-
-class Player : Mob {
+class Player : public Mob {
 public:
 	Player(double health = 100, double dmg = 10, Element element = Element::NO_ELEMENT);
 
