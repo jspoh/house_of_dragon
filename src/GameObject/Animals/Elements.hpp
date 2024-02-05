@@ -8,7 +8,7 @@ enum Element {
     Earth,
     Metal,
     Fire,
-    Wind,
+    Wood,
     MAX_ELEMENTS
 };
 enum DamageMultiplier {

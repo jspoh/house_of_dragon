@@ -15,8 +15,8 @@ namespace ElementProperties {
             return "Metal";
         case Element::Fire:
             return "Fire";
-        case Element::Wind:
-            return "Wind";
+        case Element::Wood:
+            return "Wood";
         default:
             return "Unknown";
     }
@@ -32,8 +32,8 @@ namespace ElementProperties {
             return "Iron cross!!";
         case Element::Fire:
             return "Inferno Burst!!";
-        case Element::Wind:
-            return "Aero Slash!!";
+        case Element::Wood:
+            return "Wooden Splinter!!";
         default:
             std::cerr << "bad boy\n";
             return "Unknown Ability?";
@@ -54,19 +54,19 @@ namespace ElementProperties {
         }
         break;
     case Element::Fire:
-        if (targetElement == Element::Wind) {
-            return DamageMultiplier::Strong; // Fire is effective against Wind
+        if (targetElement == Element::Wood) {
+            return DamageMultiplier::Strong; // Fire is effective against Wood
         }
         else if (targetElement == Element::Earth) {
             return DamageMultiplier::Weak; // Fire is weak against Earth
         }
         break;
-    case Element::Wind:
+    case Element::Wood:
         if (targetElement == Element::Earth) {
-            return DamageMultiplier::Strong; // Wind is effective against Earth
+            return DamageMultiplier::Strong; // Wood is effective against Earth
         }
         else if (targetElement == Element::Water) {
-            return DamageMultiplier::Weak; // Wind is weak against Water
+            return DamageMultiplier::Weak; // Wood is weak against Water
         }
         break;
     case Element::Earth:
@@ -81,8 +81,8 @@ namespace ElementProperties {
         if (targetElement == Element::Water) {
             return DamageMultiplier::Strong; // Metal is neutral against Water
         }
-        else if (targetElement == Element::Wind) {
-            return DamageMultiplier::Weak; // Metal is weak against Wind
+        else if (targetElement == Element::Wood) {
+            return DamageMultiplier::Weak; // Metal is weak against Wood
         }
         break;
     default:

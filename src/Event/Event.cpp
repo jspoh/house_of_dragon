@@ -39,6 +39,16 @@ Event* Event::getInstance() {
 	return _instance;
 }
 
+void Event::startRandomEvent() {
+	// start a random quicktime event
+	double time;
+	AEGetTime(&time);
+	srand(time);
+	EVENT_TYPES e = static_cast<EVENT_TYPES>(rand() % NUM_EVENT_TYPES);
+	e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+	Event::getInstance()->setActiveEvent(e);
+}
+
 bool Event::setActiveEvent(EVENT_TYPES e) {
 	if (_activeEvent == EVENT_TYPES::NONE_EVENT_TYPES) {
 		_activeEvent = e;

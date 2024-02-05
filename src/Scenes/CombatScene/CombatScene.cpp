@@ -9,6 +9,9 @@
 #include <vector>
 #include <unordered_map>
 
+Player* player;
+Cat* cat;
+
 
 /**
  * !TODO move these out.
@@ -103,12 +106,6 @@ class CombatManager {
 private:
     static CombatManager* _instance;
 
-    static CombatManager* getInstance() {
-        if (!_instance) {
-            _instance = new CombatManager();
-        }
-        return _instance;
-    }
 
     ~CombatManager() {
         if (_instance) {
@@ -119,6 +116,16 @@ private:
 
 public:
     TURN turn = TURN::PLAYER;
+    EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
+    //double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
+    Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
+
+    static CombatManager* getInstance() {
+        if (!_instance) {
+            _instance = new CombatManager();
+        }
+        return _instance;
+    }
 
     void next() {
         turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
@@ -158,7 +165,7 @@ namespace {
 
     std::vector<std::vector<std::string>> btns = {
         {"ATTACK", "ITEMS", "FLEE"},  // main buttons. the rest are submenu
-        {"FIRE", "WATER", "METAL", "WOOD", "WIND", "BACK"},  // attack elements
+        {"FIRE", "WATER", "METAL", "WOOD", "EARTH", "BACK"},  // attack elements
         {"BACON", "BEEF", "CHICKEN", "CAT(jk pls)", "BACK"},  // items
         {"YES", "NO"}  // confirmation. only used for flee option
     };
@@ -193,31 +200,28 @@ namespace {
                     }
                     else if (currentState == ACTION_BTNS::ATTACK) {
                         /*if user presses attack*/
+                        CombatManager::getInstance()->next();
 
-                        // start a random quicktime event
-                        double time;
-                        AEGetTime(&time);
-                        srand(time);
-                        EVENT_TYPES e = static_cast<EVENT_TYPES>(rand() % NUM_EVENT_TYPES);
-                        e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+                        Event::getInstance()->startRandomEvent();
 
+                        /*
                         if (bv == "FIRE") {
-                            // fire attack
+                            player->attack(*cat, Fire, 1);
                         }
                         else if (bv == "WATER") {
-
+                            player->attack(*cat, Water, 1);
                         }
                         else if (bv == "METAL") {
-
+                            player->attack(*cat, Metal, 1);
                         }
                         else if (bv == "WOOD") {
-
+                            player->attack(*cat, Wood, 1);
                         }
-                        else if (bv == "WIND") {
-
+                        else if (bv == "EARTH") {
+                            player->attack(*cat, Earth, 1);
                         }
+                        */
 
-                        Event::getInstance()->setActiveEvent(e);
                     }
                     else if (bv == "YES") {
                         std::cout << "Fleeing fight\n";
@@ -233,10 +237,6 @@ namespace {
             bPosX += btnWidth + spacing;
         }
     }
-
-
-
-    Enemy* cat;
 }
 
 CombatScene::CombatScene()
@@ -260,10 +260,9 @@ void CombatScene::Load()
 
 void CombatScene::Init()
 {
-    combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 
-
+    player = new Player();
     cat = new Cat(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
 }
 
@@ -276,13 +275,27 @@ void CombatScene::Update(double dt)
     //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
 
     Point p = stow(100, 100);
-    Event::getInstance()->updateLoop(combatEventResult, dt, p.x, p.y);
+    Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
 
-    if (combatEventResult != NONE_EVENT_RESULTS) {
+    if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
         /*check if success or failure and modify damage accordingly*/
+        switch (CombatManager::getInstance()->qtEventResult) {
+        case EVENT_RESULTS::SUCCESS:
+            player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
+            break;
+        case EVENT_RESULTS::FAILURE:
+            player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
+            break;
+        case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+            // apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
+            break;
+        }
+        CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     }
 
-    renderBtns(btns[currentState]);
+    if (CombatManager::getInstance()->turn == TURN::PLAYER) {
+        renderBtns(btns[currentState]);
+    }
 
     
     cat->render();
@@ -304,8 +317,8 @@ void CombatScene::Render()
 void CombatScene::Exit()
 {
     std::cout << "Exiting CombatScene\n";
-    //CombatManager::destroy();
-    //delete cat;
+    CombatManager::destroy();
+    delete cat;
 }
 
 
