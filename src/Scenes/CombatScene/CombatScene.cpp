@@ -38,7 +38,7 @@ namespace {
     int padding = 100;
     int spacing = 50;
 
-    int btnY = 800;
+    int btnY = 550;
     int maxBtnHeight = 100;
 
     /*im so sorry this code very spaghet but time crunch!!*/
@@ -65,6 +65,8 @@ namespace {
                         currentState = ACTION_BTNS::MAIN;
                     }
                     else if (currentState == ACTION_BTNS::ATTACK) {
+                        /*if user presses attack*/
+
                         // start a random quicktime event
                         double time;
                         AEGetTime(&time);
@@ -122,6 +124,7 @@ CombatScene::~CombatScene()
 void CombatScene::Load()
 {
     Event::getInstance();
+    Draw::getInstance()->registerTexture("cat", "./Assets/animals/cat.jpg");
 }
 
 
@@ -133,16 +136,31 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
-    //if (AEInputCheckTriggered(AEVK_3)) {
-    //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
-    //}
+    if (AEInputCheckTriggered(AEVK_3)) {
+        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    }
 
     //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
 
     Point p = stow(100, 100);
     Event::getInstance()->updateLoop(combatEventResult, dt, p.x, p.y);
 
+    if (combatEventResult != NONE_EVENT_RESULTS) {
+        /*check if success or failure and modify damage accordingly*/
+    }
+
     renderBtns(btns[currentState]);
+
+    Point catPos = { AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
+    catPos = stow(catPos.x, catPos.y);
+    Draw::getInstance()->texture("cat", catPos.x, catPos.y, 200, 200);
+
+    // !TODO
+    // draw health of enemy (just use number for now)
+    // use function `ston` screen to normalized to render text
+
+    // !TODO
+    // draw text describing the action of enemy, disappear after 1 second
 }
 
 void CombatScene::Render()
@@ -153,5 +171,5 @@ void CombatScene::Render()
 void CombatScene::Exit()
 {
     std::cout << "Exiting CombatScene\n";
-    //Draw::getInstance()->removeTextureByRef("planet");
+    Draw::getInstance()->removeTextureByRef("cat");
 }

@@ -164,7 +164,6 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Event\Event.cpp" />
     <ClCompile Include="src\GameObject\Animals\Elements.cpp" />
     <ClCompile Include="src\GameObject\Animals\ZodiacAnimals.cpp" />
-    <ClCompile Include="src\GameObject\CombatManager.cpp" />
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp" />
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
@@ -172,6 +171,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\GameObject\Particle.cpp" />
     <ClCompile Include="src\GameObject\ParticleManager.cpp" />
     <ClCompile Include="src\GameObject\Player\GameObject_Player.cpp" />
+    <ClCompile Include="src\GameObject\CombatManager.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Scenes\CombatScene\CombatScene.cpp" />
     <ClCompile Include="src\Scenes\SceneBase.cpp" />
