@@ -659,7 +659,7 @@ void SceneSplashScreen::Update(double dt)
 
 			//Minimum Speed of next floor
 			AEMtx33 m_MinimumNextFloorSpeed = {
-			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 40,
 			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
 			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
 			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
@@ -1260,94 +1260,94 @@ void SceneSplashScreen::Render()
 		}
 	}
 
-	//Right Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Right Side Floor
+	//AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_RightSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_RightSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
-	//Right Second Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightSecondSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightSecondSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Right Second Side Floor
+	//AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_RightSecondSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_RightSecondSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
-	//Right Third Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightThirdSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightThirdSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Right Third Side Floor
+	//AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_RightThirdSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_RightThirdSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
-	//Right Fourth Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightFourthSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightFourthSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Right Fourth Side Floor
+	//AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_RightFourthSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_RightFourthSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
-	//Left Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Left Side Floor
+	//AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_LeftSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_LeftSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
 
-	//Left Second Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftSecondSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftSecondSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Left Second Side Floor
+	//AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_LeftSecondSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_LeftSecondSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
-	//Left Third Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftThirdSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftThirdSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Left Third Side Floor
+	//AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_LeftThirdSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_LeftThirdSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
-	//Left Fourth Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftFourthSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftFourthSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
+	////Left Fourth Side Floor
+	//AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	if (m_LeftFourthSideFloor[i].m_IsRender)
+	//	{
+	//		AEGfxSetTransform(m_LeftFourthSideFloor[i].m_TransformFloorCurr.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
 
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
