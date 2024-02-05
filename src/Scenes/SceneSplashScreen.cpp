@@ -2,12 +2,16 @@
 
 #include "../Backend/GameManager.h" //? Still thinking
 #include "SceneManager.h"
+#include "CombatScene/CombatScene.h"
 #include <iostream> //Remove upon test finish
 
 SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());
 AEGfxVertexList* pMesh = 0;
 
 AEGfxTexture* pDigipenLogoTex;
+bool ShowGame;
+double LogoTimer;
+AEMtx33 m_TransformDigipenLogoData;
 
 AEGfxTexture* pFloorTex;
 AEGfxTexture* pSideLeftFloorTex;
@@ -56,6 +60,8 @@ void SceneSplashScreen::Load()
 void SceneSplashScreen::Init()
 {
 	std::cout << "Loading Scene SplashScreen" << std::endl;
+	
+
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
 
@@ -85,6 +91,8 @@ void SceneSplashScreen::Init()
 	pMesh = AEGfxMeshEnd();
 
 	pDigipenLogoTex = AEGfxTextureLoad("Assets/DigiPen_Singapore_WEB_RED.png");
+	ShowGame = false;
+	LogoTimer = 5.0;
 
 	pFloorTex = AEGfxTextureLoad("Assets/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideRight_Sand_3D.png");
@@ -601,6 +609,11 @@ void SceneSplashScreen::Init()
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+
+
+	AEMtx33Scale(&scale, 1000.0f, 300.0f);
+	AEMtx33Trans(&trans, 0, 30);
+	AEMtx33Concat(&m_TransformDigipenLogoData, &trans, &scale);
 }
 
 void SceneSplashScreen::Update(double dt)
@@ -616,6 +629,10 @@ void SceneSplashScreen::Update(double dt)
 		SceneManager::GetInstance()->SetActiveScene("CombatScene");
 	}
 
+
+	LogoTimer -= LogoTimer > 0.0f ? dt : 0;
+	if (LogoTimer <= 0.0f)
+		ShowGame = true;
 	//	std::cout << "Updating Scene SplashScreen" << std::endl;
 
 	//	static int x = 2000.f, y = 400.f;
@@ -656,7 +673,7 @@ void SceneSplashScreen::Update(double dt)
 	static bool start = false;
 	start = AEInputCheckReleased(AEVK_SPACE) ? !start : start;
 
-	if (start)
+	if (LogoTimer > 0.0f || start)
 	{
 		AEMtx33 m_LastFloorData = m_Floor[8].m_TransformFloorData;
 		for (int i = 9; i > -1; i--)
@@ -1219,10 +1236,7 @@ void SceneSplashScreen::Render()
 	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	////////////////////////////////////////////////////////////////////////////////////////
-	// Floors
-	// //////////////////////////////////////////////////////////////////////////////////
-	// Tell the engine to get ready to draw something with texture.
+
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
 	// Set the the color to multiply to white, so that the sprite can 
@@ -1235,136 +1249,153 @@ void SceneSplashScreen::Render()
 	// Set blend mode to AE_GFX_BM_BLEND
 	// This will allow transparency.
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
-
-	//Sky
-	AEGfxTextureSet(pSkyTex, 0, 0);
-	AEGfxSetTransform(m_TransformSkyData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-	//Sun
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetTransparency(0.0f);
-	AEGfxSetTransform(m_TransformSunData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(pSunOverlayTex, 0, 0);
-	AEGfxSetTransform(m_TransformSunOverlayData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-	// Set the color to add to nothing, so that we don't alter the sprite's color
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-	//Main Floor
-	AEGfxTextureSet(pFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_Floor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_Floor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Right Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Right Second Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightSecondSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightSecondSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Right Third Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightThirdSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightThirdSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Right Fourth Side Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_RightFourthSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_RightFourthSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Left Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-
-	//Left Second Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftSecondSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftSecondSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Left Third Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftThirdSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftThirdSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-	//Left Fourth Side Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int i = 0; i < 10; i++)
-	{
-		if (m_LeftFourthSideFloor[i].m_IsRender)
-		{
-			AEGfxSetTransform(m_LeftFourthSideFloor[i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-		}
-	}
-
-
-	AEGfxTextureSet(pFogTex, 0, 0);
-	AEGfxSetTransform(m_TransformFogData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-
-
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Render Digipen Logo
+	// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (!ShowGame)
+	{
+		AEGfxSetTransparency(3.0f - 5/ LogoTimer);
+		AEGfxTextureSet(pDigipenLogoTex, 0, 0);
+		AEGfxSetTransform(m_TransformDigipenLogoData.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	}
+	else
+	{
+		AEGfxSetTransparency(1.0f);
+		//Sky
+		AEGfxTextureSet(pSkyTex, 0, 0);
+		AEGfxSetTransform(m_TransformSkyData.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+		//Sun
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetTransparency(0.0f);
+		AEGfxSetTransform(m_TransformSunData.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(pSunOverlayTex, 0, 0);
+		AEGfxSetTransform(m_TransformSunOverlayData.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+		////////////////////////////////////////////////////////////////////////////////////////
+		// Floors
+		// //////////////////////////////////////////////////////////////////////////////////
+		// Tell the engine to get ready to draw something with texture.
+		// Set the color to add to nothing, so that we don't alter the sprite's color
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		//Main Floor
+		AEGfxTextureSet(pFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_Floor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_Floor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Right Side Floor
+		AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_RightSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_RightSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Right Second Side Floor
+		AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_RightSecondSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_RightSecondSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Right Third Side Floor
+		AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_RightThirdSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_RightThirdSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Right Fourth Side Floor
+		AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_RightFourthSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_RightFourthSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Left Side Floor
+		AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_LeftSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_LeftSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+
+		//Left Second Side Floor
+		AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_LeftSecondSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_LeftSecondSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Left Third Side Floor
+		AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_LeftThirdSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_LeftThirdSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		//Left Fourth Side Floor
+		AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+		for (int i = 0; i < 10; i++)
+		{
+			if (m_LeftFourthSideFloor[i].m_IsRender)
+			{
+				AEGfxSetTransform(m_LeftFourthSideFloor[i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+
+		AEGfxTextureSet(pFogTex, 0, 0);
+		AEGfxSetTransform(m_TransformFogData.m);
+		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+	}
+
+
+
+	
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
 
@@ -1379,6 +1410,7 @@ void SceneSplashScreen::Exit()
 	AEGfxTextureUnload(pSkyTex);
 	AEGfxTextureUnload(pSunOverlayTex);
 	AEGfxTextureUnload(pFogTex);
+	AEGfxTextureUnload(pDigipenLogoTex);
 }
 
 //2D Camera Movement - Screen Shake
