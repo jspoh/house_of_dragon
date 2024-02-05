@@ -26,7 +26,7 @@ Enemy::Enemy(Element element, double health, double dmg, std::string texturePath
     //_spos = Point{ AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
     this->_wpos = stow(_spos.x, _spos.y);
 
-    Draw::getInstance()->registerTexture(textureRef, texturePath);
+    //Draw::getInstance()->registerTexture(textureRef, texturePath);  // problematic code stopping execution
 
     //Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }
@@ -129,7 +129,7 @@ public:
         }
     }
 };
-//CombatManager* CombatManager::_instance = nullptr;
+CombatManager* CombatManager::_instance = nullptr;
 
 
 
