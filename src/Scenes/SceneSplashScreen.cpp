@@ -6,13 +6,13 @@
 
 SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());
 AEGfxVertexList* pMesh = 0;
+AEGfxTexture* pDigipenLogoTex;
+
 AEGfxTexture* pFloorTex;
 AEGfxTexture* pSideLeftFloorTex;
 AEGfxTexture* pSideRightFloorTex;
 AEGfxTexture* pSkyTex;
 AEGfxTexture* pSunOverlayTex;
-AEGfxTexture* pFogTex;
-
 
 struct Floor
 {
@@ -27,7 +27,7 @@ struct Floor
 Floor m_Floor[10];
 Floor m_RightSideFloor[10], m_RightSecondSideFloor[10], m_RightThirdSideFloor[10], m_RightFourthSideFloor[10];
 Floor m_LeftSideFloor[10], m_LeftSecondSideFloor[10], m_LeftThirdSideFloor[10], m_LeftFourthSideFloor[10];
-AEMtx33 m_TransformSkyData, m_TransformSunData, m_TransformSunOverlayData, m_TransformFogData;
+AEMtx33 m_TransformSkyData, m_TransformSunData, m_TransformSunOverlayData;
 //Floor m_RightSideFloor[10];
 //double m_FloorSpeedTimer = 0.5;
 
@@ -69,15 +69,6 @@ void SceneSplashScreen::Init()
 		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,    // top-right: white
 		-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
 
-	//AEGfxTriAdd(
-	//	-0.5f, -0.5f, 0xFFFF0000, 0.0f, 1.0f,  // bottom-left: red
-	//	0.5f, -1.0f, 0xFF00FF00, 1.0f, 1.0f,   // bottom-right: green
-	//	-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
-	//AEGfxTriAdd(
-	//	0.5f, -1.0f, 0xFF00FF00, 1.0f, 1.0f,   // bottom-right: green
-	//	0.5f, 1.0f, 0xFFFFFFFF, 1.0f, 0.0f,    // top-right: white
-	//	-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
-
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
@@ -87,7 +78,11 @@ void SceneSplashScreen::Init()
 	pSideLeftFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideLeft_Sand_3D.png");
 	pSkyTex = AEGfxTextureLoad("Assets/Scene_Sky_Clear.png");
 	pSunOverlayTex = AEGfxTextureLoad("Assets/Scene_Sun_Overlaylighting.png");
+<<<<<<< Updated upstream
+=======
 	pFogTex = AEGfxTextureLoad("Assets/Scene_Fog_Color.png");
+	pDigipenLogoTex = AEGfxTextureLoad("Assets/DigiPen_Singapore_WEB_RED.png");
+>>>>>>> Stashed changes
 	/*******************************************************************************/
 	//MAIN FLOOR
 	AEMtx33 scale = { 0 }, trans = { 0 };
@@ -592,11 +587,6 @@ void SceneSplashScreen::Init()
 		AEMtx33Scale(&scale, 120.0f, 120.f);
 		AEMtx33Trans(&trans, 149, 250);
 		AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
-
-		//DO FOG DATA
-		AEMtx33Scale(&scale, 2000.0f, 70.f);
-		AEMtx33Trans(&trans, 0, 80);
-		AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 }
 
 void SceneSplashScreen::Update(double dt)
@@ -613,8 +603,13 @@ void SceneSplashScreen::Update(double dt)
 	}
 	
 //	std::cout << "Updating Scene SplashScreen" << std::endl;
+//	if (AEInputCheckTriggered(AEVK_3))
+//		SceneManager::GetInstance()->SetActiveScene("SceneBase");
+//
+//	static int x = 181.0f, y = 14.f;
 
-//	static int x = 2000.f, y = 400.f;
+
+//	static int x = 2940.f, y = 616.f;
 //if (AEInputCheckCurr(AEVK_W))
 //{
 //	y++;
@@ -631,20 +626,20 @@ void SceneSplashScreen::Update(double dt)
 //{
 //	x++;
 //}
-//static int mx = 0, my = 200;
+//static int mx = 300, my = 69;
 //if (AEInputCheckCurr(AEVK_UP))
 //{
-//	my++;
+//	mx++;
 //}
 //if (AEInputCheckCurr(AEVK_DOWN))
 //{
-//	my--;
+//	mx--;
 //}
 //AEMtx33 scale = { 0 }, trans = { 0 };
 //AEMtx33Scale(&scale, x, y);
 //AEMtx33Trans(&trans, mx, my);
-//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-//
+//AEMtx33Concat(&m_RightThirdSideFloor[8].m_TransformFloorCurr, &trans, &scale);
+//AEMtx33Concat(&m_RightThirdSideFloor[8].m_TransformFloorData, &trans, &scale);
 //cout << mx << endl;
 	///////////////////////////////////////////////////////////////////////////
 	//UPDATE FLOOR MOVEMENT
@@ -662,7 +657,7 @@ void SceneSplashScreen::Update(double dt)
 
 			//Minimum Speed of next floor
 			AEMtx33 m_MinimumNextFloorSpeed = {
-			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,//CHANGE THIS FOR PANNING CLOSER TO GROUND
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,
 			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
 			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
 			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
@@ -1352,10 +1347,6 @@ void SceneSplashScreen::Render()
 		}
 	}
 
-
-	AEGfxTextureSet(pFogTex, 0, 0);
-	AEGfxSetTransform(m_TransformFogData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
 
@@ -1369,7 +1360,6 @@ void SceneSplashScreen::Exit()
 	AEGfxTextureUnload(pSideLeftFloorTex);
 	AEGfxTextureUnload(pSkyTex);
 	AEGfxTextureUnload(pSunOverlayTex);
-	AEGfxTextureUnload(pFogTex);
 }
 
 //2D Camera Movement - Screen Shake
