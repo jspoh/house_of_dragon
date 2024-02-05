@@ -952,7 +952,7 @@ void SceneSplashScreen::Update(double dt)
 		//UPDATE FLOOR MOVEMENT
 		//////////////////////////////////////////////////////////////////////////
 	static bool start = false;
-	start = AEInputCheckReleased(AEVK_SPACE) ? !start : start;
+	start = cat->isDead() ? true : false;
 
 	if (LogoTimer > 0.0f || start)
 	{
@@ -1511,20 +1511,6 @@ void SceneSplashScreen::Update(double dt)
 	}
 
 
-
-
-
-
-
-
-
-
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//Combat Scene Delete after this
-	Point p = stow(100, 100);
-	Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
-
 }
 
 
@@ -1577,11 +1563,11 @@ void SceneSplashScreen::Render()
 		AEGfxSetTransform(m_TransformSunOverlayData.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-		////////////////////////////////////////////////////////////////////////////////////////
-		// Floors
-		// //////////////////////////////////////////////////////////////////////////////////
-		// Tell the engine to get ready to draw something with texture.
-		// Set the color to add to nothing, so that we don't alter the sprite's color
+		//////////////////////////////////////////////////////////////////////////////////////////
+		//// Floors
+		//// //////////////////////////////////////////////////////////////////////////////////
+		//// Tell the engine to get ready to draw something with texture.
+		//// Set the color to add to nothing, so that we don't alter the sprite's color
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 		//Main Floor
 		AEGfxTextureSet(pFloorTex, 0, 0);
@@ -1694,43 +1680,51 @@ void SceneSplashScreen::Render()
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//Delete after this
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //Combat Scene Delete after this
+		if (!cat->isDead())
+		{
 
-		if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
-			// end player's turn
-			CombatManager::getInstance()->next();
-			CombatManager::getInstance()->isPlayingEvent = false;
+			Point p = stow(100, 100);
+			Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, 0.01, p.x, p.y);
 
-			/*check if success or failure and modify damage accordingly*/
-			switch (CombatManager::getInstance()->qtEventResult) {
-			case EVENT_RESULTS::SUCCESS:
-				player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
-				break;
-			case EVENT_RESULTS::FAILURE:
-				player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
-				break;
-			case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-				// apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
-				break;
+			if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+				// end player's turn
+				CombatManager::getInstance()->next();
+				CombatManager::getInstance()->isPlayingEvent = false;
+
+				/*check if success or failure and modify damage accordingly*/
+				switch (CombatManager::getInstance()->qtEventResult) {
+				case EVENT_RESULTS::SUCCESS:
+					player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
+					break;
+				case EVENT_RESULTS::FAILURE:
+					player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
+					break;
+				case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+					// apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
+					break;
+				}
+				CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 			}
-			CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
-		}
 
-		if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
-			renderBtns(btns[currentState]);
-		}
-		else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
-			cat->attack(*player);
-			CombatManager::getInstance()->next();  // perhaps can implement pause
-		}
+			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
+				renderBtns(btns[currentState]);
+			}
+			else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
+				cat->attack(*player);
+				CombatManager::getInstance()->next();  // perhaps can implement pause
+			}
 
-		cat->render();
-		player->render();
+			cat->render();
+			player->render();
 
-		if (cat->isDead()) {
-			Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
-		}
-		else if (player->isDead()) {
-			Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+			if (cat->isDead()) {
+				Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+			}
+			else if (player->isDead()) {
+				Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+			}
 		}
 	}
 
