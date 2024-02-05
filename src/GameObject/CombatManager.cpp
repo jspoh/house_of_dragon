@@ -1,3 +1,5 @@
+
+/*
 #include "CombatManager.hpp"
 #include <iostream>
 #include "Animals/ZodiacAnimals.hpp"
@@ -72,3 +74,5 @@ int Combat::calculateAttackDamage(ZodiacAnimals* attacker, ZodiacAnimals* target
 
     return totalDamage;
 }
+
+*/

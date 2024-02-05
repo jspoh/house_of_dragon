@@ -3,6 +3,7 @@
 #include <string>
 
 enum Element {
+    NO_ELEMENT,
     Water,
     Earth,
     Metal,
@@ -10,7 +11,7 @@ enum Element {
     Wind,
     MAX_ELEMENTS
 };
-enum DamageMultipler {
+enum DamageMultiplier {
     Weak,
     Neutral,
     Strong,
@@ -19,5 +20,5 @@ enum DamageMultipler {
 namespace ElementProperties {
     static std::string getElementName(Element element);
     static std::string getPlayerAbilityNames(Element element);
-    int getEffectiveDamage(Element playerElement, Element targetElement);
+    DamageMultiplier getEffectiveDamage(Element playerElement, Element targetElement);
 };

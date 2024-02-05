@@ -173,3 +173,74 @@ void CombatScene::Exit()
     std::cout << "Exiting CombatScene\n";
     Draw::getInstance()->removeTextureByRef("cat");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * !TODO move these out.
+ */
+
+Mob::Mob(Element element, double health, double dmg) : health(health), dmg(dmg), element(element) {
+
+}
+
+Enemy::Enemy(Element element, double health, double dmg) : Mob(element, health, dmg) {
+
+}
+
+Cat::Cat(Element element, double health, double dmg) : Enemy(element, health, dmg) {
+
+}
+
+Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
+
+}
+
+double Mob::attack(Mob& target) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
+    float multiplier = 1;
+    switch (dm) {
+    case Weak:
+        multiplier = 0.5;
+        break;
+    case Strong:
+        multiplier = 2;
+        break;
+    }
+
+    double damage = this->dmg * multiplier;
+    target.health -= damage;
+    return damage;
+}
+
+double Player::attack(Mob& target, Element attackEl) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
+    float multiplier = 1;
+    switch (dm) {
+    case Weak:
+        multiplier = 0.5;
+        break;
+    case Strong:
+        multiplier = 2;
+        break;
+    }
+
+    double damage = this->dmg * multiplier;
+    target.health -= damage;
+    return damage;
+}
+
+bool Mob::isDead() {
+    return this->health <= 0;
+}

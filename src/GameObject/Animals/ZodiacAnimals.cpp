@@ -1,4 +1,4 @@
-
+/*
 #include "ZodiacAnimals.hpp"
 #include <iostream>
 
@@ -104,5 +104,5 @@ void Player::changeElement(Element newElement) {
 const PlayerMoves& Player::getPlayerMoves() const {
     return playerMoves;
 }
-
+*/
 

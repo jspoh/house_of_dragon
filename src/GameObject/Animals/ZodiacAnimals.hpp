@@ -1,3 +1,5 @@
+
+/*
 #pragma once
 //ZodiacAnimals
 #include <string>
@@ -97,4 +99,4 @@ private:
     // Add other member variables and functions as needed.
 >>>>>>> Stashed changes
 };
-
+*/
