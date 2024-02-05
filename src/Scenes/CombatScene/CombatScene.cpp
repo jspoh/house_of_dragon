@@ -296,6 +296,10 @@ void CombatScene::Update(double dt)
     if (CombatManager::getInstance()->turn == TURN::PLAYER) {
         renderBtns(btns[currentState]);
     }
+    else {
+        cat->attack(*player);
+        CombatManager::getInstance()->next();
+    }
 
     
     cat->render();
