@@ -76,6 +76,9 @@ void Mob::reset() {
 double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
     DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
     float multiplier = 1;
+    std::cout << "attackEl enum: " << attackEl << "\n";
+    std::cout << "targetEl enum: " << target.element << "\n";
+    std::cout << "Damage multiplier enum: " << dm << "\n";
     switch (dm) {
     case Weak:
         multiplier = 0.5;
@@ -204,23 +207,23 @@ namespace {
 
                         Event::getInstance()->startRandomEvent();
 
-                        /*
+                        
                         if (bv == "FIRE") {
-                            player->attack(*cat, Fire, 1);
+                            CombatManager::getInstance()->attackElement = Fire;
                         }
                         else if (bv == "WATER") {
-                            player->attack(*cat, Water, 1);
+                            CombatManager::getInstance()->attackElement = Water;
                         }
                         else if (bv == "METAL") {
-                            player->attack(*cat, Metal, 1);
+                            CombatManager::getInstance()->attackElement = Metal;
                         }
                         else if (bv == "WOOD") {
-                            player->attack(*cat, Wood, 1);
+                            CombatManager::getInstance()->attackElement = Wood;
                         }
                         else if (bv == "EARTH") {
-                            player->attack(*cat, Earth, 1);
+                            CombatManager::getInstance()->attackElement = Earth;
                         }
-                        */
+                        
 
                     }
                     else if (bv == "YES") {
