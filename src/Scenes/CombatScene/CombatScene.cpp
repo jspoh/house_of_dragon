@@ -64,11 +64,37 @@ namespace {
                     else if (bv == "BACK" || bv == "NO") {
                         currentState = ACTION_BTNS::MAIN;
                     }
+                    else if (currentState == ACTION_BTNS::ATTACK) {
+                        // start a random quicktime event
+                        double time;
+                        AEGetTime(&time);
+                        srand(time);
+                        EVENT_TYPES e = static_cast<EVENT_TYPES>(rand() % NUM_EVENT_TYPES);
+                        e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+
+                        if (bv == "FIRE") {
+                            // fire attack
+                        }
+                        else if (bv == "WATER") {
+
+                        }
+                        else if (bv == "METAL") {
+
+                        }
+                        else if (bv == "WOOD") {
+
+                        }
+                        else if (bv == "WIND") {
+
+                        }
+
+                        Event::getInstance()->setActiveEvent(e);
+                    }
                     else if (bv == "YES") {
                         std::cout << "Fleeing fight\n";
                     }
                 }
-                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5, 0.5, 0.5, 1 });  // render highlight on hover
+                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5, 0.5, 0.5, 1 });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
             }
             else {
                 Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3, 0.3, 0.3, 1 });  // render normal when no hovering
