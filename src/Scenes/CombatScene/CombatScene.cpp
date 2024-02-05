@@ -133,9 +133,9 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
-    if (AEInputCheckTriggered(AEVK_3)) {
-        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
-    }
+    //if (AEInputCheckTriggered(AEVK_3)) {
+    //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+    //}
 
     //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
 
