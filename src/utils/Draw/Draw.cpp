@@ -35,6 +35,9 @@ Draw::Draw() {
 		-0.5f, 0.5f, 0xFF000000, 0.0f, 0.0f    // top-left
 	);
 	_mesh = AEGfxMeshEnd();
+
+	// font
+	_font = AEGfxCreateFont("./Assets/liberation-mono.ttf", _fontSize);
 }
 
 Draw::~Draw() {
@@ -137,6 +140,20 @@ void Draw::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
 	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
+}
+
+void Draw::text(std::string s, float screenX, float screenY) {
+	AEGfxSetRenderMode(AE_GFX_RM_NONE);
+
+	Point p = ston(screenX, screenY);
+
+	f32 width, height;
+	AEGfxGetPrintSize(_font, s.c_str(), 1.f, &width, &height);
+	AEGfxPrint(_font, s.c_str(), p.x - width / 2, p.y - height / 2, 1, 1, 1, 1, 1);
+}
+
+void Draw::setFontSize(int size) {
+	_fontSize = size;
 }
 
 
