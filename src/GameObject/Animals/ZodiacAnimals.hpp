@@ -47,11 +47,18 @@ public:
     std::string performMove() const override;
     void attack() const override;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
 
     Element getElement() const override;
     double* getHealth()  override;
     void setHealth(double newHealth) override;
+=======
+    virtual Element getElement() const override;
+    virtual double getHealth() const = 0;
+    virtual void setHealth(double newHealth) = 0;
+    virtual std::string getName() const;
+>>>>>>> Stashed changes
 };
 
 

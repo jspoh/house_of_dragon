@@ -40,7 +40,7 @@ namespace ElementProperties {
     }
 }
 
-int getEffectiveDamage(Element playerElement, Element targetElement) {  // use enum instead
+ int getEffectiveDamage(Element playerElement, Element targetElement) {  // use enum instead
     // This functions returns how effective the damage is from the player move element, 1 = default, 2 = effective, 3 = weak.
 
     // Elemental interactions
@@ -92,6 +92,7 @@ int getEffectiveDamage(Element playerElement, Element targetElement) {  // use e
 
         // continue like this
     }
+    return DamageMultipler::Neutral;
 
 
 
