@@ -26,7 +26,7 @@ Enemy::Enemy(Element element, double health, double dmg, std::string texturePath
     //_spos = Point{ AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 };
     this->_wpos = stow(_spos.x, _spos.y);
 
-    //Draw::getInstance()->registerTexture(textureRef, texturePath);  // problematic code stopping execution
+    Draw::getInstance()->registerTexture(textureRef, texturePath);  // problematic code stopping execution
 
     //Draw::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }
@@ -235,8 +235,7 @@ namespace {
 
 
 
-    //Enemy* cat = new Cat(Element::Water, 100,10,"./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
-    Enemy* cat = new Cat();
+    Enemy* cat;
 }
 
 CombatScene::CombatScene()
@@ -264,7 +263,7 @@ void CombatScene::Init()
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 
 
-
+    cat = new Cat(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
 }
 
 void CombatScene::Update(double dt)
