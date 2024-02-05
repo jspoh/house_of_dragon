@@ -21,7 +21,8 @@ void Rat::attack() const {
 }
 
 Element Rat::getElement() const {
-    return Element::Earth;  // i not sure, i just returning to fix error
+    return Element::MAX_ELEMENTS;  // for compilation only. replace this with appropriate value
+
 }
 
 std::string Rat::getName() const {

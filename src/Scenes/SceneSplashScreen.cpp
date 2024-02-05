@@ -6,6 +6,9 @@
 
 SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());
 AEGfxVertexList* pMesh = 0;
+
+AEGfxTexture* pDigipenLogoTex;
+
 AEGfxTexture* pFloorTex;
 AEGfxTexture* pSideLeftFloorTex;
 AEGfxTexture* pSideRightFloorTex;
@@ -21,7 +24,7 @@ struct Floor
 	int m_currFloorNum = 0;
 	double m_currFloorTimer = 0;
 	double m_FloorSpeedTimer = 0.5;
-	AEMtx33 m_currFloorSpeed={0};
+	AEMtx33 m_currFloorSpeed = { 0 };
 	bool m_IsRender = true;
 };
 Floor m_Floor[10];
@@ -81,6 +84,7 @@ void SceneSplashScreen::Init()
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
+	pDigipenLogoTex = AEGfxTextureLoad("Assets/DigiPen_Singapore_WEB_RED.png");
 
 	pFloorTex = AEGfxTextureLoad("Assets/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideRight_Sand_3D.png");
@@ -193,7 +197,7 @@ void SceneSplashScreen::Init()
 	AEMtx33Trans(&trans, 25, 80);
 	AEMtx33Concat(&m_RightSideFloor[9].m_TransformFloorData, &trans, &scale);
 	m_RightSideFloor[9].m_currFloorNum = 9;
-	
+
 	for (int i = 0; i < 10; i++)
 		m_RightSideFloor[i].m_TransformFloorCurr = m_RightSideFloor[i].m_TransformFloorData;
 
@@ -359,249 +363,249 @@ void SceneSplashScreen::Init()
 	for (int i = 0; i < 10; i++)
 		m_RightFourthSideFloor[i].m_TransformFloorCurr = m_RightFourthSideFloor[i].m_TransformFloorData;
 
-	
-		
-		/*******************************************************************************/
-		//LEFT SIDE FLOORS
-		//Out of Screen Floor
-		AEMtx33Scale(&scale, 8000.f, 1262.f);
-		AEMtx33Trans(&trans, -16000, -2829);
-		AEMtx33Concat(&m_LeftSideFloor[0].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[0].m_currFloorNum = 0;
-		AEMtx33Scale(&scale, 7000.f, 1262.f);
-		AEMtx33Trans(&trans, -5750, -2229);
-		AEMtx33Concat(&m_LeftSideFloor[1].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[1].m_currFloorNum = 1;
-		AEMtx33Scale(&scale, 6000.f, 1262.f);
-		AEMtx33Trans(&trans, -4350, -1629);
-		AEMtx33Concat(&m_LeftSideFloor[2].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[2].m_currFloorNum = 2;
-		//First floor
-		AEMtx33Scale(&scale, 2940.f, 616.f);
-		AEMtx33Trans(&trans, -2150, -696);
-		AEMtx33Concat(&m_LeftSideFloor[3].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[3].m_currFloorNum = 3;
-		//Second floor
-		AEMtx33Scale(&scale, 1593.0f, 339.f);
-		AEMtx33Trans(&trans, -1158, -282);
-		AEMtx33Concat(&m_LeftSideFloor[4].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[4].m_currFloorNum = 4;
-		//Third floor
-		AEMtx33Scale(&scale, 779.0f, 133.f);
-		AEMtx33Trans(&trans, -556, -50);
-		AEMtx33Concat(&m_LeftSideFloor[5].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[5].m_currFloorNum = 5;
-		//Fourth floor
-		AEMtx33Scale(&scale, 381.0f, 47.f);
-		AEMtx33Trans(&trans, -276, 39);
-		AEMtx33Concat(&m_LeftSideFloor[6].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[6].m_currFloorNum = 6;
-		//Fifth floor
-		AEMtx33Scale(&scale, 181.0f, 14.f);
-		AEMtx33Trans(&trans, -131, 69);
-		AEMtx33Concat(&m_LeftSideFloor[7].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[7].m_currFloorNum = 7;
-		//Sixth floor
-		AEMtx33Scale(&scale, 85.0f, 4.f);
-		AEMtx33Trans(&trans, -62, 78);
-		AEMtx33Concat(&m_LeftSideFloor[8].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[8].m_currFloorNum = 8;
-		//Seventh floor
-		AEMtx33Scale(&scale, 33.0f, 1.f);
-		AEMtx33Trans(&trans, -25, 80);
-		AEMtx33Concat(&m_LeftSideFloor[9].m_TransformFloorData, &trans, &scale);
-		m_LeftSideFloor[9].m_currFloorNum = 9;
 
-		for (int i = 0; i < 10; i++)
-			m_LeftSideFloor[i].m_TransformFloorCurr = m_LeftSideFloor[i].m_TransformFloorData;
 
-		/*******************************************************************************/
-	//LEFT 2nd SIDE FLOORS
+	/*******************************************************************************/
+	//LEFT SIDE FLOORS
 	//Out of Screen Floor
-		AEMtx33Scale(&scale, 8000.f, 1262.f);
-		AEMtx33Trans(&trans, -32000, -2829); //DONT NEED TO CARE
-		AEMtx33Concat(&m_LeftSecondSideFloor[0].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[0].m_currFloorNum = 0;
-		AEMtx33Scale(&scale, 7000.f, 1262.f);
-		AEMtx33Trans(&trans, -11500, -2229);
-		AEMtx33Concat(&m_LeftSecondSideFloor[1].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[1].m_currFloorNum = 1;
-		AEMtx33Scale(&scale, 6000.f, 1262.f);
-		AEMtx33Trans(&trans, -8700, -1629);
-		AEMtx33Concat(&m_LeftSecondSideFloor[2].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[2].m_currFloorNum = 2;
-		//First floor
-		AEMtx33Scale(&scale, 2940.f, 616.f);
-		AEMtx33Trans(&trans, -4300, -696);
-		AEMtx33Concat(&m_LeftSecondSideFloor[3].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[3].m_currFloorNum = 3;
-		//Second floor
-		AEMtx33Scale(&scale, 1593.0f, 339.f);
-		AEMtx33Trans(&trans, -2308, -282);
-		AEMtx33Concat(&m_LeftSecondSideFloor[4].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[4].m_currFloorNum = 4;
-		//Third floor
-		AEMtx33Scale(&scale, 779.0f, 133.f);
-		AEMtx33Trans(&trans, -1104, -50);
-		AEMtx33Concat(&m_LeftSecondSideFloor[5].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[5].m_currFloorNum = 5;
-		//Fourth floor
-		AEMtx33Scale(&scale, 381.0f, 47.f);
-		AEMtx33Trans(&trans, -546, 39);
-		AEMtx33Concat(&m_LeftSecondSideFloor[6].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[6].m_currFloorNum = 6;
-		//Fifth floor
-		AEMtx33Scale(&scale, 181.0f, 14.f);
-		AEMtx33Trans(&trans, -259, 69);
-		AEMtx33Concat(&m_LeftSecondSideFloor[7].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[7].m_currFloorNum = 7;
-		//Sixth floor
-		AEMtx33Scale(&scale, 85.0f, 4.f);
-		AEMtx33Trans(&trans, -121, 78);
-		AEMtx33Concat(&m_LeftSecondSideFloor[8].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[8].m_currFloorNum = 8;
-		//Seventh floor
-		AEMtx33Scale(&scale, 33.0f, 1.f);
-		AEMtx33Trans(&trans, -48, 80);
-		AEMtx33Concat(&m_LeftSecondSideFloor[9].m_TransformFloorData, &trans, &scale);
-		m_LeftSecondSideFloor[9].m_currFloorNum = 9;
+	AEMtx33Scale(&scale, 8000.f, 1262.f);
+	AEMtx33Trans(&trans, -16000, -2829);
+	AEMtx33Concat(&m_LeftSideFloor[0].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[0].m_currFloorNum = 0;
+	AEMtx33Scale(&scale, 7000.f, 1262.f);
+	AEMtx33Trans(&trans, -5750, -2229);
+	AEMtx33Concat(&m_LeftSideFloor[1].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[1].m_currFloorNum = 1;
+	AEMtx33Scale(&scale, 6000.f, 1262.f);
+	AEMtx33Trans(&trans, -4350, -1629);
+	AEMtx33Concat(&m_LeftSideFloor[2].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[2].m_currFloorNum = 2;
+	//First floor
+	AEMtx33Scale(&scale, 2940.f, 616.f);
+	AEMtx33Trans(&trans, -2150, -696);
+	AEMtx33Concat(&m_LeftSideFloor[3].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[3].m_currFloorNum = 3;
+	//Second floor
+	AEMtx33Scale(&scale, 1593.0f, 339.f);
+	AEMtx33Trans(&trans, -1158, -282);
+	AEMtx33Concat(&m_LeftSideFloor[4].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[4].m_currFloorNum = 4;
+	//Third floor
+	AEMtx33Scale(&scale, 779.0f, 133.f);
+	AEMtx33Trans(&trans, -556, -50);
+	AEMtx33Concat(&m_LeftSideFloor[5].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[5].m_currFloorNum = 5;
+	//Fourth floor
+	AEMtx33Scale(&scale, 381.0f, 47.f);
+	AEMtx33Trans(&trans, -276, 39);
+	AEMtx33Concat(&m_LeftSideFloor[6].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[6].m_currFloorNum = 6;
+	//Fifth floor
+	AEMtx33Scale(&scale, 181.0f, 14.f);
+	AEMtx33Trans(&trans, -131, 69);
+	AEMtx33Concat(&m_LeftSideFloor[7].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[7].m_currFloorNum = 7;
+	//Sixth floor
+	AEMtx33Scale(&scale, 85.0f, 4.f);
+	AEMtx33Trans(&trans, -62, 78);
+	AEMtx33Concat(&m_LeftSideFloor[8].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[8].m_currFloorNum = 8;
+	//Seventh floor
+	AEMtx33Scale(&scale, 33.0f, 1.f);
+	AEMtx33Trans(&trans, -25, 80);
+	AEMtx33Concat(&m_LeftSideFloor[9].m_TransformFloorData, &trans, &scale);
+	m_LeftSideFloor[9].m_currFloorNum = 9;
 
-		for (int i = 0; i < 10; i++)
-			m_LeftSecondSideFloor[i].m_TransformFloorCurr = m_LeftSecondSideFloor[i].m_TransformFloorData;
+	for (int i = 0; i < 10; i++)
+		m_LeftSideFloor[i].m_TransformFloorCurr = m_LeftSideFloor[i].m_TransformFloorData;
 
+	/*******************************************************************************/
+//LEFT 2nd SIDE FLOORS
+//Out of Screen Floor
+	AEMtx33Scale(&scale, 8000.f, 1262.f);
+	AEMtx33Trans(&trans, -32000, -2829); //DONT NEED TO CARE
+	AEMtx33Concat(&m_LeftSecondSideFloor[0].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[0].m_currFloorNum = 0;
+	AEMtx33Scale(&scale, 7000.f, 1262.f);
+	AEMtx33Trans(&trans, -11500, -2229);
+	AEMtx33Concat(&m_LeftSecondSideFloor[1].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[1].m_currFloorNum = 1;
+	AEMtx33Scale(&scale, 6000.f, 1262.f);
+	AEMtx33Trans(&trans, -8700, -1629);
+	AEMtx33Concat(&m_LeftSecondSideFloor[2].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[2].m_currFloorNum = 2;
+	//First floor
+	AEMtx33Scale(&scale, 2940.f, 616.f);
+	AEMtx33Trans(&trans, -4300, -696);
+	AEMtx33Concat(&m_LeftSecondSideFloor[3].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[3].m_currFloorNum = 3;
+	//Second floor
+	AEMtx33Scale(&scale, 1593.0f, 339.f);
+	AEMtx33Trans(&trans, -2308, -282);
+	AEMtx33Concat(&m_LeftSecondSideFloor[4].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[4].m_currFloorNum = 4;
+	//Third floor
+	AEMtx33Scale(&scale, 779.0f, 133.f);
+	AEMtx33Trans(&trans, -1104, -50);
+	AEMtx33Concat(&m_LeftSecondSideFloor[5].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[5].m_currFloorNum = 5;
+	//Fourth floor
+	AEMtx33Scale(&scale, 381.0f, 47.f);
+	AEMtx33Trans(&trans, -546, 39);
+	AEMtx33Concat(&m_LeftSecondSideFloor[6].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[6].m_currFloorNum = 6;
+	//Fifth floor
+	AEMtx33Scale(&scale, 181.0f, 14.f);
+	AEMtx33Trans(&trans, -259, 69);
+	AEMtx33Concat(&m_LeftSecondSideFloor[7].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[7].m_currFloorNum = 7;
+	//Sixth floor
+	AEMtx33Scale(&scale, 85.0f, 4.f);
+	AEMtx33Trans(&trans, -121, 78);
+	AEMtx33Concat(&m_LeftSecondSideFloor[8].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[8].m_currFloorNum = 8;
+	//Seventh floor
+	AEMtx33Scale(&scale, 33.0f, 1.f);
+	AEMtx33Trans(&trans, -48, 80);
+	AEMtx33Concat(&m_LeftSecondSideFloor[9].m_TransformFloorData, &trans, &scale);
+	m_LeftSecondSideFloor[9].m_currFloorNum = 9;
 
-		/*******************************************************************************/
-	//LEFT 3rd SIDE FLOORS
-	//Out of Screen Floor
-		AEMtx33Scale(&scale, 8000.f, 1262.f);
-		AEMtx33Trans(&trans, -48000, -2829); //DONT NEED TO CARE
-		AEMtx33Concat(&m_LeftThirdSideFloor[0].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[0].m_currFloorNum = 0;
-		AEMtx33Scale(&scale, 7000.f, 1262.f);
-		AEMtx33Trans(&trans, -17250, -2229);
-		AEMtx33Concat(&m_LeftThirdSideFloor[1].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[1].m_currFloorNum = 1;
-		AEMtx33Scale(&scale, 6000.f, 1262.f);
-		AEMtx33Trans(&trans, -13050, -1629);
-		AEMtx33Concat(&m_LeftThirdSideFloor[2].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[2].m_currFloorNum = 2;
-		//First floor
-		AEMtx33Scale(&scale, 2940.f, 616.f);
-		AEMtx33Trans(&trans, -6450, -696);
-		AEMtx33Concat(&m_LeftThirdSideFloor[3].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[3].m_currFloorNum = 3;
-		//Second floor
-		AEMtx33Scale(&scale, 1593.0f, 339.f);
-		AEMtx33Trans(&trans, -3462, -282);
-		AEMtx33Concat(&m_LeftThirdSideFloor[4].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[4].m_currFloorNum = 4;
-		//Third floor
-		AEMtx33Scale(&scale, 779.0f, 133.f);
-		AEMtx33Trans(&trans, -1656, -50);
-		AEMtx33Concat(&m_LeftThirdSideFloor[5].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[5].m_currFloorNum = 5;
-		//Fourth floor
-		AEMtx33Scale(&scale, 381.0f, 47.f);
-		AEMtx33Trans(&trans, -815, 39);
-		AEMtx33Concat(&m_LeftThirdSideFloor[6].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[6].m_currFloorNum = 6;
-		//Fifth floor
-		AEMtx33Scale(&scale, 181.0f, 14.f);
-		AEMtx33Trans(&trans, -388, 69);
-		AEMtx33Concat(&m_LeftThirdSideFloor[7].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[7].m_currFloorNum = 7;
-		//Sixth floor
-		AEMtx33Scale(&scale, 85.0f, 4.f);
-		AEMtx33Trans(&trans, -181, 78);
-		AEMtx33Concat(&m_LeftThirdSideFloor[8].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[8].m_currFloorNum = 8;
-		//Seventh floor
-		AEMtx33Scale(&scale, 33.0f, 1.f);
-		AEMtx33Trans(&trans, -71, 80);
-		AEMtx33Concat(&m_LeftThirdSideFloor[9].m_TransformFloorData, &trans, &scale);
-		m_LeftThirdSideFloor[9].m_currFloorNum = 9;
-
-		for (int i = 0; i < 10; i++)
-			m_LeftThirdSideFloor[i].m_TransformFloorCurr = m_LeftThirdSideFloor[i].m_TransformFloorData;
-
+	for (int i = 0; i < 10; i++)
+		m_LeftSecondSideFloor[i].m_TransformFloorCurr = m_LeftSecondSideFloor[i].m_TransformFloorData;
 
 
-		/*******************************************************************************/
+	/*******************************************************************************/
+//LEFT 3rd SIDE FLOORS
+//Out of Screen Floor
+	AEMtx33Scale(&scale, 8000.f, 1262.f);
+	AEMtx33Trans(&trans, -48000, -2829); //DONT NEED TO CARE
+	AEMtx33Concat(&m_LeftThirdSideFloor[0].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[0].m_currFloorNum = 0;
+	AEMtx33Scale(&scale, 7000.f, 1262.f);
+	AEMtx33Trans(&trans, -17250, -2229);
+	AEMtx33Concat(&m_LeftThirdSideFloor[1].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[1].m_currFloorNum = 1;
+	AEMtx33Scale(&scale, 6000.f, 1262.f);
+	AEMtx33Trans(&trans, -13050, -1629);
+	AEMtx33Concat(&m_LeftThirdSideFloor[2].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[2].m_currFloorNum = 2;
+	//First floor
+	AEMtx33Scale(&scale, 2940.f, 616.f);
+	AEMtx33Trans(&trans, -6450, -696);
+	AEMtx33Concat(&m_LeftThirdSideFloor[3].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[3].m_currFloorNum = 3;
+	//Second floor
+	AEMtx33Scale(&scale, 1593.0f, 339.f);
+	AEMtx33Trans(&trans, -3462, -282);
+	AEMtx33Concat(&m_LeftThirdSideFloor[4].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[4].m_currFloorNum = 4;
+	//Third floor
+	AEMtx33Scale(&scale, 779.0f, 133.f);
+	AEMtx33Trans(&trans, -1656, -50);
+	AEMtx33Concat(&m_LeftThirdSideFloor[5].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[5].m_currFloorNum = 5;
+	//Fourth floor
+	AEMtx33Scale(&scale, 381.0f, 47.f);
+	AEMtx33Trans(&trans, -815, 39);
+	AEMtx33Concat(&m_LeftThirdSideFloor[6].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[6].m_currFloorNum = 6;
+	//Fifth floor
+	AEMtx33Scale(&scale, 181.0f, 14.f);
+	AEMtx33Trans(&trans, -388, 69);
+	AEMtx33Concat(&m_LeftThirdSideFloor[7].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[7].m_currFloorNum = 7;
+	//Sixth floor
+	AEMtx33Scale(&scale, 85.0f, 4.f);
+	AEMtx33Trans(&trans, -181, 78);
+	AEMtx33Concat(&m_LeftThirdSideFloor[8].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[8].m_currFloorNum = 8;
+	//Seventh floor
+	AEMtx33Scale(&scale, 33.0f, 1.f);
+	AEMtx33Trans(&trans, -71, 80);
+	AEMtx33Concat(&m_LeftThirdSideFloor[9].m_TransformFloorData, &trans, &scale);
+	m_LeftThirdSideFloor[9].m_currFloorNum = 9;
+
+	for (int i = 0; i < 10; i++)
+		m_LeftThirdSideFloor[i].m_TransformFloorCurr = m_LeftThirdSideFloor[i].m_TransformFloorData;
+
+
+
+	/*******************************************************************************/
 //LEFT 4th SIDE FLOORS
 //Out of Screen Floor
-		AEMtx33Scale(&scale, 8000.f, 1262.f);
-		AEMtx33Trans(&trans, -64000, -2829); //DONT NEED TO CARE
-		AEMtx33Concat(&m_LeftFourthSideFloor[0].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[0].m_currFloorNum = 0;
-		AEMtx33Scale(&scale, 7000.f, 1262.f);
-		AEMtx33Trans(&trans, -23000, -2229);
-		AEMtx33Concat(&m_LeftFourthSideFloor[1].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[1].m_currFloorNum = 1;
-		AEMtx33Scale(&scale, 6000.f, 1262.f);
-		AEMtx33Trans(&trans, -17400, -1629);
-		AEMtx33Concat(&m_LeftFourthSideFloor[2].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[2].m_currFloorNum = 2;
-		//First floor
-		AEMtx33Scale(&scale, 2940.f, 616.f);
-		AEMtx33Trans(&trans, -8600, -696);
-		AEMtx33Concat(&m_LeftFourthSideFloor[3].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[3].m_currFloorNum = 3;
-		//Second floor
-		AEMtx33Scale(&scale, 1593.0f, 339.f);
-		AEMtx33Trans(&trans, -4610, -282);
-		AEMtx33Concat(&m_LeftFourthSideFloor[4].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[4].m_currFloorNum = 4;
-		//Third floor
-		AEMtx33Scale(&scale, 779.0f, 133.f);
-		AEMtx33Trans(&trans, -2204, -50);
-		AEMtx33Concat(&m_LeftFourthSideFloor[5].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[5].m_currFloorNum = 5;
-		//Fourth floor
-		AEMtx33Scale(&scale, 381.0f, 47.f);
-		AEMtx33Trans(&trans, -1078, 39);
-		AEMtx33Concat(&m_LeftFourthSideFloor[6].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[6].m_currFloorNum = 6;
-		//Fifth floor
-		AEMtx33Scale(&scale, 181.0f, 14.f);
-		AEMtx33Trans(&trans, -514, 69);
-		AEMtx33Concat(&m_LeftFourthSideFloor[7].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[7].m_currFloorNum = 7;
-		//Sixth floor
-		AEMtx33Scale(&scale, 85.0f, 4.f);
-		AEMtx33Trans(&trans, -240, 78);
-		AEMtx33Concat(&m_LeftFourthSideFloor[8].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[8].m_currFloorNum = 8;
-		//Seventh floor
-		AEMtx33Scale(&scale, 33.0f, 1.f);
-		AEMtx33Trans(&trans, -96, 80);
-		AEMtx33Concat(&m_LeftFourthSideFloor[9].m_TransformFloorData, &trans, &scale);
-		m_LeftFourthSideFloor[9].m_currFloorNum = 9;
+	AEMtx33Scale(&scale, 8000.f, 1262.f);
+	AEMtx33Trans(&trans, -64000, -2829); //DONT NEED TO CARE
+	AEMtx33Concat(&m_LeftFourthSideFloor[0].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[0].m_currFloorNum = 0;
+	AEMtx33Scale(&scale, 7000.f, 1262.f);
+	AEMtx33Trans(&trans, -23000, -2229);
+	AEMtx33Concat(&m_LeftFourthSideFloor[1].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[1].m_currFloorNum = 1;
+	AEMtx33Scale(&scale, 6000.f, 1262.f);
+	AEMtx33Trans(&trans, -17400, -1629);
+	AEMtx33Concat(&m_LeftFourthSideFloor[2].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[2].m_currFloorNum = 2;
+	//First floor
+	AEMtx33Scale(&scale, 2940.f, 616.f);
+	AEMtx33Trans(&trans, -8600, -696);
+	AEMtx33Concat(&m_LeftFourthSideFloor[3].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[3].m_currFloorNum = 3;
+	//Second floor
+	AEMtx33Scale(&scale, 1593.0f, 339.f);
+	AEMtx33Trans(&trans, -4610, -282);
+	AEMtx33Concat(&m_LeftFourthSideFloor[4].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[4].m_currFloorNum = 4;
+	//Third floor
+	AEMtx33Scale(&scale, 779.0f, 133.f);
+	AEMtx33Trans(&trans, -2204, -50);
+	AEMtx33Concat(&m_LeftFourthSideFloor[5].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[5].m_currFloorNum = 5;
+	//Fourth floor
+	AEMtx33Scale(&scale, 381.0f, 47.f);
+	AEMtx33Trans(&trans, -1078, 39);
+	AEMtx33Concat(&m_LeftFourthSideFloor[6].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[6].m_currFloorNum = 6;
+	//Fifth floor
+	AEMtx33Scale(&scale, 181.0f, 14.f);
+	AEMtx33Trans(&trans, -514, 69);
+	AEMtx33Concat(&m_LeftFourthSideFloor[7].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[7].m_currFloorNum = 7;
+	//Sixth floor
+	AEMtx33Scale(&scale, 85.0f, 4.f);
+	AEMtx33Trans(&trans, -240, 78);
+	AEMtx33Concat(&m_LeftFourthSideFloor[8].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[8].m_currFloorNum = 8;
+	//Seventh floor
+	AEMtx33Scale(&scale, 33.0f, 1.f);
+	AEMtx33Trans(&trans, -96, 80);
+	AEMtx33Concat(&m_LeftFourthSideFloor[9].m_TransformFloorData, &trans, &scale);
+	m_LeftFourthSideFloor[9].m_currFloorNum = 9;
 
-		for (int i = 0; i < 10; i++)
-			m_LeftFourthSideFloor[i].m_TransformFloorCurr = m_LeftFourthSideFloor[i].m_TransformFloorData;
+	for (int i = 0; i < 10; i++)
+		m_LeftFourthSideFloor[i].m_TransformFloorCurr = m_LeftFourthSideFloor[i].m_TransformFloorData;
 
-		//DO SKY DATA
-		AEMtx33Scale(&scale, 2000.0f, 400.f);
-		AEMtx33Trans(&trans, 0, 200);
-		AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
+	//DO SKY DATA
+	AEMtx33Scale(&scale, 2000.0f, 400.f);
+	AEMtx33Trans(&trans, 0, 200);
+	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
 
-		//Do Sun Data
-		AEMtx33Scale(&scale, 50.0f, 50.f);
-		AEMtx33Trans(&trans, 150, 250);
-		AEMtx33Concat(&m_TransformSunData, &trans, &scale);
-		AEMtx33Scale(&scale, 120.0f, 120.f);
-		AEMtx33Trans(&trans, 149, 250);
-		AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
+	//Do Sun Data
+	AEMtx33Scale(&scale, 50.0f, 50.f);
+	AEMtx33Trans(&trans, 150, 250);
+	AEMtx33Concat(&m_TransformSunData, &trans, &scale);
+	AEMtx33Scale(&scale, 120.0f, 120.f);
+	AEMtx33Trans(&trans, 149, 250);
+	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
 
-		//DO FOG DATA
-		AEMtx33Scale(&scale, 2000.0f, 70.f);
-		AEMtx33Trans(&trans, 0, 80);
-		AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+	//DO FOG DATA
+	AEMtx33Scale(&scale, 2000.0f, 70.f);
+	AEMtx33Trans(&trans, 0, 80);
+	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 }
 
 void SceneSplashScreen::Update(double dt)
 {
-		std::cout << "Updating Scene SplashScreen" << std::endl;
+	std::cout << "Updating Scene SplashScreen" << std::endl;
 	if (AEInputCheckTriggered(AEVK_3)) {
 		SceneManager::GetInstance()->SetActiveScene("SceneBase");
 	}
@@ -611,47 +615,47 @@ void SceneSplashScreen::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_5)) {
 		SceneManager::GetInstance()->SetActiveScene("CombatScene");
 	}
-	
-//	std::cout << "Updating Scene SplashScreen" << std::endl;
 
-//	static int x = 2000.f, y = 400.f;
-//if (AEInputCheckCurr(AEVK_W))
-//{
-//	y++;
-//}
-//if (AEInputCheckCurr(AEVK_S))
-//{
-//	y--;
-//}
-//if (AEInputCheckCurr(AEVK_A))
-//{
-//	x--;
-//}
-//if (AEInputCheckCurr(AEVK_D))
-//{
-//	x++;
-//}
-//static int mx = 0, my = 200;
-//if (AEInputCheckCurr(AEVK_UP))
-//{
-//	my++;
-//}
-//if (AEInputCheckCurr(AEVK_DOWN))
-//{
-//	my--;
-//}
-//AEMtx33 scale = { 0 }, trans = { 0 };
-//AEMtx33Scale(&scale, x, y);
-//AEMtx33Trans(&trans, mx, my);
-//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-//
-//cout << mx << endl;
-	///////////////////////////////////////////////////////////////////////////
-	//UPDATE FLOOR MOVEMENT
-	//////////////////////////////////////////////////////////////////////////
+	//	std::cout << "Updating Scene SplashScreen" << std::endl;
+
+	//	static int x = 2000.f, y = 400.f;
+	//if (AEInputCheckCurr(AEVK_W))
+	//{
+	//	y++;
+	//}
+	//if (AEInputCheckCurr(AEVK_S))
+	//{
+	//	y--;
+	//}
+	//if (AEInputCheckCurr(AEVK_A))
+	//{
+	//	x--;
+	//}
+	//if (AEInputCheckCurr(AEVK_D))
+	//{
+	//	x++;
+	//}
+	//static int mx = 0, my = 200;
+	//if (AEInputCheckCurr(AEVK_UP))
+	//{
+	//	my++;
+	//}
+	//if (AEInputCheckCurr(AEVK_DOWN))
+	//{
+	//	my--;
+	//}
+	//AEMtx33 scale = { 0 }, trans = { 0 };
+	//AEMtx33Scale(&scale, x, y);
+	//AEMtx33Trans(&trans, mx, my);
+	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+	//
+	//cout << mx << endl;
+		///////////////////////////////////////////////////////////////////////////
+		//UPDATE FLOOR MOVEMENT
+		//////////////////////////////////////////////////////////////////////////
 	static bool start = false;
-	start = AEInputCheckReleased(AEVK_SPACE)? !start: start;
-	
+	start = AEInputCheckReleased(AEVK_SPACE) ? !start : start;
+
 	if (start)
 	{
 		AEMtx33 m_LastFloorData = m_Floor[8].m_TransformFloorData;
@@ -1146,7 +1150,7 @@ void SceneSplashScreen::Update(double dt)
 				m_LeftThirdSideFloor[i].m_currFloorTimer += dt;
 		}
 
-				m_LastFloorData = m_LeftFourthSideFloor[8].m_TransformFloorData;
+		m_LastFloorData = m_LeftFourthSideFloor[8].m_TransformFloorData;
 		for (int i = 9; i > -1; i--)
 		{
 			AEMtx33 m_NextFloorData = m_LeftFourthSideFloor[i].m_currFloorNum != 0 ? m_LeftFourthSideFloor[m_LeftFourthSideFloor[i].m_currFloorNum - 1].m_TransformFloorData : m_LeftFourthSideFloor[i].m_TransformFloorCurr = m_LastFloorData;
@@ -1212,7 +1216,7 @@ void SceneSplashScreen::Update(double dt)
 
 void SceneSplashScreen::Render()
 {
-    // Set the background to black.
+	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
 	////////////////////////////////////////////////////////////////////////////////////////
@@ -1356,6 +1360,11 @@ void SceneSplashScreen::Render()
 	AEGfxTextureSet(pFogTex, 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+
+
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Render Digipen Logo
 	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_LINES_STRIP);
 }
 
