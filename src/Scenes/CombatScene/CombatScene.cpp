@@ -26,7 +26,7 @@ namespace {
         {"MAIN", MAIN},
         {"ATTACK", ATTACK},
         {"ITEMS", ITEMS},
-        {"CONFIRMATION", CONFIRMATION}
+        {"FLEE", CONFIRMATION},
     };
 
     std::vector<std::vector<std::string>> btns = {
@@ -40,6 +40,8 @@ namespace {
 
     int btnY = 800;
 
+    /*im so sorry this code very spaghet but time crunch!!*/
+    // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
     void renderBtns(std::vector<std::string> bvalues) {
         int btnWidth = (AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size();
         int btnHeight = btnWidth / 3;
@@ -55,14 +57,11 @@ namespace {
                     if (currentState == ACTION_BTNS::MAIN) {
                         currentState = stateMap.find(bv)->second;
                     }
-                    else if (bv == "BACK") {
+                    else if (bv == "BACK" || bv == "NO") {
                         currentState = ACTION_BTNS::MAIN;
                     }
                     else if (bv == "YES") {
                         std::cout << "Fleeing fight\n";
-                    }
-                    else if (bv == "NO") {
-                        std::cout << "Cancelled fleeing\n";
                     }
                 }
             }
