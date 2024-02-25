@@ -27,6 +27,8 @@ Technology is prohibited.
 #include "AEEngine.h"
 #include <iostream>
 #include <fstream>
+#include "../utils/Draw/Draw.h"
+
 using namespace std;  // we shouldnt do this, crowds namespace
 
 #endif //PCH_H

@@ -22,6 +22,7 @@ void SceneManager::Update(double _dt)
 		}
 		
 		activeScene = nextScene;
+		//Change this for restart function
 		activeScene->Load();
 		activeScene->Init();
 	}

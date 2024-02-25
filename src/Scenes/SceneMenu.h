@@ -2,6 +2,10 @@
 #define SCENE_MENU_H
 
 #include "Scene.h"
+#include "SceneManager.h"
+#include "../Backend/Pch.h"
+
+#define ScreenTransitionTimer 3.0f
 
 class SceneManager;
 class SceneMenu : public Scene

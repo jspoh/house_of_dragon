@@ -53,9 +53,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
     		gGameRunning = 0;
     
-    	if (AEInputCheckTriggered(AEVK_1))
+    	if (AEInputCheckTriggered(AEVK_0))
     		AESysSetFullScreen(1);
-    	if (AEInputCheckTriggered(AEVK_2))
+    	if (AEInputCheckTriggered(AEVK_9))
     		AESysSetFullScreen(0);
     }
     
