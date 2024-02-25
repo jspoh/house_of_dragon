@@ -90,7 +90,6 @@ GameObjectManager::GameObjectManager()
 // Destructor
 GameObjectManager::~GameObjectManager()
 {
-	std::cout << "HI MEMORY DEBUGGING" << std::endl;
 }
 
 // Check for overlap

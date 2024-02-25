@@ -61,9 +61,12 @@ void GameManager::Run()
 
 void GameManager::Exit()
 {
-	//Free Textures
-	//End Scene Manager
+	////Free Textures
+	////End Scene Manager
 	SceneManager::GetInstance()->Exit();
-	//GameObjectManager::GetInstance()->Destroy();
-	//Sound Manager will destroy itself when program ends
+	////GameObjectManager::GetInstance()->Destroy();
+	////Sound Manager will destroy itself when program ends
+
+	SceneManager::Destroy();
+	SoundManager::Destroy();
 }
