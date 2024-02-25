@@ -20,7 +20,8 @@ void GameManager::Init()
 	//Load Textures
 	// 
 	//Init Scene Manager
-	SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
+	//SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
+	SceneManager::GetInstance()->SetActiveScene("SceneStage1");
 	//Init GameObject Manager
 	//Create::Entity("reference", Vector3(0.0f, 0.0f, 0.0f));
 	//GameObjectManager::GetInstance()->AddEntity();

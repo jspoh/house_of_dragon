@@ -1,14 +1,14 @@
-#include "CombatScene.h"
-
-//#include "../../Backend/GameManager.h" //? Still thinking
-#include "../../Scenes/SceneManager.h"
-#include "../../Backend/Pch.h"
-#include "../../utils/utils.h"
-#include "../../Event/Event.h"
-#include "../../utils/utils.h"
-#include <vector>
-#include <unordered_map>
-
+//#include "CombatScene.h"
+//
+////#include "../../Backend/GameManager.h" //? Still thinking
+//#include "../../Scenes/SceneManager.h"
+//#include "../../Backend/Pch.h"
+//#include "../../utils/utils.h"
+//#include "../../Event/Event.h"
+//#include "../../utils/utils.h"
+//#include <vector>
+//#include <unordered_map>
+//
 //Player* player;
 //Cat* cat;
 //
@@ -251,103 +251,103 @@
 //        }
 //    }
 //}
-
-CombatScene::CombatScene()
-{
-}
-
-CombatScene::CombatScene(SceneManager* _sceneMgr)
-{
-    _sceneMgr->AddScene("CombatScene", this);
-}
-
-CombatScene::~CombatScene()
-{
-}
-
-void CombatScene::Load()
-{
-    Event::getInstance();
-}
-
-
-void CombatScene::Init()
-{
-    /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
-
-    //player = new Player();
-    //cat = new Cat(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
-}
-
-void CombatScene::Update(double dt)
-{
-    //if (AEInputCheckTriggered(AEVK_3)) {
-    //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
-    //}
-
-    //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
-
-    //Point p = stow(100, 100);
-    //Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
-
-    //if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
-    //    // end player's turn
-    //    CombatManager::getInstance()->next();
-    //    CombatManager::getInstance()->isPlayingEvent = false;
-
-    //    /*check if success or failure and modify damage accordingly*/
-    //    switch (CombatManager::getInstance()->qtEventResult) {
-    //    case EVENT_RESULTS::SUCCESS:
-    //        player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
-    //        break;
-    //    case EVENT_RESULTS::FAILURE:
-    //        player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
-    //        break;
-    //    case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-    //        // apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
-    //        break;
-    //    }
-    //    CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
-    //}
-
-    //if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
-    //    renderBtns(btns[currentState]);
-    //}
-    //else if (CombatManager::getInstance()->turn == TURN::ENEMY){
-    //    cat->attack(*player);
-    //    CombatManager::getInstance()->next();  // perhaps can implement pause
-    //}
-
-    //
-    //cat->render();
-    //player->render();
-
-    //if (cat->isDead()) {
-    //    Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
-    //}
-    //else if (player->isDead()) {
-    //    Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
-    //}
-
-
-    // !TODO
-    // draw health of enemy (just use number for now)
-    // use function `ston` screen to normalized to render text
-
-    // !TODO
-    // draw text describing the action of enemy, disappear after 1 second
-}
-
-void CombatScene::Render()
-{
-    
-}
-
-void CombatScene::Exit()
-{
-  /*  std::cout << "Exiting CombatScene\n";
-    CombatManager::destroy();
-    delete cat;*/
-}
-
-
+//
+//CombatScene::CombatScene()
+//{
+//}
+//
+//CombatScene::CombatScene(SceneManager* _sceneMgr)
+//{
+//    _sceneMgr->AddScene("CombatScene", this);
+//}
+//
+//CombatScene::~CombatScene()
+//{
+//}
+//
+//void CombatScene::Load()
+//{
+//    Event::getInstance();
+//}
+//
+//
+//void CombatScene::Init()
+//{
+//    /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
+//
+//    //player = new Player();
+//    //cat = new Cat(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
+//}
+//
+//void CombatScene::Update(double dt)
+//{
+//    //if (AEInputCheckTriggered(AEVK_3)) {
+//    //    Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
+//    //}
+//
+//    //Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+//
+//    //Point p = stow(100, 100);
+//    //Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
+//
+//    //if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+//    //    // end player's turn
+//    //    CombatManager::getInstance()->next();
+//    //    CombatManager::getInstance()->isPlayingEvent = false;
+//
+//    //    /*check if success or failure and modify damage accordingly*/
+//    //    switch (CombatManager::getInstance()->qtEventResult) {
+//    //    case EVENT_RESULTS::SUCCESS:
+//    //        player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
+//    //        break;
+//    //    case EVENT_RESULTS::FAILURE:
+//    //        player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
+//    //        break;
+//    //    case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+//    //        // apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
+//    //        break;
+//    //    }
+//    //    CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+//    //}
+//
+//    //if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
+//    //    renderBtns(btns[currentState]);
+//    //}
+//    //else if (CombatManager::getInstance()->turn == TURN::ENEMY){
+//    //    cat->attack(*player);
+//    //    CombatManager::getInstance()->next();  // perhaps can implement pause
+//    //}
+//
+//    //
+//    //cat->render();
+//    //player->render();
+//
+//    //if (cat->isDead()) {
+//    //    Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+//    //}
+//    //else if (player->isDead()) {
+//    //    Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+//    //}
+//
+//
+//    // !TODO
+//    // draw health of enemy (just use number for now)
+//    // use function `ston` screen to normalized to render text
+//
+//    // !TODO
+//    // draw text describing the action of enemy, disappear after 1 second
+//}
+//
+//void CombatScene::Render()
+//{
+//    
+//}
+//
+//void CombatScene::Exit()
+//{
+//  /*  std::cout << "Exiting CombatScene\n";
+//    CombatManager::destroy();
+//    delete cat;*/
+//}
+//
+//
