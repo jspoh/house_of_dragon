@@ -5,6 +5,8 @@
 #define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
+
+
 class SceneLevelBuilder
 {
 public:
@@ -49,6 +51,7 @@ private:
 
 		//And this is basically Render or Not
 		bool m_IsRender = true;
+		AEMtx33 m_Scale, m_Trans;
 	};
 
 	AEGfxVertexList* pMesh;

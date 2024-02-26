@@ -47,7 +47,6 @@ void SceneLevelBuilder::Init()
 {
 	/*******************************************************************************/
 	//MAIN FLOOR
-	AEMtx33 scale = { 0 }, trans = { 0 };
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		for (int i = 0; i < NUM_OF_TILES; i++)
@@ -56,63 +55,64 @@ void SceneLevelBuilder::Init()
 			{
 				//Out of Screen Floor
 			case 0:
-				AEMtx33Scale(&scale, 8000.f, 1262.f);
-				AEMtx33Trans(&trans, 16000 * (j-t_CenterFloorNum), -2829);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000 * (j-t_CenterFloorNum), -2829);
 				break;
 			case 1:
-				AEMtx33Scale(&scale, 7000.f, 1262.f);
-				AEMtx33Trans(&trans, 5750 * (j - t_CenterFloorNum), -2229);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750 * (j - t_CenterFloorNum), -2229);
 				break;
 			case 2:
-				AEMtx33Scale(&scale, 6000.f, 1262.f);
-				AEMtx33Trans(&trans, 4350 * (j - t_CenterFloorNum), -1629);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350 * (j - t_CenterFloorNum), -1629);
 				break;
 				//First Floor
 			case 3:
-				AEMtx33Scale(&scale, 2940.f, 616.f);
-				AEMtx33Trans(&trans, 2150 * (j - t_CenterFloorNum), -696);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150 * (j - t_CenterFloorNum), -696);
 				break;
 				//Second Floor
 			case 4:
-				AEMtx33Scale(&scale, 1593.0f, 339.f);
-				AEMtx33Trans(&trans, 1150 * (j - t_CenterFloorNum), -282);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150 * (j - t_CenterFloorNum), -282);
 				break;
 				//Third floor
 			case 5:
-				AEMtx33Scale(&scale, 779.0f, 133.f);
-				AEMtx33Trans(&trans, 555 * (j - t_CenterFloorNum), -50);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555 * (j - t_CenterFloorNum), -50);
 				break;
 				//Fourth floor
 			case 6:
-				AEMtx33Scale(&scale, 381.0f, 47.f);
-				AEMtx33Trans(&trans, 270 * (j - t_CenterFloorNum), 39);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270 * (j - t_CenterFloorNum), 39);
 				break;
 				//Fifth floor
 			case 7:
-				AEMtx33Scale(&scale, 181.0f, 14.f);
-				AEMtx33Trans(&trans, 130 * (j - t_CenterFloorNum), 69);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130 * (j - t_CenterFloorNum), 69);
 				break;
 				//Sixth floor
 			case 8:
-				AEMtx33Scale(&scale, 85.0f, 4.f);
-				AEMtx33Trans(&trans, 59 * (j - t_CenterFloorNum), 78);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59 * (j - t_CenterFloorNum), 78);
 				break;
 				//Seventh floor
 			case 9:
-				AEMtx33Scale(&scale, 33.0f, 1.f);
-				AEMtx33Trans(&trans, 25 * (j - t_CenterFloorNum), 80);
+				AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25 * (j - t_CenterFloorNum), 80);
 				break;
 			default:
 				std::cout << "Error pls check floor" << std::endl;
 				break;
 			}
-			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &trans, &scale);
+			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
 			m_Floor[j][i].m_currFloorNum = i;
 			//Setting Movement Point To
 			m_Floor[j][i].m_TransformFloorCurr = m_Floor[j][i].m_TransformFloorData;
 		}
 	}
 
+	AEMtx33 scale, trans;
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
 	//DO SKY DATA
@@ -133,6 +133,7 @@ void SceneLevelBuilder::Init()
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 }
+
 void SceneLevelBuilder::Update(double dt)
 {
 	//Placement Tool (Remove once done)
@@ -169,8 +170,10 @@ void SceneLevelBuilder::Update(double dt)
 //
 //cout << mx << endl;
 
-	static float t_MovementSpeed = 0.0f;
+	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
+	static int t_PanSideWays = 80;
+	static int PanDown = 0;
 	t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<float>(dt * 5.f) : 0;
 
 	if (AEInputCheckCurr(AEVK_Z))
@@ -181,6 +184,30 @@ void SceneLevelBuilder::Update(double dt)
 	else
 		m_StopMovement = false;
 
+	if (AEInputCheckCurr(AEVK_V))
+	{
+		m_PanCloseToGround = true;
+		t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30? 1 : 0;
+		PanDown -= PanDown > -100 ? 1 : 0;
+	}
+	else
+	{
+		m_PanCloseToGround = false;
+		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 1 : 0;
+		PanDown += PanDown < 0 ? 1 : 0;
+	}
+
+	if (AEInputCheckCurr(AEVK_C))
+	{
+		t_PanSideWays -= t_PanSideWays > 30 ? 1 : 0;
+	}
+	else
+	{
+		t_PanSideWays += t_PanSideWays < 80 ? 1 : 0;
+	}
+
+	AEGfxSetCamPosition(0, -PanDown);
+	
 	///////////////////////////////////////////////////////////////////////////
 	//UPDATE FLOOR MOVEMENT
 	//////////////////////////////////////////////////////////////////////////
@@ -194,15 +221,15 @@ void SceneLevelBuilder::Update(double dt)
 
 			//Minimum Speed of next floor
 			AEMtx33 m_MinimumNextFloorSpeed = {
-			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,//CHANGE THIS FOR PANNING CLOSER TO GROUND
-			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
-			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
-			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
-			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
-			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
-			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
-			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
-			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / t_PanSideWays,
+			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / t_PanCloseToGroundValue,
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / t_PanSideWays,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / t_PanSideWays,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / t_PanSideWays,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / t_PanSideWays,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / t_PanSideWays,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / t_PanSideWays
 			};
 
 			//Incrementing speed
@@ -225,6 +252,7 @@ void SceneLevelBuilder::Update(double dt)
 			m_Floor[j][i].m_TransformFloorCurr.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
+
 
 			if (!m_StopMovement)
 			{
@@ -295,9 +323,11 @@ void SceneLevelBuilder::Render()
 	//// Tell the engine to get ready to draw something with texture.
 	//// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+
+
 	//Main Floor
 	AEGfxTextureSet(pFloorTex, 0, 0);
-	for (int i = 0; i < NUM_OF_TILES; i++)
+	for (int i = NUM_OF_TILES - 1; i > -1; i--)
 	{
 		if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 		{
@@ -305,32 +335,33 @@ void SceneLevelBuilder::Render()
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}
 	}
+
 	////Left Floor
-	//AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	//for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
-	//{
-	//	for (int i = 0; i < NUM_OF_TILES; i++)
-	//	{
-	//		if (m_Floor[j][i].m_IsRender)
-	//		{
-	//			AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	//		}
-	//	}
-	//}
-	////Right Floor
-	//AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	//for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
-	//{
-	//	for (int i = 0; i < NUM_OF_TILES; i++)
-	//	{
-	//		if (m_Floor[j][i].m_IsRender)
-	//		{
-	//			AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	//		}
-	//	}
-	//}
+	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
+	{
+		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+		{
+			if (m_Floor[j][i].m_IsRender)
+			{
+				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+	}
+	//Right Floor
+	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
+	{
+		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+		{
+			if (m_Floor[j][i].m_IsRender)
+			{
+				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//Fog
