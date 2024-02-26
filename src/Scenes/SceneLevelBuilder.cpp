@@ -29,6 +29,7 @@ SceneLevelBuilder::SceneLevelBuilder()
 	pSkyTex = AEGfxTextureLoad("Assets/Scene_Sky_Clear.png");
 	pSunOverlayTex = AEGfxTextureLoad("Assets/Scene_Sun_Overlaylighting.png");
 	pFogTex = AEGfxTextureLoad("Assets/Scene_Fog_Color.png");
+	pEnemyTex = AEGfxTextureLoad("Assets/Scene_Enemy_Strong.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
@@ -116,7 +117,7 @@ void SceneLevelBuilder::Init()
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
 	//DO SKY DATA
-	AEMtx33Scale(&scale, 2000.0f, 400.f);
+	AEMtx33Scale(&scale, 2000.0f, 800.f);
 	AEMtx33Trans(&trans, 0, 200);
 	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
 
@@ -197,6 +198,7 @@ void SceneLevelBuilder::Update(double dt)
 		PanDown += PanDown < 0 ? 1 : 0;
 	}
 
+	//NOT WORKING WILL GIVE UP
 	if (AEInputCheckCurr(AEVK_C))
 	{
 		t_PanSideWays -= t_PanSideWays > 30 ? 1 : 0;
@@ -222,14 +224,14 @@ void SceneLevelBuilder::Update(double dt)
 			//Minimum Speed of next floor
 			AEMtx33 m_MinimumNextFloorSpeed = {
 			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,
-			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / t_PanSideWays,
+			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
 			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / t_PanCloseToGroundValue,
-			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / t_PanSideWays,
-			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / t_PanSideWays,
-			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / t_PanSideWays,
-			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / t_PanSideWays,
-			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / t_PanSideWays,
-			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / t_PanSideWays
+			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
 			};
 
 			//Incrementing speed
@@ -252,7 +254,8 @@ void SceneLevelBuilder::Update(double dt)
 			m_Floor[j][i].m_TransformFloorCurr.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
-
+			
+			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
 
 			if (!m_StopMovement)
 			{
@@ -369,6 +372,21 @@ void SceneLevelBuilder::Render()
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
+	//Still Working on it
+	AEGfxTextureSet(pEnemyTex, 0, 0);
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+		{
+			AEMtx33 temp{}, trans{};
+			AEMtx33TransApply(&temp, &m_Floor[j][i].m_TransformFloorCurr, 0, 3.0f);
+			AEMtx33ScaleApply(&temp, &temp, 0.2f, 1.5f);
+			//AEMtx33Concat(&temp, &temp, &m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr);
+			AEGfxSetTransform(temp.m);
+			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+		}
+	}
+
 }
 void SceneLevelBuilder::Exit()
 {
@@ -380,6 +398,7 @@ void SceneLevelBuilder::Exit()
 	AEGfxTextureUnload(pSkyTex);
 	AEGfxTextureUnload(pSunOverlayTex);
 	AEGfxTextureUnload(pFogTex);
+	AEGfxTextureUnload(pEnemyTex);
 
 	//Clear Floor
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)

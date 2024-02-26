@@ -63,6 +63,8 @@ private:
 	AEGfxTexture* pSunOverlayTex;
 	AEGfxTexture* pFogTex;
 
+	AEGfxTexture* pEnemyTex;
+
 	v_FloorData** m_Floor;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;
