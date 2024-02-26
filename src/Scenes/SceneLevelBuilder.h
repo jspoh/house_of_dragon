@@ -2,8 +2,9 @@
 
 #include "../Backend/Pch.h"
 
-#define SIZE_OF_FLOOR 9 //X Axis
+#define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
+#define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
 class SceneLevelBuilder
 {
 public:
@@ -14,17 +15,39 @@ public:
 	void Render();
 private:
 	//Init relevant values like floor translation
-	void Init(); //DONT NEED TO CALL
-	void Exit(); //DONT NEED TO CALL
+	void Init();
+	void Exit();
 
 	struct v_FloorData
 	{
+		////////////////////////////////////////////////////////////////////////
+		/*
+		There are two different transforms that each floor tile stores.
+		- m_TransformFloorData -> the Original Floor Tile transform data(example: Floor[6][8] transform data)
+		- m_TransformFloorCurr -> the Current Floor Tile transform data that is incremented
+		                        to the Original Floor Tile transform data
+
+		And the other variables does the following:
+		- m_currFloorNum -> determines the current tile number that it is on.
+		- m_currFloorSpeed -> determines the value to increment for each value in the transform matrix.
+		*/
+		////////////////////////////////////////////////////////////////////////
 		AEMtx33 m_TransformFloorData;
 		AEMtx33 m_TransformFloorCurr;
 		int m_currFloorNum = 0;
+		AEMtx33 m_currFloorSpeed = { 0 };
+
+		////////////////////////////////////////////////////////////////////////
+        /*
+        Determines the time taken before switching tiles.
+		Pls don't alter.
+		A more efficient check than consistently checking AABB/checking distance.
+        */
+        ////////////////////////////////////////////////////////////////////////
 		double m_currFloorTimer = 0;
 		double m_FloorSpeedTimer = 0.5;
-		AEMtx33 m_currFloorSpeed = { 0 };
+
+		//And this is basically Render or Not
 		bool m_IsRender = true;
 	};
 
@@ -42,4 +65,9 @@ private:
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
 	AEMtx33 m_TransformFogData;
+
+	bool m_StopMovement;
+	bool m_PanCloseToGround;
+	bool m_PanLeft;
+	bool m_PanRight;
 };

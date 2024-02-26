@@ -3,7 +3,11 @@
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
 SceneLevelBuilder::SceneLevelBuilder()
-	:pMesh(nullptr)
+	:pMesh(nullptr),
+	m_StopMovement(false),
+	m_PanCloseToGround(false),
+    m_PanLeft(false),
+    m_PanRight(false)
 {
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
@@ -71,27 +75,27 @@ void SceneLevelBuilder::Init()
 				//Second Floor
 			case 4:
 				AEMtx33Scale(&scale, 1593.0f, 339.f);
-				AEMtx33Trans(&trans, 1158 * (j - t_CenterFloorNum), -282);
+				AEMtx33Trans(&trans, 1150 * (j - t_CenterFloorNum), -282);
 				break;
 				//Third floor
 			case 5:
 				AEMtx33Scale(&scale, 779.0f, 133.f);
-				AEMtx33Trans(&trans, 556 * (j - t_CenterFloorNum), -50);
+				AEMtx33Trans(&trans, 555 * (j - t_CenterFloorNum), -50);
 				break;
 				//Fourth floor
 			case 6:
 				AEMtx33Scale(&scale, 381.0f, 47.f);
-				AEMtx33Trans(&trans, 276 * (j - t_CenterFloorNum), 39);
+				AEMtx33Trans(&trans, 270 * (j - t_CenterFloorNum), 39);
 				break;
 				//Fifth floor
 			case 7:
 				AEMtx33Scale(&scale, 181.0f, 14.f);
-				AEMtx33Trans(&trans, 131 * (j - t_CenterFloorNum), 69);
+				AEMtx33Trans(&trans, 130 * (j - t_CenterFloorNum), 69);
 				break;
 				//Sixth floor
 			case 8:
 				AEMtx33Scale(&scale, 85.0f, 4.f);
-				AEMtx33Trans(&trans, 62 * (j - t_CenterFloorNum), 78);
+				AEMtx33Trans(&trans, 59 * (j - t_CenterFloorNum), 78);
 				break;
 				//Seventh floor
 			case 9:
@@ -131,8 +135,55 @@ void SceneLevelBuilder::Init()
 }
 void SceneLevelBuilder::Update(double dt)
 {
-	////////////////////////////////////////////////////////////////
-	//UPDATE FLOOR
+	//Placement Tool (Remove once done)
+	//	static int x = 2000.f, y = 400.f;
+//if (AEInputCheckCurr(AEVK_W))
+//{
+//	y++;
+//}
+//if (AEInputCheckCurr(AEVK_S))
+//{
+//	y--;
+//}
+//if (AEInputCheckCurr(AEVK_A))
+//{
+//	x--;
+//}
+//if (AEInputCheckCurr(AEVK_D))
+//{
+//	x++;
+//}
+//static int mx = 0, my = 200;
+//if (AEInputCheckCurr(AEVK_UP))
+//{
+//	my++;
+//}
+//if (AEInputCheckCurr(AEVK_DOWN))
+//{
+//	my--;
+//}
+//AEMtx33 scale = { 0 }, trans = { 0 };
+//AEMtx33Scale(&scale, x, y);
+//AEMtx33Trans(&trans, mx, my);
+//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+//
+//cout << mx << endl;
+
+	static float t_MovementSpeed = 0.0f;
+	static int t_PanCloseToGroundValue = 80;
+	t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<float>(dt * 5.f) : 0;
+
+	if (AEInputCheckCurr(AEVK_Z))
+	{
+		m_StopMovement = true;
+		t_MovementSpeed = 0.0f;
+	}
+	else
+		m_StopMovement = false;
+
+	///////////////////////////////////////////////////////////////////////////
+	//UPDATE FLOOR MOVEMENT
+	//////////////////////////////////////////////////////////////////////////
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		AEMtx33 m_LastFloorData = m_Floor[j][8].m_TransformFloorData;
@@ -143,7 +194,7 @@ void SceneLevelBuilder::Update(double dt)
 
 			//Minimum Speed of next floor
 			AEMtx33 m_MinimumNextFloorSpeed = {
-			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / 80,//CHANGE THIS FOR PANNING CLOSER TO GROUND
+			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,//CHANGE THIS FOR PANNING CLOSER TO GROUND
 			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
 			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / 80,
 			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
@@ -155,15 +206,15 @@ void SceneLevelBuilder::Update(double dt)
 			};
 
 			//Incrementing speed
-			m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] : 0;
-			m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] : 0;
+			m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed: 0;
+			m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed: 0;
 			//Adding to floor
 			m_Floor[j][i].m_TransformFloorCurr.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0];
 			m_Floor[j][i].m_TransformFloorCurr.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1];
@@ -175,25 +226,28 @@ void SceneLevelBuilder::Update(double dt)
 			m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
 
-			if (m_Floor[j][i].m_currFloorTimer > m_Floor[j][i].m_FloorSpeedTimer)
+			if (!m_StopMovement)
 			{
-				m_Floor[j][i].m_currFloorTimer = 0.0;
-				if (m_Floor[j][i].m_currFloorNum > 1)
+				if (m_Floor[j][i].m_currFloorTimer > m_Floor[j][i].m_FloorSpeedTimer)
 				{
-					m_Floor[j][i].m_currFloorNum--;
-					m_Floor[j][i].m_IsRender = true;
+					m_Floor[j][i].m_currFloorTimer = 0.0;
+					if (m_Floor[j][i].m_currFloorNum > 1)
+					{
+						m_Floor[j][i].m_currFloorNum--;
+						m_Floor[j][i].m_IsRender = true;
+					}
+					else
+					{
+						//Loop to the top
+						m_Floor[j][i].m_currFloorNum = 8;
+						m_Floor[j][i].m_currFloorSpeed = { 0 };
+						m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
+						m_Floor[j][i].m_IsRender = false;
+					}
 				}
 				else
-				{
-					//Loop to the top
-					m_Floor[j][i].m_currFloorNum = 8;
-					m_Floor[j][i].m_currFloorSpeed = { 0 };
-					m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
-					m_Floor[j][i].m_IsRender = false;
-				}
+					m_Floor[j][i].m_currFloorTimer += dt;
 			}
-			else
-				m_Floor[j][i].m_currFloorTimer += dt;
 		}
 	}
 }
@@ -251,32 +305,32 @@ void SceneLevelBuilder::Render()
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}
 	}
-	//Left Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
-	for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
-	{
-		for (int i = 0; i < NUM_OF_TILES; i++)
-		{
-			if (m_Floor[j][i].m_IsRender)
-			{
-				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-			}
-		}
-	}
-	//Right Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
-	for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
-	{
-		for (int i = 0; i < NUM_OF_TILES; i++)
-		{
-			if (m_Floor[j][i].m_IsRender)
-			{
-				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-			}
-		}
-	}
+	////Left Floor
+	//AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	//for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
+	//{
+	//	for (int i = 0; i < NUM_OF_TILES; i++)
+	//	{
+	//		if (m_Floor[j][i].m_IsRender)
+	//		{
+	//			AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//		}
+	//	}
+	//}
+	////Right Floor
+	//AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	//for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
+	//{
+	//	for (int i = 0; i < NUM_OF_TILES; i++)
+	//	{
+	//		if (m_Floor[j][i].m_IsRender)
+	//		{
+	//			AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//		}
+	//	}
+	//}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
 	//Fog
