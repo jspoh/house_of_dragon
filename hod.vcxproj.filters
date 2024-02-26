@@ -100,12 +100,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\CombatManager.cpp">
-        <Filter>Source Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scenes\CombatScene\CombatScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Event\Event.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\SceneLevelBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -204,12 +207,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\CombatManager.hpp">
-        <Filter>Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scenes\CombatScene\CombatScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Event\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\SceneLevelBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
