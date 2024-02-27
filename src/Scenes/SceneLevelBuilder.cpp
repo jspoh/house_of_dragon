@@ -9,6 +9,8 @@ SceneLevelBuilder::SceneLevelBuilder()
     m_PanLeft(false),
     m_PanRight(false)
 {
+	//////////////////////////////////////////////////////////////////////////////////
+	// Change To Draw Once JS makes his code better
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -21,7 +23,8 @@ SceneLevelBuilder::SceneLevelBuilder()
 		-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
-
+	/////////////////////////////////////////////////////////////////////////////////
+	
 	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
 	pFloorTex = AEGfxTextureLoad("Assets/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideRight_Sand_3D.png");
@@ -106,6 +109,8 @@ void SceneLevelBuilder::Init()
 				std::cout << "Error pls check floor" << std::endl;
 				break;
 			}
+
+			m_Floor[j][i].m_OriginalTrans = m_Floor[j][i].m_Trans;
 			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
 			m_Floor[j][i].m_currFloorNum = i;
 			//Setting Movement Point To
@@ -254,8 +259,13 @@ void SceneLevelBuilder::Update(double dt)
 			m_Floor[j][i].m_TransformFloorCurr.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
 			m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
-			
-			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
+
+			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			m_Floor[j][i].m_Trans.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
+			m_Floor[j][i].m_Trans.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
+
+			//Dont get why need this
+			//AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
 
 			if (!m_StopMovement)
 			{
@@ -266,6 +276,7 @@ void SceneLevelBuilder::Update(double dt)
 					{
 						m_Floor[j][i].m_currFloorNum--;
 						m_Floor[j][i].m_IsRender = true;
+					
 					}
 					else
 					{
@@ -274,6 +285,10 @@ void SceneLevelBuilder::Update(double dt)
 						m_Floor[j][i].m_currFloorSpeed = { 0 };
 						m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
 						m_Floor[j][i].m_IsRender = false;
+
+						m_Floor[j][i].m_Trans.m[0][2] = m_Floor[j][8].m_OriginalTrans.m[0][2];
+						m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
+
 					}
 				}
 				else
@@ -366,7 +381,6 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-
 	//Fog
 	AEGfxTextureSet(pFogTex, 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
@@ -376,16 +390,20 @@ void SceneLevelBuilder::Render()
 	AEGfxTextureSet(pEnemyTex, 0, 0);
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
-		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+		for (int i = NUM_OF_TILES - 1; i > -1; i--) 
 		{
 			AEMtx33 temp{}, trans{};
-			AEMtx33TransApply(&temp, &m_Floor[j][i].m_TransformFloorCurr, 0, 3.0f);
-			AEMtx33ScaleApply(&temp, &temp, 0.2f, 1.5f);
+			AEMtx33Scale(&temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
+			temp.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
+			temp.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+			AEMtx33TransApply(&temp, &temp, 0, 20);
+			//AEMtx33Concat(&temp, &m_Floor[j][i].m_Trans, &temp /*, 0, 3.0f*/);
 			//AEMtx33Concat(&temp, &temp, &m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr);
 			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}
 	}
+
 
 }
 void SceneLevelBuilder::Exit()

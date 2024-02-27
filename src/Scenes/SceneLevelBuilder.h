@@ -51,7 +51,7 @@ private:
 
 		//And this is basically Render or Not
 		bool m_IsRender = true;
-		AEMtx33 m_Scale, m_Trans;
+		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
 	};
 
 	AEGfxVertexList* pMesh;
