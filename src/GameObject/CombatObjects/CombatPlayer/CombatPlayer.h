@@ -8,6 +8,7 @@ private:
 	void _drawHealth(float screenX, float screenY);
 
 public:
+	Player();
 	Player(double health = 100, double dmg = 10, Element element = Element::NO_ELEMENT);
 
 	/**

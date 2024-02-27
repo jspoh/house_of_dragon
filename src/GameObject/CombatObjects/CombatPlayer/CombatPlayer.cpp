@@ -3,6 +3,8 @@
 #include <iostream>
 
 
+Player::Player() {}
+
 Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
 
 }
