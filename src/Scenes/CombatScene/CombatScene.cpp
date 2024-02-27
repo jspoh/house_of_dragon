@@ -150,6 +150,7 @@ void CombatScene::Update(double dt)
     Point p = stow(100, 100);
     Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
 
+    // if player has finished quicktime event
     if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
         // end player's turn
         CombatManager::getInstance()->next();
@@ -170,8 +171,9 @@ void CombatScene::Update(double dt)
         CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     }
 
+    // when is player turn and player is not playing a quicktime event
     if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
-        renderBtns(btns[currentState]);
+        renderBtns(btns[currentState]);  // render player action buttons
     }
     else if (CombatManager::getInstance()->turn == TURN::ENEMY){
         cat->attack(*player);
@@ -182,24 +184,24 @@ void CombatScene::Update(double dt)
     cat->render();
     player->render();
 
+
+
+}
+
+void CombatScene::Render()
+{
     if (cat->isDead()) {
         RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
     else if (player->isDead()) {
         RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
-
-
      //!TODO
-     //draw health of enemy (just use number for now)
+     //draw health of enemy
      //use function `ston` screen to normalized to render text
 
      //!TODO
-     //draw text describing the action of enemy, disappear after 1 second
-}
-
-void CombatScene::Render()
-{
+     //draw text describing the action of enemy, disappear after 1 second, or render attack animation
     
 }
 
