@@ -50,7 +50,7 @@ namespace {
 
     /*im so sorry this code very spaghet but time crunch!!*/
     // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
-    void renderBtns(std::vector<std::string> bvalues) {
+    void updateRenderBtns(std::vector<std::string> bvalues) {
         float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
         float btnHeight = btnWidth / 3.f;
         btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
@@ -173,7 +173,7 @@ void CombatScene::Update(double dt)
 
     // when is player turn and player is not playing a quicktime event
     if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent) {
-        renderBtns(btns[currentState]);  // render player action buttons
+        updateRenderBtns(btns[currentState]);  // render player action buttons
     }
     else if (CombatManager::getInstance()->turn == TURN::ENEMY){
         cat->attack(*player);
