@@ -6,6 +6,7 @@
 #include "../../utils/utils.h"
 #include "../../Event/Event.h"
 #include "../../utils/utils.h"
+#include "../../GameObject/CombatObjects/CombatManager.h"
 #include <vector>
 #include <unordered_map>
 
@@ -104,53 +105,6 @@ double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
 bool Mob::isDead() {
     return this->health <= 0;
 }
-
-namespace {
-    enum TURN {
-        PLAYER,
-        ENEMY,
-        NUM_TURNS
-    };
-}
-
-class CombatManager {
-private:
-    static CombatManager* _instance;
-
-
-    ~CombatManager() {
-        if (_instance) {
-            delete _instance;
-        }
-    }
-
-
-public:
-    TURN turn = TURN::PLAYER;
-    EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
-    double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
-    Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
-
-    bool isPlayingEvent = false;
-
-    static CombatManager* getInstance() {
-        if (!_instance) {
-            _instance = new CombatManager();
-        }
-        return _instance;
-    }
-
-    void next() {
-        turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
-    }
-
-    static void destroy() {
-        if (_instance) {
-            delete _instance;
-        }
-    }
-};
-CombatManager* CombatManager::_instance = nullptr;
 
 
 
@@ -346,7 +300,7 @@ void CombatScene::Render()
 void CombatScene::Exit()
 {
     std::cout << "Exiting CombatScene\n";
-    CombatManager::destroy();
+    delete CombatManager::getInstance();
     delete cat;
 }
 

@@ -3,6 +3,7 @@
 #include "../../Scenes/Scene.h"
 #include "../../GameObject/Animals/Elements.hpp"
 #include "../../utils/utils.h"
+#include "../../GameObject/CombatObjects/CombatManager.h"
 
 #include <vector>
 //Testing SpriteAnimation
@@ -50,7 +51,6 @@ public:
 
 	virtual void reset();
 };
-
 
 class Enemy : public Mob {
 	private:
