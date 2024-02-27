@@ -218,6 +218,9 @@ void SceneLevelBuilder::Update(double dt)
 	///////////////////////////////////////////////////////////////////////////
 	//UPDATE FLOOR MOVEMENT
 	//////////////////////////////////////////////////////////////////////////
+	//if (false)
+	{
+
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		AEMtx33 m_LastFloorData = m_Floor[j][8].m_TransformFloorData;
@@ -295,6 +298,8 @@ void SceneLevelBuilder::Update(double dt)
 					m_Floor[j][i].m_currFloorTimer += dt;
 			}
 		}
+	}
+
 	}
 }
 void SceneLevelBuilder::Render()
@@ -387,18 +392,41 @@ void SceneLevelBuilder::Render()
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 	//Still Working on it
+	static double x = 0, y = 0;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y+=0.03;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y-= 0.03;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x-= 0.03;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x+= 0.03;
+	}
 	AEGfxTextureSet(pEnemyTex, 0, 0);
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		for (int i = NUM_OF_TILES - 1; i > -1; i--) 
 		{
-			AEMtx33 temp{}, trans{};
-			AEMtx33Scale(&temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
+			AEMtx33 temp{};
+			AEMtx33Identity(&temp);
+			temp.m[1][0] = 0.30*(j - t_CenterFloorNum) / (i + 1);
+			//Change this to obj to render Should fix issue
+			if(i == 9 && j==0)
+			cout << temp.m[1][0] << endl;
+
+			AEMtx33ScaleApply(&temp, &temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
+
 			temp.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
 			temp.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
 			AEMtx33TransApply(&temp, &temp, 0, 20);
-			//AEMtx33Concat(&temp, &m_Floor[j][i].m_Trans, &temp /*, 0, 3.0f*/);
-			//AEMtx33Concat(&temp, &temp, &m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr);
+
 			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 		}

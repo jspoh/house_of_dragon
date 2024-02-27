@@ -64,7 +64,8 @@ private:
 	AEGfxTexture* pFogTex;
 
 	AEGfxTexture* pEnemyTex;
-
+	AEGfxTexture* pEnemyLeftTex;
+	AEGfxTexture* pEnemyRightTex;
 	v_FloorData** m_Floor;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;
