@@ -42,7 +42,6 @@ Draw::Draw() {
 
 Draw::~Draw() {
 	AEGfxMeshFree(_mesh);
-	delete _instance;
 	
 	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
 		AEGfxTextureUnload(map.second);
