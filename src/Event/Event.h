@@ -122,5 +122,5 @@ public:
 	 * put this in update loop. use `setActiveEvent` to trigger events
 	 * 
 	 */
-	void updateLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 5);
+	void updateRenderLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 5);
 };

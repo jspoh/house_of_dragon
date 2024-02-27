@@ -58,7 +58,7 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 	return false;
 }
 
-void Event::updateLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key, double timeout) {
+void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key, double timeout) {
 	switch (_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPES:
 		break;
@@ -72,7 +72,7 @@ void Event::updateLoop(EVENT_RESULTS& result, double dt, float screenX, float sc
 		_clickTimer(result, dt, key, timeout);
 		break;
 	default:
-		std::cerr << "Event::updateLoop reached end of switch case\n";
+		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
 		break;
 	}
 }
