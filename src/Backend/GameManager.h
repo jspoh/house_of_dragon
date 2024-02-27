@@ -7,6 +7,7 @@
 #include "../Scenes/SceneManager.h"
 ////#include "../GameObject/GameObjectManager.h"
 #include "../Backend/SoundManager.h"
+#include "../Event/Event.h"
 
 class GameManager
 {

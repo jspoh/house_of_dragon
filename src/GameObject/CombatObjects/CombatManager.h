@@ -2,6 +2,7 @@
 
 #include "../../Event/Event.h"
 #include "./Elements/Elements.hpp"
+#include "../../Backend/Pch.h"
 
 namespace {
     enum TURN {
@@ -19,8 +20,8 @@ private:
 
 
 public:
-    ~CombatManager() {
-    }
+    ~CombatManager();
+
     TURN turn = TURN::PLAYER;
     EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
     double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy

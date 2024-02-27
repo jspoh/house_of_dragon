@@ -2,6 +2,10 @@
 
 CombatManager* CombatManager::_instance = nullptr;
 
+CombatManager::~CombatManager() {
+    std::cout << "Destroying CombatManager\n";
+}
+
 CombatManager* CombatManager::getInstance() {
     if (!_instance) {
         _instance = new CombatManager();

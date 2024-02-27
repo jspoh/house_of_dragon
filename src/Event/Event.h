@@ -59,7 +59,6 @@ private:
 	const float nroc = 50;
 
 	Event();
-	~Event();
 
 	void _updateTime(double dt);
 	void _resetState();
@@ -96,6 +95,8 @@ private:
 	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 1);
 
 public:
+	~Event();
+
 	static Event* getInstance();
 
 	/**
