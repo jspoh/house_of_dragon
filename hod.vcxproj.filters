@@ -93,7 +93,7 @@
     <ClCompile Include="src\utils\CollisionChecker\CollisionChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\Draw\Draw.cpp">
+    <ClCompile Include="src\utils\RenderHelper\RenderHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Scenes\CombatScene\CombatScene.cpp">
@@ -206,7 +206,7 @@
     <ClInclude Include="src\utils\CollisionChecker\CollisionChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Draw\Draw.h">
+    <ClInclude Include="src\utils\RenderHelper\RenderHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Scenes\CombatScene\CombatScene.h">

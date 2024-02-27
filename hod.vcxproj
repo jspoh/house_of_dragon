@@ -185,7 +185,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Scenes\SceneStage1.cpp" />
     <ClCompile Include="src\Scenes\test\TestScene.cpp" />
     <ClCompile Include="src\utils\CollisionChecker\CollisionChecker.cpp" />
-    <ClCompile Include="src\utils\Draw\Draw.cpp" />
+    <ClCompile Include="src\utils\RenderHelper\RenderHelper.cpp" />
     <ClCompile Include="src\utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -224,7 +224,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Scenes\SceneStage1.h" />
     <ClInclude Include="src\Scenes\test\TestScene.h" />
     <ClInclude Include="src\utils\CollisionChecker\CollisionChecker.h" />
-    <ClInclude Include="src\utils\Draw\Draw.h" />
+    <ClInclude Include="src\utils\RenderHelper\RenderHelper.h" />
     <ClInclude Include="src\utils\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

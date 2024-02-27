@@ -49,5 +49,5 @@ Point ston(float x, float y);
 
 
 /*for ease of inclusion*/
-#include "./Draw/Draw.h"
+#include "./RenderHelper/RenderHelper.h"
 #include "./CollisionChecker/CollisionChecker.h"
