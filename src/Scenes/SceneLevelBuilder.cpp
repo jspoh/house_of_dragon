@@ -8,15 +8,12 @@ SceneLevelBuilder::SceneObject::SceneObject()
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
 	AEMtx33Identity(&m_Trans);
-	AEMtx33Identity(&m_OriginalTrans);
 }
 
 SceneLevelBuilder::SceneLevelBuilder()
 	:pMesh(nullptr),
 	m_StopMovement(false),
-	m_PanCloseToGround(false),
-    m_PanLeft(false),
-    m_PanRight(false)
+	m_PanCloseToGround(false)
 {
 	//////////////////////////////////////////////////////////////////////////////////
 	// Change To Draw Once JS makes his code better
@@ -42,6 +39,8 @@ SceneLevelBuilder::SceneLevelBuilder()
 	pSunOverlayTex = AEGfxTextureLoad("Assets/Scene_Sun_Overlaylighting.png");
 	pFogTex = AEGfxTextureLoad("Assets/Scene_Fog_Color.png");
 	pEnemyTex = AEGfxTextureLoad("Assets/Scene_Enemy_Strong.png");
+	//Draw::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
+	//Draw::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<SceneObject>* [SIZE_OF_FLOOR];
@@ -72,49 +71,59 @@ void SceneLevelBuilder::Init()
 			case 0:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000 * (j-t_CenterFloorNum), -2829);
+				m_Floor[j][i].m_FloorNum = 0;
 				break;
 			case 1:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750 * (j - t_CenterFloorNum), -2229);
+				m_Floor[j][i].m_FloorNum = 1;
 				break;
 			case 2:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350 * (j - t_CenterFloorNum), -1629);
+				m_Floor[j][i].m_FloorNum = 2;
 				break;
 				//First Floor
 			case 3:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150 * (j - t_CenterFloorNum), -696);
+				m_Floor[j][i].m_FloorNum = 3;
 				break;
 				//Second Floor
 			case 4:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150 * (j - t_CenterFloorNum), -282);
+				m_Floor[j][i].m_FloorNum = 4;
 				break;
 				//Third floor
 			case 5:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555 * (j - t_CenterFloorNum), -50);
+				m_Floor[j][i].m_FloorNum = 5;
 				break;
 				//Fourth floor
 			case 6:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270 * (j - t_CenterFloorNum), 39);
+				m_Floor[j][i].m_FloorNum = 6;
 				break;
 				//Fifth floor
 			case 7:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130 * (j - t_CenterFloorNum), 69);
+				m_Floor[j][i].m_FloorNum = 7;
 				break;
 				//Sixth floor
 			case 8:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59 * (j - t_CenterFloorNum), 78);
+				m_Floor[j][i].m_FloorNum = 8;
 				break;
 				//Seventh floor
 			case 9:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25 * (j - t_CenterFloorNum), 80);
+				m_Floor[j][i].m_FloorNum = 9;
 				break;
 			default:
 				std::cout << "Error pls check floor" << std::endl;
@@ -137,14 +146,10 @@ void SceneLevelBuilder::Init()
 	{
 		for (int i = 0; i < NUM_OF_TILES; i++)
 		{
-			/*Create::Ame("ame", 
-				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][2], m_Floor[j][i].m_TransformFloorCurr.m[1][2], 0.0f), 
-				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][0], m_Floor[j][i].m_TransformFloorCurr.m[1][1], 0.0f));*/
-			SceneObject newObj;
+		    SceneObject newObj;
 			newObj.m_TexRef = "Mystery_S_Enemy";
-			newObj.m_Trans = newObj.m_OriginalTrans = m_Floor[j][i].m_Trans;
-			AEMtx33Scale(&scale, 0.2f, 0.2f);
-			newObj.m_Scale = scale;
+			AEMtx33Trans(&newObj.m_Trans, (rand() % 2 - 1) * 20 ,20);
+			AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f);
 			m_FloorOBJs[j][i].push_back(newObj);
 		}
 	}
@@ -248,7 +253,7 @@ void SceneLevelBuilder::Update(double dt)
 	AEGfxSetCamPosition(0, -PanDown);
 	
 
-	//if (false)
+	if (!m_StopMovement)
 	{
 
 		///////////////////////////////////////////////////////////////////////////
@@ -325,6 +330,10 @@ void SceneLevelBuilder::Update(double dt)
 							m_Floor[j][i].m_Trans.m[0][2] = m_Floor[j][8].m_OriginalTrans.m[0][2];
 							m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
 
+							CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
+							//Clear Scene Objects in row
+							DestroyRowOBJs(m_Floor[j][i].m_FloorNum);
+							CreateRowOBJs(m_Floor[j][i].m_FloorNum);
 						}
 					}
 					else
@@ -356,10 +365,10 @@ void SceneLevelBuilder::Update(double dt)
 					//Scale is done
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
 
-					//Need to update
+					//Should be fine
 					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
 					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
-					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 0, 20);
+					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, (*it).m_Trans.m[0][2], (*it).m_Trans.m[1][2]);
 
 				}
 			}
@@ -459,12 +468,21 @@ void SceneLevelBuilder::Render()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//SceneObj
 	AEGfxTextureSet(pEnemyTex, 0, 0);
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	//Render Left Side
+	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
 	{
-		for (int i = NUM_OF_TILES - 1; i > -1; i--) 
+		for (int i = 0; i < NUM_OF_TILES - 1; i++)
 		{
-			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
-				it != m_FloorOBJs[j][i].end();
+			////////////////////////////////////////////////
+			// CurrentTileNumFurthest = 4
+			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+			////////////////////////////////////////////////
+			int tempTileNum = CurrentTileNumFurthest - i;
+			if (tempTileNum < 0)
+				tempTileNum += NUM_OF_TILES - 1;
+
+			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
 				AEGfxSetTransform((*it).m_TransformData.m);
@@ -472,30 +490,46 @@ void SceneLevelBuilder::Render()
 			}
 		}
 	}
-	 
+	//Render Right Side
+	for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
+	{
+		for (int i = 0; i < NUM_OF_TILES - 1; i++)
+		{
+			////////////////////////////////////////////////
+			// CurrentTileNumFurthest = 4
+			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+			////////////////////////////////////////////////
+			int tempTileNum = CurrentTileNumFurthest - i;
+			if (tempTileNum < 0)
+				tempTileNum += NUM_OF_TILES - 1;
+
+			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+				it != m_FloorOBJs[j][tempTileNum].end();
+				it++)
+			{
+				AEGfxSetTransform((*it).m_TransformData.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
+		}
+	}
+	
+	//Rendering a single line 
+	// (Find out why this is causing issue with spawning at different location)
+	// (Find out why the images are translating weird to the center of the tile for no reason)
 	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	//{
-	//	for (int i = NUM_OF_TILES - 1; i > -1; i--) 
+	//	for (int i = NUM_OF_TILES - 9; i > -1; i--)
 	//	{
-	//		AEMtx33 temp{};
-	//		AEMtx33Identity(&temp);
-	//		temp.m[1][0] = 0.30*(j - t_CenterFloorNum) / (i + 1);
-	//		//Change this to obj to render Should fix issue
-	//		/*if(i == 9 && j==0)
-	//		cout << temp.m[1][0] << endl;*/
-
-	//		AEMtx33ScaleApply(&temp, &temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
-
-	//		temp.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
-	//		temp.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
-	//		AEMtx33TransApply(&temp, &temp, 0, 20);
-
-	//		AEGfxSetTransform(temp.m);
-	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//		for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+	//			it != m_FloorOBJs[j][i].end();
+	//			it++)
+	//		{
+	//			AEGfxSetTransform((*it).m_TransformData.m);
+	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//		}
 	//	}
 	//}
 
-	AEGfxTextureSet(pEnemyTex, 0, 0);
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
 }
@@ -525,4 +559,25 @@ void SceneLevelBuilder::Exit()
 	//Clear Object in scene
 	GameObjectManager::GetInstance()->Exit();
 	GameObjectManager::GetInstance()->Destroy();
+}
+
+void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
+{
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		SceneObject newObj;
+		//Randomly Spawn multiple different types
+		newObj.m_TexRef = "Mystery_S_Enemy";
+		AEMtx33Trans(&newObj.m_Trans, (rand() % 2 - 1) * 20, 20);
+		AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f);
+		m_FloorOBJs[j][t_tileNum].push_back(newObj);
+	}
+}
+
+void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
+{
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		m_FloorOBJs[j][t_tileNum].clear();
+	}
 }

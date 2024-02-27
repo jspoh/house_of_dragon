@@ -20,6 +20,9 @@ private:
 	void Init();
 	void Exit();
 
+	void CreateRowOBJs(int t_tileNum);
+	void DestroyRowOBJs(int t_tileNum);
+
 	struct v_FloorData
 	{
 		////////////////////////////////////////////////////////////////////////
@@ -37,6 +40,7 @@ private:
 		AEMtx33 m_TransformFloorData;
 		AEMtx33 m_TransformFloorCurr;
 		int m_currFloorNum = 0;
+		int m_FloorNum = 0;
 		AEMtx33 m_currFloorSpeed = { 0 };
 
 		////////////////////////////////////////////////////////////////////////
@@ -71,8 +75,32 @@ private:
 	{
 		SceneObject();
 		AEMtx33 m_TransformData;
-		AEMtx33 m_Scale, m_TileTrans, m_Trans, m_OriginalTrans;
+		AEMtx33 m_Scale, m_Trans;
 		string m_TexRef; //Used with draw
+	};
+
+	enum SceneObjectTypes
+	{
+		EType_MysteryEnemyStrong,
+		EType_MysteryEnemyWeak,
+		EType_Tree1,
+		EType_Tree2,
+		EType_Tree3,
+		EType_Tree4,
+		EType_Tree5,
+		EType_Tree6,
+		EType_ShortTree1,
+		EType_ShortTree2,
+		EType_ShortTree3,
+		EType_Grass,
+		EType_Roots,
+		EType_OvergrownRoots,
+		EType_Boulder1,
+		EType_Boulder2,
+		EType_Boulder3,
+		EType_Rock1,
+		EType_Rock2,
+		EType_Rock3,
 	};
 
 	AEGfxVertexList* pMesh;
@@ -96,6 +124,8 @@ private:
 
 	bool m_StopMovement;
 	bool m_PanCloseToGround;
-	bool m_PanLeft;
-	bool m_PanRight;
+	/*bool m_PanLeft;
+	bool m_PanRight;*/
+
+	int CurrentTileNumFurthest;
 };

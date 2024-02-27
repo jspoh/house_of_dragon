@@ -24,7 +24,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     //AESysSetFullScreen(true); //Dont do fullscreen
     // Changing the window title
-    AESysSetWindowTitle("Version Alpha 0.0.1 - White Screen");
+    AESysSetWindowTitle("Version Alpha 0.1.0 - 3D Engine is RUNNING");
     
     //Show Cursor - Disable when have custom cursor
     AEInputShowCursor(1);
