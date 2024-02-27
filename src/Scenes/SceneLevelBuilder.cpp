@@ -335,6 +335,8 @@ void SceneLevelBuilder::Update(double dt)
 							m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
 
 							CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
+							//Clear Scene Objects in row
+							DestroyRowOBJs(m_Floor[j][i].m_FloorNum);
 						}
 					}
 					else
@@ -534,8 +536,6 @@ void SceneLevelBuilder::Render()
 	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	//	}
 	//}
-
-	AEGfxTextureSet(pEnemyTex, 0, 0);
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
 }
@@ -565,4 +565,17 @@ void SceneLevelBuilder::Exit()
 	//Clear Object in scene
 	GameObjectManager::GetInstance()->Exit();
 	GameObjectManager::GetInstance()->Destroy();
+}
+
+void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
+{
+
+}
+
+void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
+{
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		m_FloorOBJs[j][t_tileNum].clear();
+	}
 }

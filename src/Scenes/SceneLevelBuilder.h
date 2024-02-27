@@ -20,6 +20,9 @@ private:
 	void Init();
 	void Exit();
 
+	void CreateRowOBJs(int t_tileNum);
+	void DestroyRowOBJs(int t_tileNum);
+
 	struct v_FloorData
 	{
 		////////////////////////////////////////////////////////////////////////
