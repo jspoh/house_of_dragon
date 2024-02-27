@@ -143,7 +143,7 @@ void SceneLevelBuilder::Init()
 			SceneObject newObj;
 			newObj.m_TexRef = "Mystery_S_Enemy";
 			newObj.m_Trans = newObj.m_OriginalTrans = m_Floor[j][i].m_Trans;
-			AEMtx33Scale(&scale, 3.0f, 3.0f);
+			AEMtx33Scale(&scale, 0.2f, 0.2f);
 			newObj.m_Scale = scale;
 			m_FloorOBJs[j][i].push_back(newObj);
 		}
@@ -338,12 +338,32 @@ void SceneLevelBuilder::Update(double dt)
 		//////////////////////////////////////////////////////////////////////////
 		//GameObjectManager::GetInstance()->Update(dt);
 
-		//std::list<GameObject*> GOlist = GameObjectManager::GetInstance()->GetEntityList();
-		//for (std::list<GameObject*>::iterator it = GOlist.begin();
-		//	it != GOlist.end();
-		//	it++)
-		//{
-		//}
+		for (int j = 0; j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+					it != m_FloorOBJs[j][i].end();
+					it++)
+				{
+					//Reset Transform data
+					AEMtx33Identity(&(*it).m_TransformData);
+
+					//Skew y is done
+					if (!AEInputCheckCurr(AEVK_L))
+					(*it).m_TransformData.m[1][0] = 0.30 * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1) ;
+
+					//Scale is done
+					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
+
+					//Need to update
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 0, 20);
+
+				}
+			}
+		}
 	}
 }
 void SceneLevelBuilder::Render()
@@ -447,18 +467,6 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][i].end();
 				it++)
 			{
-				AEMtx33Identity(&(*it).m_TransformData);
-				(*it).m_TransformData.m[1][0] = 0.30 * (j - t_CenterFloorNum) / (i + 1);
-				//Change this to obj to render Should fix issue
-				/*if(i == 9 && j==0)
-				cout << temp.m[1][0] << endl;*/
-
-				AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
-
-				(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
-				(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
-				AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 0, 20);
-
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}

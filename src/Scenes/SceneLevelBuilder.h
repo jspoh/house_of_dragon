@@ -71,7 +71,7 @@ private:
 	{
 		SceneObject();
 		AEMtx33 m_TransformData;
-		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
+		AEMtx33 m_Scale, m_TileTrans, m_Trans, m_OriginalTrans;
 		string m_TexRef; //Used with draw
 	};
 
