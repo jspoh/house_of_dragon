@@ -146,4 +146,9 @@ void SceneMenu::Render()
 void SceneMenu::Exit()
 {
 	std::cout << "Exiting Scene Menu" << std::endl;
+	for (int i = 0; i < 4; i++)
+	{
+		AEGfxTextureUnload(myMenu.button[i]);
+	}
+	AEGfxMeshFree(myMenu.mesh);
 }
