@@ -13,20 +13,7 @@
 
 Player* player;
 Enemy* cat;
-
-
-/**
- * !TODO move these out.
- */
-
-
-//Cat::Cat(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size) : Enemy(element, health, dmg, texturePath, textureRef, screenX, screenY, size) {
-//
-//}
-
-
-
-/*actual combatscene stuff*/
+//std::vector<Enemy> enemies;
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
@@ -148,7 +135,7 @@ void CombatScene::Init()
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 
     player = new Player();
-    cat = new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f, 200);  // rmb to clear memory!!
+    cat = new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f, 200);
 }
 
 void CombatScene::Update(double dt)
@@ -157,7 +144,7 @@ void CombatScene::Update(double dt)
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     }
 
-    RenderHelper::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    //RenderHelper::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 
     Point p = stow(100, 100);
     Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);

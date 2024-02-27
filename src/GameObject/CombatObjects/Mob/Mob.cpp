@@ -1,5 +1,7 @@
 #include "Mob.h"
 
+Mob::Mob() {}
+
 Mob::Mob(Element element, double health, double dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {
 
 }

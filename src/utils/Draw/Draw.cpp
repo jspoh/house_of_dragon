@@ -89,7 +89,6 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
 		std::cerr << "Texture failed to load\n";
-		exit(1);
 		return false;
 	}
 	_textureRef[reference] = pTex;

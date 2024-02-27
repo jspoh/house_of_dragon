@@ -5,11 +5,12 @@
 
 class Mob {
 public:
-	double health;
-	double maxHealth;
+	double maxHealth = 100;
+	double health = maxHealth;
 	double dmg;
 	Element element;
 
+	Mob();
 	Mob(Element element, double health, double dmg);
 
 	bool isDead();
