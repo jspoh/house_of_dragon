@@ -181,8 +181,6 @@ void CombatScene::Update(double dt)
     }
 
     
-    cat->render();
-    player->render();
 
 
 
@@ -190,6 +188,9 @@ void CombatScene::Update(double dt)
 
 void CombatScene::Render()
 {
+    cat->render();
+    player->render();
+
     if (cat->isDead()) {
         RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
