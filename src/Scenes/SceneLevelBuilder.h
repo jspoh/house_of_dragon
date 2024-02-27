@@ -1,11 +1,11 @@
 #pragma once
 
 #include "../Backend/Pch.h"
+#include "../GameObject/GameObjectManager.h"
 
 #define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-
 
 class SceneLevelBuilder
 {
@@ -51,7 +51,28 @@ private:
 
 		//And this is basically Render or Not
 		bool m_IsRender = true;
-		AEMtx33 m_Scale, m_Trans;
+		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
+	};
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+    //                       *DO NOT CONFUSE WITH GAMEOBJECTS*
+    /*
+    		   Scene Objects are simpler objects contrary to Game Objects.
+    			 They are only meant to be used in rendering in scenes.
+    			   Most, if not all, do not have much to be updated.
+    			  There are meant for faster loading and generation
+    			  during switching of scenes for seamless transition.
+    
+    		GameObjects would still be used for combat and more complex entities.
+    */
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+	struct SceneObject
+	{
+		SceneObject();
+		AEMtx33 m_TransformData;
+		AEMtx33 m_Scale, m_TileTrans, m_Trans, m_OriginalTrans;
+		string m_TexRef; //Used with draw
 	};
 
 	AEGfxVertexList* pMesh;
@@ -66,6 +87,8 @@ private:
 	AEGfxTexture* pEnemyTex;
 
 	v_FloorData** m_Floor;
+	std::list<SceneObject>** m_FloorOBJs;
+	//v_WallData** m_Wall;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;

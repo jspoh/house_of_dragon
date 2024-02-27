@@ -2,6 +2,15 @@
 
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
+SceneLevelBuilder::SceneObject::SceneObject()
+	:m_TexRef("")
+{
+	AEMtx33Identity(&m_TransformData);
+	AEMtx33Identity(&m_Scale);
+	AEMtx33Identity(&m_Trans);
+	AEMtx33Identity(&m_OriginalTrans);
+}
+
 SceneLevelBuilder::SceneLevelBuilder()
 	:pMesh(nullptr),
 	m_StopMovement(false),
@@ -9,6 +18,8 @@ SceneLevelBuilder::SceneLevelBuilder()
     m_PanLeft(false),
     m_PanRight(false)
 {
+	//////////////////////////////////////////////////////////////////////////////////
+	// Change To Draw Once JS makes his code better
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -21,7 +32,8 @@ SceneLevelBuilder::SceneLevelBuilder()
 		-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
-
+	/////////////////////////////////////////////////////////////////////////////////
+	
 	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
 	pFloorTex = AEGfxTextureLoad("Assets/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideRight_Sand_3D.png");
@@ -32,9 +44,11 @@ SceneLevelBuilder::SceneLevelBuilder()
 	pEnemyTex = AEGfxTextureLoad("Assets/Scene_Enemy_Strong.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
+	m_FloorOBJs = new std::list<SceneObject>* [SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
 		m_Floor[i] = new v_FloorData[NUM_OF_TILES];
+		m_FloorOBJs[i] = new std::list<SceneObject>[NUM_OF_TILES];
 	}
 
 	Init();
@@ -106,6 +120,8 @@ void SceneLevelBuilder::Init()
 				std::cout << "Error pls check floor" << std::endl;
 				break;
 			}
+
+			m_Floor[j][i].m_OriginalTrans = m_Floor[j][i].m_Trans;
 			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
 			m_Floor[j][i].m_currFloorNum = i;
 			//Setting Movement Point To
@@ -114,6 +130,25 @@ void SceneLevelBuilder::Init()
 	}
 
 	AEMtx33 scale, trans;
+	////////////////////////////////////////////////////////////////
+	// Create Scene Objects
+	// Use this to spawn objects into scene when starting
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		for (int i = 0; i < NUM_OF_TILES; i++)
+		{
+			/*Create::Ame("ame", 
+				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][2], m_Floor[j][i].m_TransformFloorCurr.m[1][2], 0.0f), 
+				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][0], m_Floor[j][i].m_TransformFloorCurr.m[1][1], 0.0f));*/
+			SceneObject newObj;
+			newObj.m_TexRef = "Mystery_S_Enemy";
+			newObj.m_Trans = newObj.m_OriginalTrans = m_Floor[j][i].m_Trans;
+			AEMtx33Scale(&scale, 0.2f, 0.2f);
+			newObj.m_Scale = scale;
+			m_FloorOBJs[j][i].push_back(newObj);
+		}
+	}
+
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
 	//DO SKY DATA
@@ -133,6 +168,8 @@ void SceneLevelBuilder::Init()
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+
+
 }
 
 void SceneLevelBuilder::Update(double dt)
@@ -210,74 +247,121 @@ void SceneLevelBuilder::Update(double dt)
 
 	AEGfxSetCamPosition(0, -PanDown);
 	
-	///////////////////////////////////////////////////////////////////////////
-	//UPDATE FLOOR MOVEMENT
-	//////////////////////////////////////////////////////////////////////////
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+
+	//if (false)
 	{
-		AEMtx33 m_LastFloorData = m_Floor[j][8].m_TransformFloorData;
-		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+
+		///////////////////////////////////////////////////////////////////////////
+		//UPDATE FLOOR MOVEMENT
+		//////////////////////////////////////////////////////////////////////////
+		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
-			AEMtx33 m_NextFloorData = m_Floor[j][i].m_currFloorNum != 0 ? m_Floor[j][m_Floor[j][i].m_currFloorNum - 1].m_TransformFloorData : m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
-			AEMtx33 m_CurrFloorData = m_Floor[j][m_Floor[j][i].m_currFloorNum].m_TransformFloorData;
-
-			//Minimum Speed of next floor
-			AEMtx33 m_MinimumNextFloorSpeed = {
-			(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,
-			(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
-			(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / t_PanCloseToGroundValue,
-			(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
-			(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
-			(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
-			(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
-			(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
-			(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
-			};
-
-			//Incrementing speed
-			m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed: 0;
-			m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed: m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed: 0;
-			//Adding to floor
-			m_Floor[j][i].m_TransformFloorCurr.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0];
-			m_Floor[j][i].m_TransformFloorCurr.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1];
-			m_Floor[j][i].m_TransformFloorCurr.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
-			m_Floor[j][i].m_TransformFloorCurr.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0];
-			m_Floor[j][i].m_TransformFloorCurr.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1];
-			m_Floor[j][i].m_TransformFloorCurr.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
-			m_Floor[j][i].m_TransformFloorCurr.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0];
-			m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
-			m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
-			
-			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
-
-			if (!m_StopMovement)
+			AEMtx33 m_LastFloorData = m_Floor[j][8].m_TransformFloorData;
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				if (m_Floor[j][i].m_currFloorTimer > m_Floor[j][i].m_FloorSpeedTimer)
+				AEMtx33 m_NextFloorData = m_Floor[j][i].m_currFloorNum != 0 ? m_Floor[j][m_Floor[j][i].m_currFloorNum - 1].m_TransformFloorData : m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
+				AEMtx33 m_CurrFloorData = m_Floor[j][m_Floor[j][i].m_currFloorNum].m_TransformFloorData;
+
+				//Minimum Speed of next floor
+				AEMtx33 m_MinimumNextFloorSpeed = {
+				(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,
+				(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
+				(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / t_PanCloseToGroundValue,
+				(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
+				(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
+				(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
+				(m_NextFloorData.m[2][0] - m_CurrFloorData.m[2][0]) / 80,
+				(m_NextFloorData.m[2][1] - m_CurrFloorData.m[2][1]) / 80,
+				(m_NextFloorData.m[2][2] - m_CurrFloorData.m[2][2]) / 80
+				};
+
+				//Incrementing speed
+				m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : 0;
+				//Adding to floor
+				m_Floor[j][i].m_TransformFloorCurr.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0];
+				m_Floor[j][i].m_TransformFloorCurr.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1];
+				m_Floor[j][i].m_TransformFloorCurr.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
+				m_Floor[j][i].m_TransformFloorCurr.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0];
+				m_Floor[j][i].m_TransformFloorCurr.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1];
+				m_Floor[j][i].m_TransformFloorCurr.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
+				m_Floor[j][i].m_TransformFloorCurr.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0];
+				m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
+				m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
+
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				m_Floor[j][i].m_Trans.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
+				m_Floor[j][i].m_Trans.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
+
+				//Dont get why need this
+				//AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
+
+				if (!m_StopMovement)
 				{
-					m_Floor[j][i].m_currFloorTimer = 0.0;
-					if (m_Floor[j][i].m_currFloorNum > 1)
+					if (m_Floor[j][i].m_currFloorTimer > m_Floor[j][i].m_FloorSpeedTimer)
 					{
-						m_Floor[j][i].m_currFloorNum--;
-						m_Floor[j][i].m_IsRender = true;
+						m_Floor[j][i].m_currFloorTimer = 0.0;
+						if (m_Floor[j][i].m_currFloorNum > 1)
+						{
+							m_Floor[j][i].m_currFloorNum--;
+							m_Floor[j][i].m_IsRender = true;
+
+						}
+						else
+						{
+							//Loop to the top
+							m_Floor[j][i].m_currFloorNum = 8;
+							m_Floor[j][i].m_currFloorSpeed = { 0 };
+							m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
+							m_Floor[j][i].m_IsRender = false;
+
+							m_Floor[j][i].m_Trans.m[0][2] = m_Floor[j][8].m_OriginalTrans.m[0][2];
+							m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
+
+						}
 					}
 					else
-					{
-						//Loop to the top
-						m_Floor[j][i].m_currFloorNum = 8;
-						m_Floor[j][i].m_currFloorSpeed = { 0 };
-						m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
-						m_Floor[j][i].m_IsRender = false;
-					}
+						m_Floor[j][i].m_currFloorTimer += dt;
 				}
-				else
-					m_Floor[j][i].m_currFloorTimer += dt;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////////
+		//UPDATE OBJs Pos and Logic
+		//////////////////////////////////////////////////////////////////////////
+		//GameObjectManager::GetInstance()->Update(dt);
+
+		for (int j = 0; j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+					it != m_FloorOBJs[j][i].end();
+					it++)
+				{
+					//Reset Transform data
+					AEMtx33Identity(&(*it).m_TransformData);
+
+					//Skew y is done
+					if (!AEInputCheckCurr(AEVK_L))
+					(*it).m_TransformData.m[1][0] = 0.30 * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1) ;
+
+					//Scale is done
+					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
+
+					//Need to update
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 0, 20);
+
+				}
 			}
 		}
 	}
@@ -366,27 +450,54 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-
 	//Fog
 	AEGfxTextureSet(pFogTex, 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	//Still Working on it
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//SceneObj
 	AEGfxTextureSet(pEnemyTex, 0, 0);
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
-		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+		for (int i = NUM_OF_TILES - 1; i > -1; i--) 
 		{
-			AEMtx33 temp{}, trans{};
-			AEMtx33TransApply(&temp, &m_Floor[j][i].m_TransformFloorCurr, 0, 3.0f);
-			AEMtx33ScaleApply(&temp, &temp, 0.2f, 1.5f);
-			//AEMtx33Concat(&temp, &temp, &m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr);
-			AEGfxSetTransform(temp.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+				it != m_FloorOBJs[j][i].end();
+				it++)
+			{
+				AEGfxSetTransform((*it).m_TransformData.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
 		}
 	}
+	 
+	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	//{
+	//	for (int i = NUM_OF_TILES - 1; i > -1; i--) 
+	//	{
+	//		AEMtx33 temp{};
+	//		AEMtx33Identity(&temp);
+	//		temp.m[1][0] = 0.30*(j - t_CenterFloorNum) / (i + 1);
+	//		//Change this to obj to render Should fix issue
+	//		/*if(i == 9 && j==0)
+	//		cout << temp.m[1][0] << endl;*/
 
+	//		AEMtx33ScaleApply(&temp, &temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
+
+	//		temp.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
+	//		temp.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+	//		AEMtx33TransApply(&temp, &temp, 0, 20);
+
+	//		AEGfxSetTransform(temp.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
+
+	AEGfxTextureSet(pEnemyTex, 0, 0);
+	//Enable later
+	//GameObjectManager::GetInstance()->Render();
 }
 void SceneLevelBuilder::Exit()
 {
@@ -404,10 +515,14 @@ void SceneLevelBuilder::Exit()
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
 		delete[] m_Floor[i];
+		delete[] m_FloorOBJs[i];
 	}
 	delete[] m_Floor;
+	delete[] m_FloorOBJs;
 
 	//Clear Wall
 
 	//Clear Object in scene
+	GameObjectManager::GetInstance()->Exit();
+	GameObjectManager::GetInstance()->Destroy();
 }

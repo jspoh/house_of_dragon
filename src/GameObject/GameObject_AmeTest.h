@@ -35,7 +35,7 @@ private:
 	f32 current_sprite_uv_offset_y = 0.f;
 	// Pointer to Mesh
 	AEGfxVertexList* pMesh = 0;
-	AEGfxTexture* pTex;
+	AEGfxTexture* pTex = AEGfxTextureLoad("Assets/ame.png");
 };
 
 namespace Create

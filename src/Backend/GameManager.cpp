@@ -63,7 +63,7 @@ void GameManager::Exit()
 	SceneManager::GetInstance()->Exit();
 	////GameObjectManager::GetInstance()->Destroy();
 	////Sound Manager will destroy itself when program ends
-
+	
 	SceneManager::Destroy();
 	SoundManager::Destroy();
 

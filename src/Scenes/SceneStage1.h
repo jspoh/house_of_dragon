@@ -9,10 +9,6 @@
 
 //Remove upon test finish
 #include <iostream> 
-#include "../utils/utils.h"
-#include "../Event/Event.h"
-#include <vector>
-#include <unordered_map>
 
 class SceneManager;
 class SceneStage1 : public Scene
