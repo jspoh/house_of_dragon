@@ -37,6 +37,7 @@ private:
 		AEMtx33 m_TransformFloorData;
 		AEMtx33 m_TransformFloorCurr;
 		int m_currFloorNum = 0;
+		int m_FloorNum = 0;
 		AEMtx33 m_currFloorSpeed = { 0 };
 
 		////////////////////////////////////////////////////////////////////////
@@ -71,7 +72,7 @@ private:
 	{
 		SceneObject();
 		AEMtx33 m_TransformData;
-		AEMtx33 m_Scale, m_TileTrans, m_Trans, m_OriginalTrans;
+		AEMtx33 m_Scale, m_Trans;
 		string m_TexRef; //Used with draw
 	};
 
@@ -96,6 +97,8 @@ private:
 
 	bool m_StopMovement;
 	bool m_PanCloseToGround;
-	bool m_PanLeft;
-	bool m_PanRight;
+	/*bool m_PanLeft;
+	bool m_PanRight;*/
+
+	int CurrentTileNumFurthest;
 };
