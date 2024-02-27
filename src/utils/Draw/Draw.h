@@ -33,11 +33,11 @@ private:
 	std::unordered_map<std::string, AEGfxTexture*> _textureRef;
 
 	Draw();
-	~Draw();
 
 protected:
 
 public:
+	~Draw();
 	static Draw* getInstance();
 
 	//Draw* getInstance();

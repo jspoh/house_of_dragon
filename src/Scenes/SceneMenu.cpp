@@ -52,9 +52,9 @@ void SceneMenu::Render()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 	//PART CAUSING MEMORY LEAKS (JS GO FIX STOP DOING SIDE PROJECTS)
-	/*Draw::getInstance()->text("MENU", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 - AEGfxGetWindowHeight() / 4);
+	Draw::getInstance()->text("MENU", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 - AEGfxGetWindowHeight() / 4);
 	Draw::getInstance()->text("DO HERE JAY", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 - AEGfxGetWindowHeight() / 8);
-	Draw::getInstance()->text("Press 1: GO TO Stage 1, 2: Go To Combat Scene, 3: NOT YET", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 + AEGfxGetWindowHeight() / 4);*/
+	Draw::getInstance()->text("Press 1: GO TO Stage 1, 2: Go To Combat Scene, 3: NOT YET", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2 + AEGfxGetWindowHeight() / 4);
 }
 
 void SceneMenu::Exit()
