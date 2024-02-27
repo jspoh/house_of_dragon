@@ -32,9 +32,6 @@ void GameObject_AmeTest::Init()
 	// Saving the mesh (list of triangles) in pMesh
 	pMesh = AEGfxMeshEnd();
 
-	// Load texture
-	pTex = AEGfxTextureLoad("Assets/ame.png");
-
 	current_sprite_index = rand() % 8;
 }
 
