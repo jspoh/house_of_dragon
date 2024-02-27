@@ -7,11 +7,12 @@
 #include "../../Event/Event.h"
 #include "../../utils/utils.h"
 #include "../../GameObject/CombatObjects/CombatManager.h"
+#include "../../GameObject/CombatObjects/CombatPlayer/CombatPlayer.h"
 #include <vector>
 #include <unordered_map>
 
 Player* player;
-Cat* cat;
+Enemy* cat;
 
 
 /**
@@ -19,41 +20,9 @@ Cat* cat;
  */
 
 
-Cat::Cat(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size) : Enemy(element, health, dmg, texturePath, textureRef, screenX, screenY, size) {
-
-}
-
-Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
-
-}
-
-void Player::_drawHealth(float screenX, float screenY) {
-    Draw::getInstance()->text(std::to_string(this->health), screenX, screenY);
-}
-
-void Player::render() {
-    this->_drawHealth(150, 150);
-}
-
-double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
-    DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
-    float multiplier = 1;
-    std::cout << "attackEl enum: " << attackEl << "\n";
-    std::cout << "targetEl enum: " << target.element << "\n";
-    std::cout << "Damage multiplier enum: " << dm << "\n";
-    switch (dm) {
-    case Weak:
-        multiplier = 0.5;
-        break;
-    case Strong:
-        multiplier = 2;
-        break;
-    }
-
-    double damage = this->dmg * multiplier * qtMultiplier;
-    target.health -= damage;
-    return damage;
-}
+//Cat::Cat(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size) : Enemy(element, health, dmg, texturePath, textureRef, screenX, screenY, size) {
+//
+//}
 
 
 
@@ -179,7 +148,7 @@ void CombatScene::Init()
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 
     player = new Player();
-    cat = new Cat(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
+    cat = new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
 }
 
 void CombatScene::Update(double dt)

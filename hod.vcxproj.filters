@@ -87,10 +87,7 @@
     <ClCompile Include="src\Scenes\test\TestScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\Animals\Elements.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameObject\Animals\ZodiacAnimals.cpp">
+    <ClCompile Include="src\GameObject\CombatObjects\Elements\Elements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\CollisionChecker\CollisionChecker.cpp">
@@ -115,6 +112,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\CombatObjects\Enemy\Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject\CombatObjects\CombatPlayer\CombatPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,10 +200,7 @@
     <ClInclude Include="src\Scenes\test\TestScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GameObject\Animals\Elements.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameObject\Animals\ZodiacAnimals.hpp">
+    <ClInclude Include="src\GameObject\CombatObjects\Elements\Elements.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\CollisionChecker\CollisionChecker.h">
@@ -228,6 +225,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameObject\CombatObjects\Enemy\Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject\CombatObjects\CombatPlayer\CombatPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -162,8 +162,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\db\db.cpp" />
     <ClCompile Include="src\Event\Event.cpp" />
-    <ClCompile Include="src\GameObject\Animals\Elements.cpp" />
-    <ClCompile Include="src\GameObject\Animals\ZodiacAnimals.cpp" />
+    <ClCompile Include="src\GameObject\CombatObjects\CombatPlayer\CombatPlayer.cpp" />
+    <ClCompile Include="src\GameObject\CombatObjects\Elements\Elements.cpp" />
     <ClCompile Include="src\GameObject\CombatObjects\CombatManager.cpp" />
     <ClCompile Include="src\GameObject\CombatObjects\Enemy\Enemy.cpp" />
     <ClCompile Include="src\GameObject\CombatObjects\Mob\Mob.cpp" />
@@ -201,8 +201,8 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Backend\Vector3.h" />
     <ClInclude Include="src\db\db.h" />
     <ClInclude Include="src\Event\Event.h" />
-    <ClInclude Include="src\GameObject\Animals\Elements.hpp" />
-    <ClInclude Include="src\GameObject\Animals\ZodiacAnimals.hpp" />
+    <ClInclude Include="src\GameObject\CombatObjects\CombatPlayer\CombatPlayer.h" />
+    <ClInclude Include="src\GameObject\CombatObjects\Elements\Elements.hpp" />
     <ClInclude Include="src\GameObject\CombatObjects\CombatManager.h" />
     <ClInclude Include="src\GameObject\CombatObjects\Enemy\Enemy.h" />
     <ClInclude Include="src\GameObject\CombatObjects\Mob\Mob.h" />

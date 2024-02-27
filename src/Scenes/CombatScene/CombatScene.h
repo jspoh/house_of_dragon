@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Scenes/Scene.h"
-#include "../../GameObject/Animals/Elements.hpp"
+#include "../../GameObject/CombatObjects/Elements/Elements.hpp"
 #include "../../utils/utils.h"
 #include "../../GameObject/CombatObjects/CombatManager.h"
 #include "../../GameObject/CombatObjects/Enemy/Enemy.h"
@@ -30,27 +30,9 @@ private:
 
 /*defining these functions here to chiong prototype, no time to make nicenice rn*/
 
-class Cat : public Enemy {
-public:
-	Cat(Element element = Element::Water, double health = 100, double dmg = 10, std::string texturePath = "", std::string textureRef = "", float screenX = 100, float screenY = 100, float size = 50);
-};
+//class Cat : public Enemy {
+//public:
+//	Cat(Element element = Element::Water, double health = 100, double dmg = 10, std::string texturePath = "", std::string textureRef = "", float screenX = 100, float screenY = 100, float size = 50);
+//};
 
-class Player : public Mob {
-private:
-	void _drawHealth(float screenX, float screenY);
 
-public:
-	Player(double health = 100, double dmg = 10, Element element = Element::NO_ELEMENT);
-
-	/**
-	 * .
-	 *
-	 * \param target
-	 * \param attackEl element player attacked with
-	 * \param qtMultiplier quicktime event multiplier
-	 * \return damage dealt
-	 */
-	double attack(Mob& target, Element attackEl, double qtMultiplier);
-
-	void render();
-};
