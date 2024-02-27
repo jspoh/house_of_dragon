@@ -79,6 +79,30 @@ private:
 		string m_TexRef; //Used with draw
 	};
 
+	enum SceneObjectTypes
+	{
+		EType_MysteryEnemyStrong,
+		EType_MysteryEnemyWeak,
+		EType_Tree1,
+		EType_Tree2,
+		EType_Tree3,
+		EType_Tree4,
+		EType_Tree5,
+		EType_Tree6,
+		EType_ShortTree1,
+		EType_ShortTree2,
+		EType_ShortTree3,
+		EType_Grass,
+		EType_Roots,
+		EType_OvergrownRoots,
+		EType_Boulder1,
+		EType_Boulder2,
+		EType_Boulder3,
+		EType_Rock1,
+		EType_Rock2,
+		EType_Rock3,
+	};
+
 	AEGfxVertexList* pMesh;
 
 	AEGfxTexture* pFloorTex;
