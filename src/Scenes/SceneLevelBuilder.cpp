@@ -39,8 +39,8 @@ SceneLevelBuilder::SceneLevelBuilder()
 	pSunOverlayTex = AEGfxTextureLoad("Assets/Scene_Sun_Overlaylighting.png");
 	pFogTex = AEGfxTextureLoad("Assets/Scene_Fog_Color.png");
 	pEnemyTex = AEGfxTextureLoad("Assets/Scene_Enemy_Strong.png");
-	//Draw::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
-	//Draw::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
+	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
+	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<SceneObject>* [SIZE_OF_FLOOR];

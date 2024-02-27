@@ -1,10 +1,10 @@
 /* Start Header ************************************************************************/
 /*!
-\file Draw.h
+\file RenderHelper.h
 \author Poh Jing Seng, jingseng.poh, 2301363
 \par jingseng.poh\@digipen.edu
 \date 3 Feb 2024
-\brief abstracts away drawing of shapes
+\brief abstracts away drawing of shapes and textures
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -23,24 +23,24 @@ Technology is prohibited.
 
 struct Color;
 
-class Draw /*: Singleton<Draw>*/ {
+class RenderHelper /*: Singleton<RenderHelper>*/ {
 private:
-	static Draw* _instance;
+	static RenderHelper* _instance;
 	AEGfxVertexList* _mesh;
 	s8 _font;
 	int _fontSize = 32;
 
 	std::unordered_map<std::string, AEGfxTexture*> _textureRef;
 
-	Draw();
+	RenderHelper();
 
 protected:
 
 public:
-	~Draw();
-	static Draw* getInstance();
+	~RenderHelper();
+	static RenderHelper* getInstance();
 
-	//Draw* getInstance();
+	//RenderHelper* getInstance();
 
 	/**
 	 * Sets background color.

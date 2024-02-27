@@ -37,7 +37,7 @@ Point ston(float x, float y) {
 
 namespace {
 	void _toastHelper(std::string& msg) {
-		//Draw::getInstance()->text(msg);
+		//RenderHelper::getInstance()->text(msg);
 
 	}
 }

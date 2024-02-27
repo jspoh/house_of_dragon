@@ -112,13 +112,13 @@ namespace {
                         std::cout << "Fleeing fight\n";
                     }
                 }
-                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
+                RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
             }
             else {
-                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
+                RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
             }
 
-            Draw::getInstance()->text(bv, bPosX, btnY);
+            RenderHelper::getInstance()->text(bv, bPosX, btnY);
             bPosX += btnWidth + spacing;
         }
     }
@@ -157,7 +157,7 @@ void CombatScene::Update(double dt)
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     }
 
-    Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    RenderHelper::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 
     Point p = stow(100, 100);
     Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
@@ -195,10 +195,10 @@ void CombatScene::Update(double dt)
     player->render();
 
     if (cat->isDead()) {
-        Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+        RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
     else if (player->isDead()) {
-        Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+        RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
 
 

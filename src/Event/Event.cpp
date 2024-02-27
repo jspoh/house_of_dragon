@@ -17,15 +17,15 @@ static std::unordered_map<EVENT_KEYS, std::string> eKeyToStr = {
 
 Event::Event() {
 	for (std::pair<EVENT_KEYS, std::string> map : eKeyToStr) {
-		bool success1 = Draw::getInstance()->registerTexture("key_" + map.second, "./Assets/keys/keyboard_" + map.second + ".png");
-		bool success2 = Draw::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/keys/keyboard_" + map.second + "_outline.png");
+		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/keys/keyboard_" + map.second + ".png");
+		bool success2 = RenderHelper::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/keys/keyboard_" + map.second + "_outline.png");
 		if (!success1 || !success2) {
 			std::cerr << "Failed to load asset in Event constructor\n";
 			//exit(2);
 		}
 	}
-	Draw::getInstance()->registerTexture("pass", "./Assets/flairs/flair_circle_red_8.png");
-	Draw::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
+	RenderHelper::getInstance()->registerTexture("pass", "./Assets/flairs/flair_circle_red_8.png");
+	RenderHelper::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
 }
 
 Event::~Event() {
@@ -107,11 +107,11 @@ void Event::_showEventResult(EVENT_RESULTS& result, double dt, float screenX, fl
 
 	if (_eventResult == EVENT_RESULTS::SUCCESS) {
 		// draw success
-		Draw::getInstance()->texture("pass", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
+		RenderHelper::getInstance()->texture("pass", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
 	}
 	else if (_eventResult == EVENT_RESULTS::FAILURE) {
 		// draw failure
-		Draw::getInstance()->texture("fail", screenX, screenY, _minSize, _minSize);
+		RenderHelper::getInstance()->texture("fail", screenX, screenY, _minSize, _minSize);
 	}
 }
 
@@ -174,12 +174,12 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 		_elapsedTimeMs = 0;
 	}
 
-	//Draw::getInstance()->texture("keyoutline_" + skey, screenX, screenY, _targetSize, _targetSize);
+	//RenderHelper::getInstance()->texture("keyoutline_" + skey, screenX, screenY, _targetSize, _targetSize);
 	if (_useOutline) {
-		Draw::getInstance()->texture("keyoutline_" + skey, screenX, screenY, _size, _size);
+		RenderHelper::getInstance()->texture("keyoutline_" + skey, screenX, screenY, _size, _size);
 	}
 	else {
-		Draw::getInstance()->texture("key_" + skey, screenX, screenY, _size, _size);
+		RenderHelper::getInstance()->texture("key_" + skey, screenX, screenY, _size, _size);
 	}
 }
 

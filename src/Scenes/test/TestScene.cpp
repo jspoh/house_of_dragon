@@ -23,7 +23,7 @@ TestScene::~TestScene()
 void TestScene::Load()
 {
     //Still debating whether need this
-    Draw::getInstance()->registerTexture("planet", "./Assets/PlanetTexture.png");
+    RenderHelper::getInstance()->registerTexture("planet", "./Assets/PlanetTexture.png");
 }
 
 void TestScene::Init()
@@ -71,7 +71,7 @@ void TestScene::Render()
 {
     for (Point& rect : rects) {
         Point rpt = stow(rect.x, rect.y);
-        Draw::getInstance()->texture("planet", rpt.x, rpt.y);
+        RenderHelper::getInstance()->texture("planet", rpt.x, rpt.y);
     }
     
 }
@@ -79,5 +79,5 @@ void TestScene::Render()
 void TestScene::Exit()
 {
     std::cout << "Exiting TestScene" << std::endl;
-    Draw::getInstance()->removeTextureByRef("planet");
+    RenderHelper::getInstance()->removeTextureByRef("planet");
 }

@@ -8,7 +8,7 @@ Player::Player(double health, double dmg, Element element) : Mob(element, health
 }
 
 void Player::_drawHealth(float screenX, float screenY) {
-    Draw::getInstance()->text(std::to_string(this->health), screenX, screenY);
+    RenderHelper::getInstance()->text(std::to_string(this->health), screenX, screenY);
 }
 
 void Player::render() {
