@@ -54,27 +54,27 @@ namespace {
         {"BACON", "BEEF", "CHICKEN", "CAT(jk pls)", "BACK"},  // items
         {"YES", "NO"}  // confirmation. only used for flee option
     };
-    int padding = 100;
-    int spacing = 50;
+    float padding = 100.f;
+    float spacing = 50.f;
 
-    int btnY = 550;
-    int maxBtnHeight = 100;
+    float btnY = 550.f;
+    float maxBtnHeight = 100.f;
 
     /*im so sorry this code very spaghet but time crunch!!*/
     // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
     void renderBtns(std::vector<std::string> bvalues) {
-        int btnWidth = (AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size();
-        int btnHeight = btnWidth / 3;
+        float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+        float btnHeight = btnWidth / 3.f;
         btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-        int lBtnX = padding + btnWidth / 2;
+        float lBtnX = padding + btnWidth / 2.f;
 
-        int bPosX = lBtnX;
+        float bPosX = lBtnX;
         for (const std::string bv : bvalues) {
             Point btnPos = stow(bPosX, btnY);  // button rendering position
 
             int mouseX, mouseY;
             AEInputGetCursorPosition(&mouseX, &mouseY);
-            if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, mouseX, mouseY)) {
+            if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
                 if (AEInputCheckTriggered(AEVK_LBUTTON)) {
                     /*click while on main menu*/
                     if (currentState == ACTION_BTNS::MAIN) {
@@ -112,10 +112,10 @@ namespace {
                         std::cout << "Fleeing fight\n";
                     }
                 }
-                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5, 0.5, 0.5, 1 });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
+                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
             }
             else {
-                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3, 0.3, 0.3, 1 });  // render normal when no hovering
+                Draw::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
             }
 
             Draw::getInstance()->text(bv, bPosX, btnY);
@@ -148,7 +148,7 @@ void CombatScene::Init()
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 
     player = new Player();
-    cat = new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2, 200);  // rmb to clear memory!!
+    cat = new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f, 200);  // rmb to clear memory!!
 }
 
 void CombatScene::Update(double dt)
@@ -157,7 +157,7 @@ void CombatScene::Update(double dt)
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     }
 
-    Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+    Draw::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 
     Point p = stow(100, 100);
     Event::getInstance()->updateLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
@@ -195,10 +195,10 @@ void CombatScene::Update(double dt)
     player->render();
 
     if (cat->isDead()) {
-        Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+        Draw::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
     else if (player->isDead()) {
-        Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+        Draw::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
     }
 
 

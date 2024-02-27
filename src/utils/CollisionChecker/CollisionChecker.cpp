@@ -46,7 +46,7 @@ bool CollisionChecker::_rectAABB(float screenX1, float screenY1, float w1, float
 	return false;
 }
 
-bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, int mouseX, int mouseY) {
+bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, float mouseX, float mouseY) {
 	return _rectAABB(rectScreenX, rectScreenY, rectW, rectH, mouseX, mouseY, 1, 1);
 }
 

@@ -43,7 +43,7 @@ void Event::startRandomEvent() {
 	// start a random quicktime event
 	double time;
 	AEGetTime(&time);
-	srand(time);
+	srand(static_cast<unsigned int>(time));
 	EVENT_TYPES e = static_cast<EVENT_TYPES>(rand() % NUM_EVENT_TYPES);
 	e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
 	Event::getInstance()->setActiveEvent(e);
@@ -140,7 +140,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 		return;
 	}
 
-	auto aevk = AEVK_E;
+	u8 aevk = AEVK_E;
 	switch (key) {
 	case E:
 		aevk = AEVK_E;
@@ -160,7 +160,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	if (AEInputCheckTriggered(aevk)) {
 		_size += proc;
 	}
-	_size -= nroc * dt;
+	_size -= static_cast<float>(nroc * dt);
 	_size = _size < _minSize ? _minSize : _size;
 
 	/*rendering*/
@@ -183,7 +183,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	}
 }
 
-void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, int timeout) {
+void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
 }
 

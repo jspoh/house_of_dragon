@@ -85,7 +85,7 @@ private:
 	 * \param key key to use
 	 * \param timeout
 	 */
-	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE, int timeout = 5);
+	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE, double timeout = 5);
 
 	/**
 	 * .
