@@ -2,6 +2,15 @@
 
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
+SceneLevelBuilder::SceneObject::SceneObject()
+	:m_TexRef("")
+{
+	AEMtx33Identity(&m_TransformData);
+	AEMtx33Identity(&m_Scale);
+	AEMtx33Identity(&m_Trans);
+	AEMtx33Identity(&m_OriginalTrans);
+}
+
 SceneLevelBuilder::SceneLevelBuilder()
 	:pMesh(nullptr),
 	m_StopMovement(false),
@@ -35,9 +44,11 @@ SceneLevelBuilder::SceneLevelBuilder()
 	pEnemyTex = AEGfxTextureLoad("Assets/Scene_Enemy_Strong.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
+	m_FloorOBJs = new std::list<SceneObject>* [SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
 		m_Floor[i] = new v_FloorData[NUM_OF_TILES];
+		m_FloorOBJs[i] = new std::list<SceneObject>[NUM_OF_TILES];
 	}
 
 	Init();
@@ -118,6 +129,7 @@ void SceneLevelBuilder::Init()
 		}
 	}
 
+	AEMtx33 scale, trans;
 	////////////////////////////////////////////////////////////////
 	// Create Scene Objects
 	// Use this to spawn objects into scene when starting
@@ -125,15 +137,20 @@ void SceneLevelBuilder::Init()
 	{
 		for (int i = 0; i < NUM_OF_TILES; i++)
 		{
-			Create::Ame("ame", 
+			/*Create::Ame("ame", 
 				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][2], m_Floor[j][i].m_TransformFloorCurr.m[1][2], 0.0f), 
-				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][0], m_Floor[j][i].m_TransformFloorCurr.m[1][1], 0.0f));
+				Vector3(m_Floor[j][i].m_TransformFloorCurr.m[0][0], m_Floor[j][i].m_TransformFloorCurr.m[1][1], 0.0f));*/
+			SceneObject newObj;
+			newObj.m_TexRef = "Mystery_S_Enemy";
+			newObj.m_Trans = newObj.m_OriginalTrans = m_Floor[j][i].m_Trans;
+			AEMtx33Scale(&scale, 3.0f, 3.0f);
+			newObj.m_Scale = scale;
+			m_FloorOBJs[j][i].push_back(newObj);
 		}
 	}
 
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
-	AEMtx33 scale, trans;
 	//DO SKY DATA
 	AEMtx33Scale(&scale, 2000.0f, 800.f);
 	AEMtx33Trans(&trans, 0, 200);
@@ -319,14 +336,14 @@ void SceneLevelBuilder::Update(double dt)
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE OBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
-		GameObjectManager::GetInstance()->Update(dt);
+		//GameObjectManager::GetInstance()->Update(dt);
 
-		std::list<GameObject*> GOlist = GameObjectManager::GetInstance()->GetEntityList();
-		for (std::list<GameObject*>::iterator it = GOlist.begin();
-			it != GOlist.end();
-			it++)
-		{
-		}
+		//std::list<GameObject*> GOlist = GameObjectManager::GetInstance()->GetEntityList();
+		//for (std::list<GameObject*>::iterator it = GOlist.begin();
+		//	it != GOlist.end();
+		//	it++)
+		//{
+		//}
 	}
 }
 void SceneLevelBuilder::Render()
@@ -418,48 +435,61 @@ void SceneLevelBuilder::Render()
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
-	//Still Working on it
-	static double x = 0, y = 0;
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		y+=0.03;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		y-= 0.03;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		x-= 0.03;
-	}
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		x+= 0.03;
-	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//SceneObj
 	AEGfxTextureSet(pEnemyTex, 0, 0);
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		for (int i = NUM_OF_TILES - 1; i > -1; i--) 
 		{
-			AEMtx33 temp{};
-			AEMtx33Identity(&temp);
-			temp.m[1][0] = 0.30*(j - t_CenterFloorNum) / (i + 1);
-			//Change this to obj to render Should fix issue
-			/*if(i == 9 && j==0)
-			cout << temp.m[1][0] << endl;*/
+			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+				it != m_FloorOBJs[j][i].end();
+				it++)
+			{
+				AEMtx33Identity(&(*it).m_TransformData);
+				(*it).m_TransformData.m[1][0] = 0.30 * (j - t_CenterFloorNum) / (i + 1);
+				//Change this to obj to render Should fix issue
+				/*if(i == 9 && j==0)
+				cout << temp.m[1][0] << endl;*/
 
-			AEMtx33ScaleApply(&temp, &temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
+				AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
 
-			temp.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
-			temp.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
-			AEMtx33TransApply(&temp, &temp, 0, 20);
+				(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
+				(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+				AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 0, 20);
 
-			AEGfxSetTransform(temp.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+				AEGfxSetTransform((*it).m_TransformData.m);
+				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			}
 		}
 	}
+	 
+	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	//{
+	//	for (int i = NUM_OF_TILES - 1; i > -1; i--) 
+	//	{
+	//		AEMtx33 temp{};
+	//		AEMtx33Identity(&temp);
+	//		temp.m[1][0] = 0.30*(j - t_CenterFloorNum) / (i + 1);
+	//		//Change this to obj to render Should fix issue
+	//		/*if(i == 9 && j==0)
+	//		cout << temp.m[1][0] << endl;*/
 
-	GameObjectManager::GetInstance()->Render();
+	//		AEMtx33ScaleApply(&temp, &temp, m_Floor[j][i].m_TransformFloorCurr.m[0][0]/10, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / 10);
+
+	//		temp.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
+	//		temp.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+	//		AEMtx33TransApply(&temp, &temp, 0, 20);
+
+	//		AEGfxSetTransform(temp.m);
+	//		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	//	}
+	//}
+
+	AEGfxTextureSet(pEnemyTex, 0, 0);
+	//Enable later
+	//GameObjectManager::GetInstance()->Render();
 }
 void SceneLevelBuilder::Exit()
 {
@@ -477,8 +507,10 @@ void SceneLevelBuilder::Exit()
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
 		delete[] m_Floor[i];
+		delete[] m_FloorOBJs[i];
 	}
 	delete[] m_Floor;
+	delete[] m_FloorOBJs;
 
 	//Clear Wall
 

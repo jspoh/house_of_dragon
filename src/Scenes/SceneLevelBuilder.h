@@ -7,7 +7,6 @@
 #define NUM_OF_TILES 10 //Z Axis
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
 
-
 class SceneLevelBuilder
 {
 public:
@@ -55,6 +54,27 @@ private:
 		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////
+    //                       *DO NOT CONFUSE WITH GAMEOBJECTS*
+    /*
+    		   Scene Objects are simpler objects contrary to Game Objects.
+    			 They are only meant to be used in rendering in scenes.
+    			   Most, if not all, do not have much to be updated.
+    			  There are meant for faster loading and generation
+    			  during switching of scenes for seamless transition.
+    
+    		GameObjects would still be used for combat and more complex entities.
+    */
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+	struct SceneObject
+	{
+		SceneObject();
+		AEMtx33 m_TransformData;
+		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
+		string m_TexRef; //Used with draw
+	};
+
 	AEGfxVertexList* pMesh;
 
 	AEGfxTexture* pFloorTex;
@@ -65,9 +85,10 @@ private:
 	AEGfxTexture* pFogTex;
 
 	AEGfxTexture* pEnemyTex;
-	AEGfxTexture* pEnemyLeftTex;
-	AEGfxTexture* pEnemyRightTex;
+
 	v_FloorData** m_Floor;
+	std::list<SceneObject>** m_FloorOBJs;
+	//v_WallData** m_Wall;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
