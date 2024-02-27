@@ -83,6 +83,18 @@ public:
 
 	void removeTextureByRef(std::string reference);
 
+	/**
+	 * Draws a texture.
+	 * 
+	 * \param textureRef
+	 * \param transX world transform x
+	 * \param transY world transform y
+	 * \param scaleX
+	 * \param scaleY
+	 * \param opacity
+	 * \param color
+	 * \param rotation
+	 */
 	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,0 }, f32 rotation = 0);
 
 	/**
