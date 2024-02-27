@@ -61,6 +61,8 @@ void GameObject_AmeTest::Update(double _dt)
 		current_sprite_uv_offset_y = sprite_uv_height * current_sprite_row;
 
 	}
+
+	//Update Enemy Logic or anything basic
 }
 
 void GameObject_AmeTest::Render()
@@ -110,6 +112,7 @@ void GameObject_AmeTest::Render()
 
 void GameObject_AmeTest::Exit()
 {
+	AEGfxMeshFree(pMesh);
 	AEGfxTextureUnload(pTex);
 }
 

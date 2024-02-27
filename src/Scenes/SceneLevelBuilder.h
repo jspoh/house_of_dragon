@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Backend/Pch.h"
+#include "../GameObject/GameObjectManager.h"
 
 #define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
