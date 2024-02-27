@@ -13,15 +13,16 @@ Enemy::Enemy(Element element, double health, double dmg, std::string texturePath
 
     RenderHelper::getInstance()->registerTexture(textureRef, texturePath);  // problematic code stopping execution
 
-    RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
+    //RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }
 
 void Enemy::render() {
     //std::cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
-    RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
-    RenderHelper::getInstance()->text(std::to_string(this->health), this->_spos.x, this->_spos.y - _size / 3 * 2);
+    RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size, this->_size);
+    RenderHelper::getInstance()->text(std::to_string(this->health), this->_spos.x, this->_spos.y - this->_size / 3 * 2);
 }
 
 Enemy::~Enemy() {
+    std::cout << "Destroying enemy with texture ref: " << this->_textureRef << "\n";
     RenderHelper::getInstance()->removeTextureByRef(this->_textureRef);
 }

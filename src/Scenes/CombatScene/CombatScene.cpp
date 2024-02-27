@@ -11,14 +11,15 @@
 #include <vector>
 #include <unordered_map>
 
-Player* player;
-Enemy* cat;
-//std::vector<Enemy> enemies;
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
-
 namespace {
+    Player* player;
+    Enemy* cat;
+    //std::vector<Enemy> enemies;
+
+
     EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     enum ACTION_BTNS {
         MAIN,
@@ -207,6 +208,7 @@ void CombatScene::Exit()
     std::cout << "Exiting CombatScene\n";
     delete CombatManager::getInstance();
     delete cat;
+    delete player;
 }
 
 
