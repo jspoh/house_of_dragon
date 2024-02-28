@@ -78,7 +78,7 @@ Event::Event() {
 	this->_barWidth = AEGfxGetWindowWidth() / 2.f;
 	this->_barHeight = this->_barWidth / 30.f;
 	this->_barX = AEGfxGetWindowWidth() / 2.f;
-	this->_barY = AEGfxGetWindowHeight() / 6;
+	this->_barY = AEGfxGetWindowHeight() / 6.f;
 
 	// pi -> power indicator
 	this->_piWidth = this->_barWidth / 200.f;
@@ -128,7 +128,7 @@ void Event::startRandomEvent() {
 	AEGetTime(&time);
 	srand(static_cast<unsigned int>(time));
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -181,11 +181,9 @@ void Event::_resetState() {
 	// multiclick
 	_mcoHits = 0;
 	_mcoMisses = 0;
+	_mcoDisplayHits = 0;
 	_multiClickObjects.clear();
 	_mcoIsTransitioningOut = false;
-
-	// multipliers
-	eventMultiplier = 1.f;
 }
 
 void Event::_resetTime() {
@@ -200,7 +198,7 @@ void Event::_updateTime(double dt) {
 	_totalElapsedMs += idt;
 }
 
-void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
+void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY) {
 	/*event result duration over*/
 	if (_elapsedTimeMs >= _eventResultDuration * 1000) {
 		result = _eventResult;  // update result passed by caller so that they know event is over
@@ -229,7 +227,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	/*logic*/
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventSpamKeyResult(result, dt, worldX, worldY, _spamkeyTimeout);
+		_showEventSpamKeyResult(result, worldX, worldY);
 		return;
 	}
 
@@ -297,7 +295,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 	// check if timeout
 	if (_totalElapsedMs >= _oTimerTimeout * 1000) {
 		result = EVENT_RESULTS::FAILURE;
-		_showEventSpamKeyResult(result, dt, _barX, _barY, _oTimerTimeout);
+		_showEventSpamKeyResult(result, _barX, _barY);
 		_resetState();
 		return;
 	}
@@ -377,7 +375,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 
 		// fade out event
 		if (_totalElapsedMs >= _oTimerTimeBeforeFadeOut * 1000) {
-			// if invisible, reset state
+			// if invisible, reset state as fade out completed
 			if (_oTimerOpacity <= 0.f) {
 				result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
 				_resetState();
@@ -400,7 +398,9 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		std::cout << "multiclick event over\n";
 		_elapsedTimeMs = 0;
 		_mcoIsTransitioningOut = true;
-		eventMultiplier = abs(((_mcoHits - _mcoMisses) / static_cast<float>(_maxMcoHits)) * maxMultiplier);
+		int score = (_mcoHits - _mcoMisses);
+		score = score < 0 ? 0 : score;
+		eventMultiplier = (score / static_cast<float>(_maxMcoHits)) * maxMultiplier;
 	}
 	if (_mcoIsTransitioningOut) {
 		if (_elapsedTimeMs <= _mcoTransitionTime * 1000) {	// transition out of state in this time
@@ -426,6 +426,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			if (hit) {
 				std::cout << "mco hit\n";
 				_mcoHits++;
+				_mcoDisplayHits++;
 				mco.alive = false;
 				break;
 			}
@@ -439,8 +440,10 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		else
 		if (!hit) {
 			std::cout << "mco missed\n";
+			_mcoDisplayHits--;
 			_mcoMisses++;
 		}
+		_mcoDisplayHits = _mcoDisplayHits < 0 ? 0 : _mcoDisplayHits;
 	}
 
 	/*rendering*/
@@ -455,7 +458,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		});
 	}
 
-	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6);
+	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoDisplayHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6.f);
 
 	if (_mcoIsTransitioningOut) {
 		return;

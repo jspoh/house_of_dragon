@@ -125,6 +125,7 @@ private:
 	const float _multiClickDuration = 5.f;
 	int _mcoHits = 0;
 	int _mcoMisses = 0;
+	int _mcoDisplayHits = 0;
 	int _maxMcoHits = 10;
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
@@ -141,7 +142,7 @@ private:
 	void _resetTime();
 	void _resetState();
 
-	void _showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout);
+	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
 
 	/*events*/
 
