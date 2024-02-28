@@ -587,7 +587,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			continue;
 
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			SceneObject newObj;
 			//Randomly Spawn multiple different types (DO THIS)
