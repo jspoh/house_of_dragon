@@ -44,7 +44,7 @@ enum EVENT_TYPES {
 	OSCILLATING_TIMER,
 	MULTI_CLICK,
 	NUM_EVENT_TYPES,
-	NONE_EVENT_TYPES,
+	NONE_EVENT_TYPE,
 };
 
 /**
@@ -71,7 +71,7 @@ struct MultiClickObject {
 class Event {
 private:
 	static Event* _instance;
-	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
+	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
 	EVENT_RESULTS _eventResult = NONE_EVENT_RESULTS;
 	bool _isRenderingEventResult = false;  // is render success/failure animation
 	double _eventResultDuration = 1;  // event success/failure animation duration (seconds)

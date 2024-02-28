@@ -134,7 +134,7 @@ void Event::startRandomEvent() {
 }
 
 bool Event::setActiveEvent(EVENT_TYPES e) {
-	if (_activeEvent == EVENT_TYPES::NONE_EVENT_TYPES) {
+	if (_activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
 		_activeEvent = e;
 		return true;
 	}
@@ -144,7 +144,7 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 
 void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
 	switch (_activeEvent) {
-	case EVENT_TYPES::NONE_EVENT_TYPES:
+	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
 	case EVENT_TYPES::SPAM_KEY:
 		_spamKey(result, dt, spamkey);
@@ -166,7 +166,7 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 /*private*/
 
 void Event::_resetState() {
-	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
+	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
 	_resetTime();
 	_useOutline = true;
 	_size = _minSize;
