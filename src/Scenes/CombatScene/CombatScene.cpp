@@ -159,13 +159,13 @@ void CombatScene::Update(double dt)
         /*check if success or failure and modify damage accordingly*/
         switch (CombatManager::getInstance()->qtEventResult) {
         case EVENT_RESULTS::SUCCESS:
-            player->attack(*cat, CombatManager::getInstance()->attackElement, 2);
+            player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->maxMultiplier);
             break;
         case EVENT_RESULTS::FAILURE:
-            player->attack(*cat, CombatManager::getInstance()->attackElement, 0.5);
+            player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->minMultiplier);
             break;
         case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-            // apply custom multiplier. use combatmanager.qtmultiplier or smtg like that
+            player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->eventMultiplier);
             break;
         }
         CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;

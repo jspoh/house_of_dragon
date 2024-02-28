@@ -292,7 +292,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 			// calculate multiplier
 			const float piDistanceToCenter = abs(_barX - _piX);
 			const float percentageMultiplier = ((_barWidth / 2.f) - piDistanceToCenter) / (_barWidth / 2.f);
-			eventMultiplier = percentageMultiplier * _maxMultiplier;
+			eventMultiplier = percentageMultiplier * maxMultiplier;
 			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
 		}
 	}

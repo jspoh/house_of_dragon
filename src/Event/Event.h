@@ -49,8 +49,6 @@ private:
 	/*how many milliseconds before key type changes*/
 	const int _changeMs = 100;
 
-	float _maxMultiplier = 1.5f;
-
 	/*spam key vars*/
 	const float _spamkeyTimeout = 5.f;
 	const float _minSize = 100;
@@ -131,6 +129,8 @@ private:
 public:
 	// output variable for event multiplier
 	float eventMultiplier = 1.f;
+	float maxMultiplier = 1.5f;
+	float minMultiplier = 0.2f;
 	int eventMultiplierPrecision = 2;
 
 	~Event();
