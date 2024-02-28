@@ -68,8 +68,8 @@ Event::Event() {
 	this->_barY = 50.f;
 
 	// pi -> power indicator
-	this->_piWidth = this->_barWidth / 200;
-	this->_piHeight = this->_barHeight * 1.5;
+	this->_piWidth = this->_barWidth / 200.f;
+	this->_piHeight = this->_barHeight * 1.5f;
 	this->_piX = this->_barX - this->_barWidth / 2.f;
 	this->_piY = this->_barY;
 
@@ -278,11 +278,11 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 		// power indicator movement logic. accerlerates until center of bar, then decelerates
 		// pi is left of or on the center of bar
 		if (_piX <= _barX) {
-			_piVelocity += _piAcc * dt;
+			_piVelocity += static_cast<float>(_piAcc * dt);
 		}
 		// pi is right of the center of bar
 		else {
-			_piVelocity -= _piAcc * dt;
+			_piVelocity -= static_cast<float>(_piAcc * dt);
 		}
 
 		// cap velocity
@@ -290,7 +290,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 		_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
 
 		//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
-		_piX += _piVelocity * dt;
+		_piX += static_cast<float>(_piVelocity * dt);
 
 		// guards to ensure that pi does not go out of bar
 		_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
@@ -317,7 +317,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 
 			// start fading out
 			float change = 1.f / _oTimerFadeOutDuration;
-			_oTimerOpacity -= change * dt;
+			_oTimerOpacity -= static_cast<float>(change * dt);
 		}
 	}
 }
