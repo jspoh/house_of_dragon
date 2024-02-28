@@ -78,7 +78,7 @@ Event::Event() {
 	this->_barWidth = AEGfxGetWindowWidth() / 2.f;
 	this->_barHeight = this->_barWidth / 30.f;
 	this->_barX = AEGfxGetWindowWidth() / 2.f;
-	this->_barY = 50.f;
+	this->_barY = AEGfxGetWindowHeight() / 6;
 
 	// pi -> power indicator
 	this->_piWidth = this->_barWidth / 200.f;
@@ -182,7 +182,6 @@ void Event::_resetState() {
 	_multiClickHits = 0;
 	_multiClickMisses = 0;
 	_multiClickObjects.clear();
-	_mcoCount = 1;
 }
 
 void Event::_resetTime() {
@@ -388,6 +387,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 	}
 }
 
+// !TODO: consider changing cursor to crosshair when multiclick event is active
 void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
@@ -412,10 +412,13 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			if (hit) {
 				std::cout << "mco hit\n";
 				_multiClickHits++;
+				mco.alive = false;
 				break;
 			}
 			i++;
 		}
+
+		// !TODO: consider adding animations
 		if (hit) {
 			_multiClickObjects.erase(_multiClickObjects.begin() + i);
 		}
@@ -427,19 +430,32 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	}
 
 	/*rendering*/
-	if (_multiClickObjects.empty()) {
-		// first time event is called, add object
+	// ensure that there are always mcoCount objects on screen
+	while (_multiClickObjects.size() < _mcoCount) {
 		_multiClickObjects.push_back(MultiClickObject{ 
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
-			_mcoRadius
+			_mcoRadius,
+			true,
+			0.f
 		});
 	}
 
-	for (const MultiClickObject& mco : _multiClickObjects) {
-		Point translate = stow(mco.x, mco.y);
-		RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
-	}
+	RenderHelper::getInstance()->text("Hits: " + std::to_string(_multiClickHits) + "/" + std::to_string(_maxMultiClickHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6);
 
-	RenderHelper::getInstance()->text("Multi click hits: " + std::to_string(_multiClickHits), 100.f, 100.f);
+	for (MultiClickObject& mco : _multiClickObjects) {
+		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
+		if (mco.timeSinceChange >= _mcoBlinkDuration) {
+			mco.blink = !mco.blink;
+			mco.timeSinceChange = 0.f;
+		}
+		
+		Point translate = stow(mco.x, mco.y);
+		if (mco.blink) {
+			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{0,0,0,1}, 0.f);
+		}
+		else {
+			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{0,0,0,1}, 0.f);
+		}
+	}
 }

@@ -62,6 +62,9 @@ struct MultiClickObject {
 	float x;
 	float y;
 	float radius;
+	bool alive;
+	float timeSinceChange;	// for blinking effect. changing assets light and dark
+	bool blink;
 };
 
 
@@ -122,10 +125,13 @@ private:
 	const float _multiClickDuration = 5.f;
 	int _multiClickHits = 0;
 	int _multiClickMisses = 0;
+	int _maxMultiClickHits = 10;
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
-	int _mcoCount = 1;
+	const int _mcoCount = 3;
 	const float _mcoRadius = 25.f;
+	// how long before transitioning to another display state (light vs dark) for blinking effect
+	const float _mcoBlinkDuration = 0.25f;
 
 	Event();
 
