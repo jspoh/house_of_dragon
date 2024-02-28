@@ -86,6 +86,7 @@ void RenderHelper::rect(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rota
 }
 
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
+	std::cout << "Loading texture " << path << " with reference " << reference << "\n";
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
 		std::cerr << "Texture failed to load\n";
