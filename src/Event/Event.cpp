@@ -16,8 +16,7 @@ namespace {
 	};
 
 	std::vector<std::string> meshReferences = {
-		"oTimerMeshLeft",
-		"oTimerMeshRight"
+		"oTimerMesh",
 	};
 }
 
@@ -38,31 +37,28 @@ Event::Event() {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0x00FF0000, 0.0f, 0.0f,	// bottom left
-		0.5f, -0.5f, 0x0000FF00, 1.0f, 0.0f,	// bottom right
+		0.f, -0.5f, 0x0000FF00, 1.0f, 0.0f,		// bottom mid
 		-0.5f, 0.5f, 0x00FF0000, 0.5f, 1.0f		// top left
 	);
 	AEGfxTriAdd(
-		0.5f, -0.5f, 0x0000FF00, 1.0f, 0.0f,	// bottom right
-		0.5f, 0.5f, 0x0000FF00, 1.0f, 1.0f,		// top right
+		0.f, -0.5f, 0x0000FF00, 1.0f, 0.0f,		// bottom mid
+		0.f, 0.5f, 0x0000FF00, 1.0f, 1.0f,		// top mid
 		-0.5f, 0.5f, 0x00FF0000, 0.5f, 1.0f		// top left
 	);
-	AEGfxVertexList* oTimerMeshLeft = AEGfxMeshEnd();
 
-	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-0.5f, -0.5f, 0x0000FF00, 0.0f, 0.0f,	// bottom left
+		-0.f, -0.5f, 0x0000FF00, 0.0f, 0.0f,	// bottom mid
 		0.5f, -0.5f, 0x00FF0000, 1.0f, 0.0f,	// bottom right
-		-0.5f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top left
+		-0.f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top mid
 	);
 	AEGfxTriAdd(
-		0.5f, -0.5f, 0x0000FF00, 1.0f, 0.0f,	// bottom right
+		0.5f, -0.5f, 0x00FF0000, 1.0f, 0.0f,	// bottom right
 		0.5f, 0.5f, 0x00FF0000, 1.0f, 1.0f,		// top right
-		-0.5f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top left
+		-0.f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top mid
 	);
-	AEGfxVertexList* oTimerMeshRight = AEGfxMeshEnd();
+	AEGfxVertexList* oTimerMesh = AEGfxMeshEnd();
 
-	RenderHelper::getInstance()->registerMeshByRef(meshReferences[0], oTimerMeshLeft);
-	RenderHelper::getInstance()->registerMeshByRef(meshReferences[1], oTimerMeshRight);
+	RenderHelper::getInstance()->registerMeshByRef(meshReferences[0], oTimerMesh);
 }
 
 Event::~Event() {
@@ -225,11 +221,15 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
 
-	std::string barMeshLeft = meshReferences[0];
-	std::string barMeshRight = meshReferences[1];
+	std::string oTimerMesh = meshReferences[0];
 
-	RenderHelper::getInstance()->rect(barMeshLeft);
+	float barSize = AEGfxGetWindowWidth() / 2.f;
+	float barHeight = barSize / 30.f;
+	float posX = AEGfxGetWindowWidth() / 2.f;
+	float posY = AEGfxGetWindowHeight() / 2.f;
+	Point translation = stow(posX, posY);
 
+	RenderHelper::getInstance()->rect(oTimerMesh,translation.x, translation.y, barSize, barHeight, 0.f, Color{ 0,0,0,1 }, 1.f);
 }
 
 void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
