@@ -252,6 +252,12 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	else {
 		_piVelocity -= _piAcc * dt;
 	}
+
+	// cap velocity
+	_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
+	_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
+
+	std::cout << "Power indicator speed: " << _piVelocity << "\n";
 	_piX += _piVelocity * dt;
 
 

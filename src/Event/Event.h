@@ -71,7 +71,7 @@ private:
 	float _piY = 0.f;
 	float _piVelocity = 0.f;
 	float _piMaxVelocity = 1000.f;
-	float __secondsToReachMaxVelocity = 1.f;
+	float __secondsToReachMaxVelocity = 0.5f;
 	// formula:
 	// 
 	// acceleration = (final velocity - initial velocity) / time(seconds)
