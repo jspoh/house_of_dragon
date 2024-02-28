@@ -27,6 +27,7 @@ class RenderHelper /*: Singleton<RenderHelper>*/ {
 private:
 	static RenderHelper* _instance;
 	AEGfxVertexList* _defaultMesh;
+	std::unordered_map<std::string, AEGfxVertexList*> _meshRef;
 	s8 _font;
 	int _fontSize = 32;
 
@@ -39,6 +40,23 @@ protected:
 public:
 	~RenderHelper();
 	static RenderHelper* getInstance();
+
+	/**
+	 * .
+	 * 
+	 * \param reference
+	 * \param mesh
+	 * \return true if mesh was successfully registered
+	 */
+	bool registerMeshByRef(std::string reference, AEGfxVertexList* mesh);
+
+	/**
+	 * .
+	 * 
+	 * \param reference
+	 * \return true if mesh was successfully removed
+	 */
+	bool removeMeshByRef(std::string reference);
 
 	//RenderHelper* getInstance();
 

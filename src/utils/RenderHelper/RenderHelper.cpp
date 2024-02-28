@@ -34,19 +34,48 @@ RenderHelper::RenderHelper() {
 		0.5f, 0.5f, 0xFF000000, 1.0f, 0.0f,    // top-right
 		-0.5f, 0.5f, 0xFF000000, 0.0f, 0.0f    // top-left
 	);
-	_mesh = AEGfxMeshEnd();
+	_defaultMesh = AEGfxMeshEnd();
 
 	// font
 	_font = AEGfxCreateFont("./Assets/liberation-mono.ttf", _fontSize);
 }
 
+bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mesh) {
+	try {
+		_meshRef[reference] = mesh;
+		return true;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to register mesh " << mesh << " with reference " << reference << " with error: " <<e.what() << "\n";
+		return false;
+	}
+}
+
+bool RenderHelper::removeMeshByRef(std::string reference) {
+	try {
+		AEGfxMeshFree(_meshRef[reference]);
+		_meshRef.erase(reference);
+		return true;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to remove mesh with reference " << reference << " with error: " << e.what() << "\n";
+		return false;
+	}
+}
+
 RenderHelper::~RenderHelper() {
-	AEGfxMeshFree(_mesh);
+	AEGfxMeshFree(_defaultMesh);
 	
-	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
+	for (const std::pair<std::string, AEGfxTexture*> map : _textureRef) {
 		AEGfxTextureUnload(map.second);
 	}
+
+	for (const std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
+		AEGfxMeshFree(map.second);
+	}
+
 	_textureRef.clear();
+	_meshRef.clear();
 }
 
 RenderHelper* RenderHelper::getInstance() {
@@ -82,7 +111,7 @@ void RenderHelper::rect(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rota
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
-	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
@@ -138,7 +167,7 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	AEGfxSetTransparency(1);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
-	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void RenderHelper::text(std::string s, float screenX, float screenY) {
