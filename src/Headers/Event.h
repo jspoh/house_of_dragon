@@ -140,7 +140,7 @@ private:
 	 * \param key key to use
 	 * \param timeout time in seconds for user to click
 	 */
-	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _multiClick(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
 
 public:
 	// output variable for event multiplier
