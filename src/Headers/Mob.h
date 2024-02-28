@@ -1,10 +1,10 @@
 /* Start Header ************************************************************************/
 /*!
-\file CombatManager.cpp
+\file Mob.h
 \author Poh Jing Seng, jingseng.poh, 2301363
 \par jingseng.poh\@digipen.edu
 \date 28 feb 2024
-\brief combat manager for the game
+\brief abstract base class for player and enemy classes to inherit from
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -14,22 +14,31 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
+#pragma once
 
-#include "CombatManager.h"
+#include "Elements.hpp"
 
-CombatManager* CombatManager::_instance = nullptr;
 
-CombatManager::~CombatManager() {
-    std::cout << "Destroying CombatManager\n";
-}
+class Mob {
+public:
+	double maxHealth = 100;
+	double health = maxHealth;
+	double dmg;
+	Element element;
 
-CombatManager* CombatManager::getInstance() {
-    if (!_instance) {
-        _instance = new CombatManager();
-    }
-    return _instance;
-}
+	Mob();
+	Mob(Element element, double health, double dmg);
 
-void CombatManager::next() {
-    turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
-}
+	bool isDead();
+
+	/**
+	 * .
+	 *
+	 * \param target
+	 * \param attackEl
+	 * \return amount of damage dealt
+	 */
+	virtual double attack(Mob& target);
+
+	virtual void reset();
+};

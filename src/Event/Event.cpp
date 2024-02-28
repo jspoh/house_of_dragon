@@ -1,6 +1,23 @@
+/* Start Header ************************************************************************/
+/*!
+\file event.cpp
+\author Poh Jing Seng, jingseng.poh, 2301363
+\par jingseng.poh\@digipen.edu
+\date 28 feb 2024
+\brief event manager for the quicktime events during combat
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
+
 #include "AEEngine.h"
 #include "Event.h"
-#include "../utils/utils.h"
+#include "utils.h"
 #include <unordered_map>
 #include <string>
 #include <iostream>
