@@ -114,18 +114,18 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 	return false;
 }
 
-void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key, double timeout) {
+void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
 	switch (_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPES:
 		break;
 	case EVENT_TYPES::SPAM_KEY:
-		_spamKey(result, dt, screenX, screenY, key, timeout);
+		_spamKey(result, dt, spamkey);
 		break;
 	case EVENT_TYPES::OSCILLATING_TIMER:
-		_oscillatingTimer(result, dt, key, timeout);
+		_oscillatingTimer(result, dt, oTimerKey);
 		break;
 	case EVENT_TYPES::CLICK_TIMER:
-		_clickTimer(result, dt, key, timeout);
+		_clickTimer(result, dt, spamkey);
 		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
@@ -178,14 +178,18 @@ void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float scre
 	}
 }
 
-void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key, double timeout) {
+void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	std::cout << _totalElapsedMs << "\n";
+	//std::cout << _totalElapsedMs << "\n";
+
+	Point worldPos = stow(_spamkeyX, _spamkeyY);
+	float worldX = worldPos.x;
+	float worldY = worldPos.y;
 
 	/*logic*/
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventSpamKeyResult(result, dt, screenX, screenY, timeout);
+		_showEventSpamKeyResult(result, dt, worldX, worldY, _spamkeyTimeout);
 		return;
 	}
 
@@ -196,7 +200,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 		_isRenderingEventResult = true;
 		return;
 	}
-	else if (_totalElapsedMs >= timeout * 1000) {
+	else if (_totalElapsedMs >= _spamkeyTimeout * 1000) {
 		_eventResult = EVENT_RESULTS::FAILURE;
 		_elapsedTimeMs = 0;
 		_isRenderingEventResult = true;
@@ -237,21 +241,47 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 		_elapsedTimeMs = 0;
 	}
 
-	//RenderHelper::getInstance()->texture("keyoutline_" + skey, screenX, screenY, _targetSize, _targetSize);
+	//RenderHelper::getInstance()->texture("keyoutline_" + skey, worldX, worldY, _targetSize, _targetSize);
 	if (_useOutline) {
-		RenderHelper::getInstance()->texture("keyoutline_" + skey, screenX, screenY, _size, _size);
+		RenderHelper::getInstance()->texture("keyoutline_" + skey, worldX, worldY, _size, _size);
 	}
 	else {
-		RenderHelper::getInstance()->texture("key_" + skey, screenX, screenY, _size, _size);
+		RenderHelper::getInstance()->texture("key_" + skey, worldX, worldY, _size, _size);
 	}
 }
 
-void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
+void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
 
 	/*logic*/
+	// check if timeout
+	if (_totalElapsedMs >= _oTimerTimeout * 1000) {
+		result = EVENT_RESULTS::FAILURE;
+		_showEventSpamKeyResult(result, dt, _barX, _barY, _oTimerTimeout);
+		_resetState();
+		return;
+	}
+
+	u8 aevk = AEVK_E;
+	switch (key) {
+	case E:
+		aevk = AEVK_E;
+		break;
+	case Q:
+		aevk = AEVK_Q;
+		break;
+	case SPACE:
+		aevk = AEVK_SPACE;
+		break;
+	default:
+		std::cerr << "Key was not registered in EVENT_KEYS!\n";
+		//exit(3);
+		break;
+	}
+
+	// check if event is over
 	if (_piMoving) {
-		if (AEInputCheckTriggered(AEVK_SPACE)) {
+		if (AEInputCheckTriggered(aevk)) {
 			_piMoving = false;
 			_resetTime();	// using time to fade out
 
@@ -322,6 +352,6 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	}
 }
 
-void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
+void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
 }

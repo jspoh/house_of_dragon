@@ -52,15 +52,19 @@ private:
 	float _maxMultiplier = 1.5f;
 
 	/*spam key vars*/
+	const float _spamkeyTimeout = 5.f;
 	const float _minSize = 100;
 	const float _targetSize = 200;
 	float _size = _minSize;
+	float _spamkeyX = 100.f;
+	float _spamkeyY = 100.f;
 	// positive rate of change per click
 	const float proc = 10;
 	// negative rate of change per second
 	const float nroc = 50;
 
 	/*oTimer vars*/
+	const float _oTimerTimeout = 10.f;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
 	float _oTimerFadeOutDuration = 0.5f;	// seconds
@@ -105,7 +109,7 @@ private:
 	 * \param useMultipleKeys
 	 * \param key2
 	 */
-	void _spamKey(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 5);
+	void _spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
 
 	/**
 	 * renders an oscillating timer event.
@@ -114,7 +118,7 @@ private:
 	 * \param key key to use
 	 * \param timeout
 	 */
-	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE, double timeout = 5);
+	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
 
 	/**
 	 * .
@@ -122,7 +126,7 @@ private:
 	 * \param key key to use
 	 * \param timeout time in seconds for user to click
 	 */
-	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 1);
+	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
 
 public:
 	// output variable for event multiplier
@@ -156,5 +160,5 @@ public:
 	 * put this in update loop. use `setActiveEvent` to trigger events
 	 * 
 	 */
-	void updateRenderLoop(EVENT_RESULTS& result, double dt, float screenX, float screenY, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 5);
+	void updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
 };

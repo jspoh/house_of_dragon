@@ -34,7 +34,7 @@ void TestScene::Init()
 void TestScene::Update(double dt)
 {
     EVENT_RESULTS results;
-    Event::getInstance()->updateRenderLoop(results, dt, 600, 325);
+    Event::getInstance()->updateRenderLoop(results, dt, EVENT_KEYS::E, EVENT_KEYS::SPACE);
 }
 
 void TestScene::Render()

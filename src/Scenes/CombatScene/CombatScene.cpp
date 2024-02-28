@@ -148,7 +148,7 @@ void CombatScene::Update(double dt)
     //RenderHelper::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 
     Point p = stow(100, 100);
-    Event::getInstance()->updateRenderLoop(CombatManager::getInstance()->qtEventResult, dt, p.x, p.y);
+    Event::getInstance()->updateRenderLoop(CombatManager::getInstance()->qtEventResult, dt);
 
     // if player has finished quicktime event
     if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
