@@ -16,7 +16,7 @@ Technology is prohibited.
 
 #pragma once
 
-#include "../utils.h"
+#include "utils.h"
 #include <unordered_map>
 #include <string>
 

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../../Scenes/Scene.h"
-#include "../../GameObject/CombatObjects/Elements/Elements.hpp"
-#include "../../utils/utils.h"
-#include "../../GameObject/CombatObjects/CombatManager.h"
-#include "../../GameObject/CombatObjects/Enemy/Enemy.h"
+#include "Scene.h"
+#include "Elements.hpp"
+#include "utils.h"
+#include "CombatManager.h"
+#include "Enemy.h"
 
 #include <vector>
 //Testing SpriteAnimation

@@ -3,11 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../Backend/Pch.h"
-#include "../Scenes/SceneManager.h"
+#include "Pch.h"
+#include "SceneManager.h"
 ////#include "../GameObject/GameObjectManager.h"
-#include "../Backend/SoundManager.h"
-#include "../Event/Event.h"
+#include "SoundManager.h"
+#include "Event.h"
 
 class GameManager
 {

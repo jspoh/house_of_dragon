@@ -3,7 +3,7 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include "../Backend/Vector3.h"
+#include "Vector3.h"
 
 //BASE CLASS GAMEOBJECTS - CONSISTING OF COMMON FUNCTIONS AND VARIABLES
 class GameObject

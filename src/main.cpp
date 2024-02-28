@@ -2,7 +2,7 @@
 // includes
 #include <crtdbg.h> // To check for memory leaks
 #include <stdlib.h>
-#include "Backend/GameManager.h"
+#include "GameManager.h"
 
 // ---------------------------------------------------------------------------
 // main

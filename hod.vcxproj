@@ -71,13 +71,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Extern\AlphaEngine\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Extern\AlphaEngine\include;$(SolutionDir)src/Headers</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Extern\AlphaEngine\lib</LibraryPath>
     <OutDir>$(SolutionDir)\bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\.tmp\$(Configuration)-$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Extern\AlphaEngine\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Extern\AlphaEngine\include;$(SolutionDir)src/Headers</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(SolutionDir)Extern\AlphaEngine\lib</LibraryPath>
     <OutDir>$(SolutionDir)\bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\.tmp\$(Configuration)-$(Platform)\</IntDir>
@@ -189,43 +189,41 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Backend\2DCollider.h" />
-    <ClInclude Include="src\Backend\Application.h" />
-    <ClInclude Include="src\Backend\MouseController.h" />
-    <ClInclude Include="src\Backend\MyMath.h" />
-    <ClInclude Include="src\Backend\Pch.h" />
-    <ClInclude Include="src\Backend\SingletonTemplate.h" />
-    <ClInclude Include="src\Backend\SoundManager.h" />
-    <ClInclude Include="src\Backend\GameManager.h" />
-    <ClInclude Include="src\Backend\Utils_EaseFunctions.h" />
-    <ClInclude Include="src\Backend\Vector3.h" />
-    <ClInclude Include="src\db\db.h" />
-    <ClInclude Include="src\Event\Event.h" />
-    <ClInclude Include="src\GameObject\CombatObjects\CombatPlayer\CombatPlayer.h" />
-    <ClInclude Include="src\GameObject\CombatObjects\Elements\Elements.hpp" />
-    <ClInclude Include="src\GameObject\CombatObjects\CombatManager.h" />
-    <ClInclude Include="src\GameObject\CombatObjects\Enemy\Enemy.h" />
-    <ClInclude Include="src\GameObject\CombatObjects\Mob\Mob.h" />
-    <ClInclude Include="src\GameObject\GameObject_AmeTest.h" />
-    <ClInclude Include="src\GameObject\GameObject.h" />
-    <ClInclude Include="src\GameObject\GameObjectManager.h" />
-    <ClInclude Include="src\GameObject\GenericEntity.h" />
-    <ClInclude Include="src\GameObject\Particle.h" />
-    <ClInclude Include="src\GameObject\ParticleManager.h" />
-    <ClInclude Include="src\GameObject\Player\GameObject_Player.h" />
-    <ClInclude Include="src\Scenes\CombatScene\CombatScene.h" />
-    <ClInclude Include="src\Scenes\Scene.h" />
-    <ClInclude Include="src\Scenes\SceneBase.h" />
-    <ClInclude Include="src\Scenes\SceneLevelBuilder.h" />
-    <ClInclude Include="src\Scenes\SceneManager.h" />
-    <ClInclude Include="src\Scenes\SceneMenu.h" />
-    <ClInclude Include="src\Scenes\ScenePractical.h" />
-    <ClInclude Include="src\Scenes\SceneSplashScreen.h" />
-    <ClInclude Include="src\Scenes\SceneStage1.h" />
-    <ClInclude Include="src\Scenes\test\TestScene.h" />
-    <ClInclude Include="src\utils\CollisionChecker\CollisionChecker.h" />
-    <ClInclude Include="src\utils\RenderHelper\RenderHelper.h" />
-    <ClInclude Include="src\utils\utils.h" />
+    <ClInclude Include="src\Headers\2DCollider.h" />
+    <ClInclude Include="src\Headers\Application.h" />
+    <ClInclude Include="src\Headers\CombatPlayer.h" />
+    <ClInclude Include="src\Headers\db.h" />
+    <ClInclude Include="src\Headers\Elements.hpp" />
+    <ClInclude Include="src\Headers\CombatManager.h" />
+    <ClInclude Include="src\Headers\Enemy.h" />
+    <ClInclude Include="src\Headers\Event.h" />
+    <ClInclude Include="src\Headers\GameManager.h" />
+    <ClInclude Include="src\Headers\GameObject.h" />
+    <ClInclude Include="src\Headers\GameObjectManager.h" />
+    <ClInclude Include="src\Headers\GameObject_AmeTest.h" />
+    <ClInclude Include="src\Headers\GameObject_Player.h" />
+    <ClInclude Include="src\Headers\GenericEntity.h" />
+    <ClInclude Include="src\Headers\Mob.h" />
+    <ClInclude Include="src\Headers\MouseController.h" />
+    <ClInclude Include="src\Headers\MyMath.h" />
+    <ClInclude Include="src\Headers\Particle.h" />
+    <ClInclude Include="src\Headers\ParticleManager.h" />
+    <ClInclude Include="src\Headers\Pch.h" />
+    <ClInclude Include="src\Headers\Scene.h" />
+    <ClInclude Include="src\Headers\SceneBase.h" />
+    <ClInclude Include="src\Headers\SceneLevelBuilder.h" />
+    <ClInclude Include="src\Headers\SceneManager.h" />
+    <ClInclude Include="src\Headers\SceneMenu.h" />
+    <ClInclude Include="src\Headers\ScenePractical.h" />
+    <ClInclude Include="src\Headers\SceneSplashScreen.h" />
+    <ClInclude Include="src\Headers\SceneStage1.h" />
+    <ClInclude Include="src\Headers\SingletonTemplate.h" />
+    <ClInclude Include="src\Headers\SoundManager.h" />
+    <ClInclude Include="src\Headers\utils.h" />
+    <ClInclude Include="src\Headers\Utils_EaseFunctions.h" />
+    <ClInclude Include="src\Headers\Vector3.h" />
+    <ClInclude Include="src\Headers\CollisionChecker.h" />
+    <ClInclude Include="src\Headers\RenderHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

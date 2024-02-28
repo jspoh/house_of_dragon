@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Mob/Mob.h"
+#include "Mob.h"
 #include <string>
-#include "../../../utils/utils.h"
+#include "utils.h"
 #include <iostream>
 
 class Enemy : public Mob {

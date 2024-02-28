@@ -11,10 +11,10 @@
 #ifndef GAMEOBJECT_MANAGER_H
 #define GAMEOBJECT_MANAGER_H
 
-#include "../Backend/SingletonTemplate.h"
-#include "../Backend/Vector3.h"
-#include "../GameObject/GameObject.h"
-#include "../Backend/2DCollider.h"
+#include "SingletonTemplate.h"
+#include "Vector3.h"
+#include "GameObject.h"
+#include "2DCollider.h"
 #include <list>
 
 

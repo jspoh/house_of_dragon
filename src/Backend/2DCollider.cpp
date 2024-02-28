@@ -1,4 +1,4 @@
-#include "../Backend/2DCollider.h"
+#include "2DCollider.h"
 
 CCollider::CCollider()
 	: maxAABB(Vector3( 0, 0, 0))

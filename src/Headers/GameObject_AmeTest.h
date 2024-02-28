@@ -3,9 +3,9 @@
 // THIS IS AN EXAMPLE DELETE THIS FOR BETA TEST
 // ///////////////////////////////////////////////////////////
 //Basic Entity in game (COPY THIS TO MAKE YOUR PLAYER ENTITY / ENEMY ENTITIES / ETC)
-#include "../GameObject/GameObject.h"
-#include "../Backend/2DCollider.h"
-#include"../Backend/Pch.h"
+#include "GameObject.h"
+#include "2DCollider.h"
+#include "Pch.h"
 class GameObject_AmeTest : public GameObject, public CCollider
 {
 public:

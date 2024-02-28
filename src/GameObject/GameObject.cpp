@@ -1,5 +1,5 @@
 
-#include "../GameObject/GameObject.h"
+#include "GameObject.h"
 
 GameObject::GameObject() 
 	:m_Scale(1, 1, 1), 

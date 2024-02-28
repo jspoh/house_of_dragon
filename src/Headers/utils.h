@@ -17,7 +17,7 @@ Technology is prohibited.
 #pragma once
 
 
-#include "../../Extern/AlphaEngine/include/AEEngine.h"
+#include "AEEngine.h"
 //#include "../Backend/SingletonTemplate.h"
 
 
@@ -54,5 +54,5 @@ float precisionRound(float x, int precision);
 
 
 /*for ease of inclusion*/
-#include "./RenderHelper/RenderHelper.h"
-#include "./CollisionChecker/CollisionChecker.h"
+#include "RenderHelper.h"
+#include "CollisionChecker.h"

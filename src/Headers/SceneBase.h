@@ -1,7 +1,7 @@
 #ifndef SCENE_BASE_H
 #define SCENE_BASE_H
 
-#include "../Scenes/Scene.h"
+#include "Scene.h"
 
 #include <vector>
 //Testing SpriteAnimation

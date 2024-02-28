@@ -1,11 +1,11 @@
-#include "../Scenes/SceneBase.h"
+#include "SceneBase.h"
 
 //#include "../Backend/GameManager.h" //? Still thinking
-#include "../Scenes/SceneManager.h"
-#include "../Backend/Pch.h"
-#include "../GameObject/Player/GameObject_Player.h"
-#include "../GameObject/GameObject_AmeTest.h"
-#include "../GameObject/GameObjectManager.h"
+#include "SceneManager.h"
+#include "Pch.h"
+#include "GameObject_Player.h"
+#include "GameObject_AmeTest.h"
+#include "GameObjectManager.h"
 
 SceneBase* SceneBase::sInstance = new SceneBase(SceneManager::GetInstance());
 
