@@ -56,7 +56,7 @@ RenderHelper* RenderHelper::getInstance() {
 	return _instance;
 }
 
-void RenderHelper::background(Color color) {
+void RenderHelper::setBackgroundColor(Color color) {
 	AEGfxSetBackgroundColor(color.r, color.g, color.b);
 }
 

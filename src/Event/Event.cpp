@@ -185,6 +185,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
+
 }
 
 void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {

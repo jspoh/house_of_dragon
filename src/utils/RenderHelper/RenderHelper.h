@@ -47,7 +47,7 @@ public:
 	 * 
 	 * \param color
 	 */
-	void background(Color color);
+	void setBackgroundColor(Color color);
 
 	/**
 	 * .
