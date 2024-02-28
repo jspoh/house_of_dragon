@@ -123,15 +123,17 @@ private:
 
 	/*multi click vars*/
 	const float _multiClickDuration = 5.f;
-	int _multiClickHits = 0;
-	int _multiClickMisses = 0;
-	int _maxMultiClickHits = 10;
+	int _mcoHits = 0;
+	int _mcoMisses = 0;
+	int _maxMcoHits = 10;
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
 	const int _mcoCount = 3;
 	const float _mcoRadius = 25.f;
 	// how long before transitioning to another display state (light vs dark) for blinking effect
 	const float _mcoBlinkDuration = 0.25f;
+	const float _mcoTransitionTime = 1.f;
+	bool _mcoIsTransitioningOut = false;
 
 	Event();
 

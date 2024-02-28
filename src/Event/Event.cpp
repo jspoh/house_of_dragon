@@ -179,9 +179,13 @@ void Event::_resetState() {
 	this->_piMoving = true;
 
 	// multiclick
-	_multiClickHits = 0;
-	_multiClickMisses = 0;
+	_mcoHits = 0;
+	_mcoMisses = 0;
 	_multiClickObjects.clear();
+	_mcoIsTransitioningOut = false;
+
+	// multipliers
+	eventMultiplier = 1.f;
 }
 
 void Event::_resetTime() {
@@ -392,15 +396,25 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
 	// multiclick is based on duration only
-	if (_totalElapsedMs >= _multiClickDuration * 1000) {
+	if (_totalElapsedMs >= _multiClickDuration * 1000 && !_mcoIsTransitioningOut) {
 		std::cout << "multiclick event over\n";
-		result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
-		_resetState();
-		return;
+		_elapsedTimeMs = 0;
+		_mcoIsTransitioningOut = true;
+		eventMultiplier = abs(((_mcoHits - _mcoMisses) / static_cast<float>(_maxMcoHits)) * maxMultiplier);
+	}
+	if (_mcoIsTransitioningOut) {
+		if (_elapsedTimeMs <= _mcoTransitionTime * 1000) {	// transition out of state in this time
+			_mcoIsTransitioningOut = true;
+		}
+		else {		// end event
+			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+			_resetState();
+			return;
+		}
 	}
 
 	/*logic*/
-	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && !_mcoIsTransitioningOut) {
 		int mouseX, mouseY;
 		AEInputGetCursorPosition(&mouseX, &mouseY);
 
@@ -411,7 +425,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			hit = CollisionChecker::isMouseInCircle(mco.x, mco.y, mco.radius, static_cast<float>(mouseX), static_cast<float>(mouseY));
 			if (hit) {
 				std::cout << "mco hit\n";
-				_multiClickHits++;
+				_mcoHits++;
 				mco.alive = false;
 				break;
 			}
@@ -425,13 +439,13 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		else
 		if (!hit) {
 			std::cout << "mco missed\n";
-			_multiClickMisses++;
+			_mcoMisses++;
 		}
 	}
 
 	/*rendering*/
 	// ensure that there are always mcoCount objects on screen
-	while (_multiClickObjects.size() < _mcoCount) {
+	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
 		_multiClickObjects.push_back(MultiClickObject{ 
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
@@ -441,7 +455,11 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		});
 	}
 
-	RenderHelper::getInstance()->text("Hits: " + std::to_string(_multiClickHits) + "/" + std::to_string(_maxMultiClickHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6);
+	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6);
+
+	if (_mcoIsTransitioningOut) {
+		return;
+	}
 
 	for (MultiClickObject& mco : _multiClickObjects) {
 		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
