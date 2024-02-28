@@ -61,6 +61,10 @@ private:
 	const float nroc = 50;
 
 	/*oTimer vars*/
+	float _oTimerOpacity = 1.f;		// percentage
+	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
+	float _oTimerFadeOutDuration = 0.5f;	// seconds
+
 	float _barWidth = 0.f;
 	float _barHeight = 0.f;
 	float _barX = 0.f;
@@ -85,9 +89,10 @@ private:
 	Event();
 
 	void _updateTime(double dt);
+	void _resetTime();
 	void _resetState();
 
-	void _showEventResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout);
+	void _showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout);
 
 	/*events*/
 

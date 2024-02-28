@@ -65,8 +65,7 @@ Event::Event() {
 	this->_barWidth = AEGfxGetWindowWidth() / 2.f;
 	this->_barHeight = this->_barWidth / 30.f;
 	this->_barX = AEGfxGetWindowWidth() / 2.f;
-	this->_barY = AEGfxGetWindowHeight() / 2.f;
-	_barY = 50.f;
+	this->_barY = 50.f;
 
 	// pi -> power indicator
 	this->_piWidth = this->_barWidth / 200;
@@ -140,11 +139,18 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, float screenX, fl
 
 void Event::_resetState() {
 	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
-	_elapsedTimeMs = 0;
-	_totalElapsedMs = 0;
+	_resetTime();
 	_useOutline = true;
 	_size = _minSize;
 	_isRenderingEventResult = false;
+
+	// oscillating timer
+	this->_piX = this->_barX - this->_barWidth / 2.f;
+}
+
+void Event::_resetTime() {
+	_elapsedTimeMs = 0;
+	_totalElapsedMs = 0;
 }
 
 void Event::_updateTime(double dt) {
@@ -154,7 +160,7 @@ void Event::_updateTime(double dt) {
 	_totalElapsedMs += idt;
 }
 
-void Event::_showEventResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
+void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
 	/*event result duration over*/
 	if (_elapsedTimeMs >= _eventResultDuration * 1000) {
 		result = _eventResult;  // update result passed by caller so that they know event is over
@@ -179,7 +185,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	/*logic*/
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventResult(result, dt, screenX, screenY, timeout);
+		_showEventSpamKeyResult(result, dt, screenX, screenY, timeout);
 		return;
 	}
 
@@ -247,6 +253,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	if (_piMoving) {
 		if (AEInputCheckTriggered(AEVK_SPACE)) {
 			_piMoving = false;
+			_resetTime();	// using time to fade out
 
 			// calculate multiplier
 			const float piDistanceToCenter = abs(_barX - _piX);
@@ -263,7 +270,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	const Point barTranslation = stow(_barX, _barY);
 
 	// power bar
-	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,1 }, 1.f);
+	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
 
 	Point piTranslation = stow(_piX, _piY);
 
@@ -291,7 +298,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	}
 
 	// power indicator
-	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,1 }, 1.f);
+	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
 
 	// multiplier result
 	if (!_piMoving) {
@@ -299,6 +306,19 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 		oss.precision(eventMultiplierPrecision);
 		oss << std::fixed << eventMultiplier << "x";
 		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
+
+		// fade out event
+		if (_totalElapsedMs >= _oTimerTimeBeforeFadeOut * 1000) {
+			// if invisible, reset state
+			if (_oTimerOpacity <= 0.f) {
+				_resetState();
+				return;
+			}
+
+			// start fading out
+			float change = 1.f / _oTimerFadeOutDuration;
+			_oTimerOpacity -= change * dt;
+		}
 	}
 }
 
