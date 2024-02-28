@@ -62,7 +62,6 @@ struct MultiClickObject {
 	float x;
 	float y;
 	float radius;
-	float opacity;	// 0 to 1
 };
 
 

@@ -406,15 +406,20 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 
 		// check if user clicked on any of the multi click objects
 		bool hit = false;
+		int i = 0;
 		for (MultiClickObject& mco : _multiClickObjects) {
 			hit = CollisionChecker::isMouseInCircle(mco.x, mco.y, mco.radius, static_cast<float>(mouseX), static_cast<float>(mouseY));
 			if (hit) {
 				std::cout << "mco hit\n";
 				_multiClickHits++;
-				mco.opacity = 0.f;
 				break;
 			}
+			i++;
 		}
+		if (hit) {
+			_multiClickObjects.erase(_multiClickObjects.begin() + i);
+		}
+		else
 		if (!hit) {
 			std::cout << "mco missed\n";
 			_multiClickMisses++;
@@ -427,14 +432,13 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		_multiClickObjects.push_back(MultiClickObject{ 
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
-			_mcoRadius,
-			1.f
+			_mcoRadius
 		});
 	}
 
 	for (const MultiClickObject& mco : _multiClickObjects) {
 		Point translate = stow(mco.x, mco.y);
-		RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, mco.opacity, Color{ 0,0,0,mco.opacity }, 0.f);
+		RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 	}
 
 	RenderHelper::getInstance()->text("Multi click hits: " + std::to_string(_multiClickHits), 100.f, 100.f);
