@@ -84,19 +84,19 @@
     <ClCompile Include="src\db\db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\test\TestScene.cpp">
+    <ClCompile Include="src\Scenes\TestScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\CombatObjects\Elements\Elements.cpp">
+    <ClCompile Include="src\GameObject\CombatObjects\Elements.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\CollisionChecker\CollisionChecker.cpp">
+    <ClCompile Include="src\utils\CollisionChecker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\RenderHelper\RenderHelper.cpp">
+    <ClCompile Include="src\utils\RenderHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\CombatScene\CombatScene.cpp">
+    <ClCompile Include="src\Scenes\CombatScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Event\Event.cpp">
@@ -108,13 +108,13 @@
     <ClCompile Include="src\GameObject\CombatObjects\CombatManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\CombatObjects\Mob\Mob.cpp">
+    <ClCompile Include="src\GameObject\CombatObjects\Mob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\CombatObjects\Enemy\Enemy.cpp">
+    <ClCompile Include="src\GameObject\CombatObjects\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameObject\CombatObjects\CombatPlayer\CombatPlayer.cpp">
+    <ClCompile Include="src\GameObject\CombatObjects\CombatPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,15 +126,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\RenderHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scenes\CombatScene\CombatScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Event\Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scenes\SceneLevelBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\CombatManager.h">
@@ -231,6 +222,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\Vector3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Headers\CombatScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Headers\TestScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
