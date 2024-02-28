@@ -100,8 +100,9 @@ void Event::startRandomEvent() {
 	double time;
 	AEGetTime(&time);
 	srand(static_cast<unsigned int>(time));
-	EVENT_TYPES e = static_cast<EVENT_TYPES>(rand() % NUM_EVENT_TYPES);
-	e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
+	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
 
@@ -124,9 +125,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::OSCILLATING_TIMER:
 		_oscillatingTimer(result, dt, oTimerKey);
 		break;
-	case EVENT_TYPES::CLICK_TIMER:
-		_clickTimer(result, dt, spamkey);
-		break;
+	//case EVENT_TYPES::CLICK_TIMER:
+	//	_clickTimer(result, dt, spamkey);
+	//	break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
 		break;
@@ -146,6 +147,9 @@ void Event::_resetState() {
 
 	// oscillating timer
 	this->_piX = this->_barX - this->_barWidth / 2.f;
+	this->_piVelocity = 0.f;
+	this->_oTimerOpacity = 1.f;
+	this->_piMoving = true;
 }
 
 void Event::_resetTime() {
@@ -290,8 +294,6 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 			const float percentageMultiplier = ((_barWidth / 2.f) - piDistanceToCenter) / (_barWidth / 2.f);
 			eventMultiplier = percentageMultiplier * _maxMultiplier;
 			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
-
-			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
 		}
 	}
 	
@@ -341,6 +343,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 		if (_totalElapsedMs >= _oTimerTimeBeforeFadeOut * 1000) {
 			// if invisible, reset state
 			if (_oTimerOpacity <= 0.f) {
+				result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
 				_resetState();
 				return;
 			}
