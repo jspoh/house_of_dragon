@@ -265,9 +265,12 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
 	_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
 
-	std::cout << "Power indicator speed: " << _piVelocity << std::endl;
+	//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
 	_piX += _piVelocity * dt;
 
+	// guards to ensure that pi does not go out of bar
+	_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
+	_piX = _piX > _barX + _barWidth / 2.f ? _barX + _barWidth / 2.f : _piX;
 
 	// power indicator
 	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,1 }, 1.f);

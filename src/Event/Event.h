@@ -71,13 +71,13 @@ private:
 	float _piY = 0.f;
 	float _piVelocity = 0.f;
 	float _piMaxVelocity = 1000.f;
-	float __secondsToReachMaxVelocity = 0.5f;
-	// note: we are not using time based but distance based. see cpp file in init
+	//float __secondsToReachMaxVelocity = 0.5f;
+	// note: we are not using time based but distance based. see cpp file in constructor
 	// time based formula:
 	// 
 	// acceleration = (final velocity - initial velocity) / final time(seconds) - initial time(seconds)
 	// 
-	float _piAcc = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
+	float _piAcc;// = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
 
 	Event();
 
