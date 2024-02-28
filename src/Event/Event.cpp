@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 Event* Event::_instance = nullptr;
 
@@ -241,39 +242,64 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
+
+	/*logic*/
+	if (_piMoving) {
+		if (AEInputCheckTriggered(AEVK_SPACE)) {
+			_piMoving = false;
+
+			// calculate multiplier
+			const float piDistanceToCenter = abs(_barX - _piX);
+			const float percentageMultiplier = ((_barWidth / 2.f) - piDistanceToCenter) / (_barWidth / 2.f);
+			eventMultiplier = percentageMultiplier * _maxMultiplier;
+			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
+
+			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+		}
+	}
 	
 	/*rendering*/
-	std::string oTimerMesh = meshReferences[0];
-	Point barTranslation = stow(_barX, _barY);
+	const std::string oTimerMesh = meshReferences[0];
+	const Point barTranslation = stow(_barX, _barY);
 
 	// power bar
 	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,1 }, 1.f);
 
 	Point piTranslation = stow(_piX, _piY);
 
-	// power indicator movement logic. accerlerates until center of bar, then decelerates
-	// pi is left of or on the center of bar
-	if (_piX <= _barX) {
-		_piVelocity += _piAcc * dt;
+	if (_piMoving) {
+		// power indicator movement logic. accerlerates until center of bar, then decelerates
+		// pi is left of or on the center of bar
+		if (_piX <= _barX) {
+			_piVelocity += _piAcc * dt;
+		}
+		// pi is right of the center of bar
+		else {
+			_piVelocity -= _piAcc * dt;
+		}
+
+		// cap velocity
+		_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
+		_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
+
+		//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
+		_piX += _piVelocity * dt;
+
+		// guards to ensure that pi does not go out of bar
+		_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
+		_piX = _piX > _barX + _barWidth / 2.f ? _barX + _barWidth / 2.f : _piX;
 	}
-	// pi is right of the center of bar
-	else {
-		_piVelocity -= _piAcc * dt;
-	}
-
-	// cap velocity
-	_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
-	_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
-
-	//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
-	_piX += _piVelocity * dt;
-
-	// guards to ensure that pi does not go out of bar
-	_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
-	_piX = _piX > _barX + _barWidth / 2.f ? _barX + _barWidth / 2.f : _piX;
 
 	// power indicator
 	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,1 }, 1.f);
+
+	// multiplier result
+	if (!_piMoving) {
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
+	}
 }
 
 void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {

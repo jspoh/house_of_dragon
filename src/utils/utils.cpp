@@ -35,6 +35,12 @@ Point ston(float x, float y) {
 	return Point{ nX, nY };
 }
 
+float precisionRound(float x, int precision) {
+	int mult = pow(10, precision);
+	int num = static_cast<int>(x * mult + 0.5f);
+	return num / static_cast<float>(mult);
+}
+
 namespace {
 	void _toastHelper(std::string& msg) {
 		//RenderHelper::getInstance()->text(msg);

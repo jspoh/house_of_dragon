@@ -49,6 +49,8 @@ private:
 	/*how many milliseconds before key type changes*/
 	const int _changeMs = 100;
 
+	float _maxMultiplier = 1.5f;
+
 	/*spam key vars*/
 	const float _minSize = 100;
 	const float _targetSize = 200;
@@ -65,6 +67,7 @@ private:
 	float _barY = 0.f;
 
 	// pi -> power indicator
+	bool _piMoving = true;
 	float _piWidth = 0.f;
 	float _piHeight = 0.f;
 	float _piX = 0.f;
@@ -117,6 +120,10 @@ private:
 	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E, double timeout = 1);
 
 public:
+	// output variable for event multiplier
+	float eventMultiplier = 1.f;
+	int eventMultiplierPrecision = 2;
+
 	~Event();
 
 	static Event* getInstance();
