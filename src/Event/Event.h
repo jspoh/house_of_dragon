@@ -69,8 +69,14 @@ private:
 	float _piHeight = 0.f;
 	float _piX = 0.f;
 	float _piY = 0.f;
-	float _piAcc = 1000.f;
 	float _piVelocity = 0.f;
+	float _piMaxVelocity = 1000.f;
+	float __secondsToReachMaxVelocity = 1.f;
+	// formula:
+	// 
+	// acceleration = (final velocity - initial velocity) / time(seconds)
+	// 
+	float _piAcc = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
 
 	Event();
 
