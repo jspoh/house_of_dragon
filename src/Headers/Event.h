@@ -23,6 +23,7 @@ Technology is prohibited.
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <time.h>
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:

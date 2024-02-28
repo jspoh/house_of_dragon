@@ -34,6 +34,10 @@ namespace {
 
 
 Event::Event() {
+	double time;
+	AEGetTime(&time);
+	srand(static_cast<unsigned int>(time));
+
 	for (std::pair<EVENT_KEYS, std::string> map : eKeyToStr) {
 		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/keys/keyboard_" + map.second + ".png");
 		bool success2 = RenderHelper::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/keys/keyboard_" + map.second + "_outline.png");
@@ -124,9 +128,6 @@ Event* Event::getInstance() {
 
 void Event::startRandomEvent() {
 	// start a random quicktime event
-	double time;
-	AEGetTime(&time);
-	srand(static_cast<unsigned int>(time));
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
