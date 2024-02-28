@@ -331,8 +331,6 @@ void SceneLevelBuilder::Update(double dt)
 
 							CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
 
-							if (j == t_CenterFloorNum && m_Floor[j][i].m_FloorNum == 1)
-								cout << m_Floor[j][i].m_FloorNum << endl;
 							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
 							
 						}
@@ -582,19 +580,41 @@ void SceneLevelBuilder::Exit()
 
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
+	//static double x = 0;
+	//if (AEInputCheckCurr(AEVK_W))
+	//	x+= 0.01;
+	//if (AEInputCheckCurr(AEVK_S))
+	//	x-= 0.01;
+	//cout << x << endl;
 	srand(static_cast<unsigned> (time(0)));
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre
 		if (j == t_CenterFloorNum)
 			continue;
-		SceneObject newObj;
-		//Randomly Spawn multiple different types
-		newObj.m_TexRef = "Mystery_S_Enemy";
-		AEMtx33Trans(&newObj.m_Trans, (rand() % 20 - 10) * 1, (rand() % 40) * 1);
-		float scale = (rand() % 20) * 0.01f + 0.1f;
-		AEMtx33Scale(&newObj.m_Scale, scale, scale);
-		m_FloorOBJs[j][t_tileNum].push_back(newObj);
+		
+		//if(j== t_CenterFloorNum -1/* || j == t_CenterFloorNum + 1*/)
+			for (int i = 0; i < 20; i++)
+			{
+				SceneObject newObj;
+				//Randomly Spawn multiple different types
+				newObj.m_TexRef = "Mystery_S_Enemy";
+
+				float TransY = (rand() % 40) * 1;
+				if (j < t_CenterFloorNum)//Left Side
+				{
+					AEMtx33Trans(&newObj.m_Trans, (rand() % 10 - 5) * 1 + TransY / 3, TransY);
+				}
+				else//Right Side
+				{
+					AEMtx33Trans(&newObj.m_Trans, (rand() % 10 - 5) * 1 - TransY / 3, TransY);
+				}
+
+				float scale = (rand() % 20) * 0.01f + 0.1f;
+				AEMtx33Scale(&newObj.m_Scale, scale, scale);
+				m_FloorOBJs[j][t_tileNum].push_back(newObj);
+			}
+
 	}
 }
 
