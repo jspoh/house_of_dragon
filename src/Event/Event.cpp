@@ -8,11 +8,18 @@
 
 Event* Event::_instance = nullptr;
 
-static std::unordered_map<EVENT_KEYS, std::string> eKeyToStr = {
-	{E, "E"},
-	{Q, "Q"},
-	{SPACE, "SPACE"}
-};
+namespace {
+	static std::unordered_map<EVENT_KEYS, std::string> eKeyToStr = {
+		{E, "E"},
+		{Q, "Q"},
+		{SPACE, "SPACE"}
+	};
+
+	std::vector<std::string> meshReferences = {
+		"oTimerMeshLeft",
+		"oTimerMeshRight"
+	};
+}
 
 
 Event::Event() {
@@ -28,11 +35,40 @@ Event::Event() {
 	RenderHelper::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
 
 	// register custom mesh for otimer event
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0x00FF0000, 0.0f, 0.0f,	// bottom left
+		0.5f, -0.5f, 0x0000FF00, 1.0f, 0.0f,	// bottom right
+		-0.5f, 0.5f, 0x00FF0000, 0.5f, 1.0f		// top left
+	);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0x0000FF00, 1.0f, 0.0f,	// bottom right
+		0.5f, 0.5f, 0x0000FF00, 1.0f, 1.0f,		// top right
+		-0.5f, 0.5f, 0x00FF0000, 0.5f, 1.0f		// top left
+	);
+	AEGfxVertexList* oTimerMeshLeft = AEGfxMeshEnd();
 
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0x0000FF00, 0.0f, 0.0f,	// bottom left
+		0.5f, -0.5f, 0x00FF0000, 1.0f, 0.0f,	// bottom right
+		-0.5f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top left
+	);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0x0000FF00, 1.0f, 0.0f,	// bottom right
+		0.5f, 0.5f, 0x00FF0000, 1.0f, 1.0f,		// top right
+		-0.5f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top left
+	);
+	AEGfxVertexList* oTimerMeshRight = AEGfxMeshEnd();
+
+	RenderHelper::getInstance()->registerMeshByRef(meshReferences[0], oTimerMeshLeft);
+	RenderHelper::getInstance()->registerMeshByRef(meshReferences[1], oTimerMeshRight);
 }
 
 Event::~Event() {
-
+	for (const std::string& ref : meshReferences) {
+		RenderHelper::getInstance()->removeMeshByRef(ref);
+	}
 }
 
 Event* Event::getInstance() {
@@ -189,7 +225,10 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
 
-	RenderHelper::getInstance()->rect();
+	std::string barMeshLeft = meshReferences[0];
+	std::string barMeshRight = meshReferences[1];
+
+	RenderHelper::getInstance()->rect(barMeshLeft);
 
 }
 
