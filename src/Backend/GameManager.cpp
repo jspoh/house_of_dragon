@@ -67,6 +67,6 @@ void GameManager::Exit()
 	SceneManager::Destroy();
 	SoundManager::Destroy();
 
+	delete Event::getInstance();
 	delete RenderHelper::getInstance();
-	//delete Event::getInstance();
 }
