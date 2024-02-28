@@ -159,7 +159,21 @@ void CombatScene::Update(double dt)
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     }
 
-    //RenderHelper::getInstance()->text("IM SO TIRED", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    cat->render();
+    player->render();
+
+    if (cat->isDead()) {
+        RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    }
+    else if (player->isDead()) {
+        RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    }
+    //!TODO
+    //draw health of enemy
+    //use function `ston` screen to normalized to render text
+
+    //!TODO
+    //draw text describing the action of enemy, disappear after 1 second, or render attack animation
 
     Point p = stow(100, 100);
     Event::getInstance()->updateRenderLoop(CombatManager::getInstance()->qtEventResult, dt);
@@ -202,21 +216,22 @@ void CombatScene::Update(double dt)
 
 void CombatScene::Render()
 {
-    cat->render();
-    player->render();
+    // unfortunately i cant use this render function lol, i mixed update and render together in event for ease of usage
+    //cat->render();
+    //player->render();
 
-    if (cat->isDead()) {
-        RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
-    }
-    else if (player->isDead()) {
-        RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
-    }
-     //!TODO
-     //draw health of enemy
-     //use function `ston` screen to normalized to render text
+    //if (cat->isDead()) {
+    //    RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    //}
+    //else if (player->isDead()) {
+    //    RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+    //}
+    // //!TODO
+    // //draw health of enemy
+    // //use function `ston` screen to normalized to render text
 
-     //!TODO
-     //draw text describing the action of enemy, disappear after 1 second, or render attack animation
+    // //!TODO
+    // //draw text describing the action of enemy, disappear after 1 second, or render attack animation
     
 }
 

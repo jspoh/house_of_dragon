@@ -126,7 +126,7 @@ private:
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
 	int _mcoCount = 1;
-	const float _mcoRadius = 50.f;
+	const float _mcoRadius = 25.f;
 
 	Event();
 

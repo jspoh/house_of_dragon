@@ -394,8 +394,31 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	// multiclick is based on duration only
 	if (_totalElapsedMs >= _multiClickDuration * 1000) {
 		std::cout << "multiclick event over\n";
+		result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
 		_resetState();
 		return;
+	}
+
+	/*logic*/
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+
+		// check if user clicked on any of the multi click objects
+		bool hit = false;
+		for (MultiClickObject& mco : _multiClickObjects) {
+			hit = CollisionChecker::isMouseInCircle(mco.x, mco.y, mco.radius, static_cast<float>(mouseX), static_cast<float>(mouseY));
+			if (hit) {
+				std::cout << "mco hit\n";
+				_multiClickHits++;
+				mco.opacity = 0.f;
+				break;
+			}
+		}
+		if (!hit) {
+			std::cout << "mco missed\n";
+			_multiClickMisses++;
+		}
 	}
 
 	/*rendering*/
@@ -411,7 +434,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 
 	for (const MultiClickObject& mco : _multiClickObjects) {
 		Point translate = stow(mco.x, mco.y);
-		RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius, mco.radius, mco.opacity, Color{ 0,0,0,mco.opacity }, 0.f);
+		RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, mco.opacity, Color{ 0,0,0,mco.opacity }, 0.f);
 	}
 
 	RenderHelper::getInstance()->text("Multi click hits: " + std::to_string(_multiClickHits), 100.f, 100.f);

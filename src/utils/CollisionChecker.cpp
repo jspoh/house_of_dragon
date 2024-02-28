@@ -50,6 +50,11 @@ bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float
 	return _rectAABB(rectScreenX, rectScreenY, rectW, rectH, mouseX, mouseY, 1, 1);
 }
 
+bool CollisionChecker::isMouseInCircle(float cX, float cY, float radius, float mouseX, float mouseY) {
+	float distanceSq = (mouseX - cX) * (mouseX - cX) + (mouseY - cY) * (mouseY - cY);
+	return distanceSq <= radius * radius;
+}
+
 bool CollisionChecker::areRectsIntersecting(float screenX1, float screenY1, float w1, float h1, float screenX2, float screenY2, float w2, float h2) {
 	if (_rectDistance(screenX1, screenY1, w1, h1, screenX2, screenY2, w2, h2)) {
 		return _rectAABB(screenX1, screenY1, w1, h1, screenX2, screenY2, w2, h2);

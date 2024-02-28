@@ -54,5 +54,7 @@ public:
 	static bool areRectsIntersecting(float screenX1, float screenY1, float w1, float h1, float screenX2, float screenY2, float w2, float h2);
 
 	static bool isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, float mouseX, float mouseY);
+
+	static bool isMouseInCircle(float cX, float cY, float radius, float mouseX, float mouseY);
 };
 
