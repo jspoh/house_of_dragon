@@ -26,7 +26,7 @@ struct Color;
 class RenderHelper /*: Singleton<RenderHelper>*/ {
 private:
 	static RenderHelper* _instance;
-	AEGfxVertexList* _mesh;
+	AEGfxVertexList* _defaultMesh;
 	s8 _font;
 	int _fontSize = 32;
 
