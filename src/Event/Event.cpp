@@ -59,6 +59,19 @@ Event::Event() {
 	AEGfxVertexList* oTimerMesh = AEGfxMeshEnd();
 
 	RenderHelper::getInstance()->registerMeshByRef(meshReferences[0], oTimerMesh);
+
+	/*init oTimer variables*/
+	this->_barWidth = AEGfxGetWindowWidth() / 2.f;
+	this->_barHeight = this->_barWidth / 30.f;
+	this->_barX = AEGfxGetWindowWidth() / 2.f;
+	this->_barY = AEGfxGetWindowHeight() / 2.f;
+	_barY = 50.f;
+
+	// pi -> power indicator
+	this->_piWidth = this->_barWidth / 200;
+	this->_piHeight = this->_barHeight * 1.5;
+	this->_piX = this->_barX - this->_barWidth / 2.f;
+	this->_piY = this->_barY;
 }
 
 Event::~Event() {
@@ -220,16 +233,30 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
-
+	
+	/*rendering*/
 	std::string oTimerMesh = meshReferences[0];
+	Point barTranslation = stow(_barX, _barY);
 
-	float barSize = AEGfxGetWindowWidth() / 2.f;
-	float barHeight = barSize / 30.f;
-	float posX = AEGfxGetWindowWidth() / 2.f;
-	float posY = AEGfxGetWindowHeight() / 2.f;
-	Point translation = stow(posX, posY);
+	// power bar
+	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,1 }, 1.f);
 
-	RenderHelper::getInstance()->rect(oTimerMesh,translation.x, translation.y, barSize, barHeight, 0.f, Color{ 0,0,0,1 }, 1.f);
+	Point piTranslation = stow(_piX, _piY);
+
+	// power indicator movement logic. accerlerates until center of bar, then decelerates
+	// pi is left of or on the center of bar
+	if (_piX <= _barX) {
+		_piVelocity += _piAcc * dt;
+	}
+	// pi is right of the center of bar
+	else {
+		_piVelocity -= _piAcc * dt;
+	}
+	_piX += _piVelocity * dt;
+
+
+	// power indicator
+	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,1 }, 1.f);
 }
 
 void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {

@@ -58,6 +58,20 @@ private:
 	// negative rate of change per second
 	const float nroc = 50;
 
+	/*oTimer vars*/
+	float _barWidth = 0.f;
+	float _barHeight = 0.f;
+	float _barX = 0.f;
+	float _barY = 0.f;
+
+	// pi -> power indicator
+	float _piWidth = 0.f;
+	float _piHeight = 0.f;
+	float _piX = 0.f;
+	float _piY = 0.f;
+	float _piAcc = 1000.f;
+	float _piVelocity = 0.f;
+
 	Event();
 
 	void _updateTime(double dt);
