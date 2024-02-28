@@ -55,6 +55,8 @@ void SceneMenu::Update(double dt)
 		SceneManager::GetInstance()->SetActiveScene("SceneStage1");
 	if (AEInputCheckCurr(AEVK_2))
 		SceneManager::GetInstance()->SetActiveScene("CombatScene");
+	if (AEInputCheckCurr(AEVK_3))
+		SceneManager::GetInstance()->SetActiveScene("TestScene");
 
 	AEInputGetCursorPosition(&myMenu.mouseX, &myMenu.mouseY);
 	myMenu.mouseX -= myMenu.mouseX;

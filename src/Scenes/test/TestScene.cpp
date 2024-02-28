@@ -4,6 +4,7 @@
 #include "../../Scenes/SceneManager.h"
 #include "../../Backend/Pch.h"
 #include "../../utils/utils.h"
+#include "../../Event/Event.h"
 
 TestScene* TestScene::sInstance = new TestScene(SceneManager::GetInstance());
 
@@ -27,12 +28,13 @@ void TestScene::Load()
 
 void TestScene::Init()
 {
-    
+    Event::getInstance()->setActiveEvent(EVENT_TYPES::OSCILLATING_TIMER);
 }
 
 void TestScene::Update(double dt)
 {
-
+    EVENT_RESULTS results;
+    Event::getInstance()->updateRenderLoop(results, dt, 600, 325);
 }
 
 void TestScene::Render()

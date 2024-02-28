@@ -17,6 +17,32 @@ Technology is prohibited.
 #include "RenderHelper.h"
 #include <iostream>
 
+namespace {
+	/**
+	 * .
+	 * 
+	 * \param transX
+	 * \param transY
+	 * \param scaleX
+	 * \param scaleY
+	 * \param rotation
+	 * \param matrix [out] output transform matrix
+	 */
+	void getTransformMatrix(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rotation, AEMtx33& matrix) {
+		// create matrix
+		AEMtx33 scale = { 0 };
+		AEMtx33Scale(&scale, scaleX, scaleY);
+		AEMtx33 rotate = { 0 };
+		AEMtx33Rot(&rotate, rotation);
+
+		AEMtx33 translate = { 0 };
+		AEMtx33Trans(&translate, transX, transY);
+
+		AEMtx33Concat(&matrix, &rotate, &scale);
+		AEMtx33Concat(&matrix, &translate, &matrix);
+	}
+}
+
 /*class draw*/
 RenderHelper* RenderHelper::_instance = nullptr;
 
@@ -34,19 +60,48 @@ RenderHelper::RenderHelper() {
 		0.5f, 0.5f, 0xFF000000, 1.0f, 0.0f,    // top-right
 		-0.5f, 0.5f, 0xFF000000, 0.0f, 0.0f    // top-left
 	);
-	_mesh = AEGfxMeshEnd();
+	_defaultMesh = AEGfxMeshEnd();
 
 	// font
 	_font = AEGfxCreateFont("./Assets/liberation-mono.ttf", _fontSize);
 }
 
+bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mesh) {
+	try {
+		_meshRef[reference] = mesh;
+		return true;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to register mesh " << mesh << " with reference " << reference << " with error: " <<e.what() << "\n";
+		return false;
+	}
+}
+
+bool RenderHelper::removeMeshByRef(std::string reference) {
+	try {
+		AEGfxMeshFree(_meshRef[reference]);
+		_meshRef.erase(reference);
+		return true;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to remove mesh with reference " << reference << " with error: " << e.what() << "\n";
+		return false;
+	}
+}
+
 RenderHelper::~RenderHelper() {
-	AEGfxMeshFree(_mesh);
+	AEGfxMeshFree(_defaultMesh);
 	
-	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
+	for (const std::pair<std::string, AEGfxTexture*> map : _textureRef) {
 		AEGfxTextureUnload(map.second);
 	}
+
+	for (const std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
+		AEGfxMeshFree(map.second);
+	}
+
 	_textureRef.clear();
+	_meshRef.clear();
 }
 
 RenderHelper* RenderHelper::getInstance() {
@@ -56,24 +111,13 @@ RenderHelper* RenderHelper::getInstance() {
 	return _instance;
 }
 
-void RenderHelper::background(Color color) {
+void RenderHelper::setBackgroundColor(Color color) {
 	AEGfxSetBackgroundColor(color.r, color.g, color.b);
 }
 
 void RenderHelper::rect(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rotation, Color color, f32 opacity) {
-	// create matrix
-	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, scaleX, scaleY);
-	AEMtx33 rotate = { 0 };
-	AEMtx33Rot(&rotate, rotation);
-
-	AEMtx33 translate = { 0 };
-	AEMtx33Trans(&translate, transX, transY);
-
 	AEMtx33 transform = { 0 };
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &translate, &transform);
-
+	getTransformMatrix(transX, transY, scaleX, scaleY, rotation, transform);
 
 	// prepare to draw
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -82,7 +126,29 @@ void RenderHelper::rect(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rota
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
-	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
+}
+
+void RenderHelper::rect(std::string meshRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rotation, Color color, f32 opacity) {
+	// guard to ensure mesh exists
+	if (_meshRef.find(meshRef) == _meshRef.end()) {
+		std::cerr << "Mesh with reference " << meshRef << " does not exist\n";
+		return;
+	}
+	
+	AEGfxVertexList* pMesh = _meshRef[meshRef];
+	
+	AEMtx33 transform = { 0 };
+	getTransformMatrix(transX, transY, scaleX, scaleY, rotation, transform);
+
+	// prepare to draw
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetColorToAdd(color.r, color.g, color.b, color.a);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(opacity);
+	AEGfxSetTransform(transform.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
@@ -138,7 +204,7 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	AEGfxSetTransparency(1);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
-	AEGfxMeshDraw(_mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void RenderHelper::text(std::string s, float screenX, float screenY) {

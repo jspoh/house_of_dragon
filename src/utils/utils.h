@@ -47,6 +47,11 @@ Point stow(float x, float y);
 /* screen coordinates to normalized coordinates */
 Point ston(float x, float y);
 
+/**
+ * rounds a float to a set precision.
+ */
+float precisionRound(float x, int precision);
+
 
 /*for ease of inclusion*/
 #include "./RenderHelper/RenderHelper.h"

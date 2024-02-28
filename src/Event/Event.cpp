@@ -5,14 +5,21 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 Event* Event::_instance = nullptr;
 
-static std::unordered_map<EVENT_KEYS, std::string> eKeyToStr = {
-	{E, "E"},
-	{Q, "Q"},
-	{SPACE, "SPACE"}
-};
+namespace {
+	static std::unordered_map<EVENT_KEYS, std::string> eKeyToStr = {
+		{E, "E"},
+		{Q, "Q"},
+		{SPACE, "SPACE"}
+	};
+
+	std::vector<std::string> meshReferences = {
+		"oTimerMesh",
+	};
+}
 
 
 Event::Event() {
@@ -26,10 +33,59 @@ Event::Event() {
 	}
 	RenderHelper::getInstance()->registerTexture("pass", "./Assets/flairs/flair_circle_red_8.png");
 	RenderHelper::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
+
+	// register custom mesh for otimer event
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0x00FF0000, 0.0f, 0.0f,	// bottom left
+		0.f, -0.5f, 0x0000FF00, 1.0f, 0.0f,		// bottom mid
+		-0.5f, 0.5f, 0x00FF0000, 0.5f, 1.0f		// top left
+	);
+	AEGfxTriAdd(
+		0.f, -0.5f, 0x0000FF00, 1.0f, 0.0f,		// bottom mid
+		0.f, 0.5f, 0x0000FF00, 1.0f, 1.0f,		// top mid
+		-0.5f, 0.5f, 0x00FF0000, 0.5f, 1.0f		// top left
+	);
+
+	AEGfxTriAdd(
+		-0.f, -0.5f, 0x0000FF00, 0.0f, 0.0f,	// bottom mid
+		0.5f, -0.5f, 0x00FF0000, 1.0f, 0.0f,	// bottom right
+		-0.f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top mid
+	);
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0x00FF0000, 1.0f, 0.0f,	// bottom right
+		0.5f, 0.5f, 0x00FF0000, 1.0f, 1.0f,		// top right
+		-0.f, 0.5f, 0x0000FF00, 0.5f, 1.0f		// top mid
+	);
+	AEGfxVertexList* oTimerMesh = AEGfxMeshEnd();
+
+	RenderHelper::getInstance()->registerMeshByRef(meshReferences[0], oTimerMesh);
+
+	/*init oTimer variables*/
+	this->_barWidth = AEGfxGetWindowWidth() / 2.f;
+	this->_barHeight = this->_barWidth / 30.f;
+	this->_barX = AEGfxGetWindowWidth() / 2.f;
+	this->_barY = 50.f;
+
+	// pi -> power indicator
+	this->_piWidth = this->_barWidth / 200;
+	this->_piHeight = this->_barHeight * 1.5;
+	this->_piX = this->_barX - this->_barWidth / 2.f;
+	this->_piY = this->_barY;
+
+	/**
+	 * distance based formula for acceleration:
+	 * 
+	 * acceleration = (final velocity^2 - initial velocity^2) / (2 * distance)
+	 * 
+	 */
+	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
 }
 
 Event::~Event() {
-
+	for (const std::string& ref : meshReferences) {
+		RenderHelper::getInstance()->removeMeshByRef(ref);
+	}
 }
 
 Event* Event::getInstance() {
@@ -83,11 +139,18 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, float screenX, fl
 
 void Event::_resetState() {
 	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
-	_elapsedTimeMs = 0;
-	_totalElapsedMs = 0;
+	_resetTime();
 	_useOutline = true;
 	_size = _minSize;
 	_isRenderingEventResult = false;
+
+	// oscillating timer
+	this->_piX = this->_barX - this->_barWidth / 2.f;
+}
+
+void Event::_resetTime() {
+	_elapsedTimeMs = 0;
+	_totalElapsedMs = 0;
 }
 
 void Event::_updateTime(double dt) {
@@ -97,7 +160,7 @@ void Event::_updateTime(double dt) {
 	_totalElapsedMs += idt;
 }
 
-void Event::_showEventResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
+void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout) {
 	/*event result duration over*/
 	if (_elapsedTimeMs >= _eventResultDuration * 1000) {
 		result = _eventResult;  // update result passed by caller so that they know event is over
@@ -122,7 +185,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 	/*logic*/
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventResult(result, dt, screenX, screenY, timeout);
+		_showEventSpamKeyResult(result, dt, screenX, screenY, timeout);
 		return;
 	}
 
@@ -185,6 +248,78 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
+
+	/*logic*/
+	if (_piMoving) {
+		if (AEInputCheckTriggered(AEVK_SPACE)) {
+			_piMoving = false;
+			_resetTime();	// using time to fade out
+
+			// calculate multiplier
+			const float piDistanceToCenter = abs(_barX - _piX);
+			const float percentageMultiplier = ((_barWidth / 2.f) - piDistanceToCenter) / (_barWidth / 2.f);
+			eventMultiplier = percentageMultiplier * _maxMultiplier;
+			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
+
+			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+		}
+	}
+	
+	/*rendering*/
+	const std::string oTimerMesh = meshReferences[0];
+	const Point barTranslation = stow(_barX, _barY);
+
+	// power bar
+	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+
+	Point piTranslation = stow(_piX, _piY);
+
+	if (_piMoving) {
+		// power indicator movement logic. accerlerates until center of bar, then decelerates
+		// pi is left of or on the center of bar
+		if (_piX <= _barX) {
+			_piVelocity += _piAcc * dt;
+		}
+		// pi is right of the center of bar
+		else {
+			_piVelocity -= _piAcc * dt;
+		}
+
+		// cap velocity
+		_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
+		_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
+
+		//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
+		_piX += _piVelocity * dt;
+
+		// guards to ensure that pi does not go out of bar
+		_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
+		_piX = _piX > _barX + _barWidth / 2.f ? _barX + _barWidth / 2.f : _piX;
+	}
+
+	// power indicator
+	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
+
+	// multiplier result
+	if (!_piMoving) {
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
+
+		// fade out event
+		if (_totalElapsedMs >= _oTimerTimeBeforeFadeOut * 1000) {
+			// if invisible, reset state
+			if (_oTimerOpacity <= 0.f) {
+				_resetState();
+				return;
+			}
+
+			// start fading out
+			float change = 1.f / _oTimerFadeOutDuration;
+			_oTimerOpacity -= change * dt;
+		}
+	}
 }
 
 void Event::_clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
