@@ -26,6 +26,9 @@ Event::Event() {
 	}
 	RenderHelper::getInstance()->registerTexture("pass", "./Assets/flairs/flair_circle_red_8.png");
 	RenderHelper::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
+
+	// register custom mesh for otimer event
+
 }
 
 Event::~Event() {
@@ -185,6 +188,8 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, float screenX, float scre
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, double timeout) {
 	_updateTime(dt);
+
+	RenderHelper::getInstance()->rect();
 
 }
 

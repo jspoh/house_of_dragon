@@ -80,6 +80,7 @@ private:
 
 	/**
 	 * renders an oscillating timer event.
+	 * aka swing meter, timing bar, power guage
 	 * 
 	 * \param key key to use
 	 * \param timeout
