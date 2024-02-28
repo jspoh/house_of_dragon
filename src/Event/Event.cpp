@@ -142,9 +142,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::OSCILLATING_TIMER:
 		_oscillatingTimer(result, dt, oTimerKey);
 		break;
-	//case EVENT_TYPES::CLICK_TIMER:
-	//	_multiClick(result, dt, spamkey);
-	//	break;
+	case EVENT_TYPES::MULTI_CLICK:
+		_multiClick(result, dt, spamkey);
+		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
 		break;
