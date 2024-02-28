@@ -304,9 +304,6 @@ void SceneLevelBuilder::Update(double dt)
 				m_Floor[j][i].m_Trans.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
 				m_Floor[j][i].m_Trans.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
 
-				//Dont get why need this
-				//AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
-
 				if (!m_StopMovement)
 				{
 					if (m_Floor[j][i].m_currFloorTimer > m_Floor[j][i].m_FloorSpeedTimer)
@@ -361,6 +358,7 @@ void SceneLevelBuilder::Update(double dt)
 		//////////////////////////////////////////////////////////////////////////
 		//GameObjectManager::GetInstance()->Update(dt);
 		SceneObject temp;
+		pair<int, int> t_TransScaleModifier = { 10,100 };
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -369,24 +367,24 @@ void SceneLevelBuilder::Update(double dt)
 					it != m_FloorOBJs[j][i].end();
 					it++)
 				{
-					
-
 					//Reset Transform data
 					AEMtx33Identity(&(*it).m_TransformData);
 
-					//Skew y is done
+					//Skew on the tile
 					if (!AEInputCheckCurr(AEVK_L))
 					(*it).m_TransformData.m[1][0] = 0.30 * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1) ;
 
-					//AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, (*it).m_Trans.m[0][2], (*it).m_Trans.m[1][2]);
-
-					//Scale is done
+					//Scale with the tile
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
 
-					//Should be fine
+					//Translate to the tile
 					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
 					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
-					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, (*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (10 / (*it).m_Scale.m[0][0]), (*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (100 / (*it).m_Scale.m[1][1]));
+
+					//Translate to its specific position on the tile 
+					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
+						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (t_TransScaleModifier.first / (*it).m_Scale.m[0][0]), 
+						(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (t_TransScaleModifier.second / (*it).m_Scale.m[1][1]));
 				}
 			}
 		}
@@ -580,40 +578,39 @@ void SceneLevelBuilder::Exit()
 
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
-	//static double x = 0;
-	//if (AEInputCheckCurr(AEVK_W))
-	//	x+= 0.01;
-	//if (AEInputCheckCurr(AEVK_S))
-	//	x-= 0.01;
-	//cout << x << endl;
 	srand(static_cast<unsigned> (time(0)));
+
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre
 		if (j == t_CenterFloorNum)
 			continue;
-		
-		//if(j== t_CenterFloorNum -1/* || j == t_CenterFloorNum + 1*/)
-			for (int i = 0; i < 20; i++)
+
+
+		for (int i = 0; i < 10; i++)
+		{
+			SceneObject newObj;
+			//Randomly Spawn multiple different types (DO THIS)
+			newObj.m_TexRef = "Mystery_S_Enemy";
+
+			//Random Spawning location on tile
+			pair<double, double> RandOnTile = { (rand() % 10 - 5) * 1 , (rand() % 40) * 1 };
+			if (j < t_CenterFloorNum)//Left Side
 			{
-				SceneObject newObj;
-				//Randomly Spawn multiple different types
-				newObj.m_TexRef = "Mystery_S_Enemy";
-
-				float TransY = (rand() % 40) * 1;
-				if (j < t_CenterFloorNum)//Left Side
-				{
-					AEMtx33Trans(&newObj.m_Trans, (rand() % 10 - 5) * 1 + TransY / 3, TransY);
-				}
-				else//Right Side
-				{
-					AEMtx33Trans(&newObj.m_Trans, (rand() % 10 - 5) * 1 - TransY / 3, TransY);
-				}
-
-				float scale = (rand() % 20) * 0.01f + 0.1f;
-				AEMtx33Scale(&newObj.m_Scale, scale, scale);
-				m_FloorOBJs[j][t_tileNum].push_back(newObj);
+				AEMtx33Trans(&newObj.m_Trans, RandOnTile.first + RandOnTile.second / 3, RandOnTile.second);
 			}
+			else//Right Side
+			{
+				AEMtx33Trans(&newObj.m_Trans, RandOnTile.first - RandOnTile.second / 3, RandOnTile.second);
+			}
+
+			//Random Scaling
+			float scale = (rand() % 20) * 0.01f + 0.1f;
+			AEMtx33Scale(&newObj.m_Scale, scale, scale);
+
+			//Push into OBJlist in tile
+			m_FloorOBJs[j][t_tileNum].push_back(newObj);
+		}
 
 	}
 }
