@@ -80,6 +80,20 @@ public:
 	 */
 	void rect(f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 rotation = 0, Color color = Color{ 1,1,1,1 }, f32 opacity = 1);
 
+	/**
+	 * overload to use custom mesh.
+	 * easier to create an overload than it is to adjust everything that has implemented the rect fn
+	 *
+	 * \param color
+	 * \param scaleX
+	 * \param scaleY
+	 * \param rotation anticlockwise rotation of `rotation` degrees
+	 * \param transX
+	 * \param transY
+	 * \param opacity [0.0, 1.0]
+	 */
+	void rect(std::string meshRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 rotation = 0, Color color = Color{ 1,1,1,1 }, f32 opacity = 1);
+
 	/*texture stuff*/
 	/**
 	 * register a texture(img) for `.texture` method to work properly.
