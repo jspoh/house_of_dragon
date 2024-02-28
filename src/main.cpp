@@ -65,6 +65,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	// free the system
 	AESysExit();
 	
-    // check for memory leaks. i think our project nv config for checking of memory leaks in c++..
-    _CrtDumpMemoryLeaks();
+    //// check for memory leaks. i think our project nv config for checking of memory leaks in c++..
+    //_CrtDumpMemoryLeaks();
 }

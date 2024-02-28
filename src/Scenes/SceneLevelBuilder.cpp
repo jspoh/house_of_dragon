@@ -71,65 +71,55 @@ void SceneLevelBuilder::Init()
 			case 0:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000 * (j-t_CenterFloorNum), -2829);
-				m_Floor[j][i].m_FloorNum = 0;
 				break;
 			case 1:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750 * (j - t_CenterFloorNum), -2229);
-				m_Floor[j][i].m_FloorNum = 1;
 				break;
 			case 2:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350 * (j - t_CenterFloorNum), -1629);
-				m_Floor[j][i].m_FloorNum = 2;
 				break;
 				//First Floor
 			case 3:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150 * (j - t_CenterFloorNum), -696);
-				m_Floor[j][i].m_FloorNum = 3;
 				break;
 				//Second Floor
 			case 4:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150 * (j - t_CenterFloorNum), -282);
-				m_Floor[j][i].m_FloorNum = 4;
 				break;
 				//Third floor
 			case 5:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555 * (j - t_CenterFloorNum), -50);
-				m_Floor[j][i].m_FloorNum = 5;
 				break;
 				//Fourth floor
 			case 6:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270 * (j - t_CenterFloorNum), 39);
-				m_Floor[j][i].m_FloorNum = 6;
 				break;
 				//Fifth floor
 			case 7:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130 * (j - t_CenterFloorNum), 69);
-				m_Floor[j][i].m_FloorNum = 7;
 				break;
 				//Sixth floor
 			case 8:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59 * (j - t_CenterFloorNum), 78);
-				m_Floor[j][i].m_FloorNum = 8;
 				break;
 				//Seventh floor
 			case 9:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25 * (j - t_CenterFloorNum), 80);
-				m_Floor[j][i].m_FloorNum = 9;
 				break;
 			default:
 				std::cout << "Error pls check floor" << std::endl;
 				break;
 			}
-
+			m_Floor[j][i].m_FloorNum = i;
 			m_Floor[j][i].m_OriginalTrans = m_Floor[j][i].m_Trans;
 			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
 			m_Floor[j][i].m_currFloorNum = i;
@@ -259,9 +249,16 @@ void SceneLevelBuilder::Update(double dt)
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE FLOOR MOVEMENT
 		//////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////
+		// Checks from Left to Right
+		///////////////////////////////////////////////////////////////////////////
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
+			std::list<int> t_ShiftRow{};
 			AEMtx33 m_LastFloorData = m_Floor[j][8].m_TransformFloorData;
+			///////////////////////////////////////////////////////////////////////////
+			// Checks from Up to Down
+			///////////////////////////////////////////////////////////////////////////
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
 				AEMtx33 m_NextFloorData = m_Floor[j][i].m_currFloorNum != 0 ? m_Floor[j][m_Floor[j][i].m_currFloorNum - 1].m_TransformFloorData : m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
@@ -331,22 +328,47 @@ void SceneLevelBuilder::Update(double dt)
 							m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
 
 							CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
-							//Clear Scene Objects in row
-							DestroyRowOBJs(m_Floor[j][i].m_FloorNum);
-							CreateRowOBJs(m_Floor[j][i].m_FloorNum);
+
+							if (j == t_CenterFloorNum && m_Floor[j][i].m_FloorNum == 1)
+								cout << m_Floor[j][i].m_FloorNum << endl;
+							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
+							
 						}
 					}
 					else
 						m_Floor[j][i].m_currFloorTimer += dt;
 				}
+
+				//Tile 1 & 9 isnt being deleted
+				//if(j== t_CenterFloorNum)
+				//for (std::list<SceneObject>::iterator it = m_FloorOBJs[t_CenterFloorNum][i].begin();
+				//	it != m_FloorOBJs[j][i].end();
+				//	it++)
+				//{
+				//	cout << i << ":" << m_FloorOBJs[j][i].size() << endl;;
+				//}
 			}
+
+			if (t_ShiftRow.size()>=1)
+			{
+				for (std::list<int>::iterator i = t_ShiftRow.begin(); i != t_ShiftRow.end(); i++)
+				{
+					//Clear Scene Objects in row
+					DestroyRowOBJs(*i);
+					//Only spawn on tile 0, 2->8 (1 & 9 tiles are hidden below another tile, so visual error)
+					if (m_Floor[j][*i].m_FloorNum > -1 && m_Floor[j][*i].m_FloorNum < 9 && m_Floor[j][*i].m_FloorNum != 1)
+						CreateRowOBJs(*i);
+				}
+				t_ShiftRow.clear();
+			}
+
+
 		}
 
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE OBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
 		//GameObjectManager::GetInstance()->Update(dt);
-
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -469,6 +491,7 @@ void SceneLevelBuilder::Render()
 	//SceneObj
 	AEGfxTextureSet(pEnemyTex, 0, 0);
 	//Render Left Side
+	float Check =0.f;
 	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
 	{
 		for (int i = 0; i < NUM_OF_TILES - 1; i++)
@@ -488,6 +511,9 @@ void SceneLevelBuilder::Render()
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
+			//Check = (*m_FloorOBJs[0][4].begin()).m_TransformData.m[1][2];
+			//if(Check == (*m_FloorOBJs[j][i].begin()).m_TransformData.m[1][2])
+			//	cout << Check << " " << i << endl;
 		}
 	}
 	//Render Right Side
@@ -518,7 +544,7 @@ void SceneLevelBuilder::Render()
 	// (Find out why the images are translating weird to the center of the tile for no reason)
 	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	//{
-	//	for (int i = NUM_OF_TILES - 9; i > -1; i--)
+	//	for (int i = NUM_OF_TILES - 9; i > 0; i--)
 	//	{
 	//		for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
 	//			it != m_FloorOBJs[j][i].end();
