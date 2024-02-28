@@ -3,7 +3,7 @@
 
 #include "Scene.h"
 #include "SceneManager.h"
-#include "../Backend/Pch.h"
+#include "Pch.h"
 
 #define LogoMaxTime 3.0f
 #define NUMOFSPLASHES 2 //MULTIPLY BY 2 FOR FADEIN AND FADEOUT IN UPDATE AND RENDER

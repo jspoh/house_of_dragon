@@ -1,10 +1,10 @@
 #include "TestScene.h"
 
 //#include "../../Backend/GameManager.h" //? Still thinking
-#include "../../Scenes/SceneManager.h"
-#include "../../Backend/Pch.h"
-#include "../../utils/utils.h"
-#include "../../Event/Event.h"
+#include "SceneManager.h"
+#include "Pch.h"
+#include "utils.h"
+#include "Event.h"
 
 TestScene* TestScene::sInstance = new TestScene(SceneManager::GetInstance());
 

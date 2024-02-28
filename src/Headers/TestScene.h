@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Scenes/Scene.h"
+#include "Scene.h"
 
 #include <vector>
 //Testing SpriteAnimation

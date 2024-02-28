@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../GameObject/CombatObjects/Elements/Elements.hpp"
+#include "Elements.hpp"
 
 
 class Mob {

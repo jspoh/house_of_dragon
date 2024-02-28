@@ -1,13 +1,13 @@
 #include "CombatScene.h"
 
 //#include "../../Backend/GameManager.h" //? Still thinking
-#include "../../Scenes/SceneManager.h"
-#include "../../Backend/Pch.h"
-#include "../../utils/utils.h"
-#include "../../Event/Event.h"
-#include "../../utils/utils.h"
-#include "../../GameObject/CombatObjects/CombatManager.h"
-#include "../../GameObject/CombatObjects/CombatPlayer/CombatPlayer.h"
+#include "SceneManager.h"
+#include "Pch.h"
+#include "utils.h"
+#include "Event.h"
+#include "utils.h"
+#include "CombatManager.h"
+#include "CombatPlayer.h"
 #include <vector>
 #include <unordered_map>
 

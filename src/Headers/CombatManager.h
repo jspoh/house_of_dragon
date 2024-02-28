@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../../Event/Event.h"
-#include "./Elements/Elements.hpp"
-#include "../../Backend/Pch.h"
+#include "Event.h"
+#include "Elements.hpp"
+#include "Pch.h"
 
 namespace {
     enum TURN {

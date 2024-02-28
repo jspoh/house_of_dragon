@@ -1,6 +1,6 @@
-#include "../GameObject/GenericEntity.h"
-#include "../GameObject/GameObjectManager.h"
-#include"../Backend/Pch.h"
+#include "GenericEntity.h"
+#include "GameObjectManager.h"
+#include "Pch.h"
 GenericEntity::GenericEntity()
 {
 }

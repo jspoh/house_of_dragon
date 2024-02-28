@@ -1,5 +1,5 @@
-#include "../GameObject/GameObject_AmeTest.h"
-#include "../GameObject/GameObjectManager.h"
+#include "GameObject_AmeTest.h"
+#include "GameObjectManager.h"
 
 
 GameObject_AmeTest::GameObject_AmeTest()

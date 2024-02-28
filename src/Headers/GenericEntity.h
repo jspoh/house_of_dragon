@@ -2,8 +2,8 @@
 #ifndef GENERIC_ENTITY_H
 #define GENERIC_ENTITY_H
 //Basic Entity in game (COPY THIS TO MAKE YOUR PLAYER ENTITY / ENEMY ENTITIES / ETC)
-#include "../GameObject/GameObject.h"
-#include "../Backend/2DCollider.h"
+#include "GameObject.h"
+#include "2DCollider.h"
 
 class GenericEntity : public GameObject, public CCollider
 {

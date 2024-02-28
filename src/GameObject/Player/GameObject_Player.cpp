@@ -1,6 +1,6 @@
-#include "../../GameObject/Player/GameObject_Player.h"
-#include "../../GameObject/GameObjectManager.h"
-#include "../../Backend/MyMath.h"
+#include "GameObject_Player.h"
+#include "GameObjectManager.h"
+#include "MyMath.h"
 //#include"../../Backend/Pch.h"
 GameObject_Player::GameObject_Player()
 {
