@@ -14,15 +14,7 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
-
-#include "AEEngine.h"
 #include "Event.h"
-#include "utils.h"
-#include <unordered_map>
-#include <string>
-#include <iostream>
-#include <vector>
-#include <sstream>
 
 Event* Event::_instance = nullptr;
 
@@ -36,6 +28,8 @@ namespace {
 	std::vector<std::string> meshReferences = {
 		"oTimerMesh",
 	};
+	
+	std::vector<std::string> textureReferences;
 }
 
 
@@ -48,8 +42,10 @@ Event::Event() {
 			//exit(2);
 		}
 	}
-	RenderHelper::getInstance()->registerTexture("pass", "./Assets/flairs/flair_circle_red_8.png");
+	RenderHelper::getInstance()->registerTexture("circle", "./Assets/flairs/flair_circle_red_8.png");
+	textureReferences.push_back("circle");
 	RenderHelper::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
+	textureReferences.push_back("fail");
 
 	// register custom mesh for otimer event
 	AEGfxMeshStart();
@@ -97,11 +93,25 @@ Event::Event() {
 	 * 
 	 */
 	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
+
+	/*init multiclick variables and textures*/
+	RenderHelper::getInstance()->registerTexture("clickme_light", "./Assets/keys/clickme_light.png");
+	textureReferences.push_back("clickme_light");
+	RenderHelper::getInstance()->registerTexture("clickme_dark", "./Assets/keys/clickme_dark.png");
+	textureReferences.push_back("clickme_dark");
+	RenderHelper::getInstance()->registerTexture("noclick_light", "./Assets/keys/noclick_light.png");
+	textureReferences.push_back("noclick_light");
+	RenderHelper::getInstance()->registerTexture("noclick_dark", "./Assets/keys/noclick_dark.png");
+	textureReferences.push_back("noclick_dark");
 }
 
 Event::~Event() {
 	for (const std::string& ref : meshReferences) {
 		RenderHelper::getInstance()->removeMeshByRef(ref);
+	}
+
+	for (const std::string& ref : textureReferences) {
+		RenderHelper::getInstance()->removeTextureByRef(ref);
 	}
 }
 
@@ -118,7 +128,7 @@ void Event::startRandomEvent() {
 	AEGetTime(&time);
 	srand(static_cast<unsigned int>(time));
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for now as we dont have multiple quicktime events yet
+	e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -143,7 +153,7 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		_oscillatingTimer(result, dt, oTimerKey);
 		break;
 	case EVENT_TYPES::MULTI_CLICK:
-		_multiClick(result, dt, spamkey);
+		_multiClick(result, dt);
 		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
@@ -167,6 +177,12 @@ void Event::_resetState() {
 	this->_piVelocity = 0.f;
 	this->_oTimerOpacity = 1.f;
 	this->_piMoving = true;
+
+	// multiclick
+	_multiClickHits = 0;
+	_multiClickMisses = 0;
+	_multiClickObjects.clear();
+	_mcoCount = 1;
 }
 
 void Event::_resetTime() {
@@ -191,7 +207,7 @@ void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float scre
 
 	if (_eventResult == EVENT_RESULTS::SUCCESS) {
 		// draw success
-		RenderHelper::getInstance()->texture("pass", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
+		RenderHelper::getInstance()->texture("circle", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
 	}
 	else if (_eventResult == EVENT_RESULTS::FAILURE) {
 		// draw failure
@@ -372,6 +388,31 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 	}
 }
 
-void Event::_multiClick(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
+void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
+
+	// multiclick is based on duration only
+	if (_totalElapsedMs >= _multiClickDuration * 1000) {
+		std::cout << "multiclick event over\n";
+		_resetState();
+		return;
+	}
+
+	/*rendering*/
+	if (_multiClickObjects.empty()) {
+		// first time event is called, add object
+		_multiClickObjects.push_back(MultiClickObject{ 
+			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
+			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
+			_mcoRadius,
+			1.f
+		});
+	}
+
+	for (const MultiClickObject& mco : _multiClickObjects) {
+		Point translate = stow(mco.x, mco.y);
+		RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius, mco.radius, mco.opacity, Color{ 0,0,0,mco.opacity }, 0.f);
+	}
+
+	RenderHelper::getInstance()->text("Multi click hits: " + std::to_string(_multiClickHits), 100.f, 100.f);
 }

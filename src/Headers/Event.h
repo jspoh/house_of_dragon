@@ -16,6 +16,14 @@ Technology is prohibited.
 
 #pragma once
 
+#include "AEEngine.h"
+#include "utils.h"
+#include <unordered_map>
+#include <string>
+#include <iostream>
+#include <vector>
+#include <sstream>
+
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
  * "./Assets/keys/keyboard_<key>.png"
@@ -48,6 +56,13 @@ enum EVENT_RESULTS {
 	FAILURE,
 	CUSTOM_MULTIPLIER,  // used for timed events
 	NUM_EVENT_RESULTS
+};
+
+struct MultiClickObject {
+	float x;
+	float y;
+	float radius;
+	float opacity;	// 0 to 1
 };
 
 
@@ -104,6 +119,15 @@ private:
 	// 
 	float _piAcc;// = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
 
+	/*multi click vars*/
+	const float _multiClickDuration = 5.f;
+	int _multiClickHits = 0;
+	int _multiClickMisses = 0;
+	std::vector<MultiClickObject> _multiClickObjects;
+	// mco -> multi click object
+	int _mcoCount = 1;
+	const float _mcoRadius = 50.f;
+
 	Event();
 
 	void _updateTime(double dt);
@@ -140,7 +164,7 @@ private:
 	 * \param key key to use
 	 * \param timeout time in seconds for user to click
 	 */
-	void _multiClick(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _multiClick(EVENT_RESULTS& result, double dt);
 
 public:
 	// output variable for event multiplier
