@@ -72,6 +72,14 @@ Event::Event() {
 	this->_piHeight = this->_barHeight * 1.5;
 	this->_piX = this->_barX - this->_barWidth / 2.f;
 	this->_piY = this->_barY;
+
+	/**
+	 * distance based formula for acceleration:
+	 * 
+	 * acceleration = (final velocity^2 - initial velocity^2) / (2 * distance)
+	 * 
+	 */
+	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
 }
 
 Event::~Event() {
@@ -257,7 +265,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key, 
 	_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
 	_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
 
-	std::cout << "Power indicator speed: " << _piVelocity << "\n";
+	std::cout << "Power indicator speed: " << _piVelocity << std::endl;
 	_piX += _piVelocity * dt;
 
 
