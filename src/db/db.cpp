@@ -33,15 +33,7 @@ Database::Database() {
 		std::cerr << "failed to open file" << std::endl;
 	}
 
-	std::string contents;
-	std::string line;
-
-	while (std::getline(ifs, line)) {
-		contents += line + "\n";
-	}
-
-	std::cout << "contents: " << contents << std::endl;
-	std::cout << "done dumping contents" << std::endl;
+	this->data = json::parse(ifs);
 
 	ifs.close();
 }
