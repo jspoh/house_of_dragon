@@ -22,6 +22,9 @@ Technology is prohibited.
 #include <string>
 
 
+const std::string dbPath = "data.json";
+
+
 class Database {
 private:
 	Database();
@@ -35,6 +38,18 @@ public:
 
 	static Database* getInstance();
 
+	/**
+	 * Warning: All data stored in this file will be updated on instance deletion.
+	 * 
+	 * Force update data at anytime with the `forceUpdate` function.
+	 */
 	nlohmann::json data;
+
+	/**
+	 * Update the json object data before calling this function.
+	 * 
+	 * updates the data.json file with current data in `data`
+	 */
+	bool forceUpdate();
 
 };

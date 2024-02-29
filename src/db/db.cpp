@@ -19,51 +19,7 @@ using json = nlohmann::json;
 
 
 namespace {
-	// shouldnt ever have to be called. json file should be supplied for levels
-	void _initDb() {
-		json data = {
-			{
-				"player", {
-					{ "xpToNextLevel", 0 },
-					{ "level", 1 },
-					{ "inventory", json::array() },
-				}
-			},
-			{
-				"enemies", {
-					{"cat", {
-						{"texturePath", "./Assets/animals/cat.jpg"}
-						}
-					}
-				}
-			},
-			{
-				"items", {
-					{
-						"bacon", {
-							{"texturePath", "./Assets/food/bacon.jpg"}
-						}
-					},
-					{
-						"beef", {
-							{"texturePath", "./Assets/food/beef.jpg"}
-						}
-					},
-					{
-						"chicken", {
-							{"texturePath", "./Assets/food/chicken.jpg"}
-						}
-					}
-				}
-			},
-			{
-				"levels", json::array()
-			}
-		};
 
-		std::ofstream ofs{ "data.json" };
-		ofs << data.dump(4);
-	}
 }
 
 
@@ -72,7 +28,7 @@ Database* Database::_instance = nullptr;
 
 Database::Database() {
 	// damn gay its looking in the exe directory!!!!!!!!!!!!!!!
-	ifs = std::ifstream{ "data.json" };
+	ifs = std::ifstream{ dbPath };
 
 	if (!ifs.is_open()) {
 		std::cerr << "failed to open file" << std::endl;
@@ -88,12 +44,12 @@ Database::Database() {
 	std::cout << "contents: " << contents << std::endl;
 	std::cout << "done dumping contents" << std::endl;
 
-	//_initDb();
+	ifs.close();
 }
 
 
 Database::~Database() {
-
+	forceUpdate();
 }
 
 
@@ -102,4 +58,11 @@ Database* Database::getInstance() {
 		_instance = new Database();
 	}
 	return _instance;
+}
+
+
+bool Database::forceUpdate() {
+	std::ofstream ofs{ dbPath };
+	ofs << data.dump(2);
+	ofs.close();
 }
