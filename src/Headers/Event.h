@@ -16,6 +16,15 @@ Technology is prohibited.
 
 #pragma once
 
+#include "AEEngine.h"
+#include "utils.h"
+#include <unordered_map>
+#include <string>
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include <time.h>
+
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
  * "./Assets/keys/keyboard_<key>.png"
@@ -34,9 +43,9 @@ enum EVENT_KEYS {
 enum EVENT_TYPES {
 	SPAM_KEY,
 	OSCILLATING_TIMER,
-	//CLICK_TIMER,
+	MULTI_CLICK,
 	NUM_EVENT_TYPES,
-	NONE_EVENT_TYPES,
+	NONE_EVENT_TYPE,
 };
 
 /**
@@ -50,11 +59,20 @@ enum EVENT_RESULTS {
 	NUM_EVENT_RESULTS
 };
 
+struct MultiClickObject {
+	float x;
+	float y;
+	float radius;
+	bool alive;
+	float timeSinceChange;	// for blinking effect. changing assets light and dark
+	bool blink;
+};
+
 
 class Event {
 private:
 	static Event* _instance;
-	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPES;
+	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
 	EVENT_RESULTS _eventResult = NONE_EVENT_RESULTS;
 	bool _isRenderingEventResult = false;  // is render success/failure animation
 	double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
@@ -104,13 +122,28 @@ private:
 	// 
 	float _piAcc;// = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
 
+	/*multi click vars*/
+	const float _multiClickDuration = 5.f;
+	int _mcoHits = 0;
+	int _mcoMisses = 0;
+	int _mcoDisplayHits = 0;
+	int _maxMcoHits = 10;
+	std::vector<MultiClickObject> _multiClickObjects;
+	// mco -> multi click object
+	const int _mcoCount = 3;
+	const float _mcoRadius = 25.f;
+	// how long before transitioning to another display state (light vs dark) for blinking effect
+	const float _mcoBlinkDuration = 0.25f;
+	const float _mcoTransitionTime = 1.f;
+	bool _mcoIsTransitioningOut = false;
+
 	Event();
 
 	void _updateTime(double dt);
 	void _resetTime();
 	void _resetState();
 
-	void _showEventSpamKeyResult(EVENT_RESULTS& result, double dt, float screenX, float screenY, double timeout);
+	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
 
 	/*events*/
 
@@ -140,7 +173,7 @@ private:
 	 * \param key key to use
 	 * \param timeout time in seconds for user to click
 	 */
-	void _clickTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _multiClick(EVENT_RESULTS& result, double dt);
 
 public:
 	// output variable for event multiplier

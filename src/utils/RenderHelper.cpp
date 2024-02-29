@@ -201,7 +201,7 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetColorToAdd(color.r, color.g, color.b, color.a);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1);
+	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
 	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);

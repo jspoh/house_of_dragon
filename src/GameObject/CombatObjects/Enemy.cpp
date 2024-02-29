@@ -17,8 +17,6 @@ Technology is prohibited.
 #include "Enemy.h"
 
 
-Enemy::Enemy() {}
-
 Enemy::Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
     : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
     this->_spos.x = screenX;
