@@ -7,7 +7,7 @@
 #define NUM_OF_TILES 10 //Z Axis
 #define NUM_OF_TILESPAWNPOINTS 8//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-#define MAX_NUM_SCENEOBJS_TILE 10
+#define MAX_NUM_SCENEOBJS_TILE 20
 
 class SceneLevelBuilder
 {
@@ -85,6 +85,7 @@ private:
 		AEMtx33 m_TransformData;
 		AEMtx33 m_Scale, m_Trans;
 		int m_RenderOrder;
+		float m_Transparency;
 		string m_TexRef; //Used with draw
 	};
 

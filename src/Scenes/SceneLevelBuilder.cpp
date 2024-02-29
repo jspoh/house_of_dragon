@@ -3,7 +3,7 @@
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
-	:m_TexRef(""), m_RenderOrder(0)
+	:m_TexRef(""), m_RenderOrder(0), m_Transparency(-1.5f)
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
@@ -398,6 +398,9 @@ void SceneLevelBuilder::Update(double dt)
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
 						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]), 
 						(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1]));
+				
+					//Adjusting Transparency
+					(*it).m_Transparency += dt*1.5;
 				}
 			}
 		}
@@ -488,9 +491,9 @@ void SceneLevelBuilder::Render()
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//Fog
-	//AEGfxTextureSet(pFogTex, 0, 0);
-	//AEGfxSetTransform(m_TransformFogData.m);
-	//AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(pFogTex, 0, 0);
+	AEGfxSetTransform(m_TransformFogData.m);
+	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -513,6 +516,7 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
+				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
@@ -535,6 +539,7 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
+				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
@@ -582,6 +587,12 @@ void SceneLevelBuilder::Exit()
 	delete[] m_Floor;
 	delete[] m_FloorOBJs;
 
+	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
+	{
+		delete[] m_tileSP[i];
+	}
+	delete[] m_tileSP;
+
 	//Clear Wall
 
 	//Clear Object in scene
@@ -600,11 +611,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 		if (j == t_CenterFloorNum)
 			continue;
 
-		//for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
-		//{
-		//	for (int k = 0; k < NUM_OF_TILESPAWNPOINTS; k++)
-		//	{
-		for (int i = rand() % NUM_OF_TILESPAWNPOINTS; i > 0; i--)
+		for (int i = rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10; i > 0; i--)
 		{
 			v_SceneObject newObj;
 
