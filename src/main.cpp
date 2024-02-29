@@ -68,5 +68,5 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //// check for memory leaks. i think our project nv config for checking of memory leaks in c++..
     //_CrtDumpMemoryLeaks();
 
-    system("pause");
+    //system("pause");
 }

@@ -61,7 +61,7 @@ namespace {
 			}
 		};
 
-		std::ofstream ofs{ "data.txt" };
+		std::ofstream ofs{ "data.json" };
 		ofs << data.dump(4);
 	}
 }
@@ -72,7 +72,11 @@ Database* Database::_instance = nullptr;
 
 Database::Database() {
 	// damn gay its looking in the exe directory!!!!!!!!!!!!!!!
-	ifs = std::ifstream{ "data.txt" };
+	ifs = std::ifstream{ "data.json" };
+
+	if (!ifs.is_open()) {
+		std::cerr << "failed to open file" << std::endl;
+	}
 
 	std::string contents;
 	std::string line;
