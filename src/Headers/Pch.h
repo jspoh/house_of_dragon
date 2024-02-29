@@ -30,6 +30,7 @@ Technology is prohibited.
 #include <iostream>
 #include <fstream>
 #include "utils.h"
+#include "db.h"
 
 using namespace std;  // we shouldnt do this, crowds namespace
 

@@ -69,4 +69,5 @@ void GameManager::Exit()
 
 	delete Event::getInstance();
 	delete RenderHelper::getInstance();
+	delete Database::getInstance();
 }
