@@ -13,4 +13,89 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
+#include "db.h"
 
+using json = nlohmann::json;
+
+
+namespace {
+	// shouldnt ever have to be called. json file should be supplied for levels
+	void _initDb() {
+		json data = {
+			{
+				"player", {
+					{ "xpToNextLevel", 0 },
+					{ "level", 1 },
+					{ "inventory", json::array() },
+				}
+			},
+			{
+				"enemies", {
+					{"cat", {
+						{"texturePath", "./Assets/animals/cat.jpg"}
+						}
+					}
+				}
+			},
+			{
+				"items", {
+					{
+						"bacon", {
+							{"texturePath", "./Assets/food/bacon.jpg"}
+						}
+					},
+					{
+						"beef", {
+							{"texturePath", "./Assets/food/beef.jpg"}
+						}
+					},
+					{
+						"chicken", {
+							{"texturePath", "./Assets/food/chicken.jpg"}
+						}
+					}
+				}
+			},
+			{
+				"levels", json::array()
+			}
+		};
+
+		std::ofstream ofs{ "data.txt" };
+		ofs << data.dump(4);
+	}
+}
+
+
+Database* Database::_instance = nullptr;
+
+
+Database::Database() {
+	// damn gay its looking in the exe directory!!!!!!!!!!!!!!!
+	ifs = std::ifstream{ "data.txt" };
+
+	std::string contents;
+	std::string line;
+	
+	while (std::getline(ifs, line)) {
+		contents += line + "\n";
+	}
+
+	std::cout << "contents: " << contents << std::endl;
+	std::cout << "done dumping contents" << std::endl;
+
+	//_initDb();
+}
+
+
+Database::~Database() {
+
+}
+
+
+Database* Database::getInstance() {
+	if (!_instance) {
+		_instance = new Database();
+	}
+	return _instance;
+}

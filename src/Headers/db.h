@@ -15,3 +15,26 @@ Technology is prohibited.
 
 
 #pragma once
+
+#include "json.hpp"
+#include <fstream>
+#include <iostream>
+#include <string>
+
+
+class Database {
+private:
+	Database();
+
+	static Database* _instance;
+	std::ifstream ifs;
+
+
+public:
+	~Database();
+
+	static Database* getInstance();
+
+	nlohmann::json data;
+
+};
