@@ -176,6 +176,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClCompile Include="src\GameObject\Player\GameObject_Player.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Scenes\CombatScene.cpp" />
+    <ClCompile Include="src\Scenes\credit.cpp" />
     <ClCompile Include="src\Scenes\SceneBase.cpp" />
     <ClCompile Include="src\Scenes\SceneLevelBuilder.cpp" />
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
@@ -193,6 +194,7 @@ xcopy "$(SolutionDir)Extern\AlphaEngine\lib\fmod.dll" "$(OutDir)" /s /r /y /q</C
     <ClInclude Include="src\Headers\Application.h" />
     <ClInclude Include="src\Headers\CombatPlayer.h" />
     <ClInclude Include="src\Headers\CombatScene.h" />
+    <ClInclude Include="src\Headers\credit.h" />
     <ClInclude Include="src\Headers\db.h" />
     <ClInclude Include="src\Headers\Elements.hpp" />
     <ClInclude Include="src\Headers\CombatManager.h" />

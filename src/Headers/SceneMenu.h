@@ -31,11 +31,11 @@ public:
 		float buttonX[4];
 		float buttonY[4];
 		AEGfxTexture* button[4];
-	
+
 		s32 mouseX, mouseY;
 		float buttonWidth, buttonHeight;
 		bool hovering[4];
-		bool levelSelecting; 
+		bool levelSelecting;
 		int levelActived[4];
 
 		bool transitionEnd;
