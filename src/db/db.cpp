@@ -62,7 +62,14 @@ Database* Database::getInstance() {
 
 
 bool Database::forceUpdate() {
-	std::ofstream ofs{ dbPath };
-	ofs << data.dump(2);
-	ofs.close();
+	try {
+		std::ofstream ofs{ dbPath };
+		ofs << data.dump(2);
+		ofs.close();
+	}
+	catch (std::exception& e) {
+		std::cerr << "failed to update file: " << e.what() << std::endl;
+		return false;
+	}
+	return true;
 }

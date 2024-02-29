@@ -236,5 +236,8 @@
     <ClInclude Include="src\Headers\credit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Headers\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

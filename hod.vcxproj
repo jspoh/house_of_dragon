@@ -208,6 +208,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClInclude Include="src\Headers\GameObject_AmeTest.h" />
     <ClInclude Include="src\Headers\GameObject_Player.h" />
     <ClInclude Include="src\Headers\GenericEntity.h" />
+    <ClInclude Include="src\Headers\json.hpp" />
     <ClInclude Include="src\Headers\Mob.h" />
     <ClInclude Include="src\Headers\MouseController.h" />
     <ClInclude Include="src\Headers\MyMath.h" />
