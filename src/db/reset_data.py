@@ -2,9 +2,8 @@
 @file         reset_data.py
 @brief        This file is used to reset the data in the database to the default values.
               for resetting values for release
-@version      1.0
 @date         290224
-@author       jingseng.poh (jingseng.poh@digipen.edu)
+@author       Poh Jing Seng, jingseng.poh, (jingseng.poh@digipen.edu), 2301363
 
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
