@@ -27,7 +27,6 @@ Database* Database::_instance = nullptr;
 
 
 Database::Database() {
-	// damn gay its looking in the exe directory!!!!!!!!!!!!!!!
 	ifs = std::ifstream{ dbPath };
 
 	if (!ifs.is_open()) {
