@@ -1,12 +1,21 @@
 {
+  "game": {
+    "audio": {
+      "sfx": 100,
+      "music": 100
+    }
+  },
   "player": {
+    "completedTutorial": false,
     "xpToNextLevel": 0,
     "level": 1,
     "inventory": []
   },
-  "enemies": {
+  "enemyAttributes": {
     "cat": {
-      "texturePath": "./Assets/animals/cat.jpg"
+      "texturePath": "./Assets/animals/cat.jpg",
+      "element": "fire",
+      "health": 100
     }
   },
   "items": {
@@ -20,5 +29,39 @@
       "texturePath": "./Assets/food/chicken.jpg"
     }
   },
-  "levels": []
+  "levels": [
+    {
+      "unlocked": true,
+      "completed": false,
+      "score": 0,
+      "enemies": [
+        {
+          "type": "cat",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "unlocked": false,
+      "completed": false,
+      "score": 0,
+      "enemies": [
+        {
+          "type": "cat",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "unlocked": false,
+      "completed": false,
+      "score": 0,
+      "enemies": [
+        {
+          "type": "cat",
+          "amount": 3
+        }
+      ]
+    }
+  ]
 }

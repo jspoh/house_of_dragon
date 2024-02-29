@@ -80,7 +80,7 @@ Database::Database() {
 
 	std::string contents;
 	std::string line;
-	
+
 	while (std::getline(ifs, line)) {
 		contents += line + "\n";
 	}
