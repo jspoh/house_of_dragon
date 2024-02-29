@@ -33,8 +33,10 @@ def constructData() -> dict:
     "enemyAttributes": {
       "cat": {
         "texturePath": "./Assets/animals/cat.jpg",
+        "soundPath": "./Assets/sounds/cat.mp3",
         "element": "fire",
-        "health": 100
+        "health": 100,
+        "damage": 10,
       }
     },
     "items": {
@@ -56,7 +58,7 @@ def constructData() -> dict:
         "enemies": [
           {
             "type": "cat",
-            "amount": 1
+            "renderingPosition": [0, 0]
           }
         ]
       },
@@ -67,7 +69,11 @@ def constructData() -> dict:
         "enemies": [
           {
             "type": "cat",
-            "amount": 2
+            "renderingPosition": [0, 0]
+          },
+          {
+            "type": "cat",
+            "renderingPosition": [100, 100]
           }
         ]
       },
@@ -78,7 +84,15 @@ def constructData() -> dict:
         "enemies": [
           {
             "type": "cat",
-            "amount": 3
+            "renderingPosition": [0, 0]
+          },
+          {
+            "type": "cat",
+            "renderingPosition": [100, 100]
+          },
+          {
+            "type": "cat",
+            "renderingPosition": [-100, -100]
           }
         ]
       }
