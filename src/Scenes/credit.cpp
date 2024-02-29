@@ -33,7 +33,7 @@ SceneCredits::~SceneCredits()
 
 void SceneCredits::Load()
 {
-	credits.bg = AEGfxTextureLoad("Assets/bg.jpg");
+	credits.bg = AEGfxTextureLoad("./Assets/bg.jpg");
 	//credits.mesh = 0; 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
