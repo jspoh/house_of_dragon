@@ -3,7 +3,7 @@
 #include "Pch.h"
 #include "GameObjectManager.h"
 
-#define SIZE_OF_FLOOR 15 //X Axis
+#define SIZE_OF_FLOOR 3 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
 

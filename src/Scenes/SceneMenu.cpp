@@ -57,6 +57,8 @@ void SceneMenu::Init()
 
 void SceneMenu::Update(double dt)
 {
+	if (AEInputCheckCurr(AEVK_1))
+		SceneManager::GetInstance()->SetActiveScene("SceneStage1");
 	if (AEInputCheckTriggered(AEVK_LBUTTON))
 	{
 		s32 mxx, myy;
@@ -220,5 +222,6 @@ void SceneMenu::Exit()
 	{
 		AEGfxTextureUnload(myMenu.button[i]);
 	}
+	AEGfxTextureUnload(myMenu.bg);
 	AEGfxMeshFree(myMenu.mesh);
 }
