@@ -57,7 +57,10 @@ def constructData() -> dict:
         "enemies": [
           {
             "type": "cat",
-            "renderingPosition": [0, 0]
+            "renderingPosition": {
+              "x": 0,
+              "y": 0
+            }
           }
         ]
       },
@@ -68,11 +71,17 @@ def constructData() -> dict:
         "enemies": [
           {
             "type": "cat",
-            "renderingPosition": [0, 0]
+            "renderingPosition": {
+              "x": 0,
+              "y": 0
+            }
           },
           {
             "type": "cat",
-            "renderingPosition": [100, 100]
+            "renderingPosition": {
+              "x": 100,
+              "y": 100
+            }
           }
         ]
       },
@@ -83,15 +92,24 @@ def constructData() -> dict:
         "enemies": [
           {
             "type": "cat",
-            "renderingPosition": [0, 0]
+            "renderingPosition": {
+              "x": 0,
+              "y": 0
+            }
           },
           {
             "type": "cat",
-            "renderingPosition": [100, 100]
+            "renderingPosition": {
+              "x": 100,
+              "y": 100
+            }
           },
           {
             "type": "cat",
-            "renderingPosition": [-100, -100]
+            "renderingPosition": {
+              "x": -100,
+              "y": 100
+            }
           }
         ]
       }
