@@ -546,6 +546,7 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	
+	//Done
 	//Rendering a single line 
 	// (Find out why this is causing issue with spawning at different location)
 	// (Find out why the images are translating weird to the center of the tile for no reason)
