@@ -187,12 +187,15 @@ void CombatScene::Update(double dt)
         /*check if success or failure and modify damage accordingly*/
         switch (CombatManager::getInstance()->qtEventResult) {
         case EVENT_RESULTS::SUCCESS:
+            std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
             player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->maxMultiplier);
             break;
         case EVENT_RESULTS::FAILURE:
+            std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
             player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->minMultiplier);
             break;
         case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+            std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
             player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->eventMultiplier);
             break;
         }
