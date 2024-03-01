@@ -32,7 +32,7 @@ SceneCredits::~SceneCredits()
 
 void SceneCredits::Load()
 {
-	credits.bg = AEGfxTextureLoad("./Assets/bg.jpg");
+	credits.bg = AEGfxTextureLoad("Assets/bg.jpg");
 	//credits.mesh = 0; 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -204,8 +204,6 @@ void SceneCredits::Render()
 void SceneCredits::Exit()
 {
 	AEGfxMeshFree(credits.mesh);
-	AEGfxTextureUnload(credits.bg);
-	AEGfxDestroyFont(pFont);
 }
 void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
 {
