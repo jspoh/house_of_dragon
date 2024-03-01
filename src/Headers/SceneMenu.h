@@ -23,6 +23,7 @@ public:
 
 	typedef struct {
 		AEGfxTexture* bg;
+		AEGfxTexture* pointer;
 		AEGfxTexture* title;
 		AEGfxTexture* transitionBG;
 		AEGfxVertexList* mesh;

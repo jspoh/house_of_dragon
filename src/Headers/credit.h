@@ -17,7 +17,10 @@ public:
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
-	s8 pFont;
+	s8 pFontL;
+	s8 pFontM;
+	s8 pFontS;
+	s8 pFontxS;
 
 	f32 textPosX, textPosY;
 
