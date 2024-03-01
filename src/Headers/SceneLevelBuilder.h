@@ -5,7 +5,9 @@
 
 #define SIZE_OF_FLOOR 15 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
+#define NUM_OF_TILESPAWNPOINTS 8//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
+#define MAX_NUM_SCENEOBJS_TILE 20
 
 class SceneLevelBuilder
 {
@@ -58,6 +60,12 @@ private:
 		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
 	};
 
+	struct v_TileSpawnPoint
+	{
+		double m_X;
+		double m_Y;
+	};
+
 	//////////////////////////////////////////////////////////////////////////////////////////////
     //                       *DO NOT CONFUSE WITH GAMEOBJECTS*
     /*
@@ -71,15 +79,17 @@ private:
     */
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
-	struct SceneObject
+	struct v_SceneObject
 	{
-		SceneObject();
+		v_SceneObject();
 		AEMtx33 m_TransformData;
 		AEMtx33 m_Scale, m_Trans;
+		int m_RenderOrder;
+		float m_Transparency;
 		string m_TexRef; //Used with draw
 	};
 
-	enum SceneObjectTypes
+	enum v_SceneObjectTypes
 	{
 		EType_MysteryEnemyStrong,
 		EType_MysteryEnemyWeak,
@@ -115,7 +125,8 @@ private:
 	AEGfxTexture* pEnemyTex;
 
 	v_FloorData** m_Floor;
-	std::list<SceneObject>** m_FloorOBJs;
+	v_TileSpawnPoint** m_tileSP; //0 
+	std::list<v_SceneObject>** m_FloorOBJs;
 	//v_WallData** m_Wall;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;

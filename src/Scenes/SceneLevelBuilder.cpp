@@ -2,8 +2,8 @@
 
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
-SceneLevelBuilder::SceneObject::SceneObject()
-	:m_TexRef("")
+SceneLevelBuilder::v_SceneObject::v_SceneObject()
+	:m_TexRef(""), m_RenderOrder(0), m_Transparency(-1.5f)
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
@@ -43,11 +43,22 @@ SceneLevelBuilder::SceneLevelBuilder()
 	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
-	m_FloorOBJs = new std::list<SceneObject>* [SIZE_OF_FLOOR];
+	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
 		m_Floor[i] = new v_FloorData[NUM_OF_TILES];
-		m_FloorOBJs[i] = new std::list<SceneObject>[NUM_OF_TILES];
+		m_FloorOBJs[i] = new std::list<v_SceneObject>[NUM_OF_TILES];
+	}
+
+	m_tileSP = new v_TileSpawnPoint * [NUM_OF_TILESPAWNPOINTS];
+	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
+	{
+		m_tileSP[i] = new v_TileSpawnPoint[NUM_OF_TILESPAWNPOINTS];
+		for (int j = 0; j < NUM_OF_TILESPAWNPOINTS; j++)
+		{
+			m_tileSP[i][j].m_X = (36 / NUM_OF_TILESPAWNPOINTS * j) - 18;
+			m_tileSP[i][j].m_Y = (50 / NUM_OF_TILESPAWNPOINTS * i) - 25;
+		}
 	}
 
 	Init();
@@ -127,6 +138,7 @@ void SceneLevelBuilder::Init()
 			m_Floor[j][i].m_TransformFloorCurr = m_Floor[j][i].m_TransformFloorData;
 		}
 	}
+	
 
 	AEMtx33 scale, trans;
 	////////////////////////////////////////////////////////////////
@@ -138,7 +150,7 @@ void SceneLevelBuilder::Init()
 		{
 			if (j == t_CenterFloorNum)
 				continue;
-		    SceneObject newObj;
+		    v_SceneObject newObj;
 			newObj.m_TexRef = "Mystery_S_Enemy";
 			AEMtx33Trans(&newObj.m_Trans, (rand() % 20 - 10) * 1 ,20);
 			AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f);
@@ -172,38 +184,39 @@ void SceneLevelBuilder::Init()
 void SceneLevelBuilder::Update(double dt)
 {
 	//Placement Tool (Remove once done)
-	//	static int x = 2000.f, y = 400.f;
-//if (AEInputCheckCurr(AEVK_W))
-//{
-//	y++;
-//}
-//if (AEInputCheckCurr(AEVK_S))
-//{
-//	y--;
-//}
-//if (AEInputCheckCurr(AEVK_A))
-//{
-//	x--;
-//}
-//if (AEInputCheckCurr(AEVK_D))
-//{
-//	x++;
-//}
-//static int mx = 0, my = 200;
-//if (AEInputCheckCurr(AEVK_UP))
-//{
-//	my++;
-//}
-//if (AEInputCheckCurr(AEVK_DOWN))
-//{
-//	my--;
-//}
-//AEMtx33 scale = { 0 }, trans = { 0 };
-//AEMtx33Scale(&scale, x, y);
-//AEMtx33Trans(&trans, mx, my);
-//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-//
-//cout << mx << endl;
+
+	static double x = 10, y = 0;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 0.05;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 0.05;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x -= 1.05;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x += 1.05;
+	}
+	static double mx = 0, my = 200;
+	if (AEInputCheckCurr(AEVK_UP))
+	{
+		mx += 0.05;
+	}
+	if (AEInputCheckCurr(AEVK_DOWN))
+	{
+		my--;
+	}
+	//AEMtx33 scale = { 0 }, trans = { 0 };
+	//AEMtx33Scale(&scale, x, y);
+	//AEMtx33Trans(&trans, mx, my);
+	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+	//
+	//cout << x << " " << y << " " << mx << endl;
 
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
@@ -357,13 +370,13 @@ void SceneLevelBuilder::Update(double dt)
 		//UPDATE OBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
 		//GameObjectManager::GetInstance()->Update(dt);
-		SceneObject temp;
-		pair<int, int> t_TransScaleModifier = { 10,100 };
+		v_SceneObject temp;
+		pair<int, int> t_TransScaleModifier = { 10, 42};
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
 					it != m_FloorOBJs[j][i].end();
 					it++)
 				{
@@ -383,8 +396,11 @@ void SceneLevelBuilder::Update(double dt)
 
 					//Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
-						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (t_TransScaleModifier.first / (*it).m_Scale.m[0][0]), 
-						(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (t_TransScaleModifier.second / (*it).m_Scale.m[1][1]));
+						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]), 
+						(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1]));
+				
+					//Adjusting Transparency
+					(*it).m_Transparency += dt*1.5;
 				}
 			}
 		}
@@ -496,10 +512,11 @@ void SceneLevelBuilder::Render()
 			if (tempTileNum < 0)
 				tempTileNum += NUM_OF_TILES - 1;
 
-			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
+				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
@@ -518,16 +535,18 @@ void SceneLevelBuilder::Render()
 			if (tempTileNum < 0)
 				tempTileNum += NUM_OF_TILES - 1;
 
-			for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
+				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}
 	
+	//Done
 	//Rendering a single line 
 	// (Find out why this is causing issue with spawning at different location)
 	// (Find out why the images are translating weird to the center of the tile for no reason)
@@ -535,7 +554,7 @@ void SceneLevelBuilder::Render()
 	//{
 	//	for (int i = NUM_OF_TILES - 9; i > 0; i--)
 	//	{
-	//		for (std::list<SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
 	//			it != m_FloorOBJs[j][i].end();
 	//			it++)
 	//		{
@@ -569,12 +588,19 @@ void SceneLevelBuilder::Exit()
 	delete[] m_Floor;
 	delete[] m_FloorOBJs;
 
+	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
+	{
+		delete[] m_tileSP[i];
+	}
+	delete[] m_tileSP;
+
 	//Clear Wall
 
 	//Clear Object in scene
 	GameObjectManager::GetInstance()->Exit();
 	GameObjectManager::GetInstance()->Destroy();
 }
+
 
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
@@ -586,32 +612,53 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 		if (j == t_CenterFloorNum)
 			continue;
 
-
-		for (int i = 0; i < 4; i++)
+		for (int i = rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10; i > 0; i--)
 		{
-			SceneObject newObj;
-			//Randomly Spawn multiple different types (DO THIS)
+			v_SceneObject newObj;
+
+
+			//Selecting Entities to Spawn
 			newObj.m_TexRef = "Mystery_S_Enemy";
 
-			//Random Spawning location on tile
-			pair<double, double> RandOnTile = { (rand() % 10 - 5) * 1 , (rand() % 40) * 1 };
+
+			//Random Selection of Spawn location on tile
+			int t_RandX, t_RandY;
+			if (j == t_CenterFloorNum - 1 || j == t_CenterFloorNum + 1)
+			{
+				t_RandX = rand() % NUM_OF_TILESPAWNPOINTS / 2;
+				t_RandY = rand() % NUM_OF_TILESPAWNPOINTS / 2;
+			}
+			else
+			{
+				t_RandX = rand() % NUM_OF_TILESPAWNPOINTS;
+				t_RandY = rand() % NUM_OF_TILESPAWNPOINTS;
+			}
+					
+			
 			if (j < t_CenterFloorNum)//Left Side
 			{
-				AEMtx33Trans(&newObj.m_Trans, RandOnTile.first + RandOnTile.second / 3, RandOnTile.second);
+				AEMtx33Trans(&newObj.m_Trans, m_tileSP[t_RandY][t_RandX].m_X + m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 			else//Right Side
 			{
-				AEMtx33Trans(&newObj.m_Trans, RandOnTile.first - RandOnTile.second / 3, RandOnTile.second);
+				AEMtx33Trans(&newObj.m_Trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 
 			//Random Scaling
 			float scale = (rand() % 20) * 0.01f + 0.1f;
 			AEMtx33Scale(&newObj.m_Scale, scale, scale);
 
-			//Push into OBJlist in tile
-			m_FloorOBJs[j][t_tileNum].push_back(newObj);
-		}
 
+			//Push into OBJlist in tile (Determine which to render first based on Spawnpoint m_Y
+			std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][t_tileNum].begin();
+			newObj.m_RenderOrder = t_RandY; //Spawnpoint m_y
+			for (; it != m_FloorOBJs[j][t_tileNum].end(); it++)
+			{
+				if (newObj.m_RenderOrder <= (*it).m_RenderOrder)
+					break;
+			}
+			m_FloorOBJs[j][t_tileNum].insert(it, newObj);
+		}
 	}
 }
 
