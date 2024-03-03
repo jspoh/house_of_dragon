@@ -22,13 +22,22 @@
   },
   "items": {
     "bacon": {
-      "texturePath": "./Assets/food/bacon.jpg"
+      "texturePath": "./Assets/food/bacon.jpg",
+      "healthEffect": 0,
+      "dmgMultiplier": 1.15,
+      "description": "Increases attack damage"
     },
     "beef": {
-      "texturePath": "./Assets/food/beef.jpg"
+      "texturePath": "./Assets/food/beef.jpg",
+      "healthEffect": 20,
+      "dmgMultiplier": 1,
+      "description": "Recovers 20 health"
     },
     "chicken": {
-      "texturePath": "./Assets/food/chicken.jpg"
+      "texturePath": "./Assets/food/chicken.jpg",
+      "healthEffect": 0,
+      "dmgMultiplier": 1.5,
+      "description": "Increases attack damage greatly"
     }
   },
   "levels": [
@@ -36,64 +45,31 @@
       "unlocked": true,
       "completed": false,
       "score": 0,
-      "enemies": [
-        {
-          "type": "cat",
-          "renderingPosition": {
-            "x": 0,
-            "y": 0
-          }
-        }
-      ]
+      "maxEnemies": 1,
+      "enemySpawnWeight": {
+        "cat": 2,
+        "dog": 1
+      }
     },
     {
       "unlocked": false,
       "completed": false,
       "score": 0,
-      "enemies": [
-        {
-          "type": "cat",
-          "renderingPosition": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "type": "cat",
-          "renderingPosition": {
-            "x": 100,
-            "y": 100
-          }
-        }
-      ]
+      "maxEnemies": 2,
+      "enemySpawnWeight": {
+        "cat": 1,
+        "dog": 1
+      }
     },
     {
       "unlocked": false,
       "completed": false,
       "score": 0,
-      "enemies": [
-        {
-          "type": "cat",
-          "renderingPosition": {
-            "x": 0,
-            "y": 0
-          }
-        },
-        {
-          "type": "cat",
-          "renderingPosition": {
-            "x": 100,
-            "y": 100
-          }
-        },
-        {
-          "type": "cat",
-          "renderingPosition": {
-            "x": -100,
-            "y": 100
-          }
-        }
-      ]
+      "maxEnemies": 3,
+      "enemySpawnWeight": {
+        "cat": 1,
+        "dog": 2
+      }
     }
   ]
 }

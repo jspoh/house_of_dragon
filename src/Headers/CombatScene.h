@@ -43,6 +43,15 @@ private:
 	static CombatScene* sInstance; // The pointer to the object that gets registered
 };
 
+// !TODO: kuek
+/**
+ * @brief 
+ * 1. read from json file the attributes and create Enemy objects
+ * 2. 
+ * @param enemyRefs 
+ */
+void spawnEnemies(std::vector<std::string> enemyRefs);
+
 
 /*defining these functions here to chiong prototype, no time to make nicenice rn*/
 
