@@ -129,7 +129,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	e = EVENT_TYPES::TYPING;  // hardcoded for testing
+	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -157,6 +157,7 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		_multiClick(result, dt);
 		break;
 	case EVENT_TYPES::TYPING:
+		break;
 		_typingEvent(result, dt);
 		break;
 	default:
