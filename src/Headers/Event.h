@@ -181,7 +181,7 @@ private:
 	 * !TODO: use pie timer asset
 	 * 
 	 */
-	void _drawTimer(float elapsedTime, float timeout);
+	void _renderTimer(float elapsedTime, float timeout);
 
 	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
 
