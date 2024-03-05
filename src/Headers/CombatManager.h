@@ -19,7 +19,7 @@ Technology is prohibited.
 #include "Event.h"
 #include "Elements.hpp"
 #include "Pch.h"
-
+#include "Enemy.h"
 namespace {
     enum TURN {
         PLAYER,
@@ -48,4 +48,6 @@ public:
     static CombatManager* getInstance();
 
     void next();
+
+    void setSelectedEnemy(Enemy* enemy); // set the selected enemy for the damage intake
 };

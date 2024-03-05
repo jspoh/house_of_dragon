@@ -52,6 +52,8 @@ Point ston(float x, float y);
  */
 float precisionRound(float x, int precision);
 
+// mathematical technique used to find a value between two endpoints based on a linear progression.
+float lerp(float start, float end, float t);
 
 /*for ease of inclusion*/
 #include "RenderHelper.h"
