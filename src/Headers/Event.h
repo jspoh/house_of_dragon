@@ -25,6 +25,7 @@ Technology is prohibited.
 #include <sstream>
 #include <time.h>
 #include <array>
+#include <cctype>
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
@@ -151,7 +152,7 @@ private:
 	// when user is done typing current word, then set this to true
 	bool _getNewWord = true;
 	std::string _currentWord;	// current word used
-	float _charGap = 20.f;		// gap between characters, in screen pos
+	float _charGap = 10.f;		// gap between characters, in screen pos
 
 	Event();
 

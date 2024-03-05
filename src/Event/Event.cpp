@@ -498,7 +498,11 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 	}
 
 	/*render*/
+	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
+	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;
+	float currOffset = start;
 	for (const char c : _currentWord) {
-
+		RenderHelper::getInstance()->text(std::string{ static_cast<int>(toupper(c)) }, currOffset, AEGfxGetWindowHeight() / 2.f);
+		currOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
 	}
 }

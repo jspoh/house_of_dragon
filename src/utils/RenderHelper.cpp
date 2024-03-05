@@ -217,9 +217,8 @@ void RenderHelper::text(std::string s, float screenX, float screenY, float r, fl
 	AEGfxPrint(_font, s.c_str(), p.x - width / 2, p.y - height / 2, 1, r, g, b, a);
 }
 
-void RenderHelper::setFontSize(int size) {
-	throw std::exception("not working");
-	_fontSize = size;
+int RenderHelper::getFontSize() {
+	return _fontSize;
 }
 
 
