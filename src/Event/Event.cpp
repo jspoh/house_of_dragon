@@ -32,7 +32,7 @@ namespace {
 	std::vector<std::string> textureReferences;
 }
 
-
+// constructor
 Event::Event() {
 	double time;
 	AEGetTime(&time);
@@ -99,6 +99,7 @@ Event::Event() {
 	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
 
 	/*init multiclick variables and textures*/
+	// multiclick targets
 	RenderHelper::getInstance()->registerTexture("clickme_light", "./Assets/Combat_UI/clickme_light.png");
 	textureReferences.push_back("clickme_light");
 	RenderHelper::getInstance()->registerTexture("clickme_dark", "./Assets/Combat_UI/clickme_dark.png");
@@ -107,6 +108,17 @@ Event::Event() {
 	textureReferences.push_back("noclick_light");
 	RenderHelper::getInstance()->registerTexture("noclick_dark", "./Assets/Combat_UI/noclick_dark.png");
 	textureReferences.push_back("noclick_dark");
+	// timers
+	RenderHelper::getInstance()->registerTexture("timer_0", "./Assets/Combat_UI/timer/timer_0.png");
+	textureReferences.push_back("timer_0");
+	RenderHelper::getInstance()->registerTexture("timer_25", "./Assets/Combat_UI/timer/timer_25.png");
+	textureReferences.push_back("timer_25");
+	RenderHelper::getInstance()->registerTexture("timer_50", "./Assets/Combat_UI/timer/timer_50.png");
+	textureReferences.push_back("timer_50");
+	RenderHelper::getInstance()->registerTexture("timer_75", "./Assets/Combat_UI/timer/timer_75.png");
+	textureReferences.push_back("timer_75");
+	RenderHelper::getInstance()->registerTexture("timer_100", "./Assets/Combat_UI/timer/timer_100.png");
+	textureReferences.push_back("timer_100");
 }
 
 Event::~Event() {
@@ -169,8 +181,21 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 
 
 /*private*/
-void Event::_drawTimer(float elapsedTime, float timeout) {
+void Event::_renderTimer(float elapsedTime, float timeout) {
+	float x = AEGfxGetWindowWidth() * 0.925f;
+	float y = AEGfxGetWindowHeight() * 0.11125f;
+	Point world = stow(x, y);
 
+	std::array<int, 5> thresholds = { 100,75,50,25,0 };
+
+	int timeLeftPctg = round((elapsedTime / timeout) * 100);		// time left percentage
+	
+	for (const int t : thresholds) {
+		if (timeLeftPctg >= t) {
+			RenderHelper::getInstance()->texture("timer_" + std::to_string(100 - t), world.x, world.y);
+			break;
+		}
+	}
 }
 
 void Event::_resetState() {
@@ -232,6 +257,7 @@ void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float 
 
 void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
+	_renderTimer(_totalElapsedMs, _spamkeyTimeout * 1000);
 	//std::cout << _totalElapsedMs << "\n";
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
@@ -304,6 +330,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
+	_renderTimer(_totalElapsedMs, _oTimerTimeout * 1000);
 
 	/*logic*/
 	// check if timeout
@@ -405,6 +432,7 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 // !TODO: consider changing cursor to crosshair when multiclick event is active
 void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
+	_renderTimer(_totalElapsedMs, _multiClickDuration * 1000);
 
 	// multiclick is based on duration only
 	if (_totalElapsedMs >= _multiClickDuration * 1000 && !_mcoIsTransitioningOut) {
@@ -568,6 +596,8 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 }
 
 void Event::_typingEventRender() {
+	_renderTimer(_totalElapsedMs, _typingTimeout * 1000);
+
 	/*render*/
 	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
 	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;
