@@ -39,16 +39,16 @@ Event::Event() {
 	srand(static_cast<unsigned int>(time));
 
 	for (std::pair<EVENT_KEYS, std::string> map : eKeyToStr) {
-		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/keys/keyboard_" + map.second + ".png");
-		bool success2 = RenderHelper::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/keys/keyboard_" + map.second + "_outline.png");
+		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + ".png");
+		bool success2 = RenderHelper::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + "_outline.png");
 		if (!success1 || !success2) {
 			std::cerr << "Failed to load asset in Event constructor\n";
 			//exit(2);
 		}
 	}
-	RenderHelper::getInstance()->registerTexture("circle", "./Assets/flairs/flair_circle_red_8.png");
+	RenderHelper::getInstance()->registerTexture("circle", "./Assets/Combat_UI/flair_circle_red_8.png");
 	textureReferences.push_back("circle");
-	RenderHelper::getInstance()->registerTexture("fail", "./Assets/flairs/flair_disabled_cross.png");
+	RenderHelper::getInstance()->registerTexture("fail", "./Assets/Combat_UI/flair_disabled_cross.png");
 	textureReferences.push_back("fail");
 
 	// register custom mesh for otimer event
@@ -99,13 +99,13 @@ Event::Event() {
 	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
 
 	/*init multiclick variables and textures*/
-	RenderHelper::getInstance()->registerTexture("clickme_light", "./Assets/keys/clickme_light.png");
+	RenderHelper::getInstance()->registerTexture("clickme_light", "./Assets/Combat_UI/clickme_light.png");
 	textureReferences.push_back("clickme_light");
-	RenderHelper::getInstance()->registerTexture("clickme_dark", "./Assets/keys/clickme_dark.png");
+	RenderHelper::getInstance()->registerTexture("clickme_dark", "./Assets/Combat_UI/clickme_dark.png");
 	textureReferences.push_back("clickme_dark");
-	RenderHelper::getInstance()->registerTexture("noclick_light", "./Assets/keys/noclick_light.png");
+	RenderHelper::getInstance()->registerTexture("noclick_light", "./Assets/Combat_UI/noclick_light.png");
 	textureReferences.push_back("noclick_light");
-	RenderHelper::getInstance()->registerTexture("noclick_dark", "./Assets/keys/noclick_dark.png");
+	RenderHelper::getInstance()->registerTexture("noclick_dark", "./Assets/Combat_UI/noclick_dark.png");
 	textureReferences.push_back("noclick_dark");
 }
 

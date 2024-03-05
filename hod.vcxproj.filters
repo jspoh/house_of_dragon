@@ -117,7 +117,7 @@
     <ClCompile Include="src\GameObject\CombatObjects\CombatPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\credit.cpp">
+    <ClCompile Include="src\Scenes\SceneCredit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -233,7 +233,7 @@
     <ClInclude Include="src\Headers\TestScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Headers\credit.h">
+    <ClInclude Include="src\Headers\SceneCredit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\json.hpp">

@@ -63,7 +63,7 @@ RenderHelper::RenderHelper() {
 	_defaultMesh = AEGfxMeshEnd();
 
 	// font
-	_font = AEGfxCreateFont("./Assets/liberation-mono.ttf", _fontSize);
+	_font = AEGfxCreateFont("./Assets/Fonts/liberation-mono.ttf", _fontSize);
 }
 
 bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mesh) {
@@ -221,6 +221,9 @@ int RenderHelper::getFontSize() {
 	return _fontSize;
 }
 
-
+AEGfxVertexList* RenderHelper::GetdefaultMesh()
+{
+	return _defaultMesh;
+}
 /*class DrawSpritesheet*/
 

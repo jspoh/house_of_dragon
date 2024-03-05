@@ -113,8 +113,7 @@ private:
 		EType_Rock3,
 	};
 
-	AEGfxVertexList* pMesh;
-
+	//Change soon
 	AEGfxTexture* pFloorTex;
 	AEGfxTexture* pSideLeftFloorTex;
 	AEGfxTexture* pSideRightFloorTex;
