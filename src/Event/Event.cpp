@@ -129,7 +129,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
+	e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -157,7 +157,6 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		_multiClick(result, dt);
 		break;
 	case EVENT_TYPES::TYPING:
-		break;
 		_typingEvent(result, dt);
 		break;
 	default:
@@ -169,6 +168,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 
 
 /*private*/
+void Event:: _drawTimer(float elapsedTime, float timeout) {
+
+}
 
 void Event::_resetState() {
 	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
@@ -488,6 +490,15 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 
 
 void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
-	/* render */
-	RenderHelper::getInstance()->text("DICTIONARY", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+	/*update*/
+	if (_getNewWord) {
+		// on enter state
+		_getNewWord = false;
+		_currentWord = _wordlist[rand() % _wordlist.size()];
+	}
+
+	/*render*/
+	for (const char c : _currentWord) {
+
+	}
 }

@@ -24,6 +24,7 @@ Technology is prohibited.
 #include <vector>
 #include <sstream>
 #include <time.h>
+#include <array>
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
@@ -138,11 +139,34 @@ private:
 	const float _mcoTransitionTime = 1.f;
 	bool _mcoIsTransitioningOut = false;
 
+	/*typing event vars*/
+	const std::array<std::string, 5> _wordlist {
+		"nian",
+		"dragon",
+		"angpao",
+		"oranges",
+		"caishenye"
+	};
+	// determines whether to get a new word.
+	// when user is done typing current word, then set this to true
+	bool _getNewWord = true;
+	std::string _currentWord;	// current word used
+	float _charGap = 20.f;		// gap between characters, in screen pos
+
 	Event();
 
 	void _updateTime(double dt);
 	void _resetTime();
 	void _resetState();
+
+	/**
+	 * used for timed events.
+	 * eg. multiClick, 
+	 * 
+	 * !TODO: use pie timer asset
+	 * 
+	 */
+	void _drawTimer(float elapsedTime, float timeout);
 
 	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
 
