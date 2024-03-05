@@ -14,6 +14,8 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
+// !TODO: jspoh add difficulty config
+
 #pragma once
 
 #include "AEEngine.h"
@@ -24,6 +26,8 @@ Technology is prohibited.
 #include <vector>
 #include <sstream>
 #include <time.h>
+#include <array>
+#include <cctype>
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
@@ -44,6 +48,7 @@ enum EVENT_TYPES {
 	SPAM_KEY,
 	OSCILLATING_TIMER,
 	MULTI_CLICK,
+	TYPING,
 	NUM_EVENT_TYPES,
 	NONE_EVENT_TYPE,
 };
@@ -57,6 +62,13 @@ enum EVENT_RESULTS {
 	FAILURE,
 	CUSTOM_MULTIPLIER,  // used for timed events
 	NUM_EVENT_RESULTS
+};
+
+enum INNER_STATES {
+	ON_ENTER,
+	ON_UPDATE,
+	ON_NEXT,	// redo action in update
+	ON_EXIT
 };
 
 struct MultiClickObject {
@@ -96,7 +108,7 @@ private:
 	const float nroc = 50;
 
 	/*oTimer vars*/
-	const float _oTimerTimeout = 10.f;
+	const float _oTimerTimeout = 5.f;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
 	float _oTimerFadeOutDuration = 0.5f;	// seconds
@@ -137,11 +149,39 @@ private:
 	const float _mcoTransitionTime = 1.f;
 	bool _mcoIsTransitioningOut = false;
 
+	/*typing event vars*/
+	const std::array<std::string, 5> _wordlist {
+		"nian",
+		"dragon",
+		"angpao",
+		"oranges",
+		"caishenye"
+	};
+	// determines whether to get a new word.
+	// when user is done typing current word, then set this to true
+	std::string _currentWord;	// current word used
+	const float _charGap = 10.f;		// gap between characters, in screen pos
+	std::vector<std::pair<char, bool>> _typed;
+	const float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
+	INNER_STATES _typingState = INNER_STATES::ON_ENTER;
+	const float _typingTimeout = 5.f;			// time before typing event ends
+	int _wordsCompleted = 0;			// words player managed to type before timeends
+	const int _typingMaxScore = 5;
+
 	Event();
 
 	void _updateTime(double dt);
 	void _resetTime();
 	void _resetState();
+
+	/**
+	 * used for timed events.
+	 * eg. multiClick, 
+	 * 
+	 * !TODO: use pie timer asset
+	 * 
+	 */
+	void _drawTimer(float elapsedTime, float timeout);
 
 	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
 
@@ -162,18 +202,22 @@ private:
 	 * renders an oscillating timer event.
 	 * aka swing meter, timing bar, power guage
 	 * 
-	 * \param key key to use
-	 * \param timeout
 	 */
 	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
 
 	/**
 	 * .
 	 * 
-	 * \param key key to use
+	 * \param 
 	 * \param timeout time in seconds for user to click
 	 */
 	void _multiClick(EVENT_RESULTS& result, double dt);
+
+	/**
+	 * @brief	typing event.
+	 */
+	void _typingEventUpdate(EVENT_RESULTS& result, double dt);
+	void _typingEventRender();
 
 public:
 	// output variable for event multiplier

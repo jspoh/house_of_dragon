@@ -28,7 +28,7 @@ namespace {
 	std::vector<std::string> meshReferences = {
 		"oTimerMesh",
 	};
-	
+
 	std::vector<std::string> textureReferences;
 }
 
@@ -92,9 +92,9 @@ Event::Event() {
 
 	/**
 	 * distance based formula for acceleration:
-	 * 
+	 *
 	 * acceleration = (final velocity^2 - initial velocity^2) / (2 * distance)
-	 * 
+	 *
 	 */
 	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
 
@@ -129,7 +129,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -156,6 +156,10 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::MULTI_CLICK:
 		_multiClick(result, dt);
 		break;
+	case EVENT_TYPES::TYPING:
+		_typingEventUpdate(result, dt);
+		_typingEventRender();
+		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
 		break;
@@ -165,6 +169,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 
 
 /*private*/
+void Event::_drawTimer(float elapsedTime, float timeout) {
+
+}
 
 void Event::_resetState() {
 	_activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
@@ -185,6 +192,12 @@ void Event::_resetState() {
 	_mcoDisplayHits = 0;
 	_multiClickObjects.clear();
 	_mcoIsTransitioningOut = false;
+
+	// typing event
+	_currentWord.clear();
+	_typed.clear();
+	_typingState = INNER_STATES::ON_ENTER;
+	_wordsCompleted = 0;
 }
 
 void Event::_resetTime() {
@@ -296,7 +309,6 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 	// check if timeout
 	if (_totalElapsedMs >= _oTimerTimeout * 1000) {
 		result = EVENT_RESULTS::FAILURE;
-		_showEventSpamKeyResult(result, _barX, _barY);
 		_resetState();
 		return;
 	}
@@ -331,13 +343,13 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
 		}
 	}
-	
+
 	/*rendering*/
 	const std::string oTimerMesh = meshReferences[0];
 	const Point barTranslation = stow(_barX, _barY);
 
 	// power bar
-	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+	RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
 
 	Point piTranslation = stow(_piX, _piY);
 
@@ -438,8 +450,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		if (hit) {
 			_multiClickObjects.erase(_multiClickObjects.begin() + i);
 		}
-		else
-		if (!hit) {
+		else if (!hit) {
 			std::cout << "mco missed\n";
 			_mcoDisplayHits--;
 			_mcoMisses++;
@@ -450,15 +461,16 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	/*rendering*/
 	// ensure that there are always mcoCount objects on screen
 	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
-		_multiClickObjects.push_back(MultiClickObject{ 
+		_multiClickObjects.push_back(MultiClickObject{
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
 			_mcoRadius,
 			true,
 			0.f
-		});
+			});
 	}
 
+	/*render*/
 	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoDisplayHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6.f);
 
 	if (_mcoIsTransitioningOut) {
@@ -471,13 +483,126 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			mco.blink = !mco.blink;
 			mco.timeSinceChange = 0.f;
 		}
-		
+
 		Point translate = stow(mco.x, mco.y);
 		if (mco.blink) {
-			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{0,0,0,1}, 0.f);
+			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 		else {
-			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{0,0,0,1}, 0.f);
+			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
+	}
+}
+
+// !TODO: change to sprite
+void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
+	/*update*/
+	_updateTime(dt);
+
+	switch (_typingState) {
+	case INNER_STATES::ON_ENTER:
+		// on enter state
+		_currentWord = _wordlist[rand() % _wordlist.size()];
+
+		_typed.clear();
+		// init map on which letters are typed
+		for (const char c : _currentWord) {
+			_typed.push_back({ c, false });
+		}
+
+		_typingState = INNER_STATES::ON_UPDATE;
+		break;
+
+	case INNER_STATES::ON_UPDATE:
+		// on update state
+		if (_elapsedTimeMs >= _typingTimeout * 1000) {
+			_elapsedTimeMs = 0;
+			eventMultiplier = static_cast<float>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
+			_typingState = INNER_STATES::ON_EXIT;
+		}
+
+		for (const std::pair<int, char> map : keyMappings) {
+			if (AEInputCheckTriggered(static_cast<u8>(map.first))) {
+
+				// set next to first iterator of vector
+				auto next = &_typed[0];
+				// find the first letter that hasnt been typed
+				while (next->second) {
+					// word is fully typed. use guard to prevent out of range
+					if (next == &_typed.back()) {
+						break;
+					}
+					next++;
+				}
+
+				if (_typingState != INNER_STATES::ON_UPDATE) {
+					break;
+				}
+
+				// mark letter as typed if correct key is triggered
+				if (map.first + AEVK_OFFSET == next->first) {
+					next->second = true;
+
+					// finished typing. move on to next state
+					if (next + 1 == &_typed.back()) {
+						_wordsCompleted++;
+						_typingState = INNER_STATES::ON_NEXT;
+						break;
+					}
+				}
+			}
+		}
+		break;
+
+	case INNER_STATES::ON_NEXT:
+		_typingState = INNER_STATES::ON_ENTER;
+		break;
+
+	case INNER_STATES::ON_EXIT:
+		if (_elapsedTimeMs >= _typingTransitionTime * 1000) {
+			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+			_resetState();
+		}
+		break;
+	}
+}
+
+void Event::_typingEventRender() {
+	/*render*/
+	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
+	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;
+	float currXOffset = start;
+	float currYOffset = AEGfxGetWindowHeight() * 0.85f;
+	int i{};
+
+	switch (_typingState) {
+	case INNER_STATES::ON_ENTER:
+	case INNER_STATES::ON_UPDATE:
+	case INNER_STATES::ON_NEXT:
+		for (const char c : _currentWord) {
+			Color col;
+
+			// if has been typed, set color
+			if (_typed[i].second) {
+				col = { 0, 1, 0, 1 };	// green
+			}
+			else {
+				col = { 0.5f, 0.5f, 0.5f, 1 };	// grey
+			}
+
+			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currXOffset, currYOffset, col.r, col.g, col.b, col.a);
+			currXOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
+
+			i++;
+		}
+		break;
+
+
+	case INNER_STATES::ON_EXIT:
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, currYOffset);
+		break;
 	}
 }
