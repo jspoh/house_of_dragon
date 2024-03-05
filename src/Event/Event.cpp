@@ -28,7 +28,7 @@ namespace {
 	std::vector<std::string> meshReferences = {
 		"oTimerMesh",
 	};
-	
+
 	std::vector<std::string> textureReferences;
 }
 
@@ -92,9 +92,9 @@ Event::Event() {
 
 	/**
 	 * distance based formula for acceleration:
-	 * 
+	 *
 	 * acceleration = (final velocity^2 - initial velocity^2) / (2 * distance)
-	 * 
+	 *
 	 */
 	_piAcc = (_piMaxVelocity * _piMaxVelocity) / (2.f * (_barWidth / 2.f));
 
@@ -129,7 +129,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -155,6 +155,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		break;
 	case EVENT_TYPES::MULTI_CLICK:
 		_multiClick(result, dt);
+		break;
+	case EVENT_TYPES::TYPING:
+		_typingEvent(result, dt);
 		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
@@ -331,13 +334,13 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
 		}
 	}
-	
+
 	/*rendering*/
 	const std::string oTimerMesh = meshReferences[0];
 	const Point barTranslation = stow(_barX, _barY);
 
 	// power bar
-	RenderHelper::getInstance()->rect(oTimerMesh,barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+	RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
 
 	Point piTranslation = stow(_piX, _piY);
 
@@ -438,8 +441,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		if (hit) {
 			_multiClickObjects.erase(_multiClickObjects.begin() + i);
 		}
-		else
-		if (!hit) {
+		else if (!hit) {
 			std::cout << "mco missed\n";
 			_mcoDisplayHits--;
 			_mcoMisses++;
@@ -450,15 +452,16 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	/*rendering*/
 	// ensure that there are always mcoCount objects on screen
 	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
-		_multiClickObjects.push_back(MultiClickObject{ 
+		_multiClickObjects.push_back(MultiClickObject{
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
 			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
 			_mcoRadius,
 			true,
 			0.f
-		});
+			});
 	}
 
+	/*render*/
 	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoDisplayHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6.f);
 
 	if (_mcoIsTransitioningOut) {
@@ -471,13 +474,19 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			mco.blink = !mco.blink;
 			mco.timeSinceChange = 0.f;
 		}
-		
+
 		Point translate = stow(mco.x, mco.y);
 		if (mco.blink) {
-			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{0,0,0,1}, 0.f);
+			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 		else {
-			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{0,0,0,1}, 0.f);
+			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 	}
+}
+
+
+void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
+	/* render */
+	RenderHelper::getInstance()->text("DICTIONARY", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 }

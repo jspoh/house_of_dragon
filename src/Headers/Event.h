@@ -44,6 +44,7 @@ enum EVENT_TYPES {
 	SPAM_KEY,
 	OSCILLATING_TIMER,
 	MULTI_CLICK,
+	TYPING,
 	NUM_EVENT_TYPES,
 	NONE_EVENT_TYPE,
 };
@@ -162,18 +163,21 @@ private:
 	 * renders an oscillating timer event.
 	 * aka swing meter, timing bar, power guage
 	 * 
-	 * \param key key to use
-	 * \param timeout
 	 */
 	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
 
 	/**
 	 * .
 	 * 
-	 * \param key key to use
+	 * \param 
 	 * \param timeout time in seconds for user to click
 	 */
 	void _multiClick(EVENT_RESULTS& result, double dt);
+
+	/**
+	 * @brief	typing event.
+	 */
+	void _typingEvent(EVENT_RESULTS& result, double dt);
 
 public:
 	// output variable for event multiplier
