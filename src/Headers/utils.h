@@ -86,6 +86,8 @@ Point ston(float x, float y);
  */
 float precisionRound(float x, int precision);
 
+float degToRad(float degrees);
+
 
 /*for ease of inclusion*/
 #include "RenderHelper.h"

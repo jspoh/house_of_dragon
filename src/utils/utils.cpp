@@ -17,6 +17,7 @@ Technology is prohibited.
 #include "utils.h"
 #include <vector>
 #include "Pch.h"
+#include "MyMath.h"
 
 
 /*utility functions*/
@@ -39,6 +40,10 @@ float precisionRound(float x, int precision) {
 	int mult = static_cast<int>(pow(10, precision));
 	int num = static_cast<int>(x * mult + 0.5f);
 	return num / static_cast<float>(mult);
+}
+
+float degToRad(float degrees) {
+	return degrees * Math::m_PI / 180.f;
 }
 
 namespace {

@@ -49,6 +49,7 @@ enum EVENT_TYPES {
 	OSCILLATING_TIMER,
 	MULTI_CLICK,
 	TYPING,
+	TRACKING,
 	NUM_EVENT_TYPES,
 	NONE_EVENT_TYPE,
 };
@@ -69,15 +70,6 @@ enum INNER_STATES {
 	ON_UPDATE,
 	ON_NEXT,	// redo action in update
 	ON_EXIT
-};
-
-struct MultiClickObject {
-	float x;
-	float y;
-	float radius;
-	bool alive;
-	float timeSinceChange;	// for blinking effect. changing assets light and dark
-	bool blink;
 };
 
 
@@ -135,6 +127,15 @@ private:
 	float _piAcc;// = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
 
 	/*multi click vars*/
+	struct MultiClickObject {
+		float x;
+		float y;
+		float radius;
+		bool alive;
+		float timeSinceChange;	// for blinking effect. changing assets light and dark
+		bool blink;
+	};
+
 	const int _multiClickTimeoutMs = 5000;
 	int _mcoHits = 0;
 	int _mcoMisses = 0;
@@ -168,6 +169,31 @@ private:
 	int _wordsCompleted = 0;			// words player managed to type before timeends
 	const int _typingMaxScore = 5;
 
+	/*tracking event vars*/
+	const int _trackingEventTimeoutMs = 5000;
+	INNER_STATES _trackingState = INNER_STATES::ON_ENTER;
+	const int spawnIntervalMs = 1000;
+	const float _trackingRadius = 25.f;
+	const float _trackingSpeed = 5.f;
+
+	struct TrackingEventHead {
+		float x;
+		float y;
+		AEVec2 vel;
+		float radius;
+
+		// time since last spawn
+		float timeSinceSpawn;
+
+		// blink
+		float timeSinceChange;
+		bool blink;
+	};
+
+	TrackingEventHead _trackingObj;
+
+
+	/*ctor and methods*/
 	Event();
 
 	void _updateTime(double dt);
@@ -225,6 +251,9 @@ private:
 	 */
 	void _typingEventUpdate(EVENT_RESULTS& result, double dt);
 	void _typingEventRender();
+
+	void _trackingEventUpdate(EVENT_RESULTS& result, double dt);
+	void _trackingEventRender();
 
 public:
 	// output variable for event multiplier
