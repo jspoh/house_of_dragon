@@ -108,7 +108,7 @@ private:
 	const float nroc = 50;
 
 	/*oTimer vars*/
-	const float _oTimerTimeout = 10.f;
+	const float _oTimerTimeout = 5.f;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
 	float _oTimerFadeOutDuration = 0.5f;	// seconds

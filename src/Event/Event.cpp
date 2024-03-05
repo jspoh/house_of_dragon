@@ -129,7 +129,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
+	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -309,7 +309,6 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 	// check if timeout
 	if (_totalElapsedMs >= _oTimerTimeout * 1000) {
 		result = EVENT_RESULTS::FAILURE;
-		_showEventSpamKeyResult(result, _barX, _barY);
 		_resetState();
 		return;
 	}
@@ -523,7 +522,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 		for (const std::pair<int, char> map : keyMappings) {
-			if (AEInputCheckTriggered(map.first)) {
+			if (AEInputCheckTriggered(static_cast<u8>(map.first))) {
 
 				// set next to first iterator of vector
 				auto next = &_typed[0];
