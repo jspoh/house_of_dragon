@@ -29,12 +29,12 @@ void SceneMenu::Load()
 
 	myMenu.mesh = AEGfxMeshEnd();
 
-	myMenu.bg = AEGfxTextureLoad("Assets/bg.jpg");
+	myMenu.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
 
-	myMenu.button[0] = AEGfxTextureLoad("Assets/buttons/play.png");
-	myMenu.button[1] = AEGfxTextureLoad("Assets/buttons/credit.png");
-	myMenu.button[2] = AEGfxTextureLoad("Assets/buttons/setting.png");
-	myMenu.button[3] = AEGfxTextureLoad("Assets/buttons/exit.png");
+	myMenu.button[0] = AEGfxTextureLoad("Assets/Menu/buttons/play.png");
+	myMenu.button[1] = AEGfxTextureLoad("Assets/Menu/buttons/credit.png");
+	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/setting.png");
+	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/exit.png");
 
 }
 

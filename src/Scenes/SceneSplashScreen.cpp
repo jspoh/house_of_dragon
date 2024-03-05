@@ -50,8 +50,8 @@ void SceneSplashScreen::Load()
 	// Saving the mesh (list of triangles) in pMesh
 	m_Mesh = AEGfxMeshEnd();
 
-	m_DigipenLogoTex = AEGfxTextureLoad("Assets/DigiPen_Singapore_WEB_RED.png");
-	m_TeamLogoTex = AEGfxTextureLoad("Assets/Team_Logo.png");
+	m_DigipenLogoTex = AEGfxTextureLoad("Assets/SplashScreen/DigiPen_Singapore_WEB_RED.png");
+	m_TeamLogoTex = AEGfxTextureLoad("Assets/SplashScreen/Team_Logo.png");
 }
 
 void SceneSplashScreen::Init()
