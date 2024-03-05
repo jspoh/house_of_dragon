@@ -32,13 +32,13 @@ SceneLevelBuilder::SceneLevelBuilder()
 	/////////////////////////////////////////////////////////////////////////////////
 	
 	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
-	pFloorTex = AEGfxTextureLoad("Assets/Scene_Floor_Grass_3D.png");
-	pSideRightFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideRight_Sand_3D.png");
-	pSideLeftFloorTex = AEGfxTextureLoad("Assets/Scene_FloorSideLeft_Sand_3D.png");
-	pSkyTex = AEGfxTextureLoad("Assets/Scene_Sky_Clear.png");
-	pSunOverlayTex = AEGfxTextureLoad("Assets/Scene_Sun_Overlaylighting.png");
-	pFogTex = AEGfxTextureLoad("Assets/Scene_Fog_Color.png");
-	pEnemyTex = AEGfxTextureLoad("Assets/Scene_Enemy_Strong.png");
+	pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
+	pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
+	pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
+	pSkyTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
+	pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
+	pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
+	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
 	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
 	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
 
