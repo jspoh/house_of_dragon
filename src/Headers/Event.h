@@ -14,6 +14,8 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
+// !TODO: jspoh add difficulty config
+
 #pragma once
 
 #include "AEEngine.h"
@@ -157,13 +159,14 @@ private:
 	};
 	// determines whether to get a new word.
 	// when user is done typing current word, then set this to true
-	bool _getNewWord = true;
 	std::string _currentWord;	// current word used
-	float _charGap = 10.f;		// gap between characters, in screen pos
+	const float _charGap = 10.f;		// gap between characters, in screen pos
 	std::vector<std::pair<char, bool>> _typed;
-	bool _typingCompleted = false;		// if word has been fully typed
-	float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
-	INNER_STATES _typingState = ON_ENTER;
+	const float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
+	INNER_STATES _typingState = INNER_STATES::ON_ENTER;
+	const float _typingTimeout = 5.f;			// time before typing event ends
+	int _wordsCompleted = 0;			// words player managed to type before timeends
+	const int _typingMaxScore = 5;
 
 	Event();
 

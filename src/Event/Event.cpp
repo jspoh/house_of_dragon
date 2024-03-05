@@ -191,6 +191,12 @@ void Event::_resetState() {
 	_mcoDisplayHits = 0;
 	_multiClickObjects.clear();
 	_mcoIsTransitioningOut = false;
+
+	// typing event
+	_currentWord.clear();
+	_typed.clear();
+	_typingState = INNER_STATES::ON_ENTER;
+	_wordsCompleted = 0;
 }
 
 void Event::_resetTime() {
@@ -491,10 +497,11 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 // !TODO: change to sprite
 void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 	/*update*/
+	_updateTime(dt);
+
 	switch (_typingState) {
 	case INNER_STATES::ON_ENTER:
 		// on enter state
-		_getNewWord = false;
 		_currentWord = _wordlist[rand() % _wordlist.size()];
 
 		_typed.clear();
@@ -508,6 +515,12 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 
 	case INNER_STATES::ON_UPDATE:
 		// on update state
+		if (_elapsedTimeMs >= _typingTimeout * 1000) {
+			_elapsedTimeMs = 0;
+			eventMultiplier = static_cast<float>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
+			_typingState = INNER_STATES::ON_EXIT;
+		}
+
 		for (const std::pair<int, char> map : keyMappings) {
 			if (AEInputCheckTriggered(map.first)) {
 
@@ -531,7 +544,8 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 					next->second = true;
 
 					// finished typing. move on to next state
-					if (next+1 == &_typed.back()) {
+					if (next + 1 == &_typed.back()) {
+						_wordsCompleted++;
 						_typingState = INNER_STATES::ON_NEXT;
 						break;
 					}
@@ -545,30 +559,47 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 		break;
 
 	case INNER_STATES::ON_EXIT:
+		if (_elapsedTimeMs >= _typingTransitionTime * 1000) {
+			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+			_resetState();
+		}
 		break;
 	}
-
 
 	/*render*/
 	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
 	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;
 	float currOffset = start;
-
 	int i{};
-	for (const char c : _currentWord) {
-		Color col;
 
-		// if has been typed, set color
-		if (_typed[i].second) {
-			col = { 0, 1, 0, 1 };	// green
+	switch (_typingState) {
+	case INNER_STATES::ON_ENTER:
+	case INNER_STATES::ON_UPDATE:
+	case INNER_STATES::ON_NEXT:
+		for (const char c : _currentWord) {
+			Color col;
+
+			// if has been typed, set color
+			if (_typed[i].second) {
+				col = { 0, 1, 0, 1 };	// green
+			}
+			else {
+				col = { 0.5f, 0.5f, 0.5f, 1 };	// grey
+			}
+
+			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currOffset, AEGfxGetWindowHeight() / 2.f, col.r, col.g, col.b, col.a);
+			currOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
+
+			i++;
 		}
-		else {
-			col = { 0.5f, 0.5f, 0.5f, 1 };	// grey
-		}
+		break;
 
-		RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currOffset, AEGfxGetWindowHeight() / 2.f, col.r, col.g, col.b, col.a);
-		currOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
 
-		i++;
+	case INNER_STATES::ON_EXIT:
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+		break;
 	}
 }
