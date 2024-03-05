@@ -129,7 +129,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	e = EVENT_TYPES::TYPING;  // hardcoded for testing
+	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -569,7 +569,8 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 	/*render*/
 	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
 	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;
-	float currOffset = start;
+	float currXOffset = start;
+	float currYOffset = AEGfxGetWindowHeight() * 0.85f;
 	int i{};
 
 	switch (_typingState) {
@@ -587,8 +588,8 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 				col = { 0.5f, 0.5f, 0.5f, 1 };	// grey
 			}
 
-			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currOffset, AEGfxGetWindowHeight() / 2.f, col.r, col.g, col.b, col.a);
-			currOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
+			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currXOffset, currYOffset, col.r, col.g, col.b, col.a);
+			currXOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
 
 			i++;
 		}
@@ -599,7 +600,7 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 		std::ostringstream oss;
 		oss.precision(eventMultiplierPrecision);
 		oss << std::fixed << eventMultiplier << "x";
-		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, currYOffset);
 		break;
 	}
 }
