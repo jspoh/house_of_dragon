@@ -168,7 +168,7 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 
 
 /*private*/
-void Event:: _drawTimer(float elapsedTime, float timeout) {
+void Event::_drawTimer(float elapsedTime, float timeout) {
 
 }
 
@@ -488,36 +488,64 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	}
 }
 
-
+// !TODO: change to sprite
 void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 	/*update*/
-	if (_getNewWord) {
+	switch (_typingState) {
+	case INNER_STATES::ON_ENTER:
 		// on enter state
 		_getNewWord = false;
 		_currentWord = _wordlist[rand() % _wordlist.size()];
 
+		_typed.clear();
 		// init map on which letters are typed
 		for (const char c : _currentWord) {
 			_typed.push_back({ c, false });
 		}
-	}
 
-	// on update state
-	for (const std::pair<int, char> map : keyMappings) {
-		if (AEInputCheckTriggered(map.first)) {
-			
-			// set next to first iterator of vector
-			auto next = _typed.begin();
-			// find the first letter that hasnt been typed
-			while (next->second) {
-				next++;
-			}
+		_typingState = INNER_STATES::ON_UPDATE;
+		break;
 
-			// mark letter as typed if correct key is triggered
-			if (map.first + AEVK_OFFSET == next->first) {
-				next->second = true;
+	case INNER_STATES::ON_UPDATE:
+		// on update state
+		for (const std::pair<int, char> map : keyMappings) {
+			if (AEInputCheckTriggered(map.first)) {
+
+				// set next to first iterator of vector
+				auto next = &_typed[0];
+				// find the first letter that hasnt been typed
+				while (next->second) {
+					// word is fully typed. use guard to prevent out of range
+					if (next == &_typed.back()) {
+						break;
+					}
+					next++;
+				}
+
+				if (_typingState != INNER_STATES::ON_UPDATE) {
+					break;
+				}
+
+				// mark letter as typed if correct key is triggered
+				if (map.first + AEVK_OFFSET == next->first) {
+					next->second = true;
+
+					// finished typing. move on to next state
+					if (next+1 == &_typed.back()) {
+						_typingState = INNER_STATES::ON_NEXT;
+						break;
+					}
+				}
 			}
 		}
+		break;
+
+	case INNER_STATES::ON_NEXT:
+		_typingState = INNER_STATES::ON_ENTER;
+		break;
+
+	case INNER_STATES::ON_EXIT:
+		break;
 	}
 
 

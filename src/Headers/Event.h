@@ -62,6 +62,13 @@ enum EVENT_RESULTS {
 	NUM_EVENT_RESULTS
 };
 
+enum INNER_STATES {
+	ON_ENTER,
+	ON_UPDATE,
+	ON_NEXT,	// redo action in update
+	ON_EXIT
+};
+
 struct MultiClickObject {
 	float x;
 	float y;
@@ -154,6 +161,9 @@ private:
 	std::string _currentWord;	// current word used
 	float _charGap = 10.f;		// gap between characters, in screen pos
 	std::vector<std::pair<char, bool>> _typed;
+	bool _typingCompleted = false;		// if word has been fully typed
+	float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
+	INNER_STATES _typingState = ON_ENTER;
 
 	Event();
 
