@@ -495,14 +495,52 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 		// on enter state
 		_getNewWord = false;
 		_currentWord = _wordlist[rand() % _wordlist.size()];
+
+		// init map on which letters are typed
+		for (const char c : _currentWord) {
+			_typed.push_back({ c, false });
+		}
 	}
+
+	// on update state
+	for (const std::pair<int, char> map : keyMappings) {
+		if (AEInputCheckTriggered(map.first)) {
+			
+			// set next to first iterator of vector
+			auto next = _typed.begin();
+			// find the first letter that hasnt been typed
+			while (next->second) {
+				next++;
+			}
+
+			// mark letter as typed if correct key is triggered
+			if (map.first + AEVK_OFFSET == next->first) {
+				next->second = true;
+			}
+		}
+	}
+
 
 	/*render*/
 	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
 	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;
 	float currOffset = start;
+
+	int i{};
 	for (const char c : _currentWord) {
-		RenderHelper::getInstance()->text(std::string{ static_cast<int>(toupper(c)) }, currOffset, AEGfxGetWindowHeight() / 2.f);
+		Color col;
+
+		// if has been typed, set color
+		if (_typed[i].second) {
+			col = { 0, 1, 0, 1 };	// green
+		}
+		else {
+			col = { 0.5f, 0.5f, 0.5f, 1 };	// grey
+		}
+
+		RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currOffset, AEGfxGetWindowHeight() / 2.f, col.r, col.g, col.b, col.a);
 		currOffset += RenderHelper::getInstance()->getFontSize() + _charGap;
+
+		i++;
 	}
 }

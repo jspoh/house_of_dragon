@@ -153,6 +153,7 @@ private:
 	bool _getNewWord = true;
 	std::string _currentWord;	// current word used
 	float _charGap = 10.f;		// gap between characters, in screen pos
+	std::vector<std::pair<char, bool>> _typed;
 
 	Event();
 
