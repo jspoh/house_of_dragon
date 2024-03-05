@@ -181,14 +181,14 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 
 
 /*private*/
-void Event::_renderTimer(float elapsedTime, float timeout) {
+void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 	float x = AEGfxGetWindowWidth() * 0.925f;
 	float y = AEGfxGetWindowHeight() * 0.11125f;
 	Point world = stow(x, y);
 
 	std::array<int, 5> thresholds = { 100,75,50,25,0 };
 
-	int timeLeftPctg = round((elapsedTime / timeout) * 100);		// time left percentage
+	int timeLeftPctg = static_cast<int>(ceil((static_cast<float>(elapsedTimeMs) / timeoutMs) * 100));		// time left percentage
 	
 	for (const int t : thresholds) {
 		if (timeLeftPctg >= t) {
@@ -257,7 +257,7 @@ void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float 
 
 void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _spamkeyTimeout * 1000);
+	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
 	//std::cout << _totalElapsedMs << "\n";
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
@@ -278,7 +278,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 		_isRenderingEventResult = true;
 		return;
 	}
-	else if (_totalElapsedMs >= _spamkeyTimeout * 1000) {
+	else if (_totalElapsedMs >= _spamkeyTimeoutMs) {
 		_eventResult = EVENT_RESULTS::FAILURE;
 		_elapsedTimeMs = 0;
 		_isRenderingEventResult = true;
@@ -330,11 +330,11 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 
 void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _oTimerTimeout * 1000);
+	_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
 
 	/*logic*/
 	// check if timeout
-	if (_totalElapsedMs >= _oTimerTimeout * 1000) {
+	if (_totalElapsedMs >= _oTimerTimeoutMs) {
 		result = EVENT_RESULTS::FAILURE;
 		_resetState();
 		return;
@@ -432,10 +432,10 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 // !TODO: consider changing cursor to crosshair when multiclick event is active
 void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _multiClickDuration * 1000);
+	_renderTimer(_totalElapsedMs, _multiClickTimeoutMs);
 
 	// multiclick is based on duration only
-	if (_totalElapsedMs >= _multiClickDuration * 1000 && !_mcoIsTransitioningOut) {
+	if (_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) {
 		std::cout << "multiclick event over\n";
 		_elapsedTimeMs = 0;
 		_mcoIsTransitioningOut = true;
@@ -543,7 +543,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 
 	case INNER_STATES::ON_UPDATE:
 		// on update state
-		if (_elapsedTimeMs >= _typingTimeout * 1000) {
+		if (_elapsedTimeMs >= _typingTimeoutMs) {
 			_elapsedTimeMs = 0;
 			eventMultiplier = static_cast<float>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
 			_typingState = INNER_STATES::ON_EXIT;
@@ -589,14 +589,14 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 	case INNER_STATES::ON_EXIT:
 		if (_elapsedTimeMs >= _typingTransitionTime * 1000) {
 			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
-			_resetState();
+			//_resetState();
 		}
 		break;
 	}
 }
 
 void Event::_typingEventRender() {
-	_renderTimer(_totalElapsedMs, _typingTimeout * 1000);
+	_renderTimer(_totalElapsedMs, _typingTimeoutMs);
 
 	/*render*/
 	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
@@ -633,6 +633,11 @@ void Event::_typingEventRender() {
 		oss.precision(eventMultiplierPrecision);
 		oss << std::fixed << eventMultiplier << "x";
 		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, currYOffset);
+
+		if (_elapsedTimeMs >= _typingTransitionTime * 1000) {
+			//result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+			_resetState();
+		}
 		break;
 	}
 }
