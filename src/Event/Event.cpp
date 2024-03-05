@@ -157,7 +157,8 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		_multiClick(result, dt);
 		break;
 	case EVENT_TYPES::TYPING:
-		_typingEvent(result, dt);
+		_typingEventUpdate(result, dt);
+		_typingEventRender();
 		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
@@ -495,7 +496,7 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 }
 
 // !TODO: change to sprite
-void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
+void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 	/*update*/
 	_updateTime(dt);
 
@@ -565,7 +566,9 @@ void Event::_typingEvent(EVENT_RESULTS& result, double dt) {
 		}
 		break;
 	}
+}
 
+void Event::_typingEventRender() {
 	/*render*/
 	float wordWidth = _currentWord.size() * RenderHelper::getInstance()->getFontSize() + (_currentWord.size() - 1) * _charGap;
 	const float start = AEGfxGetWindowWidth() / 2.f - wordWidth / 2.f;

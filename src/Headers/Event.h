@@ -216,7 +216,8 @@ private:
 	/**
 	 * @brief	typing event.
 	 */
-	void _typingEvent(EVENT_RESULTS& result, double dt);
+	void _typingEventUpdate(EVENT_RESULTS& result, double dt);
+	void _typingEventRender();
 
 public:
 	// output variable for event multiplier
