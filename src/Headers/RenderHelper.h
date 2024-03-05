@@ -141,6 +141,8 @@ public:
 	void text(std::string s, float screenX, float screenY);
 
 	void setFontSize(int size);
+
+	AEGfxVertexList* GetdefaultMesh();
 };
 
 /*

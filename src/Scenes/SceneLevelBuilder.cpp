@@ -10,28 +10,39 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	AEMtx33Identity(&m_Trans);
 }
 
-SceneLevelBuilder::SceneLevelBuilder()
-	:pMesh(nullptr),
+SceneLevelBuilder::SceneLevelBuilder():
 	m_StopMovement(false),
 	m_PanCloseToGround(false)
 {
-	//////////////////////////////////////////////////////////////////////////////////
-	// Change To Draw Once JS makes his code better
-	// Informing the library that we're about to start adding triangles
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 1.0f,  // bottom-left: red
-		0.5f, -0.5f, 0xFF00FF00, 1.0f, 1.0f,   // bottom-right: green
-		-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFF00FF00, 1.0f, 1.0f,   // bottom-right: green
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,    // top-right: white
-		-0.5f, 0.5f, 0xFF0000FF, 0.0f, 0.0f);  // top-left: blue
-	// Saving the mesh (list of triangles) in pMesh
-	pMesh = AEGfxMeshEnd();
 	/////////////////////////////////////////////////////////////////////////////////
 	
 	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
+	
+	//Forest
+	RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+
+	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
+	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+
 	pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
 	pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
@@ -430,19 +441,19 @@ void SceneLevelBuilder::Render()
 	//Sky
 	AEGfxTextureSet(pSkyTex, 0, 0);
 	AEGfxSetTransform(m_TransformSkyData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	//Sun
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetTransparency(0.0f);
 	AEGfxSetTransform(m_TransformSunData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxTextureSet(pSunOverlayTex, 0, 0);
 	AEGfxSetTransform(m_TransformSunOverlayData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//// Floors
@@ -451,20 +462,20 @@ void SceneLevelBuilder::Render()
 	//// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 
-
+	std::string texRef = "Floor_Center_";// + LEVELNUM
 	//Main Floor
-	AEGfxTextureSet(pFloorTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
 	for (int i = NUM_OF_TILES - 1; i > -1; i--)
 	{
 		if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 		{
 			AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
-			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 	}
 
 	////Left Floor
-	AEGfxTextureSet(pSideLeftFloorTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
 	for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
 	{
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -472,12 +483,12 @@ void SceneLevelBuilder::Render()
 			if (m_Floor[j][i].m_IsRender)
 			{
 				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}
 	//Right Floor
-	AEGfxTextureSet(pSideRightFloorTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
 	for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
 	{
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -485,7 +496,7 @@ void SceneLevelBuilder::Render()
 			if (m_Floor[j][i].m_IsRender)
 			{
 				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}
@@ -493,7 +504,7 @@ void SceneLevelBuilder::Render()
 	//Fog
 	AEGfxTextureSet(pFogTex, 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -518,7 +529,7 @@ void SceneLevelBuilder::Render()
 			{
 				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}
@@ -541,7 +552,7 @@ void SceneLevelBuilder::Render()
 			{
 				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}
@@ -570,7 +581,6 @@ void SceneLevelBuilder::Render()
 void SceneLevelBuilder::Exit()
 {
 	//Clear All Texture
-	AEGfxMeshFree(pMesh);
 	AEGfxTextureUnload(pFloorTex);
 	AEGfxTextureUnload(pSideRightFloorTex);
 	AEGfxTextureUnload(pSideLeftFloorTex);
@@ -605,7 +615,7 @@ void SceneLevelBuilder::Exit()
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
 	srand(static_cast<unsigned> (time(0)));
-
+	if(false)
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre

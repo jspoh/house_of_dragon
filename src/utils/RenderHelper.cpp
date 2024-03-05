@@ -221,6 +221,9 @@ void RenderHelper::setFontSize(int size) {
 	_fontSize = size;
 }
 
-
+AEGfxVertexList* RenderHelper::GetdefaultMesh()
+{
+	return _defaultMesh;
+}
 /*class DrawSpritesheet*/
 
