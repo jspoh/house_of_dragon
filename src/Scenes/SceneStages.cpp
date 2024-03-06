@@ -1,51 +1,53 @@
-#include "SceneStage1.h"
+#include "SceneStages.h"
 
-SceneStage1* SceneStage1::sInstance = new SceneStage1(SceneManager::GetInstance());
+SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
 //double m_FloorSpeedTimer = 0.5;
 
-SceneStage1::SceneStage1() : m_LevelBuilder(nullptr)
+SceneStages::SceneStages() : m_LevelBuilder(nullptr)
 {
 }	
 
-SceneStage1::SceneStage1(SceneManager* _sceneMgr)
+SceneStages::SceneStages(SceneManager* _sceneMgr)
 {
-	_sceneMgr->AddScene("SceneStage1", this);
+	_sceneMgr->AddScene("SceneStages", this);
 }
 
-SceneStage1::~SceneStage1()
-{
-}
-
-void SceneStage1::Load()
+SceneStages::~SceneStages()
 {
 }
 
-void SceneStage1::Init()
+void SceneStages::Load()
+{
+}
+
+void SceneStages::Init()
 {
 	std::cout << "Loading Scene Stage1" << std::endl;
 
 	m_LevelBuilder = new SceneLevelBuilder();
 }
 
-void SceneStage1::Update(double dt)
+void SceneStages::Update(double dt)
 {	
 	static bool start = true;
 
 	if (start)
 	{
 		m_LevelBuilder->Update(dt);
-
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		AEGfxSetCamPosition((mouseX - AEGfxGetWindowWidth()/2)/MOUSE_SENSITIVITY, -(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY);
 	}
 }
 
 
-void SceneStage1::Render()
+void SceneStages::Render()
 {
 	m_LevelBuilder->Render();
 }
 
-void SceneStage1::Exit()
+void SceneStages::Exit()
 {
 	std::cout << "Exiting Scene SplashScreen" << std::endl;
 
@@ -53,6 +55,17 @@ void SceneStage1::Exit()
 	m_LevelBuilder = nullptr;
 }
 
+/*************************************
+TODO:
+FIX LAG AAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+Memory leak due to app forcibly closing
+Fix Floor
+Adjust SceneObject Placement
+Blocking
+Level Name Display
+Cloud Scrolling
+Probability Spawning based on Json
+/
 
 
 //2D Camera Movement - Screen Shake

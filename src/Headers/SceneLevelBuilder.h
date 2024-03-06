@@ -3,11 +3,11 @@
 #include "Pch.h"
 #include "GameObjectManager.h"
 
-#define SIZE_OF_FLOOR 15 //X Axis
+#define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
 #define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-#define MAX_NUM_SCENEOBJS_TILE 10
+#define MAX_NUM_SCENEOBJS_TILE 3
 
 class SceneLevelBuilder
 {
@@ -105,47 +105,22 @@ private:
 		EType_Grass_Foliage_1,
 		EType_Grass_Foliage_2,
 		EType_Grass_Foliage_3,
-
-
-		ETYPE_LAST,
 		EType_Grass_1,
 		EType_Grass_2,
 		EType_Grass_3,
-		EType_Grass_4,
-		EType_Grass_5,
-		EType_Grass_6,
-		EType_Grass_7,
 		EType_Rock_BROWN_1,
 		EType_Rock_BROWN_2,
 		EType_Rock_BROWN_3,
 		EType_Rock_BROWN_4,
 		EType_Rock_BROWN_5,
 		EType_Rock_BROWN_6,
-		EType_Rock_BROWN_7,
-		EType_Rock_BROWN_8,
-		EType_Rock_BROWN_9,
-		EType_Rock_BROWN_10,
-		EType_Rock_BROWN_11,
-		EType_Rock_BROWN_12,
-		EType_Rock_BROWN_13,
-		EType_Rock_BROWN_14,
-		EType_Rock_BROWN_15,
 		EType_Rock_WHITE_1,
 		EType_Rock_WHITE_2,
 		EType_Rock_WHITE_3,
 		EType_Rock_WHITE_4,
 		EType_Rock_WHITE_5,
 		EType_Rock_WHITE_6,
-		EType_Rock_WHITE_7,
-		EType_Rock_WHITE_8,
-		EType_Rock_WHITE_9,
-		EType_Rock_WHITE_10,
-		EType_Rock_WHITE_11,
-		EType_Rock_WHITE_12,
-		EType_Rock_WHITE_13,
-		EType_Rock_WHITE_14,
-		EType_Rock_WHITE_15,
-
+		ETYPE_LAST,
 
 		
 	};

@@ -309,5 +309,16 @@ AEGfxVertexList* RenderHelper::GetdefaultMesh()
 {
 	return _defaultMesh;
 }
+
+AEGfxTexture* RenderHelper::GetTexture(int textureRef)
+{
+	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
+
+	if (pTex == nullptr) {
+		std::cerr << "texture wasnt initialized!\n";
+		return nullptr;
+	}
+	return pTex;
+}
 /*class DrawSpritesheet*/
 

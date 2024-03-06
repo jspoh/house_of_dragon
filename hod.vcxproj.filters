@@ -54,7 +54,7 @@
     <ClCompile Include="src\Scenes\SceneMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\SceneStage1.cpp">
+    <ClCompile Include="src\Scenes\SceneStages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\Particle.cpp">
@@ -209,7 +209,7 @@
     <ClInclude Include="src\Headers\SceneSplashScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Headers\SceneStage1.h">
+    <ClInclude Include="src\Headers\SceneStages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\SingletonTemplate.h">

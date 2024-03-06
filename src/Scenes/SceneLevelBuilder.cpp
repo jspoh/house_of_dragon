@@ -40,99 +40,77 @@ SceneLevelBuilder::SceneLevelBuilder():
 	**********************************************/
 	///////////////////////////////////////////
 	//Grass
-	RenderHelper::getInstance()->registerTexture("GRASS_1", "Assets/SceneObjects/SCENE_OBJECTS/Grass_1.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_2", "Assets/SceneObjects/SCENE_OBJECTS/Grass_2.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_3", "Assets/SceneObjects/SCENE_OBJECTS/Grass_3.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_4", "Assets/SceneObjects/SCENE_OBJECTS/Grass_4.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_5", "Assets/SceneObjects/SCENE_OBJECTS/Grass_5.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_6", "Assets/SceneObjects/SCENE_OBJECTS/Grass_6.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_7", "Assets/SceneObjects/SCENE_OBJECTS/Grass_7.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_FOLIAGE_1", "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage1.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_FOLIAGE_2", "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage2.png");
-	RenderHelper::getInstance()->registerTexture("GRASS_FOLIAGE_3", "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage3.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_1.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_2.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_3.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage1.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage2.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage3.png");
 
 	//Rocks
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_1_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_2_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_3_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_4_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_5_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_6_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_7_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile7_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_8_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile8_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_9_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile9_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_10_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile10_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_11_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile11_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_12_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile12_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_13_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile13_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_14_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile14_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_15_BROWN", "Assets/SceneObjects/SCENE_OBJECTS/RockPile15_BROWN.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_1_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_2_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_3_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_4_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_5_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_6_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_7_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile7_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_8_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile8_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_9_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile9_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_10_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile10_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_11_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile11_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_12_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile12_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_13_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile13_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_14_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile14_WHITE.png");
-	RenderHelper::getInstance()->registerTexture("ROCKPILE_15_WHITE", "Assets/SceneObjects/SCENE_OBJECTS/RockPile15_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_WHITE.png");
 
 	//Trees
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_DEAD.png");
 
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_DEAD.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
-	RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
 
 	//TO BE DELETED
 	pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
@@ -427,7 +405,6 @@ void SceneLevelBuilder::Update(double dt)
 						{
 							m_Floor[j][i].m_currFloorNum--;
 							m_Floor[j][i].m_IsRender = true;
-
 						}
 						else
 						{
@@ -457,6 +434,7 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					//Clear Scene Objects in row
 					DestroyRowOBJs(*i);
+
 					//Only spawn on tile 0, 2->8 (1 & 9 tiles are hidden below another tile, so visual error)
 					if (m_Floor[j][*i].m_FloorNum > -1 && m_Floor[j][*i].m_FloorNum < 9 && m_Floor[j][*i].m_FloorNum != 1)
 						CreateRowOBJs(*i);
@@ -492,12 +470,12 @@ void SceneLevelBuilder::Update(double dt)
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
 
 					//Translate to the tile
-					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
-					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
 
 					//CHANGE TO THIS ANGLE
-					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
-					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
+					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
+					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
 
 					//Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
@@ -620,7 +598,7 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
-				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_TexRef), 0, 0);
+				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
 				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -644,7 +622,7 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
-				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_TexRef), 0, 0);
+				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
 				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -693,13 +671,13 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
 	srand(static_cast<unsigned> (time(0)));
 	//if(false)
-	for (int j = 3; j < SIZE_OF_FLOOR-3; j++)
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre
 		if (j == t_CenterFloorNum)
 			continue;
 
-		for (int i = 4/*3*//*rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10*/; i > 0; i--)
+		for (int i = MAX_NUM_SCENEOBJS_TILE/*3*//*rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10*/; i > 0; i--)
 		{
 			v_SceneObject newObj;
 
@@ -707,68 +685,6 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand()%(v_SceneObjectTypes::ETYPE_LAST - v_SceneObjectTypes::ETYPE_NONE) + v_SceneObjectTypes::ETYPE_NONE,
 				v_SceneObjectTypes::ETYPE_NONE + 1,
 				v_SceneObjectTypes::ETYPE_LAST - 1));
-			switch (newObj.m_Type)
-			{
-			case EType_ForestTree_XL_1:	newObj.m_TexRef = "FORESTTREE_XL_1"; break;
-			case EType_ForestTree_XL_2:	newObj.m_TexRef = "FORESTTREE_XL_2"; break;
-			case EType_ForestTree_L_1:	newObj.m_TexRef = "FORESTTREE_L_1"; break;
-			case EType_ForestTree_L_2:	newObj.m_TexRef = "FORESTTREE_L_2"; break;
-			case EType_ForestTree_M_1:	newObj.m_TexRef = "FORESTTREE_M_1"; break;
-			case EType_ForestTree_M_2:	newObj.m_TexRef = "FORESTTREE_M_2"; break;
-			case EType_ForestTree_S_1:	newObj.m_TexRef = "FORESTTREE_S_1"; break;
-			case EType_ForestTree_S_2:	newObj.m_TexRef = "FORESTTREE_S_2"; break;
-			case EType_NightTree_XL_1:	newObj.m_TexRef = "NIGHTTREE_XL_1"; break;
-			case EType_NightTree_XL_2:	newObj.m_TexRef = "NIGHTTREE_XL_2"; break;
-			case EType_NightTree_L_1:   newObj.m_TexRef = "NIGHTTREE_L_1"; break;
-			case EType_NightTree_L_2:   newObj.m_TexRef = "NIGHTTREE_L_2"; break;
-			case EType_NightTree_M_1:   newObj.m_TexRef = "NIGHTTREE_M_1"; break;
-			case EType_NightTree_M_2:   newObj.m_TexRef = "NIGHTTREE_M_2"; break;
-			case EType_NightTree_S_1:   newObj.m_TexRef = "NIGHTTREE_S_1"; break;
-			case EType_NightTree_S_2:   newObj.m_TexRef = "NIGHTTREE_S_2"; break;
-			case EType_Grass_1:		    newObj.m_TexRef = "GRASS_1"; break;
-			case EType_Grass_2:		    newObj.m_TexRef = "GRASS_2"; break;
-			case EType_Grass_3:		    newObj.m_TexRef = "GRASS_3"; break;
-			case EType_Grass_4:		    newObj.m_TexRef = "GRASS_4"; break;
-			case EType_Grass_5:		    newObj.m_TexRef = "GRASS_5"; break;
-			case EType_Grass_6:		    newObj.m_TexRef = "GRASS_6"; break;
-			case EType_Grass_7:		    newObj.m_TexRef = "GRASS_7"; break;
-			case EType_Grass_Foliage_1: newObj.m_TexRef = "GRASS_FOLIAGE_1"; break;
-			case EType_Grass_Foliage_2: newObj.m_TexRef = "GRASS_FOLIAGE_2"; break;
-			case EType_Grass_Foliage_3: newObj.m_TexRef = "GRASS_FOLIAGE_3"; break;
-			case EType_Rock_BROWN_1:    newObj.m_TexRef = "ROCKPILE_1_BROWN"; break;
-			case EType_Rock_BROWN_2:    newObj.m_TexRef = "ROCKPILE_2_BROWN"; break;
-			case EType_Rock_BROWN_3:    newObj.m_TexRef = "ROCKPILE_3_BROWN"; break;
-			case EType_Rock_BROWN_4:    newObj.m_TexRef = "ROCKPILE_4_BROWN"; break;
-			case EType_Rock_BROWN_5:    newObj.m_TexRef = "ROCKPILE_5_BROWN"; break;
-			case EType_Rock_BROWN_6:    newObj.m_TexRef = "ROCKPILE_6_BROWN"; break;
-			case EType_Rock_BROWN_7:    newObj.m_TexRef = "ROCKPILE_7_BROWN"; break;
-			case EType_Rock_BROWN_8:    newObj.m_TexRef = "ROCKPILE_8_BROWN"; break;
-			case EType_Rock_BROWN_9:    newObj.m_TexRef = "ROCKPILE_9_BROWN"; break;
-			case EType_Rock_BROWN_10:   newObj.m_TexRef = "ROCKPILE_10_BROWN"; break;
-			case EType_Rock_BROWN_11:   newObj.m_TexRef = "ROCKPILE_11_BROWN"; break;
-			case EType_Rock_BROWN_12:   newObj.m_TexRef = "ROCKPILE_12_BROWN"; break;
-			case EType_Rock_BROWN_13:   newObj.m_TexRef = "ROCKPILE_13_BROWN"; break;
-			case EType_Rock_BROWN_14:   newObj.m_TexRef = "ROCKPILE_14_BROWN"; break;
-			case EType_Rock_BROWN_15:   newObj.m_TexRef = "ROCKPILE_15_BROWN"; break;
-			case EType_Rock_WHITE_1:    newObj.m_TexRef = "ROCKPILE_1_WHITE"; break;
-			case EType_Rock_WHITE_2:    newObj.m_TexRef = "ROCKPILE_2_WHITE"; break;
-			case EType_Rock_WHITE_3:    newObj.m_TexRef = "ROCKPILE_3_WHITE"; break;
-			case EType_Rock_WHITE_4:    newObj.m_TexRef = "ROCKPILE_4_WHITE"; break;
-			case EType_Rock_WHITE_5:    newObj.m_TexRef = "ROCKPILE_5_WHITE"; break;
-			case EType_Rock_WHITE_6:    newObj.m_TexRef = "ROCKPILE_6_WHITE"; break;
-			case EType_Rock_WHITE_7:    newObj.m_TexRef = "ROCKPILE_7_WHITE"; break;
-			case EType_Rock_WHITE_8:    newObj.m_TexRef = "ROCKPILE_8_WHITE"; break;
-			case EType_Rock_WHITE_9:    newObj.m_TexRef = "ROCKPILE_9_WHITE"; break;
-			case EType_Rock_WHITE_10:   newObj.m_TexRef = "ROCKPILE_10_WHITE"; break;
-			case EType_Rock_WHITE_11:   newObj.m_TexRef = "ROCKPILE_11_WHITE"; break;
-			case EType_Rock_WHITE_12:   newObj.m_TexRef = "ROCKPILE_12_WHITE"; break;
-			case EType_Rock_WHITE_13:   newObj.m_TexRef = "ROCKPILE_13_WHITE"; break;
-			case EType_Rock_WHITE_14:   newObj.m_TexRef = "ROCKPILE_14_WHITE"; break;
-			case EType_Rock_WHITE_15:   newObj.m_TexRef = "ROCKPILE_15_WHITE"; break;
-			default: cout << newObj.m_Type << endl;
-			}
-			//newObj.m_TexRef = "TEST";
-			
 
 			//Random Selection of Spawn location on tile
 			int t_RandX, t_RandY;

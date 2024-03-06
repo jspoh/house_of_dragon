@@ -153,6 +153,7 @@ public:
 	int getFontSize();
 
 	AEGfxVertexList* GetdefaultMesh();
+	AEGfxTexture* GetTexture(int textureRef);
 };
 
 /*
