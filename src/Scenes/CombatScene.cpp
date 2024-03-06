@@ -198,6 +198,9 @@ void CombatScene::Update(double dt)
             std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
             player->attack(*cat, CombatManager::getInstance()->attackElement, Event::getInstance()->eventMultiplier);
             break;
+        default:
+            throw std::exception("event result does not exist!");
+            break;
         }
         CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     }
