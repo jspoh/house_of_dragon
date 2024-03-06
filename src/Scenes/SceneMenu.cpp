@@ -103,7 +103,7 @@ void SceneMenu::Update(double dt)
 						switch (i)
 						{
 						case 0:
-							SceneManager::GetInstance()->SetActiveScene("SceneStage1");
+							SceneManager::GetInstance()->SetActiveScene("CombatScene");
 							break;
 						case 1:
 							SceneManager::GetInstance()->SetActiveScene("SceneCredit");
