@@ -64,6 +64,9 @@ RenderHelper::RenderHelper() {
 
 	// font
 	_font = AEGfxCreateFont("./Assets/Fonts/liberation-mono.ttf", _fontSize);
+
+	// init static array used for int ids
+	std::fill(_textureIdRefs.begin(), _textureIdRefs.end(), nullptr);
 }
 
 bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mesh) {
@@ -102,6 +105,14 @@ RenderHelper::~RenderHelper() {
 
 	_textureRef.clear();
 	_meshRef.clear();
+
+	for (AEGfxTexture* pTex : _textureIdRefs) {
+		if (pTex == nullptr) {
+			continue;
+		}
+		AEGfxTextureUnload(pTex);
+		pTex = nullptr;
+	}
 }
 
 RenderHelper* RenderHelper::getInstance() {
@@ -159,7 +170,28 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 		return false;
 	}
 	_textureRef[reference] = pTex;
-	std::cout << "Loaded texture at location " << pTex << "\n";
+	std::cout << "Loaded texture with string reference " << reference << " at location " << pTex << "\n";
+	return true;
+}
+
+bool RenderHelper::registerTexture(int reference, std::string path) {
+	if (reference >= MAX_TEXTURE_IDS) {
+		std::cerr << "reference cannot be greater than array size!\n";
+		//throw std::exception();
+		return false;
+	}
+	if (_textureIdRefs[reference] != nullptr) {
+		std::cerr << "int reference already used\n";
+		return false;
+	}
+
+	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
+	if (!pTex) {
+		std::cerr << "Texture failed to load\n";
+		return false;
+	}
+	_textureIdRefs[reference] = pTex;
+	std::cout << "Loaded texture with int reference " << reference << " at location " << pTex << "\n";
 	return true;
 }
 
@@ -171,10 +203,27 @@ AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
 	return map->second;
 }
 
+AEGfxTexture* RenderHelper::getTextureByRef(int reference) {
+	if (_textureIdRefs[reference] == nullptr) {
+		std::cerr << "reference has not been set!\n";
+	}
+	return _textureIdRefs[reference];
+}
+
 void RenderHelper::removeTextureByRef(std::string reference) {
 	AEGfxTexture* pTex = getTextureByRef(reference);
 	AEGfxTextureUnload(pTex);
 	_textureRef.erase(reference);
+}
+
+void RenderHelper::removeTextureByRef(int reference) {
+	AEGfxTexture* pTex = getTextureByRef(reference);
+	if (pTex == nullptr) {
+		std::cerr << "texture with int reference " << reference << " was never initialized!\n";
+		return;
+	}
+	AEGfxTextureUnload(pTex);
+	_textureIdRefs[reference] = nullptr;
 }
 
 void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
@@ -193,6 +242,41 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 
 	// prep texture
 	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
+
+
+	// prepare to draw
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetColorToAdd(color.r, color.g, color.b, color.a);
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(opacity);
+	AEGfxSetTransform(transform.m);
+	AEGfxTextureSet(pTex, 0, 0);
+	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
+}
+
+void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
+	// create matrix
+	AEMtx33 scale = { 0 };
+	AEMtx33Scale(&scale, scaleX, scaleY);
+	AEMtx33 rotate = { 0 };
+	AEMtx33Rot(&rotate, rotation);
+
+	AEMtx33 translate = { 0 };
+	AEMtx33Trans(&translate, transX, transY);
+
+	AEMtx33 transform = { 0 };
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &translate, &transform);
+
+	// prep texture
+	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
+
+	if (pTex == nullptr) {
+		std::cerr << "texture wasnt initialized!\n";
+		return;
+	}
 
 
 	// prepare to draw
