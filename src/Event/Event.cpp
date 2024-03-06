@@ -175,6 +175,7 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::TRACKING:
 		_trackingEventUpdate(result, dt);
 		_trackingEventRender();
+		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
 		break;
