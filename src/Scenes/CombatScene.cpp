@@ -150,7 +150,7 @@ void CombatScene::Init()
     /*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 
     player = new Player();
-    cat = new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f, 200);
+    cat = new Enemy(Element::Water, 100, 10, "./Assets/Combat_Enemy/cat.jpg", "cat", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f, 200);
 }
 
 void CombatScene::Update(double dt)
