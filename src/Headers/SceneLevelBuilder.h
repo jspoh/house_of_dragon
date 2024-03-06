@@ -79,6 +79,74 @@ private:
     */
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
+	enum v_SceneObjectTypes
+	{
+		EType_MysteryEnemyStrong,
+		EType_MysteryEnemyWeak,
+		ETYPE_NONE,
+
+
+		EType_ForestTree_XL_1,
+		EType_ForestTree_XL_2,
+		EType_ForestTree_L_1,
+		EType_ForestTree_L_2,
+		EType_ForestTree_M_1,
+		EType_ForestTree_M_2,
+		EType_ForestTree_S_1,
+		EType_ForestTree_S_2,
+		EType_NightTree_XL_1,
+		EType_NightTree_XL_2,
+		EType_NightTree_L_1,
+		EType_NightTree_L_2,
+		EType_NightTree_M_1,
+		EType_NightTree_M_2,
+		EType_NightTree_S_1,
+		EType_NightTree_S_2,
+		EType_Grass_1,
+		EType_Grass_2,
+		EType_Grass_3,
+		EType_Grass_4,
+		EType_Grass_5,
+		EType_Grass_6,
+		EType_Grass_7,
+		EType_Grass_Foliage_1,
+		EType_Grass_Foliage_2,
+		EType_Grass_Foliage_3,
+		EType_Rock_BROWN_1,
+		EType_Rock_BROWN_2,
+		EType_Rock_BROWN_3,
+		EType_Rock_BROWN_4,
+		EType_Rock_BROWN_5,
+		EType_Rock_BROWN_6,
+		EType_Rock_BROWN_7,
+		EType_Rock_BROWN_8,
+		EType_Rock_BROWN_9,
+		EType_Rock_BROWN_10,
+		EType_Rock_BROWN_11,
+		EType_Rock_BROWN_12,
+		EType_Rock_BROWN_13,
+		EType_Rock_BROWN_14,
+		EType_Rock_BROWN_15,
+		EType_Rock_WHITE_1,
+		EType_Rock_WHITE_2,
+		EType_Rock_WHITE_3,
+		EType_Rock_WHITE_4,
+		EType_Rock_WHITE_5,
+		EType_Rock_WHITE_6,
+		EType_Rock_WHITE_7,
+		EType_Rock_WHITE_8,
+		EType_Rock_WHITE_9,
+		EType_Rock_WHITE_10,
+		EType_Rock_WHITE_11,
+		EType_Rock_WHITE_12,
+		EType_Rock_WHITE_13,
+		EType_Rock_WHITE_14,
+		EType_Rock_WHITE_15,
+
+
+		ETYPE_LAST
+	};
+
 	struct v_SceneObject
 	{
 		v_SceneObject();
@@ -86,31 +154,8 @@ private:
 		AEMtx33 m_Scale, m_Trans;
 		int m_RenderOrder;
 		float m_Transparency;
+		v_SceneObjectTypes m_Type;
 		string m_TexRef; //Used with draw
-	};
-
-	enum v_SceneObjectTypes
-	{
-		EType_MysteryEnemyStrong,
-		EType_MysteryEnemyWeak,
-		EType_Tree1,
-		EType_Tree2,
-		EType_Tree3,
-		EType_Tree4,
-		EType_Tree5,
-		EType_Tree6,
-		EType_ShortTree1,
-		EType_ShortTree2,
-		EType_ShortTree3,
-		EType_Grass,
-		EType_Roots,
-		EType_OvergrownRoots,
-		EType_Boulder1,
-		EType_Boulder2,
-		EType_Boulder3,
-		EType_Rock1,
-		EType_Rock2,
-		EType_Rock3,
 	};
 
 	//Change soon
