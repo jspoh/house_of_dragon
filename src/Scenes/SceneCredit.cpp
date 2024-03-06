@@ -209,6 +209,9 @@ void SceneCredits::Exit()
 	AEGfxDestroyFont(pFontM);
 	AEGfxDestroyFont(pFontS);
 	AEGfxDestroyFont(pFontxS);
+
+
+	
 }
 void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
 {

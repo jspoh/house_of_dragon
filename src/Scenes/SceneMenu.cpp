@@ -194,4 +194,6 @@ void SceneMenu::Exit()
 		AEGfxTextureUnload(myMenu.button[i]);
 	}
 	AEGfxMeshFree(myMenu.mesh);
+	AEGfxTextureUnload(myMenu.pointer);
+	AEGfxTextureUnload(myMenu.bg);
 }

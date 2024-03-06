@@ -1,7 +1,7 @@
 //#ifndef PARTICLE_MANAGER
 //#define PARTICLE_MANAGER
-//#include "../Backend/SingletonTemplate.h"
-//#include "../GameObject/Particle.h"
+//#include "Backend/SingletonTemplate.h"
+//#include "GameObject/Particle.h"
 //
 //class ParticleManager : public Singleton<ParticleManager>
 //{
