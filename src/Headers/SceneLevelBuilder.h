@@ -5,9 +5,9 @@
 
 #define SIZE_OF_FLOOR 15 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
-#define NUM_OF_TILESPAWNPOINTS 8//Num of Spawnpoints on x & y of each tile
+#define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-#define MAX_NUM_SCENEOBJS_TILE 20
+#define MAX_NUM_SCENEOBJS_TILE 10
 
 class SceneLevelBuilder
 {
@@ -102,6 +102,12 @@ private:
 		EType_NightTree_M_2,
 		EType_NightTree_S_1,
 		EType_NightTree_S_2,
+		EType_Grass_Foliage_1,
+		EType_Grass_Foliage_2,
+		EType_Grass_Foliage_3,
+
+
+		ETYPE_LAST,
 		EType_Grass_1,
 		EType_Grass_2,
 		EType_Grass_3,
@@ -109,9 +115,6 @@ private:
 		EType_Grass_5,
 		EType_Grass_6,
 		EType_Grass_7,
-		EType_Grass_Foliage_1,
-		EType_Grass_Foliage_2,
-		EType_Grass_Foliage_3,
 		EType_Rock_BROWN_1,
 		EType_Rock_BROWN_2,
 		EType_Rock_BROWN_3,
@@ -144,7 +147,7 @@ private:
 		EType_Rock_WHITE_15,
 
 
-		ETYPE_LAST
+		
 	};
 
 	struct v_SceneObject

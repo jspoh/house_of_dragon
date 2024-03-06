@@ -141,7 +141,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	pSkyTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
 	pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 	pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
-	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
+	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
@@ -317,7 +317,7 @@ void SceneLevelBuilder::Update(double dt)
 	//AEMtx33Trans(&trans, mx, my);
 	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 	//
-	cout << x << " " << y << " " << mx << endl;
+	//cout << x << " " << y << " " << mx << endl;
 
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
@@ -492,12 +492,12 @@ void SceneLevelBuilder::Update(double dt)
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
 
 					//Translate to the tile
-					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
-					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
+					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
+					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
 
 					//CHANGE TO THIS ANGLE
-					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.45) * (*it).m_Scale.m[0][0];
-					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.7 + y) * (*it).m_Scale.m[1][1];
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
 
 					//Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
@@ -693,79 +693,82 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
 	srand(static_cast<unsigned> (time(0)));
 	//if(false)
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	for (int j = 3; j < SIZE_OF_FLOOR-3; j++)
 	{
 		//Skip centre
 		if (j == t_CenterFloorNum)
 			continue;
 
-		for (int i = rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10; i > 0; i--)
+		for (int i = 4/*3*//*rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10*/; i > 0; i--)
 		{
 			v_SceneObject newObj;
 
 			//Selecting Entities to Spawn
-			newObj.m_Type = EType_ForestTree_L_1;//static_cast<v_SceneObjectTypes>(rand()%(v_SceneObjectTypes::ETYPE_LAST - v_SceneObjectTypes::ETYPE_NONE));
+			newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand()%(v_SceneObjectTypes::ETYPE_LAST - v_SceneObjectTypes::ETYPE_NONE) + v_SceneObjectTypes::ETYPE_NONE,
+				v_SceneObjectTypes::ETYPE_NONE + 1,
+				v_SceneObjectTypes::ETYPE_LAST - 1));
 			switch (newObj.m_Type)
 			{
-			case EType_ForestTree_XL_1:	newObj.m_TexRef = "FORESTTREE_XL_1"; AEMtx33Scale(&newObj.m_Scale, 0.3f, 1.2f); break;
-			case EType_ForestTree_XL_2:	newObj.m_TexRef = "FORESTTREE_XL_2"; AEMtx33Scale(&newObj.m_Scale, 0.3f, 1.2f); break;
+			case EType_ForestTree_XL_1:	newObj.m_TexRef = "FORESTTREE_XL_1"; break;
+			case EType_ForestTree_XL_2:	newObj.m_TexRef = "FORESTTREE_XL_2"; break;
 			case EType_ForestTree_L_1:	newObj.m_TexRef = "FORESTTREE_L_1"; break;
 			case EType_ForestTree_L_2:	newObj.m_TexRef = "FORESTTREE_L_2"; break;
 			case EType_ForestTree_M_1:	newObj.m_TexRef = "FORESTTREE_M_1"; break;
 			case EType_ForestTree_M_2:	newObj.m_TexRef = "FORESTTREE_M_2"; break;
 			case EType_ForestTree_S_1:	newObj.m_TexRef = "FORESTTREE_S_1"; break;
 			case EType_ForestTree_S_2:	newObj.m_TexRef = "FORESTTREE_S_2"; break;
-			case EType_NightTree_XL_1:	newObj.m_TexRef = "NIGHTTREE_XL_1"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 1.2f); break;
-			case EType_NightTree_XL_2:	newObj.m_TexRef = "NIGHTTREE_XL_2"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 1.2f); break;
+			case EType_NightTree_XL_1:	newObj.m_TexRef = "NIGHTTREE_XL_1"; break;
+			case EType_NightTree_XL_2:	newObj.m_TexRef = "NIGHTTREE_XL_2"; break;
 			case EType_NightTree_L_1:   newObj.m_TexRef = "NIGHTTREE_L_1"; break;
 			case EType_NightTree_L_2:   newObj.m_TexRef = "NIGHTTREE_L_2"; break;
 			case EType_NightTree_M_1:   newObj.m_TexRef = "NIGHTTREE_M_1"; break;
 			case EType_NightTree_M_2:   newObj.m_TexRef = "NIGHTTREE_M_2"; break;
 			case EType_NightTree_S_1:   newObj.m_TexRef = "NIGHTTREE_S_1"; break;
 			case EType_NightTree_S_2:   newObj.m_TexRef = "NIGHTTREE_S_2"; break;
-			case EType_Grass_1:		    newObj.m_TexRef = "GRASS_1"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_2:		    newObj.m_TexRef = "GRASS_2"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_3:		    newObj.m_TexRef = "GRASS_3"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_4:		    newObj.m_TexRef = "GRASS_4"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_5:		    newObj.m_TexRef = "GRASS_5"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_6:		    newObj.m_TexRef = "GRASS_6"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_7:		    newObj.m_TexRef = "GRASS_7"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_Foliage_1: newObj.m_TexRef = "GRASS_FOLIAGE_1"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_Foliage_2: newObj.m_TexRef = "GRASS_FOLIAGE_2"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Grass_Foliage_3: newObj.m_TexRef = "GRASS_FOLIAGE_3"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_1:    newObj.m_TexRef = "ROCKPILE_1_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_2:    newObj.m_TexRef = "ROCKPILE_2_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_3:    newObj.m_TexRef = "ROCKPILE_3_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_4:    newObj.m_TexRef = "ROCKPILE_4_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_5:    newObj.m_TexRef = "ROCKPILE_5_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_6:    newObj.m_TexRef = "ROCKPILE_6_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_7:    newObj.m_TexRef = "ROCKPILE_7_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_8:    newObj.m_TexRef = "ROCKPILE_8_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_9:    newObj.m_TexRef = "ROCKPILE_9_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_10:   newObj.m_TexRef = "ROCKPILE_10_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_11:   newObj.m_TexRef = "ROCKPILE_11_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_12:   newObj.m_TexRef = "ROCKPILE_12_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_13:   newObj.m_TexRef = "ROCKPILE_13_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_14:   newObj.m_TexRef = "ROCKPILE_14_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_BROWN_15:   newObj.m_TexRef = "ROCKPILE_15_BROWN"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_1:    newObj.m_TexRef = "ROCKPILE_1_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_2:    newObj.m_TexRef = "ROCKPILE_2_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_3:    newObj.m_TexRef = "ROCKPILE_3_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_4:    newObj.m_TexRef = "ROCKPILE_4_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_5:    newObj.m_TexRef = "ROCKPILE_5_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_6:    newObj.m_TexRef = "ROCKPILE_6_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_7:    newObj.m_TexRef = "ROCKPILE_7_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_8:    newObj.m_TexRef = "ROCKPILE_8_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_9:    newObj.m_TexRef = "ROCKPILE_9_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_10:   newObj.m_TexRef = "ROCKPILE_10_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_11:   newObj.m_TexRef = "ROCKPILE_11_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_12:   newObj.m_TexRef = "ROCKPILE_12_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_13:   newObj.m_TexRef = "ROCKPILE_13_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_14:   newObj.m_TexRef = "ROCKPILE_14_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
-			case EType_Rock_WHITE_15:   newObj.m_TexRef = "ROCKPILE_15_WHITE"; AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f); break;
+			case EType_Grass_1:		    newObj.m_TexRef = "GRASS_1"; break;
+			case EType_Grass_2:		    newObj.m_TexRef = "GRASS_2"; break;
+			case EType_Grass_3:		    newObj.m_TexRef = "GRASS_3"; break;
+			case EType_Grass_4:		    newObj.m_TexRef = "GRASS_4"; break;
+			case EType_Grass_5:		    newObj.m_TexRef = "GRASS_5"; break;
+			case EType_Grass_6:		    newObj.m_TexRef = "GRASS_6"; break;
+			case EType_Grass_7:		    newObj.m_TexRef = "GRASS_7"; break;
+			case EType_Grass_Foliage_1: newObj.m_TexRef = "GRASS_FOLIAGE_1"; break;
+			case EType_Grass_Foliage_2: newObj.m_TexRef = "GRASS_FOLIAGE_2"; break;
+			case EType_Grass_Foliage_3: newObj.m_TexRef = "GRASS_FOLIAGE_3"; break;
+			case EType_Rock_BROWN_1:    newObj.m_TexRef = "ROCKPILE_1_BROWN"; break;
+			case EType_Rock_BROWN_2:    newObj.m_TexRef = "ROCKPILE_2_BROWN"; break;
+			case EType_Rock_BROWN_3:    newObj.m_TexRef = "ROCKPILE_3_BROWN"; break;
+			case EType_Rock_BROWN_4:    newObj.m_TexRef = "ROCKPILE_4_BROWN"; break;
+			case EType_Rock_BROWN_5:    newObj.m_TexRef = "ROCKPILE_5_BROWN"; break;
+			case EType_Rock_BROWN_6:    newObj.m_TexRef = "ROCKPILE_6_BROWN"; break;
+			case EType_Rock_BROWN_7:    newObj.m_TexRef = "ROCKPILE_7_BROWN"; break;
+			case EType_Rock_BROWN_8:    newObj.m_TexRef = "ROCKPILE_8_BROWN"; break;
+			case EType_Rock_BROWN_9:    newObj.m_TexRef = "ROCKPILE_9_BROWN"; break;
+			case EType_Rock_BROWN_10:   newObj.m_TexRef = "ROCKPILE_10_BROWN"; break;
+			case EType_Rock_BROWN_11:   newObj.m_TexRef = "ROCKPILE_11_BROWN"; break;
+			case EType_Rock_BROWN_12:   newObj.m_TexRef = "ROCKPILE_12_BROWN"; break;
+			case EType_Rock_BROWN_13:   newObj.m_TexRef = "ROCKPILE_13_BROWN"; break;
+			case EType_Rock_BROWN_14:   newObj.m_TexRef = "ROCKPILE_14_BROWN"; break;
+			case EType_Rock_BROWN_15:   newObj.m_TexRef = "ROCKPILE_15_BROWN"; break;
+			case EType_Rock_WHITE_1:    newObj.m_TexRef = "ROCKPILE_1_WHITE"; break;
+			case EType_Rock_WHITE_2:    newObj.m_TexRef = "ROCKPILE_2_WHITE"; break;
+			case EType_Rock_WHITE_3:    newObj.m_TexRef = "ROCKPILE_3_WHITE"; break;
+			case EType_Rock_WHITE_4:    newObj.m_TexRef = "ROCKPILE_4_WHITE"; break;
+			case EType_Rock_WHITE_5:    newObj.m_TexRef = "ROCKPILE_5_WHITE"; break;
+			case EType_Rock_WHITE_6:    newObj.m_TexRef = "ROCKPILE_6_WHITE"; break;
+			case EType_Rock_WHITE_7:    newObj.m_TexRef = "ROCKPILE_7_WHITE"; break;
+			case EType_Rock_WHITE_8:    newObj.m_TexRef = "ROCKPILE_8_WHITE"; break;
+			case EType_Rock_WHITE_9:    newObj.m_TexRef = "ROCKPILE_9_WHITE"; break;
+			case EType_Rock_WHITE_10:   newObj.m_TexRef = "ROCKPILE_10_WHITE"; break;
+			case EType_Rock_WHITE_11:   newObj.m_TexRef = "ROCKPILE_11_WHITE"; break;
+			case EType_Rock_WHITE_12:   newObj.m_TexRef = "ROCKPILE_12_WHITE"; break;
+			case EType_Rock_WHITE_13:   newObj.m_TexRef = "ROCKPILE_13_WHITE"; break;
+			case EType_Rock_WHITE_14:   newObj.m_TexRef = "ROCKPILE_14_WHITE"; break;
+			case EType_Rock_WHITE_15:   newObj.m_TexRef = "ROCKPILE_15_WHITE"; break;
+			default: cout << newObj.m_Type << endl;
 			}
 			//newObj.m_TexRef = "TEST";
-			AEMtx33Scale(&newObj.m_Scale, 2.5f, 2.5f);
+			
 
 			//Random Selection of Spawn location on tile
 			int t_RandX, t_RandY;
@@ -793,7 +796,8 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			////Random Scaling
 			//float scale = (rand() % 20) * 0.01f + 0.1f;
 			//AEMtx33Scale(&newObj.m_Scale, scale, scale);
-
+			//Scaling (Uniform Scaling)
+			AEMtx33Scale(&newObj.m_Scale, 2.5f, 2.5f);
 
 			//Push into OBJlist in tile (Determine which to render first based on Spawnpoint m_Y
 			std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][t_tileNum].begin();
