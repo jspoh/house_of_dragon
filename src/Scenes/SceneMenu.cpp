@@ -60,7 +60,9 @@ void SceneMenu::Init()
 void SceneMenu::Update(double dt)
 {
 
-
+	if (AEInputCheckTriggered(AEVK_1)) {
+		SceneManager::GetInstance()->SetActiveScene("TestScene");
+	}
 
 	//for (int i = 3; i >= 0; --i)
 	//{
