@@ -23,6 +23,13 @@ SceneLevelBuilder::SceneLevelBuilder():
 	RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
 	RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
 
+	//Sky
+	RenderHelper::getInstance()->registerTexture("SKY_1", "Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
+	RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
+
+	//Fog
+	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
+
 	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
 	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
 	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
@@ -43,6 +50,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
 	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
 
+	//TO BE DELETED
 	pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
 	pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
@@ -50,8 +58,6 @@ SceneLevelBuilder::SceneLevelBuilder():
 	pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 	pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
 	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
-	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
-	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
@@ -439,7 +445,7 @@ void SceneLevelBuilder::Render()
 	//SKY RENDER
 	AEGfxSetTransparency(1.0f);
 	//Sky
-	AEGfxTextureSet(pSkyTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
 	AEGfxSetTransform(m_TransformSkyData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -451,7 +457,7 @@ void SceneLevelBuilder::Render()
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(pSunOverlayTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
 	AEGfxSetTransform(m_TransformSunOverlayData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -502,7 +508,7 @@ void SceneLevelBuilder::Render()
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//Fog
-	AEGfxTextureSet(pFogTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -556,24 +562,6 @@ void SceneLevelBuilder::Render()
 			}
 		}
 	}
-	
-	//Done
-	//Rendering a single line 
-	// (Find out why this is causing issue with spawning at different location)
-	// (Find out why the images are translating weird to the center of the tile for no reason)
-	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
-	//{
-	//	for (int i = NUM_OF_TILES - 9; i > 0; i--)
-	//	{
-	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
-	//			it != m_FloorOBJs[j][i].end();
-	//			it++)
-	//		{
-	//			AEGfxSetTransform((*it).m_TransformData.m);
-	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	//		}
-	//	}
-	//}
 
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
