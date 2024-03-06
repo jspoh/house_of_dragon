@@ -63,7 +63,7 @@ RenderHelper::RenderHelper() {
 	_defaultMesh = AEGfxMeshEnd();
 
 	// font
-	_font = AEGfxCreateFont("./Assets/liberation-mono.ttf", _fontSize);
+	_font = AEGfxCreateFont("./Assets/Fonts/liberation-mono.ttf", _fontSize);
 }
 
 bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mesh) {
@@ -207,20 +207,23 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
-void RenderHelper::text(std::string s, float screenX, float screenY) {
+void RenderHelper::text(std::string s, float screenX, float screenY, float r, float g, float b, float a) {
 	AEGfxSetRenderMode(AE_GFX_RM_NONE);
 
 	Point p = ston(screenX, screenY);
 
 	f32 width, height;
-	AEGfxGetPrintSize(_font, s.c_str(), 1.f, &width, &height);
-	AEGfxPrint(_font, s.c_str(), p.x - width / 2, p.y - height / 2, 1, 1, 1, 1, 1);
+	AEGfxGetPrintSize(_font, s.c_str(), 1, &width, &height);
+	AEGfxPrint(_font, s.c_str(), p.x - width / 2, p.y - height / 2, 1, r, g, b, a);
 }
 
-void RenderHelper::setFontSize(int size) {
-	_fontSize = size;
+int RenderHelper::getFontSize() {
+	return _fontSize;
 }
 
-
+AEGfxVertexList* RenderHelper::GetdefaultMesh()
+{
+	return _defaultMesh;
+}
 /*class DrawSpritesheet*/
 

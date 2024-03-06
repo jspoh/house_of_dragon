@@ -18,7 +18,41 @@ Technology is prohibited.
 
 
 #include "AEEngine.h"
+#include <vector>
 //#include "../Backend/SingletonTemplate.h"
+
+const int AEVK_OFFSET = 'a' - AEVK_A;
+
+// why doesnt it work using std::array w size 26??
+const std::vector<std::pair<int, const char>> keyMappings {
+	{ AEVK_A, 'a' },
+	{ AEVK_B, 'b' },
+	{ AEVK_C, 'c' },
+	{ AEVK_D, 'd' },
+	{ AEVK_E, 'e' },
+	{ AEVK_F, 'f' },
+	{ AEVK_G, 'g' },
+	{ AEVK_H, 'h' },
+	{ AEVK_I, 'i' },
+	{ AEVK_J, 'j' },
+	{ AEVK_K, 'k' },
+	{ AEVK_L, 'l' },
+	{ AEVK_M, 'm' },
+	{ AEVK_N, 'n' },
+	{ AEVK_O, 'o' },
+	{ AEVK_P, 'p' },
+	{ AEVK_Q, 'q' },
+	{ AEVK_R, 'r' },
+	{ AEVK_S, 's' },
+	{ AEVK_T, 't' },
+	{ AEVK_U, 'u' },
+	{ AEVK_V, 'v' },
+	{ AEVK_W, 'w' },
+	{ AEVK_X, 'x' },
+	{ AEVK_Y, 'y' },
+	{ AEVK_Z, 'z' }
+};
+
 
 
 /**

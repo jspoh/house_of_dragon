@@ -138,9 +138,11 @@ public:
 	 * \param screenX
 	 * \param screenY
 	 */
-	void text(std::string s, float screenX, float screenY);
+	void text(std::string s, float screenX, float screenY, float r=1, float g=1, float b=1, float a=1);
 
-	void setFontSize(int size);
+	int getFontSize();
+
+	AEGfxVertexList* GetdefaultMesh();
 };
 
 /*
