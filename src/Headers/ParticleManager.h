@@ -11,9 +11,9 @@ class ParticleManager : public Singleton<ParticleManager>
 public:
 	~ParticleManager();
 
-	void init_particle( const char* fileName);
-	void emit_enemy_death_particle( Point deadEnemyPos);
-	void update_particles( float dt);
+	void init_particle(const char* fileName);
+	void emit_enemy_death_particle(Point deadEnemyPos);
+	void update_particles(float dt);
 
 	//void AddParticle(...);
 private:

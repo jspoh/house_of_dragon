@@ -75,6 +75,7 @@ def constructData() -> dict:
         },
         "levels": [
     {
+      "levelName": "Level 1: Plains",
       "unlocked": False,
       "completed": False,
       "maxEnemies": 1,
@@ -91,6 +92,7 @@ def constructData() -> dict:
       "DayTime": True
     },
     {
+      "levelName": "Level 2: Forest",
       "unlocked": False,
       "completed": False,
       "maxEnemies": 2,
@@ -107,6 +109,7 @@ def constructData() -> dict:
        "DayTime": True
     },
     {
+      "levelName": "Level 3: Forest - Night",
       "unlocked": False,
       "completed": False,
       "maxEnemies": 3,

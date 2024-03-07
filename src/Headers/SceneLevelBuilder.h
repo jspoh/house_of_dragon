@@ -145,6 +145,7 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	struct v_SceneLevelData
 	{
+		v_SceneLevelData();
 		string m_LevelName;
 		bool m_Completed;
 		int m_MaxEnemies;
@@ -169,6 +170,9 @@ private:
 	v_FloorData** m_Floor;
 	v_TileSpawnPoint** m_tileSP; //0 
 	std::list<v_SceneObject>** m_FloorOBJs;
+
+	std::list<v_SceneLevelData> m_SceneLevelDataList;
+
 	//v_WallData** m_Wall;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;

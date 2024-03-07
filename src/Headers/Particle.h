@@ -5,7 +5,7 @@
 
 
 
-class Particle 
+class Particle
 {
 public:
 	//~Particle();

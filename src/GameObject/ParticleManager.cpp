@@ -9,7 +9,7 @@ ParticleManager::~ParticleManager()
 {
 }
 
-void  ParticleManager::init_particle( const char* fileName)
+void  ParticleManager::init_particle(const char* fileName)
 {
 	std::ifstream ifs{ fileName }; // open an input file stream with provided FileName
 
