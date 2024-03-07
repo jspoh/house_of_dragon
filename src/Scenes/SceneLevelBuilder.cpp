@@ -10,6 +10,17 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	AEMtx33Identity(&m_Trans);
 }
 
+SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
+	:m_LevelName(""),
+	m_Completed(false),
+	m_MaxEnemies(0),
+	m_DayTime(0),
+	m_EnemyTypes(),
+	m_EnemySpawnWeight(),
+	m_SceneObjTypes(),
+	m_SceneObjSpawnWeight() {}
+
+
 SceneLevelBuilder::SceneLevelBuilder():
 	m_StopMovement(false),
 	m_PanCloseToGround(false)
@@ -139,6 +150,16 @@ SceneLevelBuilder::SceneLevelBuilder():
 			m_tileSP[i][j].m_Y = (50 / NUM_OF_TILESPAWNPOINTS * i) - 25;
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////
+	// Load Level Data from Json
+	for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
+	{
+		v_SceneLevelData t_curr{};
+		t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
+		m_SceneLevelDataList.push_back(t_curr);
+	}
+
 
 	Init();
 
