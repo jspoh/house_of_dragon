@@ -4,12 +4,10 @@ SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
 {
-	std::cout << "empty ctor" << std::endl;
 }
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
-	std::cout << "registered" << std::endl;
 	_sceneMgr->AddScene("SceneMenu", this);
 }
 
