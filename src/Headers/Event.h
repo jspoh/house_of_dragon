@@ -20,6 +20,7 @@ Technology is prohibited.
 
 #include "AEEngine.h"
 #include "utils.h"
+#include "db.h"
 #include <unordered_map>
 #include <string>
 #include <iostream>
@@ -174,11 +175,11 @@ private:
 	INNER_STATES _trackingState = INNER_STATES::ON_ENTER;
 	const int spawnIntervalMs = 1000;
 	const float _trackingRadius = 25.f;
-	const float _trackingSpeed = 5.f;
+	const float _trackingSpeed = 500.f;
 
 	struct TrackingEventHead {
-		float x;
-		float y;
+		float x;				// pos in world coords
+		float y;				// pos in world coords
 		AEVec2 vel;
 		float radius;
 

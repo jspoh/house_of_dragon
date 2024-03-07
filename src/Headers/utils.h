@@ -82,6 +82,11 @@ Point stow(float x, float y);
 Point ston(float x, float y);
 
 /**
+ * world to screen coordinates.
+ */
+Point wtos(float x, float y);
+
+/**
  * rounds a float to a set precision.
  */
 float precisionRound(float x, int precision);

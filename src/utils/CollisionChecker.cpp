@@ -15,6 +15,7 @@ Technology is prohibited.
 
 
 #include "CollisionChecker.h"
+#include "AEEngine.h"
 
 
 /*class collision checker*/
@@ -58,6 +59,34 @@ bool CollisionChecker::isMouseInCircle(float cX, float cY, float radius, float m
 bool CollisionChecker::areRectsIntersecting(float screenX1, float screenY1, float w1, float h1, float screenX2, float screenY2, float w2, float h2) {
 	if (_rectDistance(screenX1, screenY1, w1, h1, screenX2, screenY2, w2, h2)) {
 		return _rectAABB(screenX1, screenY1, w1, h1, screenX2, screenY2, w2, h2);
+	}
+	return false;
+}
+
+bool CollisionChecker::isRectTouchingScreenXBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	if (rectScreenX - w / 2 <= 0) {
+		return true;		// left
+	}
+	if (rectScreenX + w / 2 >= AEGfxGetWindowWidth()) {
+		return true;		// right
+	}
+	return false;
+}
+
+bool CollisionChecker::isRectTouchingScreenYBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	if (rectScreenY - h / 2 <= 0) {
+		return true;		// top
+	}
+	if (rectScreenY + h / 2 >= AEGfxGetWindowHeight()) {
+		return true;		// bottom
+	}
+	return false;
+}
+
+
+bool CollisionChecker::isRectTouchingScreenBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	if (isRectTouchingScreenXBorder(rectScreenX, rectScreenY, w, h) || isRectTouchingScreenYBorder(rectScreenX, rectScreenY, w, h)) {
+		return true;
 	}
 	return false;
 }

@@ -36,6 +36,14 @@ Point ston(float x, float y) {
 	return Point{ nX, nY };
 }
 
+Point wtos(float x, float y) {
+	x = x + AEGfxGetWindowWidth() / 2.f;
+	y = -y + AEGfxGetWindowHeight() / 2.f;
+
+	return Point{ x, y };
+}
+
+
 float precisionRound(float x, int precision) {
 	int mult = static_cast<int>(pow(10, precision));
 	int num = static_cast<int>(x * mult + 0.5f);
@@ -46,16 +54,9 @@ float degToRad(float degrees) {
 	return degrees * Math::m_PI / 180.f;
 }
 
-namespace {
-	void _toastHelper(std::string& msg) {
-		//RenderHelper::getInstance()->text(msg);
-
-	}
-}
 float lerp(float start, float end, float t) {
 	return start + t * (end - start);
 }
-
 
 
 void toast(std::string msg) {

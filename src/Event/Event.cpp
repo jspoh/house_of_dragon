@@ -655,12 +655,12 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		const int dirDeg = rand() % 360;
 		const float dirRad = degToRad(dirDeg);
 		_trackingObj = TrackingEventHead{
-			0, 0,
-			{cosf(dirRad), sinf(dirRad)},
-			_trackingRadius,
-			0,
-			0,
-			false
+			0, 0,										// pos
+			{cosf(dirRad), sinf(dirRad)},				// velocity
+			_trackingRadius,							// radius
+			0,											// time since last spawn
+			0,											// time since change
+			false										// blink
 		};
 		AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
 		AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
@@ -669,6 +669,17 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 	}
 
 	case INNER_STATES::ON_UPDATE:
+		Point pos = wtos(_trackingObj.x, _trackingObj.y);
+		if (CollisionChecker::isRectTouchingScreenXBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
+			_trackingObj.vel.x = -_trackingObj.vel.x;
+		}
+		else if (CollisionChecker::isRectTouchingScreenYBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
+			_trackingObj.vel.y = -_trackingObj.vel.y;
+		}
+
+		_trackingObj.x += _trackingObj.vel.x * dt;
+		_trackingObj.y += _trackingObj.vel.y * dt;
+
 		break;
 
 	case INNER_STATES::ON_NEXT:
@@ -685,7 +696,7 @@ void Event::_trackingEventRender() {
 		break;
 
 	case INNER_STATES::ON_UPDATE:
-		RenderHelper::getInstance()->texture("clickme_light");
+		RenderHelper::getInstance()->texture("clickme_light", _trackingObj.x, _trackingObj.y);
 		break;
 
 	case INNER_STATES::ON_NEXT:
