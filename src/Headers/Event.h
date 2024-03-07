@@ -88,6 +88,8 @@ private:
 	/*how many milliseconds before key type changes*/
 	const int _changeMs = 100;
 
+	int _mouseX=0, _mouseY=0, _prevMouseX=0, _prevMouseY=0;
+
 	/*spam key vars*/
 	const int _spamkeyTimeoutMs = 5000;
 	const float _minSize = 100;
@@ -176,7 +178,7 @@ private:
 	const int spawnIntervalMs = 1000;
 	const float _trackingRadius = 25.f;
 	const float _trackingSpeed = 500.f;
-	const float _trackingGravity = 9.8f;
+	const float _trackingGravity = 0.2f;
 
 	struct TrackingEventHead {
 		float x;				// pos in screen coords
@@ -191,8 +193,12 @@ private:
 		float timeSinceChange;
 		bool blink;
 
+		bool isHeld;
+
 		// prev update data
 		bool wasHeldByMouse;	// continue following mouse even if mouse moved too quickly
+		float prevX;
+		float prevY;
 	};
 
 	TrackingEventHead _trackingObj;

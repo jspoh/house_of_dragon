@@ -156,6 +156,12 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 }
 
 void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
+	AEInputGetCursorPosition(&_mouseX, &_mouseY);
+	if (_prevMouseX == 0 || _prevMouseY == 0) {
+		_prevMouseX == _mouseX;
+		_prevMouseY == _mouseY;
+	}
+
 	switch (_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
@@ -180,6 +186,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
 		break;
 	}
+
+	_prevMouseX = _mouseX;
+	_prevMouseY = _mouseY;
 }
 
 
@@ -655,16 +664,17 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		const int dirDeg = rand() % 360;
 		const float dirRad = degToRad(dirDeg);
 		_trackingObj = TrackingEventHead{
-			0, 0,										// pos
-			{cosf(dirRad), sinf(dirRad)},				// velocity
+			AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f,			// pos
+			//{cosf(dirRad), sinf(dirRad)},				// velocity
+			{0,0},										// velocity
 			_trackingRadius,							// radius
 			0,											// time since last spawn
 			0,											// time since change
 			false,										// blink
 			false
 		};
-		AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
-		AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
+		//AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
+		//AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
 		_trackingState = INNER_STATES::ON_UPDATE;
 		break;
 	}
@@ -682,27 +692,48 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		//_trackingObj.y += _trackingObj.vel.y * dt;
 
 		/*new impl*/
-		int mouseX, mouseY;
-		AEInputGetCursorPosition(&mouseX, &mouseY);
-
-		bool isUserHolding = false;
-		if (AEInputCheckCurr(AEVK_LBUTTON) && _trackingObj.wasHeldByMouse) {
-			isUserHolding = true;
+		if (AEInputCheckTriggered(AEVK_R)) {
+			AEVec2Set(&_trackingObj.vel, 0, 0);
+			_trackingObj.x = 0;
+			_trackingObj.y = 0;
+			_trackingObj.prevX = 0;
+			_trackingObj.prevY = 0;
 		}
-		if (isUserHolding || AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_trackingObj.x, _trackingObj.y, _trackingObj.radius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-			_trackingObj.wasHeldByMouse = true;
 
-			_trackingObj.x = mouseX;
-			_trackingObj.y = mouseY;
+		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_trackingObj.x, _trackingObj.y, _trackingObj.radius, static_cast<float>(_mouseX), static_cast<float>(_mouseY))) {
+			_trackingObj.isHeld = true;
+		}
+
+		if (_trackingObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {			
+			_trackingObj.x = _mouseX;
+			_trackingObj.y = _mouseY;
+
+			// get vector between last frame and this frame
+			_trackingObj.vel.x = _mouseX - _prevMouseX;
+			_trackingObj.vel.y = _mouseY - _prevMouseY;
 		}
 		else {
-			_trackingObj.wasHeldByMouse = false;
-
-			// gravity
-			_trackingObj.y += _trackingGravity * dt;
+			_trackingObj.isHeld = false;
 		}
 
+		std::cout << "obj vel: " << _trackingObj.vel.x << ", " << _trackingObj.vel.y << "\n";
 
+		// obj not held, apply normal physics to object
+		if (!AEInputCheckCurr(AEVK_LBUTTON) && !_trackingObj.wasHeldByMouse) {
+			_trackingObj.x += _trackingObj.vel.x * AEFrameRateControllerGetFrameRate() * dt;
+			_trackingObj.y += _trackingObj.vel.y * AEFrameRateControllerGetFrameRate() * dt;
+
+			// gravity
+			_trackingObj.vel.y += _trackingGravity * AEFrameRateControllerGetFrameRate() * dt;
+
+			// clamp positions
+			_trackingObj.x = AEClamp(_trackingObj.x, _trackingObj.radius, AEGfxGetWindowWidth() - _trackingObj.radius);
+			_trackingObj.y = AEClamp(_trackingObj.y, _trackingObj.radius, AEGfxGetWindowHeight() - _trackingObj.radius);
+		}
+		
+		// update previous frame data
+		_trackingObj.prevX = _trackingObj.x;
+		_trackingObj.prevY = _trackingObj.y;
 		break;
 	}
 
