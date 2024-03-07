@@ -240,4 +240,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug-x64\data.json" />
+  </ItemGroup>
 </Project>

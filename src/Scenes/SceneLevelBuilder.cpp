@@ -141,9 +141,11 @@ SceneLevelBuilder::SceneLevelBuilder():
 	}
 
 	Init();
+
+	bool tex = Database::getInstance()->data["levels"][0]["unlocked"];
 }
 SceneLevelBuilder::~SceneLevelBuilder()
-{
+{                          
 	Exit();
 }
 
@@ -470,12 +472,12 @@ void SceneLevelBuilder::Update(double dt)
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
 
 					//Translate to the tile
-					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
-					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
+					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
+					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
 
 					//CHANGE TO THIS ANGLE
-					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
-					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
 
 					//Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 

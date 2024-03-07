@@ -232,6 +232,9 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClInclude Include="src\Headers\CollisionChecker.h" />
     <ClInclude Include="src\Headers\RenderHelper.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug-x64\data.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
