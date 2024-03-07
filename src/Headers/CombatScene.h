@@ -42,6 +42,15 @@ private:
 
 	static CombatScene* sInstance; // The pointer to the object that gets registered
 };
+struct enemiesGroup {
+	int size;
+	std::vector<bool> activeEnemy;
+	std::vector<Point> coordinates;
+	std::vector<std::string> name;
+	std::vector<Enemy*> enemies;
+
+};
+ enemiesGroup spawnEnemies(std::vector<std::string> enemyRefs);
 
 // !TODO: kuek
 /**

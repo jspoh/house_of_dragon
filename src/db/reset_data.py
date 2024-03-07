@@ -36,6 +36,21 @@ def constructData() -> dict:
                 "element": "fire",
                 "health": 100,
                 "damage": 10,
+            },
+            "dragon" : {
+                "texturePath": "./Assets/animals/dragon.jpg",
+                "soundPath": "./Assets/sounds/dragon.mp3",
+                "element": "earth",
+                "health": 150,
+                "damage": 20,
+
+            },
+            "horse" : {
+                "texturePath": "./Assets/animals/horse.jpg",
+                "soundPath": "./Assets/sounds/horse.mp3",
+                "element": "water",
+                "health": 120,
+                "damage": 12,
             }
         },
         "items": {

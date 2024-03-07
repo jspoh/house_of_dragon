@@ -47,6 +47,7 @@ namespace {
     int randomEnemyStart;
     // enemy selection
     bool selectflag;
+    int texSize;
 
 
     EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
@@ -75,7 +76,7 @@ namespace {
     };
     float padding = 100.f;
     float spacing = 50.f;
-
+    enemiesGroup groups;
     float btnY = 550.f;
     float maxBtnHeight = 100.f;
 
@@ -154,7 +155,35 @@ namespace {
             }
         }
     }
+
+
+
+
 }
+enemiesGroup spawnEnemies(std::vector<std::string> enemyRefs) {
+    // this function works by creating taking in the vector of enemies; but this means i dont have to 
+    float Enemypadding = 50.0f;
+    enemiesGroup final;
+    final.size = enemyRefs.size(); // number of enemies;
+    final.coordinates.resize(final.size); // setting the coordinates
+    final.enemies.resize(final.size); // setting up the checking of enemies
+    final.activeEnemy.resize(final.size);
+    final.name.resize(final.size); // might not be needed, after getting the information from the
+    float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (final.size - 1) * spacing) / final.size);
+    for (int i = 0; i < final.size; i++) {
+        final.activeEnemy[i] = true;
+        // coordindates
+        final.coordinates[i].x = Enemypadding + i * Enemyspacing;
+        final.coordinates[i].y = AEGfxGetWindowHeight() / 2.f;
+        // obtaining the infomation from json file
+        final.enemies[i] = new Enemy(Element::Fire,100, 10, "./Assets/animals/cat.jpg", i + "temr", final.coordinates[i].x, final.coordinates[i].y, texSize);
+        // error with json file input
+    }
+    return final;
+
+
+
+}    
 
 CombatScene::CombatScene()
 {
@@ -198,7 +227,8 @@ void CombatScene::Init()
     //player init
 
     player = new Player();
-
+    std::vector<std::string> names = { "cat", "cat"};
+    groups = spawnEnemies(names);
     SelectEnemy = NULL;
     selectflag = true;
 
@@ -253,10 +283,10 @@ void CombatScene::Update(double dt)
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     }
     
-    for (Enemy* enemy : enemies) {
+    for (int i = 0; i < groups.size;i++) {
         //if()
 
-        enemy->render(); // render all, draw all enemys
+        groups.enemies[i]->render(); // render all, draw all enemys
     }
     player->render();
     for (Enemy* enemy : enemies) { // check for dead/alive
