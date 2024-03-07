@@ -141,7 +141,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
+	e = EVENT_TYPES::TRACKING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -171,6 +171,10 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::TYPING:
 		_typingEventUpdate(result, dt);
 		_typingEventRender();
+		break;
+	case EVENT_TYPES::TRACKING:
+		_trackingEventUpdate(result, dt);
+		_trackingEventRender();
 		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
@@ -635,9 +639,59 @@ void Event::_typingEventRender() {
 		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, currYOffset);
 
 		if (_elapsedTimeMs >= _typingTransitionTime * 1000) {
-			//result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+			//result = EVENT_RESULTS::CUSTOM_MULTIPLIER
 			_resetState();
 		}
+		break;
+	}
+}
+
+
+void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
+	_updateTime(dt);
+
+	switch (_trackingState) {
+	case INNER_STATES::ON_ENTER: {
+		const int dirDeg = rand() % 360;
+		const float dirRad = degToRad(dirDeg);
+		_trackingObj = TrackingEventHead{
+			0, 0,
+			{cosf(dirRad), sinf(dirRad)},
+			_trackingRadius,
+			0,
+			0,
+			false
+		};
+		AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
+		AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
+		_trackingState = INNER_STATES::ON_UPDATE;
+		break;
+	}
+
+	case INNER_STATES::ON_UPDATE:
+		break;
+
+	case INNER_STATES::ON_NEXT:
+		break;
+
+	case INNER_STATES::ON_EXIT:
+		break;
+	}
+}
+
+void Event::_trackingEventRender() {
+	switch (_trackingState) {
+	case INNER_STATES::ON_ENTER:
+		break;
+
+	case INNER_STATES::ON_UPDATE:
+		RenderHelper::getInstance()->texture("clickme_light");
+		break;
+
+	case INNER_STATES::ON_NEXT:
+		break;
+
+	case INNER_STATES::ON_EXIT:
 		break;
 	}
 }

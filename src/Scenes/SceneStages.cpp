@@ -1,4 +1,5 @@
 #include "SceneStages.h"
+#include <iostream>
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
@@ -44,6 +45,9 @@ void SceneStages::Update(double dt)
 
 void SceneStages::Render()
 {
+	std::cout << "test\n";
+	std::cout << Database::getInstance()->data["levels"][0]["enemySpawnWeight"]["cat"] << "\n";
+
 	m_LevelBuilder->Render();
 }
 
