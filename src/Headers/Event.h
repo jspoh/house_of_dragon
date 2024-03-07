@@ -176,10 +176,11 @@ private:
 	const int spawnIntervalMs = 1000;
 	const float _trackingRadius = 25.f;
 	const float _trackingSpeed = 500.f;
+	const float _trackingGravity = 9.8f;
 
 	struct TrackingEventHead {
-		float x;				// pos in world coords
-		float y;				// pos in world coords
+		float x;				// pos in screen coords
+		float y;				// pos in screen coords
 		AEVec2 vel;
 		float radius;
 
@@ -189,6 +190,9 @@ private:
 		// blink
 		float timeSinceChange;
 		bool blink;
+
+		// prev update data
+		bool wasHeldByMouse;	// continue following mouse even if mouse moved too quickly
 	};
 
 	TrackingEventHead _trackingObj;

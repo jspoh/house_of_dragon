@@ -660,7 +660,8 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 			_trackingRadius,							// radius
 			0,											// time since last spawn
 			0,											// time since change
-			false										// blink
+			false,										// blink
+			false
 		};
 		AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
 		AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
@@ -668,19 +669,42 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		break;
 	}
 
-	case INNER_STATES::ON_UPDATE:
-		Point pos = wtos(_trackingObj.x, _trackingObj.y);
-		if (CollisionChecker::isRectTouchingScreenXBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
-			_trackingObj.vel.x = -_trackingObj.vel.x;
+	case INNER_STATES::ON_UPDATE: {
+		//Point pos = wtos(_trackingObj.x, _trackingObj.y);
+		//if (CollisionChecker::isRectTouchingScreenXBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
+		//	_trackingObj.vel.x = -_trackingObj.vel.x;
+		//}
+		//else if (CollisionChecker::isRectTouchingScreenYBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
+		//	_trackingObj.vel.y = -_trackingObj.vel.y;
+		//}
+
+		//_trackingObj.x += _trackingObj.vel.x * dt;
+		//_trackingObj.y += _trackingObj.vel.y * dt;
+
+		/*new impl*/
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+
+		bool isUserHolding = false;
+		if (AEInputCheckCurr(AEVK_LBUTTON) && _trackingObj.wasHeldByMouse) {
+			isUserHolding = true;
 		}
-		else if (CollisionChecker::isRectTouchingScreenYBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
-			_trackingObj.vel.y = -_trackingObj.vel.y;
+		if (isUserHolding || AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_trackingObj.x, _trackingObj.y, _trackingObj.radius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			_trackingObj.wasHeldByMouse = true;
+
+			_trackingObj.x = mouseX;
+			_trackingObj.y = mouseY;
+		}
+		else {
+			_trackingObj.wasHeldByMouse = false;
+
+			// gravity
+			_trackingObj.y += _trackingGravity * dt;
 		}
 
-		_trackingObj.x += _trackingObj.vel.x * dt;
-		_trackingObj.y += _trackingObj.vel.y * dt;
 
 		break;
+	}
 
 	case INNER_STATES::ON_NEXT:
 		break;
@@ -696,7 +720,8 @@ void Event::_trackingEventRender() {
 		break;
 
 	case INNER_STATES::ON_UPDATE:
-		RenderHelper::getInstance()->texture("clickme_light", _trackingObj.x, _trackingObj.y);
+		Point pos = stow(_trackingObj.x, _trackingObj.y);
+		RenderHelper::getInstance()->texture("clickme_light", pos.x, pos.y);
 		break;
 
 	case INNER_STATES::ON_NEXT:
