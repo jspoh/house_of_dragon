@@ -685,6 +685,7 @@ void Event::_trackingEventRender() {
 		break;
 
 	case INNER_STATES::ON_UPDATE:
+		RenderHelper::getInstance()->texture("clickme_light");
 		break;
 
 	case INNER_STATES::ON_NEXT:
