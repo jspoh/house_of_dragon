@@ -12,6 +12,7 @@ class SceneMenu : public Scene
 {
 public:
 	SceneMenu();
+	SceneMenu(SceneManager* _sceneMgr);
 	~SceneMenu();
 
 	virtual void Load();
@@ -51,7 +52,7 @@ private:
 
 	Menu myMenu;
 
-	SceneMenu(SceneManager* _sceneMgr); // This is used to register to SceneManager
+	//SceneMenu(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
 	static SceneMenu* sInstance; // The pointer to the object that gets registered
 };

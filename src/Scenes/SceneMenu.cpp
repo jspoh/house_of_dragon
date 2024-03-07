@@ -4,10 +4,12 @@ SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
 {
+	std::cout << "empty ctor" << std::endl;
 }
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
+	std::cout << "registered" << std::endl;
 	_sceneMgr->AddScene("SceneMenu", this);
 }
 
@@ -29,12 +31,12 @@ void SceneMenu::Load()
 
 	myMenu.mesh = AEGfxMeshEnd();
 
-	myMenu.bg = AEGfxTextureLoad("Assets/bg.jpg");
-	myMenu.pointer = AEGfxTextureLoad("Assets/buttons/dagger.png");
-	myMenu.button[0] = AEGfxTextureLoad("Assets/buttons/olay.png");
-	myMenu.button[1] = AEGfxTextureLoad("Assets/buttons/xredit.png");
-	myMenu.button[2] = AEGfxTextureLoad("Assets/buttons/aetting.png");
-	myMenu.button[3] = AEGfxTextureLoad("Assets/buttons/quit.png");
+	myMenu.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
+	myMenu.pointer = AEGfxTextureLoad("Assets/Menu/buttons/dagger.png");
+	myMenu.button[0] = AEGfxTextureLoad("Assets/Menu/buttons/olay.png");
+	myMenu.button[1] = AEGfxTextureLoad("Assets/Menu/buttons/xredit.png");
+	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/aetting.png");
+	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/quit.png");
 
 }
 
@@ -108,7 +110,8 @@ void SceneMenu::Update(double dt)
 							SceneManager::GetInstance()->SetActiveScene("SceneStages");
 							break;
 						case 1:
-							SceneManager::GetInstance()->SetActiveScene("SceneCredit");
+							SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+							break;
 						case 2:
 							SceneManager::GetInstance()->SetActiveScene("");
 							break;
@@ -118,7 +121,6 @@ void SceneMenu::Update(double dt)
 							break;
 						}
 					}
-
 
 				}
 
