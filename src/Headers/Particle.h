@@ -1,18 +1,14 @@
 #pragma once
-#ifndef PARTICLE
-#define PARTICLE
 
-#include "ParticleManager.h"
+//#include "ParticleManager.h"
+#include "utils.h"
 
 
 
 class Particle 
 {
 public:
-	~Particle();
-
-	Particle(ParticleManager* _ParticleMgr);
-	static Particle* sInstance;
+	//~Particle();
 
 
 	Point position;
@@ -26,9 +22,7 @@ public:
 
 
 
+	//Particle();
 private:
-	Particle();
 
 };
-
-#endif
