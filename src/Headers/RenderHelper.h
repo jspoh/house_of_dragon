@@ -19,6 +19,7 @@ Technology is prohibited.
 #include "utils.h"
 #include <unordered_map>
 #include <string>
+#include <array>
 
 
 struct Color;
@@ -32,6 +33,10 @@ private:
 	int _fontSize = 32;
 
 	std::unordered_map<std::string, AEGfxTexture*> _textureRef;
+
+	// use int as reference for speed
+	static const int MAX_TEXTURE_IDS = 120;
+	std::array<AEGfxTexture*, MAX_TEXTURE_IDS> _textureIdRefs;
 
 	RenderHelper();
 
@@ -104,6 +109,8 @@ public:
 	 */
 	bool registerTexture(std::string reference, std::string path);
 
+	bool registerTexture(int reference, std::string path);
+
 	/**
 	 * get AEGfxTexture pointer by reference.
 	 * DO NOT free pointers returned by this function. call `removeTextureByRef` instead.
@@ -112,8 +119,10 @@ public:
 	 * \return 
 	 */
 	AEGfxTexture* getTextureByRef(std::string reference);
+	AEGfxTexture* getTextureByRef(int reference);
 
 	void removeTextureByRef(std::string reference);
+	void removeTextureByRef(int reference);
 
 	/**
 	 * Draws a texture.
@@ -128,6 +137,7 @@ public:
 	 * \param rotation
 	 */
 	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,0 }, f32 rotation = 0);
+	void texture(int textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,0 }, f32 rotation = 0);
 
 	/**
 	 * draws a centered text on screen
@@ -143,6 +153,7 @@ public:
 	int getFontSize();
 
 	AEGfxVertexList* GetdefaultMesh();
+	AEGfxTexture* GetTexture(int textureRef);
 };
 
 /*

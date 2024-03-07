@@ -29,6 +29,8 @@ private:
 	// world pos (rendering only!!!!)
 	Point _wpos;
 	float _size = 50;
+	Point healthpos;
+	double fullhealth;
 
 public:
 	Enemy();
@@ -36,4 +38,7 @@ public:
 	~Enemy();
 
 	void render();
+	double newHealth(double desiredX);
 };
+
+

@@ -3,11 +3,11 @@
 #include "Pch.h"
 #include "GameObjectManager.h"
 
-#define SIZE_OF_FLOOR 15 //X Axis
+#define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
-#define NUM_OF_TILESPAWNPOINTS 8//Num of Spawnpoints on x & y of each tile
+#define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-#define MAX_NUM_SCENEOBJS_TILE 20
+#define MAX_NUM_SCENEOBJS_TILE 8
 
 class SceneLevelBuilder
 {
@@ -79,6 +79,51 @@ private:
     */
     
     ////////////////////////////////////////////////////////////////////////////////////////////////
+	enum v_SceneObjectTypes
+	{
+		EType_MysteryEnemyStrong,
+		EType_MysteryEnemyWeak,
+
+		ETYPE_NONE,
+		EType_ForestTree_XL_1,
+		EType_ForestTree_XL_2,
+		EType_ForestTree_L_1,
+		EType_ForestTree_L_2,
+		EType_ForestTree_M_1,
+		EType_ForestTree_M_2,
+		EType_ForestTree_S_1,
+		EType_ForestTree_S_2,
+		EType_NightTree_XL_1,
+		EType_NightTree_XL_2,
+		EType_NightTree_L_1,
+		EType_NightTree_L_2,
+		EType_NightTree_M_1,
+		EType_NightTree_M_2,
+		EType_NightTree_S_1,
+		EType_NightTree_S_2,
+		EType_Grass_Foliage_1,
+		EType_Grass_Foliage_2,
+		EType_Grass_Foliage_3,
+		EType_Grass_1,
+		EType_Grass_2,
+		EType_Grass_3,
+		EType_Rock_BROWN_1,
+		EType_Rock_BROWN_2,
+		EType_Rock_BROWN_3,
+		EType_Rock_BROWN_4,
+		EType_Rock_BROWN_5,
+		EType_Rock_BROWN_6,
+		EType_Rock_WHITE_1,
+		EType_Rock_WHITE_2,
+		EType_Rock_WHITE_3,
+		EType_Rock_WHITE_4,
+		EType_Rock_WHITE_5,
+		EType_Rock_WHITE_6,
+		ETYPE_LAST,
+
+		
+	};
+
 	struct v_SceneObject
 	{
 		v_SceneObject();
@@ -86,32 +131,31 @@ private:
 		AEMtx33 m_Scale, m_Trans;
 		int m_RenderOrder;
 		float m_Transparency;
+		v_SceneObjectTypes m_Type;
 		string m_TexRef; //Used with draw
 	};
 
-	enum v_SceneObjectTypes
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Scene Level Data (Read from Json)
+	/*
+	* 
+	*                      DESCRIBE YOUR SHIT LAH
+	* 
+	*/
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	struct v_SceneLevelData
 	{
-		EType_MysteryEnemyStrong,
-		EType_MysteryEnemyWeak,
-		EType_Tree1,
-		EType_Tree2,
-		EType_Tree3,
-		EType_Tree4,
-		EType_Tree5,
-		EType_Tree6,
-		EType_ShortTree1,
-		EType_ShortTree2,
-		EType_ShortTree3,
-		EType_Grass,
-		EType_Roots,
-		EType_OvergrownRoots,
-		EType_Boulder1,
-		EType_Boulder2,
-		EType_Boulder3,
-		EType_Rock1,
-		EType_Rock2,
-		EType_Rock3,
-	};
+		v_SceneLevelData();
+		string m_LevelName;
+		bool m_Completed;
+		int m_MaxEnemies;
+		std::list<string> m_EnemyTypes;
+		std::list<int> m_EnemySpawnWeight;
+		std::list<string> m_SceneObjTypes;
+		std::list<int> m_SceneObjSpawnWeight;
+
+		bool m_DayTime;
+	};					  
 
 	//Change soon
 	AEGfxTexture* pFloorTex;
@@ -126,6 +170,9 @@ private:
 	v_FloorData** m_Floor;
 	v_TileSpawnPoint** m_tileSP; //0 
 	std::list<v_SceneObject>** m_FloorOBJs;
+
+	std::list<v_SceneLevelData> m_SceneLevelDataList;
+
 	//v_WallData** m_Wall;
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;

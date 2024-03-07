@@ -4,10 +4,12 @@ SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
 {
+	std::cout << "empty ctor" << std::endl;
 }
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
+	std::cout << "registered" << std::endl;
 	_sceneMgr->AddScene("SceneMenu", this);
 }
 
@@ -30,19 +32,19 @@ void SceneMenu::Load()
 	myMenu.mesh = AEGfxMeshEnd();
 
 	myMenu.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
-
-	myMenu.button[0] = AEGfxTextureLoad("Assets/Menu/buttons/play.png");
-	myMenu.button[1] = AEGfxTextureLoad("Assets/Menu/buttons/credit.png");
-	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/setting.png");
-	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/exit.png");
+	myMenu.pointer = AEGfxTextureLoad("Assets/Menu/buttons/dagger.png");
+	myMenu.button[0] = AEGfxTextureLoad("Assets/Menu/buttons/olay.png");
+	myMenu.button[1] = AEGfxTextureLoad("Assets/Menu/buttons/xredit.png");
+	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/aetting.png");
+	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/quit.png");
 
 }
 
 void SceneMenu::Init()
 {
 
-	myMenu.buttonWidth = 200.0f; // Example initialization
-	myMenu.buttonHeight = 40.0f; // Example initialization
+	myMenu.buttonWidth = 400.0f; // Example initialization
+	myMenu.buttonHeight = 120.0f; // Example initialization
 	myMenu.transitionEnd = false; // Example initialization
 	myMenu.transitionTimer = 0.0f; // Example initialization
 	myMenu.transitionElapse = 0.0f; // Example initialization
@@ -53,107 +55,82 @@ void SceneMenu::Init()
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight + 10) + 200;
 	}
 
+	
+
 }
 
 void SceneMenu::Update(double dt)
 {
-	if (AEInputCheckCurr(AEVK_1))
-		SceneManager::GetInstance()->SetActiveScene("SceneStage1");
-	if (AEInputCheckTriggered(AEVK_LBUTTON))
-	{
-		s32 mxx, myy;
-		AEInputGetCursorPosition(&mxx, &myy);
-		float mx = mxx;
-		float my = myy;
-		mx -= 1200 / 2;
 
-		my = -my;
-		my += 650.0f / 2.0f;
+	if (AEInputCheckTriggered(AEVK_1)) {
+		SceneManager::GetInstance()->SetActiveScene("TestScene");
+	}
 
-		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
-		AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
-		//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
+	//for (int i = 3; i >= 0; --i)
+	//{
 
-		for (int i = 0; i < 4; ++i)
-		{
-			AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
-			AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
-			if (p1.x<mx && p1.y>my && p2.x > mx && p2.y < my)
+	//	if (myMenu.levelActived[i] == 1) {
+	//		myMenu.hovering[i] = true;
+	//		static float counter = 0;
+	//if (counter >= 2.0f)
+	//	counter -= 2.0f;
+	//else
+	//	counter += dt;
+
+	//   AEVec2 xx ;
+ //  AEVec2Lerp(xx, 0.0f, 360.0f, counter);
+ //  ///// need do lerp for the transition 
+
+
+
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
-				switch (i)
+				s32 mxx, myy;
+				AEInputGetCursorPosition(&mxx, &myy);
+				float mx = mxx;
+				float my = myy;
+				mx -= 1200 / 2;
+
+				my = -my;
+				my += 650.0f / 2.0f;
+
+				//std::cout << "X: " << mx << "    Y: " << my << std::endl;
+				AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
+				//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
+
+				for (int i = 0; i < 4; ++i)
 				{
-				case 0:
-					SceneManager::GetInstance()->SetActiveScene("CombatScene");
-					break;
-				case 1:
-					SceneManager::GetInstance()->SetActiveScene("SceneCredits");
-					break;
+					AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
+					AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
+					if (p1.x<mx && p1.y>my && p2.x > mx && p2.y < my)
+					{
+						switch (i)
+						{
+						case 0:
+							SceneManager::GetInstance()->SetActiveScene("SceneStages");
+							break;
+						case 1:
+							SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+							break;
+						case 2:
+							SceneManager::GetInstance()->SetActiveScene("");
+							break;
+						case 3:
+							SceneManager::GetInstance()->SetActiveScene("");
+
+							break;
+						}
+					}
+
 				}
+
 			}
 
+			//else myMenu.hovering[i] = false;
 
-		}
-
-	}
+		//}
+	//}
 	return;
-
-
-
-	//if (AEInputCheckCurr(AEVK_1))
-	//	SceneManager::GetInstance()->SetActiveScene("SceneStage1");
-	//if (AEInputCheckCurr(AEVK_2))
-	//	SceneManager::GetInstance()->SetActiveScene("CombatScene");
-
-	//AEInputGetCursorPosition(&myMenu.mouseX, &myMenu.mouseY);
-	////myMenu.mouseX -= myMenu.mouseX;
-	//myMenu.mouseY -= myMenu.mouseY;
-
-
-	//	for (int i = 0; i < 4; ++i)
-	//	{
-	//		float buttonLeft = myMenu.buttonX[i];
-	//		float buttonRight = myMenu.buttonX[i] + myMenu.buttonWidth;
-	//		float buttonTop = myMenu.buttonY[i];
-	//		float buttonBottom = myMenu.buttonY[i] + myMenu.buttonHeight;
-
-	//		// Check if the mouse cursor is within the bounds of the button
-	//		if (myMenu.mouseX >= buttonLeft && myMenu.mouseX <= buttonRight &&
-	//			myMenu.mouseY >= buttonTop && myMenu.mouseY <= buttonBottom)
-	//			myMenu.hovering[i] = true;
-	//
-
-	//			if (AEInputCheckTriggered(AEVK_LBUTTON))
-	//			{
-
-	//				{
-	//					// Button i is clicked, perform appropriate action
-	//					switch (i)
-	//					{
-	//					case 0:
-	//						// Handle click for button 0 (play button)
-	//						SceneManager::GetInstance()->SetActiveScene("CombatScene");
-	//						break;
-	//					case 1:
-	//						// Handle click for button 1 (credit button)
-	//						// Add your code here
-	//						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
-	//						break;
-	//					case 2:
-	//						// Handle click for button 2 (setting button)
-	//						// Add your code here
-	//						break;
-	//					case 3:
-	//				
-	//						break;
-	//					default:
-	//						break;
-	//					}
-	//				}
-	//			}
-	//		
-
-
-	//	}
 
 }
 
@@ -199,9 +176,7 @@ void SceneMenu::Render()
 		AEMtx33Trans(&transform, myMenu.buttonX[i], myMenu.buttonY[i]);
 
 		AEMtx33 model = { 0 };
-		//AEMtx33Concat(&model, &scale, &transform);
 		AEMtx33Concat(&model, &transform, &scale);
-		// prepare to draw
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetColorToAdd(0, 0, 0, 1);
@@ -222,6 +197,7 @@ void SceneMenu::Exit()
 	{
 		AEGfxTextureUnload(myMenu.button[i]);
 	}
-	AEGfxTextureUnload(myMenu.bg);
 	AEGfxMeshFree(myMenu.mesh);
+	AEGfxTextureUnload(myMenu.pointer);
+	AEGfxTextureUnload(myMenu.bg);
 }

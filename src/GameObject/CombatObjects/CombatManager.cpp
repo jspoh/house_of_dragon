@@ -33,3 +33,6 @@ CombatManager* CombatManager::getInstance() {
 void CombatManager::next() {
     turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
 }
+void setSelectedEnemy(Enemy* enemy) {
+    return;
+}

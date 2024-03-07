@@ -52,7 +52,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     
     	// check if forcing the application to quit
     	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-    		gGameRunning = 0;
+    		gGameRunning = 0; //Check with prof how to run game.exit when player forcebly closes the game
     
     	if (AEInputCheckTriggered(AEVK_0))
     		AESysSetFullScreen(1);

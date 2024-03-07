@@ -18,6 +18,20 @@
       "element": "fire",
       "health": 100,
       "damage": 10
+    },
+    "dragon": {
+      "texturePath": "./Assets/animals/dragon.jpg",
+      "soundPath": "./Assets/sounds/dragon.mp3",
+      "element": "earth",
+      "health": 150,
+      "damage": 20
+    },
+    "horse": {
+      "texturePath": "./Assets/animals/horse.jpg",
+      "soundPath": "./Assets/sounds/horse.mp3",
+      "element": "water",
+      "health": 120,
+      "damage": 12
     }
   },
   "items": {
@@ -42,34 +56,55 @@
   },
   "levels": [
     {
-      "unlocked": true,
+      "levelName": "Level 1: Plains",
+      "unlocked": false,
       "completed": false,
-      "score": 0,
       "maxEnemies": 1,
+      "maxSceneOBJperTile": 2,
       "enemySpawnWeight": {
         "cat": 2,
         "dog": 1
-      }
+      },
+      "SceneOBJSpawnWeight": {
+        "Grass": 1,
+        "Tree": 1,
+        "Rock": 1
+      },
+      "DayTime": true
     },
     {
+      "levelName": "Level 2: Forest",
       "unlocked": false,
       "completed": false,
-      "score": 0,
       "maxEnemies": 2,
+      "maxSceneOBJperTile": 5,
       "enemySpawnWeight": {
         "cat": 1,
         "dog": 1
-      }
+      },
+      "SceneOBJSpawnWeight": {
+        "Grass": 1,
+        "Tree": 1,
+        "Rock": 1
+      },
+      "DayTime": true
     },
     {
+      "levelName": "Level 3: Forest - Night",
       "unlocked": false,
       "completed": false,
-      "score": 0,
       "maxEnemies": 3,
+      "maxSceneOBJperTile": 5,
       "enemySpawnWeight": {
         "cat": 1,
         "dog": 2
-      }
+      },
+      "SceneOBJSpawnWeight": {
+        "Grass": 1,
+        "Tree": 1,
+        "Rock": 1
+      },
+      "DayTime": false
     }
   ]
 }

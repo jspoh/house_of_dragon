@@ -10,48 +10,127 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	AEMtx33Identity(&m_Trans);
 }
 
+SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
+	:m_LevelName(""),
+	m_Completed(false),
+	m_MaxEnemies(0),
+	m_DayTime(0),
+	m_EnemyTypes(),
+	m_EnemySpawnWeight(),
+	m_SceneObjTypes(),
+	m_SceneObjSpawnWeight() {}
+
+
 SceneLevelBuilder::SceneLevelBuilder():
 	m_StopMovement(false),
 	m_PanCloseToGround(false)
 {
+	RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png");
 	/////////////////////////////////////////////////////////////////////////////////
-	
 	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
-	
+	/*********************************************
 	//Forest
+	**********************************************/
 	RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
 	RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
 	RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
 
-	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
-	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	//RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+	/*********************************************
+	//Sky
+	**********************************************/
+	RenderHelper::getInstance()->registerTexture("SKY_1", "Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
+	RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 
+	/*********************************************
+	//Fog
+	**********************************************/
+	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
+
+	/*********************************************
+	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
+	**********************************************/
+	///////////////////////////////////////////
+	//Grass
+	RenderHelper::getInstance()->registerTexture(EType_Grass_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_1.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_2.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_3.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage1.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage2.png");
+	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage3.png");
+
+	//Rocks
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_BROWN.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_WHITE.png");
+	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_WHITE.png");
+
+	//Trees
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_DEAD.png");
+
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_DEAD.png");
+	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
+	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
+
+	//TO BE DELETED
 	pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
 	pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
 	pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
 	pSkyTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
 	pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 	pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
-	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
-	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
-	//RenderHelper::getInstance()->registerTexture("Floor", "Assets/Scene_Floor_Grass_3D.png");
+	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
@@ -72,10 +151,22 @@ SceneLevelBuilder::SceneLevelBuilder():
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////
+	// Load Level Data from Json
+	for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
+	{
+		v_SceneLevelData t_curr{};
+		t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
+		m_SceneLevelDataList.push_back(t_curr);
+	}
+
+
 	Init();
+
+	bool tex = Database::getInstance()->data["levels"][0]["unlocked"];
 }
 SceneLevelBuilder::~SceneLevelBuilder()
-{
+{                          
 	Exit();
 }
 
@@ -152,22 +243,22 @@ void SceneLevelBuilder::Init()
 	
 
 	AEMtx33 scale, trans;
-	////////////////////////////////////////////////////////////////
-	// Create Scene Objects
-	// Use this to spawn objects into scene when starting
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
-	{
-		for (int i = 0; i < NUM_OF_TILES; i++)
-		{
-			if (j == t_CenterFloorNum)
-				continue;
-		    v_SceneObject newObj;
-			newObj.m_TexRef = "Mystery_S_Enemy";
-			AEMtx33Trans(&newObj.m_Trans, (rand() % 20 - 10) * 1 ,20);
-			AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f);
-			m_FloorOBJs[j][i].push_back(newObj);
-		}
-	}
+	//////////////////////////////////////////////////////////////////
+	//// Create Scene Objects
+	//// Use this to spawn objects into scene when starting
+	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	//{
+	//	for (int i = 0; i < NUM_OF_TILES; i++)
+	//	{
+	//		if (j == t_CenterFloorNum)
+	//			continue;
+	//	    v_SceneObject newObj;
+	//		newObj.m_TexRef = "Mystery_S_Enemy";
+	//		AEMtx33Trans(&newObj.m_Trans, (rand() % 20 - 10) * 1 ,20);
+	//		AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f);
+	//		m_FloorOBJs[j][i].push_back(newObj);
+	//	}
+	//}
 
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
@@ -196,7 +287,7 @@ void SceneLevelBuilder::Update(double dt)
 {
 	//Placement Tool (Remove once done)
 
-	static double x = 10, y = 0;
+	static double x = 1, y = 1;
 	if (AEInputCheckCurr(AEVK_W))
 	{
 		y += 0.05;
@@ -207,20 +298,20 @@ void SceneLevelBuilder::Update(double dt)
 	}
 	if (AEInputCheckCurr(AEVK_A))
 	{
-		x -= 1.05;
+		x -= 0.05;
 	}
 	if (AEInputCheckCurr(AEVK_D))
 	{
-		x += 1.05;
+		x += 0.05;
 	}
 	static double mx = 0, my = 200;
 	if (AEInputCheckCurr(AEVK_UP))
 	{
-		mx += 0.05;
+		mx += 0.55;
 	}
 	if (AEInputCheckCurr(AEVK_DOWN))
 	{
-		my--;
+		mx -= 0.55;
 	}
 	//AEMtx33 scale = { 0 }, trans = { 0 };
 	//AEMtx33Scale(&scale, x, y);
@@ -337,7 +428,6 @@ void SceneLevelBuilder::Update(double dt)
 						{
 							m_Floor[j][i].m_currFloorNum--;
 							m_Floor[j][i].m_IsRender = true;
-
 						}
 						else
 						{
@@ -367,6 +457,7 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					//Clear Scene Objects in row
 					DestroyRowOBJs(*i);
+
 					//Only spawn on tile 0, 2->8 (1 & 9 tiles are hidden below another tile, so visual error)
 					if (m_Floor[j][*i].m_FloorNum > -1 && m_Floor[j][*i].m_FloorNum < 9 && m_Floor[j][*i].m_FloorNum != 1)
 						CreateRowOBJs(*i);
@@ -382,7 +473,7 @@ void SceneLevelBuilder::Update(double dt)
 		//////////////////////////////////////////////////////////////////////////
 		//GameObjectManager::GetInstance()->Update(dt);
 		v_SceneObject temp;
-		pair<int, int> t_TransScaleModifier = { 10, 42};
+		pair<int, int> t_TransScaleModifier = { 60, 48}; //For rand on tile pos
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -402,13 +493,17 @@ void SceneLevelBuilder::Update(double dt)
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
 
 					//Translate to the tile
-					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2];
-					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2];
+					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
+					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
+
+					//CHANGE TO THIS ANGLE
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
 
 					//Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
 						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]), 
-						(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1]));
+						0/*(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1])*/);
 				
 					//Adjusting Transparency
 					(*it).m_Transparency += dt*1.5;
@@ -439,7 +534,7 @@ void SceneLevelBuilder::Render()
 	//SKY RENDER
 	AEGfxSetTransparency(1.0f);
 	//Sky
-	AEGfxTextureSet(pSkyTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
 	AEGfxSetTransform(m_TransformSkyData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -451,7 +546,7 @@ void SceneLevelBuilder::Render()
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(pSunOverlayTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
 	AEGfxSetTransform(m_TransformSunOverlayData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -502,14 +597,13 @@ void SceneLevelBuilder::Render()
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//Fog
-	AEGfxTextureSet(pFogTex, 0, 0);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
 	AEGfxSetTransform(m_TransformFogData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//SceneObj
-	AEGfxTextureSet(pEnemyTex, 0, 0);
 	//Render Left Side
 	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
 	{
@@ -527,6 +621,7 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
+				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
 				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -550,30 +645,13 @@ void SceneLevelBuilder::Render()
 				it != m_FloorOBJs[j][tempTileNum].end();
 				it++)
 			{
+				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
 				AEGfxSetTransparency((*it).m_Transparency);
 				AEGfxSetTransform((*it).m_TransformData.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 	}
-	
-	//Done
-	//Rendering a single line 
-	// (Find out why this is causing issue with spawning at different location)
-	// (Find out why the images are translating weird to the center of the tile for no reason)
-	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
-	//{
-	//	for (int i = NUM_OF_TILES - 9; i > 0; i--)
-	//	{
-	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
-	//			it != m_FloorOBJs[j][i].end();
-	//			it++)
-	//		{
-	//			AEGfxSetTransform((*it).m_TransformData.m);
-	//			AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
-	//		}
-	//	}
-	//}
 
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
@@ -615,21 +693,21 @@ void SceneLevelBuilder::Exit()
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
 	srand(static_cast<unsigned> (time(0)));
-	if(false)
+	//if(false)
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre
 		if (j == t_CenterFloorNum)
 			continue;
 
-		for (int i = rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10; i > 0; i--)
+		for (int i = MAX_NUM_SCENEOBJS_TILE/*3*//*rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10*/; i > 0; i--)
 		{
 			v_SceneObject newObj;
 
-
 			//Selecting Entities to Spawn
-			newObj.m_TexRef = "Mystery_S_Enemy";
-
+			newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand()%(v_SceneObjectTypes::ETYPE_LAST - v_SceneObjectTypes::ETYPE_NONE) + v_SceneObjectTypes::ETYPE_NONE,
+				v_SceneObjectTypes::ETYPE_NONE + 1,
+				v_SceneObjectTypes::ETYPE_LAST - 1));
 
 			//Random Selection of Spawn location on tile
 			int t_RandX, t_RandY;
@@ -654,10 +732,11 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 				AEMtx33Trans(&newObj.m_Trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 
-			//Random Scaling
-			float scale = (rand() % 20) * 0.01f + 0.1f;
-			AEMtx33Scale(&newObj.m_Scale, scale, scale);
-
+			////Random Scaling
+			//float scale = (rand() % 20) * 0.01f + 0.1f;
+			//AEMtx33Scale(&newObj.m_Scale, scale, scale);
+			//Scaling (Uniform Scaling)
+			AEMtx33Scale(&newObj.m_Scale, 2.5f, 2.5f);
 
 			//Push into OBJlist in tile (Determine which to render first based on Spawnpoint m_Y
 			std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][t_tileNum].begin();

@@ -88,6 +88,8 @@ float precisionRound(float x, int precision);
 
 float degToRad(float degrees);
 
+// mathematical technique used to find a value between two endpoints based on a linear progression.
+float lerp(float start, float end, float t);
 
 /*for ease of inclusion*/
 #include "RenderHelper.h"

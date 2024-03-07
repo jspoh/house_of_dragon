@@ -10,6 +10,7 @@ class SceneCredits : public Scene
 {
 public:
 	SceneCredits();
+	SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
 	~SceneCredits();
 
 	virtual void Load();
@@ -76,7 +77,7 @@ public:
 
 private:
 
-	SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
+	//SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
 	static SceneCredits* sInstance; // The pointer to the object that gets registered
 
