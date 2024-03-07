@@ -163,23 +163,23 @@ namespace {
 enemiesGroup spawnEnemies(std::vector<std::string> enemyRefs) {
     // this function works by creating taking in the vector of enemies; but this means i dont have to 
     float Enemypadding = 50.0f;
-    enemiesGroup final;
-    final.size = enemyRefs.size(); // number of enemies;
-    final.coordinates.resize(final.size); // setting the coordinates
-    final.enemies.resize(final.size); // setting up the checking of enemies
-    final.activeEnemy.resize(final.size);
-    final.name.resize(final.size); // might not be needed, after getting the information from the
-    float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (final.size - 1) * spacing) / final.size);
-    for (int i = 0; i < final.size; i++) {
-        final.activeEnemy[i] = true;
+    enemiesGroup finalEnemiesGroup;     // `final` is c++ syntax, cannot use
+    finalEnemiesGroup.size = enemyRefs.size(); // number of enemies;
+    finalEnemiesGroup.coordinates.resize(finalEnemiesGroup.size); // setting the coordinates
+    finalEnemiesGroup.enemies.resize(finalEnemiesGroup.size); // setting up the checking of enemies
+    finalEnemiesGroup.activeEnemy.resize(finalEnemiesGroup.size);
+    finalEnemiesGroup.name.resize(finalEnemiesGroup.size); // might not be needed, after getting the information from the
+    float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (finalEnemiesGroup.size - 1) * spacing) / finalEnemiesGroup.size);
+    for (int i = 0; i < finalEnemiesGroup.size; i++) {
+        finalEnemiesGroup.activeEnemy[i] = true;
         // coordindates
-        final.coordinates[i].x = Enemypadding + i * Enemyspacing;
-        final.coordinates[i].y = AEGfxGetWindowHeight() / 2.f;
+        finalEnemiesGroup.coordinates[i].x = Enemypadding + i * Enemyspacing;
+        finalEnemiesGroup.coordinates[i].y = AEGfxGetWindowHeight() / 2.f;
         // obtaining the infomation from json file
-        final.enemies[i] = new Enemy(Element::Fire,100, 10, "./Assets/animals/cat.jpg", i + "temr", final.coordinates[i].x, final.coordinates[i].y, texSize);
+        finalEnemiesGroup.enemies[i] = new Enemy(Element::Fire,100, 10, "./Assets/animals/cat.jpg", i + "temr", finalEnemiesGroup.coordinates[i].x, finalEnemiesGroup.coordinates[i].y, texSize);
         // error with json file input
     }
-    return final;
+    return finalEnemiesGroup;
 
 
 
