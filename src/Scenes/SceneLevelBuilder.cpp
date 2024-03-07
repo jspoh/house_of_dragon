@@ -124,13 +124,13 @@ SceneLevelBuilder::SceneLevelBuilder():
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
 
 	//TO BE DELETED
-	pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
-	pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
-	pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
-	pSkyTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
-	pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
-	pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
-	pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
+	//pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
+	//pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
+	//pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
+	//pSkyTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
+	//pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
+	//pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
+	//pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
 
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
@@ -153,17 +153,33 @@ SceneLevelBuilder::SceneLevelBuilder():
 
 	///////////////////////////////////////////////////////////////////
 	// Load Level Data from Json
+	m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
 	for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
 	{
 		v_SceneLevelData t_curr{};
 		t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
-		m_SceneLevelDataList.push_back(t_curr);
-	}
+		t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
+		//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"];
+		t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
+		t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
 
+		//for (int j = 0; j < Database::getInstance()->data["levels"][i]["enemySpawnWeight"].size(); j++)
+		//{
+		//	string type = Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j];
+		//	t_curr.m_EnemyTypes.push_back(type);
+		//	t_curr.m_EnemySpawnWeight.push_back(Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j][type]);
+		//}
+
+		//t_curr.m_SceneObjTypes = Database::getInstance()->data["levels"][i]["levelName"];
+		//t_curr.m_SceneObjSpawnWeight = Database::getInstance()->data["levels"][i]["levelName"];
+		//
+		m_SceneLevelDataList[i] = t_curr;
+	}
+	m_currLevel = 0;
 
 	Init();
 
-	bool tex = Database::getInstance()->data["levels"][0]["unlocked"];
+	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
 }
 SceneLevelBuilder::~SceneLevelBuilder()
 {                          
@@ -287,38 +303,7 @@ void SceneLevelBuilder::Update(double dt)
 {
 	//Placement Tool (Remove once done)
 
-	static double x = 1, y = 1;
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		y += 0.05;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		y -= 0.05;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		x -= 0.05;
-	}
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		x += 0.05;
-	}
-	static double mx = 0, my = 200;
-	if (AEInputCheckCurr(AEVK_UP))
-	{
-		mx += 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_DOWN))
-	{
-		mx -= 0.55;
-	}
-	//AEMtx33 scale = { 0 }, trans = { 0 };
-	//AEMtx33Scale(&scale, x, y);
-	//AEMtx33Trans(&trans, mx, my);
-	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-	//
-	//cout << x << " " << y << " " << mx << endl;
+	
 
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
@@ -511,6 +496,8 @@ void SceneLevelBuilder::Update(double dt)
 			}
 		}
 	}
+
+	UpdateLvlName();
 }
 void SceneLevelBuilder::Render()
 {
@@ -653,19 +640,21 @@ void SceneLevelBuilder::Render()
 		}
 	}
 
+	RenderLvlName();
+
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
 }
 void SceneLevelBuilder::Exit()
 {
 	//Clear All Texture
-	AEGfxTextureUnload(pFloorTex);
-	AEGfxTextureUnload(pSideRightFloorTex);
-	AEGfxTextureUnload(pSideLeftFloorTex);
-	AEGfxTextureUnload(pSkyTex);
-	AEGfxTextureUnload(pSunOverlayTex);
-	AEGfxTextureUnload(pFogTex);
-	AEGfxTextureUnload(pEnemyTex);
+	//AEGfxTextureUnload(pFloorTex);
+	//AEGfxTextureUnload(pSideRightFloorTex);
+	//AEGfxTextureUnload(pSideLeftFloorTex);
+	//AEGfxTextureUnload(pSkyTex);
+	//AEGfxTextureUnload(pSunOverlayTex);
+	//AEGfxTextureUnload(pFogTex);
+	//AEGfxTextureUnload(pEnemyTex);
 
 	//Clear Floor
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
@@ -687,6 +676,11 @@ void SceneLevelBuilder::Exit()
 	//Clear Object in scene
 	GameObjectManager::GetInstance()->Exit();
 	GameObjectManager::GetInstance()->Destroy();
+
+	delete[] m_SceneLevelDataList;
+
+	//Destroy Font
+	AEGfxDestroyFont(pTextFont);
 }
 
 
@@ -757,4 +751,57 @@ void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
 	{
 		m_FloorOBJs[j][t_tileNum].clear();
 	}
+}
+
+void SceneLevelBuilder::SpawnLvlName(int t_Lvl)
+{
+
+}
+
+void SceneLevelBuilder::UpdateLvlName()
+{
+
+}
+
+void SceneLevelBuilder::RenderLvlName()
+{
+	static double x = 1, y = 1;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 0.05;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 0.05;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x -= 1.05;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x += 1.05;
+	}
+	static double mx = 0, my = 200;
+	if (AEInputCheckCurr(AEVK_UP))
+	{
+		mx += 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_DOWN))
+	{
+		mx -= 0.55;
+	}
+	//AEMtx33 scale = { 0 }, trans = { 0 };
+	//AEMtx33Scale(&scale, x, y);
+	//AEMtx33Trans(&trans, mx, my);
+	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+	//
+	//cout << x << " " << y << " " << mx << endl;
+
+	AEGfxTextureSet(NULL, 0, 0);
+	f32 TextWidth = 0, TextHeight = 0;
+	char strBuffer[1024];
+	sprintf_s(strBuffer, m_SceneLevelDataList[m_currLevel].m_LevelName.c_str());
+	AEGfxGetPrintSize(pTextFont, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(pTextFont, strBuffer, - TextWidth / 2, 0.6f, 0.8f, 1.f, 1.f, 1.f, 1.0f);
 }

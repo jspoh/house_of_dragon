@@ -25,6 +25,10 @@ private:
 	void CreateRowOBJs(int t_tileNum);
 	void DestroyRowOBJs(int t_tileNum);
 
+	void SpawnLvlName(int t_Lvl);
+	void UpdateLvlName();
+	void RenderLvlName();
+
 	struct v_FloorData
 	{
 		////////////////////////////////////////////////////////////////////////
@@ -158,22 +162,24 @@ private:
 	};					  
 
 	//Change soon
-	AEGfxTexture* pFloorTex;
-	AEGfxTexture* pSideLeftFloorTex;
-	AEGfxTexture* pSideRightFloorTex;
-	AEGfxTexture* pSkyTex;
-	AEGfxTexture* pSunOverlayTex;
-	AEGfxTexture* pFogTex;
+	//AEGfxTexture* pFloorTex;
+	//AEGfxTexture* pSideLeftFloorTex;
+	//AEGfxTexture* pSideRightFloorTex;
+	//AEGfxTexture* pSkyTex;
+	//AEGfxTexture* pSunOverlayTex;
+	//AEGfxTexture* pFogTex;
 
-	AEGfxTexture* pEnemyTex;
+	//AEGfxTexture* pEnemyTex;
 
 	v_FloorData** m_Floor;
 	v_TileSpawnPoint** m_tileSP; //0 
 	std::list<v_SceneObject>** m_FloorOBJs;
-
-	std::list<v_SceneLevelData> m_SceneLevelDataList;
-
 	//v_WallData** m_Wall;
+
+	v_SceneLevelData* m_SceneLevelDataList;
+	int m_currLevel;
+	s8 pTextFont;
+	
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;

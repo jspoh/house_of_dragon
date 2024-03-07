@@ -29,6 +29,7 @@ Technology is prohibited.
 #include "AEEngine.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include "utils.h"
 #include "db.h"
 
