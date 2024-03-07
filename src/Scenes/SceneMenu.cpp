@@ -63,6 +63,9 @@ void SceneMenu::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_1)) {
 		SceneManager::GetInstance()->SetActiveScene("TestScene");
 	}
+	else if (AEInputCheckTriggered(AEVK_2)) {
+		SceneManager::GetInstance()->SetActiveScene("CombatScene");
+	}
 
 	//for (int i = 3; i >= 0; --i)
 	//{
