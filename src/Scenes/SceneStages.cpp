@@ -45,8 +45,7 @@ void SceneStages::Update(double dt)
 
 void SceneStages::Render()
 {
-	std::cout << "test\n";
-	std::cout << Database::getInstance()->data["levels"][0]["enemySpawnWeight"]["cat"] << "\n";
+	//std::cout << Database::getInstance()->data["levels"][0]["enemySpawnWeight"]["cat"] << "\n";
 
 	m_LevelBuilder->Render();
 }

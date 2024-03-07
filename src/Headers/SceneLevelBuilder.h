@@ -8,6 +8,7 @@
 #define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
 #define MAX_NUM_SCENEOBJS_TILE 8
+#define MAX_LVLNAMETIMER 999.0//5.0
 
 class SceneLevelBuilder
 {
@@ -25,8 +26,8 @@ private:
 	void CreateRowOBJs(int t_tileNum);
 	void DestroyRowOBJs(int t_tileNum);
 
-	void SpawnLvlName(int t_Lvl);
-	void UpdateLvlName();
+	void SpawnLvlName();
+	void UpdateLvlName(float t_dt);
 	void RenderLvlName();
 
 	struct v_FloorData
@@ -177,7 +178,10 @@ private:
 	//v_WallData** m_Wall;
 
 	v_SceneLevelData* m_SceneLevelDataList;
+	int m_CompletionStatus; //0 - 100%
 	int m_currLevel;
+	double m_LvlNameTimer;
+	double m_LvlNameTransparency;
 	s8 pTextFont;
 	
 	AEMtx33 m_TransformSkyData;

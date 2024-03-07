@@ -3,7 +3,7 @@
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
-	:m_TexRef(""), m_RenderOrder(0), m_Transparency(-1.5f)
+	:m_TexRef{""}, m_RenderOrder{0}, m_Transparency{-1.5f}
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
@@ -11,23 +11,32 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 }
 
 SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
-	:m_LevelName(""),
-	m_Completed(false),
-	m_MaxEnemies(0),
-	m_DayTime(0),
-	m_EnemyTypes(),
-	m_EnemySpawnWeight(),
-	m_SceneObjTypes(),
-	m_SceneObjSpawnWeight() {}
+	:m_LevelName{""},
+	m_Completed{false},
+	m_MaxEnemies{0},
+	m_DayTime{0},
+	m_EnemyTypes{},
+	m_EnemySpawnWeight{},
+	m_SceneObjTypes{},
+	m_SceneObjSpawnWeight{} {}
 
 
 SceneLevelBuilder::SceneLevelBuilder():
-	m_StopMovement(false),
-	m_PanCloseToGround(false)
+	m_StopMovement{false},
+	m_PanCloseToGround{false},
+	m_CompletionStatus{0},
+	m_currLevel{-1},
+	m_LvlNameTimer{ 0.0 },
+    m_LvlNameTransparency{ 0.0 }
 {
 	RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png");
 	/////////////////////////////////////////////////////////////////////////////////
 	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
+	/*********************************************
+	//Level Header
+	**********************************************/
+	RenderHelper::getInstance()->registerTexture("LVL_HEADER", "Assets/SceneObjects/LvlHeader.png");
+	
 	/*********************************************
 	//Forest
 	**********************************************/
@@ -166,8 +175,8 @@ SceneLevelBuilder::SceneLevelBuilder():
 		//for (int j = 0; j < Database::getInstance()->data["levels"][i]["enemySpawnWeight"].size(); j++)
 		//{
 		//	string type = Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j];
-		//	t_curr.m_EnemyTypes.push_back(type);
-		//	t_curr.m_EnemySpawnWeight.push_back(Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j][type]);
+		//	//t_curr.m_EnemyTypes.push_back(type);
+		//	//t_curr.m_EnemySpawnWeight.push_back(Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j][type]);
 		//}
 
 		//t_curr.m_SceneObjTypes = Database::getInstance()->data["levels"][i]["levelName"];
@@ -175,7 +184,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 		//
 		m_SceneLevelDataList[i] = t_curr;
 	}
-	m_currLevel = 0;
+	
 
 	Init();
 
@@ -497,7 +506,11 @@ void SceneLevelBuilder::Update(double dt)
 		}
 	}
 
-	UpdateLvlName();
+	UpdateLvlName(dt);
+	//Change to next Level
+	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_J))
+		SceneLevelBuilder::SpawnLvlName();
+
 }
 void SceneLevelBuilder::Render()
 {
@@ -592,53 +605,53 @@ void SceneLevelBuilder::Render()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//SceneObj
 	//Render Left Side
-	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
-	{
-		for (int i = 0; i < NUM_OF_TILES - 1; i++)
-		{
-			////////////////////////////////////////////////
-			// CurrentTileNumFurthest = 4
-			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-			////////////////////////////////////////////////
-			int tempTileNum = CurrentTileNumFurthest - i;
-			if (tempTileNum < 0)
-				tempTileNum += NUM_OF_TILES - 1;
+	//for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
+	//{
+	//	for (int i = 0; i < NUM_OF_TILES - 1; i++)
+	//	{
+	//		////////////////////////////////////////////////
+	//		// CurrentTileNumFurthest = 4
+	//		// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+	//		////////////////////////////////////////////////
+	//		int tempTileNum = CurrentTileNumFurthest - i;
+	//		if (tempTileNum < 0)
+	//			tempTileNum += NUM_OF_TILES - 1;
 
-			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-				it != m_FloorOBJs[j][tempTileNum].end();
-				it++)
-			{
-				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
-				AEGfxSetTransparency((*it).m_Transparency);
-				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-			}
-		}
-	}
-	//Render Right Side
-	for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
-	{
-		for (int i = 0; i < NUM_OF_TILES - 1; i++)
-		{
-			////////////////////////////////////////////////
-			// CurrentTileNumFurthest = 4
-			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-			////////////////////////////////////////////////
-			int tempTileNum = CurrentTileNumFurthest - i;
-			if (tempTileNum < 0)
-				tempTileNum += NUM_OF_TILES - 1;
+	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+	//			it != m_FloorOBJs[j][tempTileNum].end();
+	//			it++)
+	//		{
+	//			AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+	//			AEGfxSetTransparency((*it).m_Transparency);
+	//			AEGfxSetTransform((*it).m_TransformData.m);
+	//			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//		}
+	//	}
+	//}
+	////Render Right Side
+	//for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
+	//{
+	//	for (int i = 0; i < NUM_OF_TILES - 1; i++)
+	//	{
+	//		////////////////////////////////////////////////
+	//		// CurrentTileNumFurthest = 4
+	//		// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+	//		////////////////////////////////////////////////
+	//		int tempTileNum = CurrentTileNumFurthest - i;
+	//		if (tempTileNum < 0)
+	//			tempTileNum += NUM_OF_TILES - 1;
 
-			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-				it != m_FloorOBJs[j][tempTileNum].end();
-				it++)
-			{
-				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
-				AEGfxSetTransparency((*it).m_Transparency);
-				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-			}
-		}
-	}
+	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+	//			it != m_FloorOBJs[j][tempTileNum].end();
+	//			it++)
+	//		{
+	//			AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
+	//			AEGfxSetTransparency((*it).m_Transparency);
+	//			AEGfxSetTransform((*it).m_TransformData.m);
+	//			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//		}
+	//	}
+	//}
 
 	RenderLvlName();
 
@@ -682,7 +695,6 @@ void SceneLevelBuilder::Exit()
 	//Destroy Font
 	AEGfxDestroyFont(pTextFont);
 }
-
 
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
@@ -753,14 +765,25 @@ void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
 	}
 }
 
-void SceneLevelBuilder::SpawnLvlName(int t_Lvl)
+void SceneLevelBuilder::SpawnLvlName()
 {
-
+	m_LvlNameTimer = MAX_LVLNAMETIMER;
+	m_currLevel+= m_currLevel<3?1:-2;
+	m_LvlNameTransparency = -1.2;
 }
 
-void SceneLevelBuilder::UpdateLvlName()
+void SceneLevelBuilder::UpdateLvlName(float t_dt)
 {
-
+	if (m_LvlNameTimer > MAX_LVLNAMETIMER - 1.0)
+	{
+		m_LvlNameTransparency += m_LvlNameTransparency > 1.0 ? 0.0 : 0.05;
+	}
+	else if (m_LvlNameTimer < 1.0)
+	{
+		m_LvlNameTransparency -= m_LvlNameTransparency < -1.0 ? 0.0 : 0.05;
+	}
+	m_LvlNameTimer -= t_dt;
+	std::cout << m_LvlNameTransparency << std::endl;
 }
 
 void SceneLevelBuilder::RenderLvlName()
@@ -768,21 +791,21 @@ void SceneLevelBuilder::RenderLvlName()
 	static double x = 1, y = 1;
 	if (AEInputCheckCurr(AEVK_W))
 	{
-		y += 0.05;
+		y += 0.5;
 	}
 	if (AEInputCheckCurr(AEVK_S))
 	{
-		y -= 0.05;
+		y -= 0.5;
 	}
 	if (AEInputCheckCurr(AEVK_A))
 	{
-		x -= 1.05;
+		x -= 0.55;
 	}
 	if (AEInputCheckCurr(AEVK_D))
 	{
-		x += 1.05;
+		x += 0.55;
 	}
-	static double mx = 0, my = 200;
+	static double mx = 0, my = 0;
 	if (AEInputCheckCurr(AEVK_UP))
 	{
 		mx += 0.55;
@@ -791,17 +814,100 @@ void SceneLevelBuilder::RenderLvlName()
 	{
 		mx -= 0.55;
 	}
+	if (AEInputCheckCurr(AEVK_RIGHT))
+	{
+		my += 12.55;
+	}
+	if (AEInputCheckCurr(AEVK_LEFT))
+	{
+		my -= 12.55;
+	}
 	//AEMtx33 scale = { 0 }, trans = { 0 };
 	//AEMtx33Scale(&scale, x, y);
 	//AEMtx33Trans(&trans, mx, my);
 	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 	//
 	//cout << x << " " << y << " " << mx << endl;
+	f32 t_camX, t_camY;
+	AEGfxGetCamPosition(&t_camX, &t_camY);
 
-	AEGfxTextureSet(NULL, 0, 0);
-	f32 TextWidth = 0, TextHeight = 0;
-	char strBuffer[1024];
-	sprintf_s(strBuffer, m_SceneLevelDataList[m_currLevel].m_LevelName.c_str());
-	AEGfxGetPrintSize(pTextFont, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pTextFont, strBuffer, - TextWidth / 2, 0.6f, 0.8f, 1.f, 1.f, 1.f, 1.0f);
+	AEVec2 RightOriginalHeaderPos{ 27.5, 175.7 };
+	AEVec2 LeftOriginalHeaderPos{ -27.5, 175.7};
+	AEVec2 RightMaxHeaderPos{ -15 + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7, 175.7 };
+	AEVec2 LeftMaxHeaderPos{ 15 - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7, 175.7};
+	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
+	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
+	
+	if(m_currLevel > -1)
+	{ 
+	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - RightOriginalHeaderPos.x) / 30 : 0;
+	currLeftHeaderPos.x += currLeftHeaderPos.x > LeftMaxHeaderPos.x ? (LeftMaxHeaderPos.x - LeftOriginalHeaderPos.x) / 30 : 0;
+	}
+	if (m_LvlNameTimer > 0.0 && m_currLevel > -1)
+	{
+
+		AEGfxTextureSet(NULL, 0, 0);
+		f32 TextWidth = 0, TextHeight = 0;
+		char strBuffer[1024];
+		sprintf_s(strBuffer, m_SceneLevelDataList[m_currLevel].m_LevelName.c_str());
+		AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
+		AEGfxPrint(pTextFont, strBuffer, -TextWidth / 2.0f - 0.01f, 0.61f, 0.8f, 0.f, 0.f, 0.f, m_LvlNameTransparency);
+		AEGfxPrint(pTextFont, strBuffer, -TextWidth / 2.0f, 0.6f, 0.8f, 1.0f, 0.75f, 0.0f, m_LvlNameTransparency);
+
+			
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
+		AEGfxSetTransparency(m_LvlNameTransparency + 0.2f);
+		AEMtx33 trans{};
+		AEMtx33Identity(&trans);
+		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
+		AEMtx33TransApply(&trans, &trans, currRightHeaderPos.x + t_camX - 3.75f, currRightHeaderPos.y + t_camY + 4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		
+		AEMtx33Identity(&trans);
+		AEMtx33RotDeg(&trans, 180);
+		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
+		AEMtx33TransApply(&trans, &trans, currLeftHeaderPos.x + t_camX - 3.75f, currLeftHeaderPos.y + t_camY + 4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
+		//AEGfxSetTransparency(m_LvlNameTransparency + 0.5f);
+		//AEMtx33 trans{};
+		//AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		//AEMtx33Identity(&trans);
+		//AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
+		//AEMtx33TransApply(&trans, &trans, RightMaxHeaderPos.x - 0.01f, RightMaxHeaderPos.y + 0.01f);
+		//AEGfxSetTransform(trans.m);
+		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		///*AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
+		//AEMtx33TransApply(&trans, &trans, 0.01f, -0.01f);
+		//AEGfxSetTransform(trans.m);
+		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);*/
+
+		//AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		//AEMtx33Identity(&trans);
+		//AEMtx33RotDeg(&trans, 180);
+		//AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
+		//AEMtx33TransApply(&trans, &trans, LeftMaxHeaderPos.x - 0.01f, LeftMaxHeaderPos.y + 0.01f);
+		//AEGfxSetTransform(trans.m);
+		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
+		///*AEMtx33TransApply(&trans, &trans, 0.01f, -0.01f);
+		//AEGfxSetTransform(trans.m);
+		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);*/
+
+	
+	}
 }

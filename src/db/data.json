@@ -61,10 +61,12 @@
       "completed": false,
       "maxEnemies": 1,
       "maxSceneOBJperTile": 2,
-      "enemySpawnWeight": {
-        "cat": 2,
-        "dog": 1
-      },
+      "enemySpawnWeight": [
+     	 {
+      	  "cat": 2,
+      	 "dog": 1
+      	}
+       ],
       "SceneOBJSpawnWeight": {
         "Grass": 1,
         "Tree": 1,
@@ -78,10 +80,10 @@
       "completed": false,
       "maxEnemies": 2,
       "maxSceneOBJperTile": 5,
-      "enemySpawnWeight": {
+      "enemySpawnWeight": [{
         "cat": 1,
         "dog": 1
-      },
+      }],
       "SceneOBJSpawnWeight": {
         "Grass": 1,
         "Tree": 1,
