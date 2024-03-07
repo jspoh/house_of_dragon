@@ -202,7 +202,7 @@ void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 	std::array<int, 5> thresholds = { 100,75,50,25,0 };
 
 	int timeLeftPctg = static_cast<int>(ceil((static_cast<float>(elapsedTimeMs) / timeoutMs) * 100));		// time left percentage
-	
+
 	for (const int t : thresholds) {
 		if (timeLeftPctg >= t) {
 			RenderHelper::getInstance()->texture("timer_" + std::to_string(100 - t), world.x, world.y);
@@ -704,7 +704,7 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 			_trackingObj.isHeld = true;
 		}
 
-		if (_trackingObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {			
+		if (_trackingObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {
 			_trackingObj.x = _mouseX;
 			_trackingObj.y = _mouseY;
 
@@ -719,21 +719,71 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		std::cout << "obj vel: " << _trackingObj.vel.x << ", " << _trackingObj.vel.y << "\n";
 
 		// obj not held, apply normal physics to object
-		if (!AEInputCheckCurr(AEVK_LBUTTON) && !_trackingObj.wasHeldByMouse) {
+		if (!AEInputCheckCurr(AEVK_LBUTTON)) {
+			// gravity
+			if (_trackingObj.y + _trackingObj.radius < AEGfxGetWindowHeight()) {
+				_trackingObj.vel.y += _trackingGravity * dt;
+			}
+
+			// resistance
+			if (_trackingObj.vel.x > 0) {
+
+				_trackingObj.vel.x -= _trackingObj.vel.x - _xResistance * dt > 0 ? _xResistance * dt : _trackingObj.vel.x;
+
+				// set value to 0 when below 1 as float arithmetic is not precise
+				if (_trackingObj.vel.x < 1) {
+					_trackingObj.vel.x = 0;
+				}
+			}
+			else if (_trackingObj.vel.x < 0) {
+
+				_trackingObj.vel.x += _trackingObj.vel.x + _xResistance * dt < 0 ? _xResistance * dt : _trackingObj.vel.x;
+
+				// set value to 0 when above -1 as float arithmetic is not precise
+				if (_trackingObj.vel.x > -1) {
+					_trackingObj.vel.x = 0;
+				}
+			}
+			if (_trackingObj.vel.y > 0) {
+
+				_trackingObj.vel.y -= _trackingObj.vel.y - _xResistance * dt > 0 ? _xResistance * dt : _trackingObj.vel.y;
+
+				// set value to 0 when below 1 as float arithmetic is not precise
+				// for y axis, must also check if object is near ground
+				if (_trackingObj.vel.y < 1 && _trackingObj.y + _trackingObj.radius >= AEGfxGetWindowHeight()) {
+					_trackingObj.vel.y = 0;
+				}
+			}
+			else if (_trackingObj.vel.y < 0) {
+
+				_trackingObj.vel.y += _trackingObj.vel.y + _xResistance * dt < 0 ? _xResistance * dt : _trackingObj.vel.y;
+
+				// set value to 0 when above -1 as float arithmetic is not precise
+				// for y axis, must also check if object is near ground
+				if (_trackingObj.vel.y > -1 && _trackingObj.y + _trackingObj.radius >= AEGfxGetWindowHeight()) {
+					_trackingObj.vel.y = 0;
+				}
+			}
+
+			// clamp velocity
+			_trackingObj.vel.x = AEClamp(_trackingObj.vel.x, -_speedLimit, _speedLimit);
+			_trackingObj.vel.y = AEClamp(_trackingObj.vel.y, -_speedLimit, _speedLimit);
+
+			// invert x/y vector when collide w wall to provide illusion of bouncing
+			if (CollisionChecker::isRectTouchingScreenXBorder(_trackingObj.x, _trackingObj.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
+				_trackingObj.vel.x = -_trackingObj.vel.x * _energyKeptBouncing;
+			}
+			if (CollisionChecker::isRectTouchingScreenYBorder(_trackingObj.x, _trackingObj.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
+				_trackingObj.vel.y = -_trackingObj.vel.y * _energyKeptBouncing;
+			}
+
 			_trackingObj.x += _trackingObj.vel.x * AEFrameRateControllerGetFrameRate() * dt;
 			_trackingObj.y += _trackingObj.vel.y * AEFrameRateControllerGetFrameRate() * dt;
-
-			// gravity
-			_trackingObj.vel.y += _trackingGravity * AEFrameRateControllerGetFrameRate() * dt;
 
 			// clamp positions
 			_trackingObj.x = AEClamp(_trackingObj.x, _trackingObj.radius, AEGfxGetWindowWidth() - _trackingObj.radius);
 			_trackingObj.y = AEClamp(_trackingObj.y, _trackingObj.radius, AEGfxGetWindowHeight() - _trackingObj.radius);
 		}
-		
-		// update previous frame data
-		_trackingObj.prevX = _trackingObj.x;
-		_trackingObj.prevY = _trackingObj.y;
 		break;
 	}
 

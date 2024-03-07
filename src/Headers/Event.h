@@ -178,7 +178,10 @@ private:
 	const int spawnIntervalMs = 1000;
 	const float _trackingRadius = 25.f;
 	const float _trackingSpeed = 500.f;
-	const float _trackingGravity = 0.2f;
+	const float _trackingGravity = 15.f;
+	const float _xResistance = 1.f;		// how much of speed lost per second
+	const float _speedLimit = 20.f;
+	const float _energyKeptBouncing = 0.7f;
 
 	struct TrackingEventHead {
 		float x;				// pos in screen coords
