@@ -74,37 +74,55 @@ def constructData() -> dict:
             }
         },
         "levels": [
-            {
-                "unlocked": True,
-                "completed": False,
-                "score": 0,
-                "maxEnemies": 1,
-                "enemySpawnWeight": {
-                    "cat": 2,
-                    "dog": 1
-                }
-            },
-            {
-                "unlocked": False,
-                "completed": False,
-                "score": 0,
-                "maxEnemies": 2,
-                "enemySpawnWeight": {
-                    "cat": 1,
-                    "dog": 1
-                }
-            },
-            {
-                "unlocked": False,
-                "completed": False,
-                "score": 0,
-                "maxEnemies": 3,
-                "enemySpawnWeight": {
-                    "cat": 1,
-                    "dog": 2
-                }
-            },
-        ]
+    {
+      "unlocked": False,
+      "completed": False,
+      "maxEnemies": 1,
+      "maxSceneOBJperTile": 2,
+      "enemySpawnWeight": {
+        "cat": 2,
+        "dog": 1
+      },
+       "SceneOBJSpawnWeight": {
+        "Grass": 1,
+        "Tree": 1,
+        "Rock": 1,
+      },
+      "DayTime": True
+    },
+    {
+      "unlocked": False,
+      "completed": False,
+      "maxEnemies": 2,
+      "maxSceneOBJperTile": 5,
+      "enemySpawnWeight": {
+        "cat": 1,
+        "dog": 1
+      },
+       "SceneOBJSpawnWeight": {
+        "Grass": 1,
+        "Tree": 1,
+        "Rock": 1,
+      },
+       "DayTime": True
+    },
+    {
+      "unlocked": False,
+      "completed": False,
+      "maxEnemies": 3,
+      "maxSceneOBJperTile": 5,
+      "enemySpawnWeight": {
+        "cat": 1,
+        "dog": 2
+      },
+        "SceneOBJSpawnWeight": {
+        "Grass": 1,
+        "Tree": 1,
+        "Rock": 1,
+      },
+      "DayTime": False
+    }
+  ]
     }
 
     return data

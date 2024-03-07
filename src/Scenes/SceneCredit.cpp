@@ -1,6 +1,6 @@
 #include "SceneCredit.h"
 
-
+// should put in namespace to avoid cluttering
 static char strBuffer[1024];
 static char strBuffer1[1024];
 static float speed =30;
@@ -32,7 +32,7 @@ SceneCredits::~SceneCredits()
 
 void SceneCredits::Load()
 {
-	credits.bg = AEGfxTextureLoad("Assets/bg.jpg");
+	credits.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
 	//credits.mesh = 0; 
 	AEGfxMeshStart();
 	AEGfxTriAdd(

@@ -7,7 +7,7 @@
 #define NUM_OF_TILES 10 //Z Axis
 #define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-#define MAX_NUM_SCENEOBJS_TILE 3
+#define MAX_NUM_SCENEOBJS_TILE 8
 
 class SceneLevelBuilder
 {
@@ -83,9 +83,8 @@ private:
 	{
 		EType_MysteryEnemyStrong,
 		EType_MysteryEnemyWeak,
+
 		ETYPE_NONE,
-
-
 		EType_ForestTree_XL_1,
 		EType_ForestTree_XL_2,
 		EType_ForestTree_L_1,
@@ -135,6 +134,27 @@ private:
 		v_SceneObjectTypes m_Type;
 		string m_TexRef; //Used with draw
 	};
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Scene Level Data (Read from Json)
+	/*
+	* 
+	*                      DESCRIBE YOUR SHIT LAH
+	* 
+	*/
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	struct v_SceneLevelData
+	{
+		string m_LevelName;
+		bool m_Completed;
+		int m_MaxEnemies;
+		std::list<string> m_EnemyTypes;
+		std::list<int> m_EnemySpawnWeight;
+		std::list<string> m_SceneObjTypes;
+		std::list<int> m_SceneObjSpawnWeight;
+
+		bool m_DayTime;
+	};					  
 
 	//Change soon
 	AEGfxTexture* pFloorTex;

@@ -58,13 +58,15 @@ void SceneStages::Exit()
 /*************************************
 TODO:
 FIX LAG AAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-Memory leak due to app forcibly closing
+(SIMI LANJIAO NO LAG ON OTHER PEOPLE COM)
 Fix Floor
 Adjust SceneObject Placement
 Blocking
 Level Name Display
 Cloud Scrolling
 Probability Spawning based on Json
+Add Backdrop 
+Add Lens Flare
 /
 
 
