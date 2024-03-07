@@ -62,5 +62,19 @@ public:
 	static bool isRectTouchingScreenYBorder(float rectScreenX, float rectScreenY, float w, float h);
 
 	static bool isRectTouchingScreenBorder(float rectScreenX, float rectScreenY, float w, float h);
+
+	/**
+	 * @brief 
+	 * 
+	 * @param cx1 circle1 screen x
+	 * @param cy1 circle1 screen y
+	 * @param cr1 circle1 radius
+	 * @param cx2 circle2 screen x
+	 * @param cy2 circle2 screen y
+	 * @param cr2 circle2 radius
+	 * @return true 
+	 * @return false 
+	 */
+	static bool areCirclesIntersecting(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2);
 };
 

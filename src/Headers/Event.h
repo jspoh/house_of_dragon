@@ -29,6 +29,7 @@ Technology is prohibited.
 #include <time.h>
 #include <array>
 #include <cctype>
+#include "MyMath.h"
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
@@ -176,12 +177,15 @@ private:
 	const int _trackingEventTimeoutMs = 5000;
 	INNER_STATES _trackingState = INNER_STATES::ON_ENTER;
 	const int spawnIntervalMs = 1000;
-	const float _trackingRadius = 25.f;
+	const float _trackingRadius = 30.f;
 	const float _trackingSpeed = 500.f;
 	const float _trackingGravity = 15.f;
 	const float _xResistance = 1.f;		// how much of speed lost per second
 	const float _speedLimit = 20.f;
 	const float _energyKeptBouncing = 0.7f;
+
+	const float _demonSpeed = 50.f;
+	const float _demonRadius = 50.f;
 
 	struct TrackingEventHead {
 		float x;				// pos in screen coords
@@ -189,22 +193,20 @@ private:
 		AEVec2 vel;
 		float radius;
 
-		// time since last spawn
-		float timeSinceSpawn;
-
-		// blink
-		float timeSinceChange;
-		bool blink;
-
 		bool isHeld;
-
-		// prev update data
-		bool wasHeldByMouse;	// continue following mouse even if mouse moved too quickly
-		float prevX;
-		float prevY;
 	};
 
-	TrackingEventHead _trackingObj;
+	struct Demon {
+		float x;
+		float y;
+		AEVec2 vel;
+		float radius;
+		bool isActive;
+	};
+
+	TrackingEventHead _trackingObj{0};
+	static const int NUM_DEMONS = 5;
+	std::array<Demon, NUM_DEMONS> demons{0};
 
 
 	/*ctor and methods*/

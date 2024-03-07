@@ -90,3 +90,8 @@ bool CollisionChecker::isRectTouchingScreenBorder(float rectScreenX, float rectS
 	}
 	return false;
 }
+
+bool CollisionChecker::areCirclesIntersecting(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2) {
+	float distanceSq = (cx1 - cx2) * (cx1 - cx2) + (cy1 - cy2) * (cy1 - cy2);
+	return (cr1 + cr2) * (cr1 + cr2) >= distanceSq;
+}

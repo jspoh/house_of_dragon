@@ -119,6 +119,10 @@ Event::Event() {
 	textureReferences.push_back("timer_75");
 	RenderHelper::getInstance()->registerTexture("timer_100", "./Assets/Combat_UI/timer/timer_100.png");
 	textureReferences.push_back("timer_100");
+	RenderHelper::getInstance()->registerTexture("ball", "./Assets/Combat_UI/ball.png");
+	textureReferences.push_back("ball");
+	RenderHelper::getInstance()->registerTexture("nian", "./Assets/Combat_UI/nian.png");
+	textureReferences.push_back("nian");
 }
 
 Event::~Event() {
@@ -668,11 +672,17 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 			//{cosf(dirRad), sinf(dirRad)},				// velocity
 			{0,0},										// velocity
 			_trackingRadius,							// radius
-			0,											// time since last spawn
-			0,											// time since change
-			false,										// blink
 			false
 		};
+		
+		for (Demon& d : demons) {
+			d.x = rand() % AEGfxGetWindowWidth() * 1.f;								// !TODO: jspoh dont let enemies spawn in collision area
+			d.y = AEGfxGetWindowHeight() * 0.1f;
+			AEVec2Set(&d.vel, rand() % 2 == 0 ? _demonSpeed : -_demonSpeed, 0);		// !TODO: jspoh make speed into a range
+			d.radius = _demonRadius;
+			d.isActive = true;
+		}
+
 		//AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
 		//AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
 		_trackingState = INNER_STATES::ON_UPDATE;
@@ -696,8 +706,6 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 			AEVec2Set(&_trackingObj.vel, 0, 0);
 			_trackingObj.x = 0;
 			_trackingObj.y = 0;
-			_trackingObj.prevX = 0;
-			_trackingObj.prevY = 0;
 		}
 
 		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_trackingObj.x, _trackingObj.y, _trackingObj.radius, static_cast<float>(_mouseX), static_cast<float>(_mouseY))) {
@@ -716,8 +724,9 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 			_trackingObj.isHeld = false;
 		}
 
-		std::cout << "obj vel: " << _trackingObj.vel.x << ", " << _trackingObj.vel.y << "\n";
+		//std::cout << "obj vel: " << _trackingObj.vel.x << ", " << _trackingObj.vel.y << "\n";
 
+		// !TODO: jspoh dont allow user to bring ball past 75% of screen from bottom
 		// obj not held, apply normal physics to object
 		if (!AEInputCheckCurr(AEVK_LBUTTON)) {
 			// gravity
@@ -784,6 +793,28 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 			_trackingObj.x = AEClamp(_trackingObj.x, _trackingObj.radius, AEGfxGetWindowWidth() - _trackingObj.radius);
 			_trackingObj.y = AEClamp(_trackingObj.y, _trackingObj.radius, AEGfxGetWindowHeight() - _trackingObj.radius);
 		}
+		
+		// update demon
+		for (Demon& d : demons) {
+			if (!d.isActive) {
+				continue;
+			}
+
+			if (CollisionChecker::isRectTouchingScreenXBorder(d.x, d.y, d.radius, d.radius)) {
+				d.vel.x = -d.vel.x;
+			}
+
+			d.x += d.vel.x * dt;
+			d.y += d.vel.y * dt;
+
+			// check for collision with ball (orange?)
+			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, _trackingObj.x, _trackingObj.y, _trackingObj.radius)) {
+				std::cout << "collided\n";
+				d.isActive = false;
+			}
+		}
+
+
 		break;
 	}
 
@@ -802,7 +833,15 @@ void Event::_trackingEventRender() {
 
 	case INNER_STATES::ON_UPDATE:
 		Point pos = stow(_trackingObj.x, _trackingObj.y);
-		RenderHelper::getInstance()->texture("clickme_light", pos.x, pos.y);
+		RenderHelper::getInstance()->texture("ball", pos.x, pos.y, _trackingObj.radius, _trackingObj.radius, 1.f, Color{1.f, 0, 0, 1.f}, 0);
+		for (const Demon& d : demons) {
+			if (!d.isActive) {
+				continue;
+			}
+
+			pos = stow(d.x, d.y);
+			RenderHelper::getInstance()->texture("nian", pos.x, pos.y, d.radius, d.radius, 1, Color{ 1,0,0,1 }, degToRad(0));
+		}
 		break;
 
 	case INNER_STATES::ON_NEXT:

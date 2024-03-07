@@ -75,7 +75,7 @@ bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mes
 		return true;
 	}
 	catch (const std::exception& e) {
-		std::cerr << "Failed to register mesh " << mesh << " with reference " << reference << " with error: " <<e.what() << "\n";
+		std::cerr << "Failed to register mesh " << mesh << " with reference " << reference << " with error: " << e.what() << "\n";
 		return false;
 	}
 }
