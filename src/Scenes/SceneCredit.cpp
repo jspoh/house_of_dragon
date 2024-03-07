@@ -21,7 +21,7 @@ SceneCredits::SceneCredits()
 
 SceneCredits::SceneCredits(SceneManager* _sceneMgr)
 {
-	_sceneMgr->AddScene("SceneCredits", this);
+	_sceneMgr->AddScene("SceneCredit", this);
 }
 
 SceneCredits::~SceneCredits()
