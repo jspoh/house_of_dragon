@@ -2,13 +2,14 @@
 
 #include "Pch.h"
 #include "GameObjectManager.h"
+#include "ParticleManager.h"
 
 #define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis
 #define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
 #define MAX_NUM_SCENEOBJS_TILE 8
-#define MAX_LVLNAMETIMER 999.0//5.0
+#define MAX_LVLNAMETIMER 4.0
 
 class SceneLevelBuilder
 {

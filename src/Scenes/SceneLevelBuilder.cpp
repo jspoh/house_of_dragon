@@ -311,7 +311,46 @@ void SceneLevelBuilder::Init()
 void SceneLevelBuilder::Update(double dt)
 {
 	//Placement Tool (Remove once done)
-
+	static double x = 1, y = 1;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 0.5;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 0.5;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x -= 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x += 0.55;
+	}
+	static double mx = 0, my = 0;
+	if (AEInputCheckCurr(AEVK_UP))
+	{
+		mx += 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_DOWN))
+	{
+		mx -= 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_RIGHT))
+	{
+		my += 12.55;
+	}
+	if (AEInputCheckCurr(AEVK_LEFT))
+	{
+		my -= 12.55;
+	}
+	//AEMtx33 scale = { 0 }, trans = { 0 };
+	//AEMtx33Scale(&scale, x, y);
+	//AEMtx33Trans(&trans, mx, my);
+	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+	//
+	//cout << x << " " << y << " " << mx << endl;
 	
 
 	static float t_MovementSpeed = 1.0f;
@@ -328,7 +367,7 @@ void SceneLevelBuilder::Update(double dt)
 	else
 		m_StopMovement = false;
 
-	if (AEInputCheckCurr(AEVK_V))
+	if (AEInputCheckCurr(AEVK_X))
 	{
 		m_PanCloseToGround = true;
 		t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30? 1 : 0;
@@ -342,14 +381,14 @@ void SceneLevelBuilder::Update(double dt)
 	}
 
 	//NOT WORKING WILL GIVE UP
-	if (AEInputCheckCurr(AEVK_C))
-	{
-		t_PanSideWays -= t_PanSideWays > 30 ? 1 : 0;
-	}
-	else
-	{
-		t_PanSideWays += t_PanSideWays < 80 ? 1 : 0;
-	}
+	//if (AEInputCheckCurr(AEVK_C))
+	//{
+	//	t_PanSideWays -= t_PanSideWays > 30 ? 1 : 0;
+	//}
+	//else
+	//{
+	//	t_PanSideWays += t_PanSideWays < 80 ? 1 : 0;
+	//}
 
 	AEGfxSetCamPosition(0, -PanDown);
 	
@@ -508,9 +547,16 @@ void SceneLevelBuilder::Update(double dt)
 
 	UpdateLvlName(dt);
 	//Change to next Level
-	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_J))
+	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
 
+	//Activating Combat system
+	//if (AEInputCheckTriggered(AEVK_V))
+	//{
+	//	CombatManager::getinstance()->SpawnEnemies("Cat");
+	//}
+	//CombatManager::getinstance()->Update();
+	//CombatManager::getinstance()->Render();
 }
 void SceneLevelBuilder::Render()
 {
@@ -783,51 +829,10 @@ void SceneLevelBuilder::UpdateLvlName(float t_dt)
 		m_LvlNameTransparency -= m_LvlNameTransparency < -1.0 ? 0.0 : 0.05;
 	}
 	m_LvlNameTimer -= t_dt;
-	std::cout << m_LvlNameTransparency << std::endl;
 }
 
 void SceneLevelBuilder::RenderLvlName()
 {
-	static double x = 1, y = 1;
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		y += 0.5;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		y -= 0.5;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		x -= 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		x += 0.55;
-	}
-	static double mx = 0, my = 0;
-	if (AEInputCheckCurr(AEVK_UP))
-	{
-		mx += 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_DOWN))
-	{
-		mx -= 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_RIGHT))
-	{
-		my += 12.55;
-	}
-	if (AEInputCheckCurr(AEVK_LEFT))
-	{
-		my -= 12.55;
-	}
-	//AEMtx33 scale = { 0 }, trans = { 0 };
-	//AEMtx33Scale(&scale, x, y);
-	//AEMtx33Trans(&trans, mx, my);
-	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-	//
-	//cout << x << " " << y << " " << mx << endl;
 	f32 t_camX, t_camY;
 	AEGfxGetCamPosition(&t_camX, &t_camY);
 
@@ -837,15 +842,11 @@ void SceneLevelBuilder::RenderLvlName()
 	AEVec2 LeftMaxHeaderPos{ 15 - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7, 175.7};
 	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
 	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
-	
-	if(m_currLevel > -1)
-	{ 
-	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - RightOriginalHeaderPos.x) / 30 : 0;
-	currLeftHeaderPos.x += currLeftHeaderPos.x > LeftMaxHeaderPos.x ? (LeftMaxHeaderPos.x - LeftOriginalHeaderPos.x) / 30 : 0;
-	}
+	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;
+	currLeftHeaderPos.x += currLeftHeaderPos.x > LeftMaxHeaderPos.x ? (LeftMaxHeaderPos.x - currLeftHeaderPos.x) / 30 : 0;
+
 	if (m_LvlNameTimer > 0.0 && m_currLevel > -1)
 	{
-
 		AEGfxTextureSet(NULL, 0, 0);
 		f32 TextWidth = 0, TextHeight = 0;
 		char strBuffer[1024];
@@ -856,7 +857,9 @@ void SceneLevelBuilder::RenderLvlName()
 
 			
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
-		AEGfxSetTransparency(m_LvlNameTransparency + 0.2f);
+		if (m_LvlNameTimer < 1.0) AEGfxSetTransparency(m_LvlNameTransparency - 0.9f);
+		else AEGfxSetTransparency(m_LvlNameTransparency + 0.2f);
+
 		AEMtx33 trans{};
 		AEMtx33Identity(&trans);
 		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
@@ -881,33 +884,10 @@ void SceneLevelBuilder::RenderLvlName()
 		AEGfxSetTransform(trans.m);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-		//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
-		//AEGfxSetTransparency(m_LvlNameTransparency + 0.5f);
-		//AEMtx33 trans{};
-		//AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-		//AEMtx33Identity(&trans);
-		//AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
-		//AEMtx33TransApply(&trans, &trans, RightMaxHeaderPos.x - 0.01f, RightMaxHeaderPos.y + 0.01f);
-		//AEGfxSetTransform(trans.m);
-		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		///*AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-		//AEMtx33TransApply(&trans, &trans, 0.01f, -0.01f);
-		//AEGfxSetTransform(trans.m);
-		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);*/
-
-		//AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-		//AEMtx33Identity(&trans);
-		//AEMtx33RotDeg(&trans, 180);
-		//AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
-		//AEMtx33TransApply(&trans, &trans, LeftMaxHeaderPos.x - 0.01f, LeftMaxHeaderPos.y + 0.01f);
-		//AEGfxSetTransform(trans.m);
-		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		//AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-		///*AEMtx33TransApply(&trans, &trans, 0.01f, -0.01f);
-		//AEGfxSetTransform(trans.m);
-		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);*/
-
-	
+	}
+	else
+	{
+		currRightHeaderPos = RightOriginalHeaderPos;
+		currLeftHeaderPos = LeftOriginalHeaderPos;
 	}
 }
