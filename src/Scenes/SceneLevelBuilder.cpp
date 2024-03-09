@@ -81,6 +81,11 @@ SceneLevelBuilder::SceneLevelBuilder():
 	//Sky
 	**********************************************/
 	RenderHelper::getInstance()->registerTexture("SKY_1", "Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
+	//Still testing assets
+	RenderHelper::getInstance()->registerTexture("SKY_TEST_1", "Assets/SceneObjects/SKY/1.png");
+	RenderHelper::getInstance()->registerTexture("SKY_TEST_2", "Assets/SceneObjects/SKY/2.png");
+	RenderHelper::getInstance()->registerTexture("SKY_TEST_3", "Assets/SceneObjects/SKY/3.png");
+	RenderHelper::getInstance()->registerTexture("SKY_TEST_4", "Assets/SceneObjects/SKY/4.png");
 	RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 
 	/*********************************************
@@ -337,16 +342,16 @@ void SceneLevelBuilder::Init()
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
 	//DO SKY DATA
-	AEMtx33Scale(&scale, 2000.0f, 800.f);
+	AEMtx33Scale(&scale, 1700.0f, 600.f);
 	AEMtx33Trans(&trans, 0, 200);
 	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
 
 	//Do Sun Data
 	AEMtx33Scale(&scale, 50.0f, 50.f);
-	AEMtx33Trans(&trans, 150, 250);
+	AEMtx33Trans(&trans, 350, 350);
 	AEMtx33Concat(&m_TransformSunData, &trans, &scale);
 	AEMtx33Scale(&scale, 120.0f, 120.f);
-	AEMtx33Trans(&trans, 149, 250);
+	AEMtx33Trans(&trans, 349, 350);
 	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
 
 	//DO FOG DATA
@@ -592,20 +597,32 @@ void SceneLevelBuilder::Render()
 	//SKY RENDER
 	AEGfxSetTransparency(1.0f);
 	//Sky
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
+	//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
+	//AEGfxSetTransform(m_TransformSkyData.m);
+	//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	AEGfxSetTransform(m_TransformSkyData.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	//Sun
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetTransparency(0.0f);
+	AEGfxSetTransparency(1.0f);
 	AEGfxSetTransform(m_TransformSunData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
 	AEGfxSetTransform(m_TransformSunOverlayData.m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+	//Cloud
+	AEGfxSetTransform(m_TransformSkyData.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	//////////////////////////////////////////////////////////////////////////////////////////
