@@ -676,9 +676,11 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		};
 		
 		for (Demon& d : demons) {
-			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - _demonRadius * 2) + _demonRadius;								// !TODO: jspoh dont let enemies spawn in collision area
+			const float demonSpeed = rand() % static_cast<int>(_demonMaxSpeed - _demonMinSpeed) + _demonMinSpeed;
+
+			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - _demonRadius * 2) + _demonRadius;
 			d.y = AEGfxGetWindowHeight() * 0.1f;
-			AEVec2Set(&d.vel, rand() % 2 == 0 ? _demonSpeed : -_demonSpeed, 0);		// !TODO: jspoh make speed into a range
+			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);		// !TODO: jspoh make speed into a range
 			d.radius = _demonRadius;
 			d.isActive = true;
 		}
@@ -817,7 +819,7 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 
 			// check for collision with ball (orange?)
 			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, _trackingObj.x, _trackingObj.y, _trackingObj.radius)) {
-				std::cout << "collided\n";
+				//std::cout << "collided\n";
 				d.isActive = false;
 			}
 		}

@@ -184,7 +184,8 @@ private:
 	const float _speedLimit = 20.f;
 	const float _energyKeptBouncing = 0.7f;
 
-	const float _demonSpeed = 50.f;
+	static constexpr float _demonMinSpeed = 25.f;
+	static constexpr float _demonMaxSpeed = 200.f;
 	const float _demonRadius = 50.f;
 
 	struct TrackingEventHead {
