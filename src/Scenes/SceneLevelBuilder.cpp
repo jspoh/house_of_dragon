@@ -975,7 +975,6 @@ void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
 
-
 ////////////////////////////////////////////////////////////////////////////
 /*
 //Placement Tool (Remove once done)

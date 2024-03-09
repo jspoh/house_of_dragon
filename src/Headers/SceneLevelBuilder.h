@@ -49,6 +49,7 @@ private:
 	void UpdateScreenTransition(f32 t_dt);
 	void FadeINBlack();
 	void FadeOutBlack();
+	void RenderLoadScreen();
 
 	struct v_FloorData
 	{
