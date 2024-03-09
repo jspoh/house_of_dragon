@@ -25,10 +25,12 @@ Player::Player(double health, double dmg, Element element) : Mob(element, health
 
     // set shield properties
     AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
-    AEVec2Set(&shield.size, AEGfxGetWindowWidth() / 2.f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
+    AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
+
+    AEVec2Set(&shieldInitialPos, shield.pos.x, shield.pos.y);
+    AEVec2Set(&shieldBlockingPos, 0, - AEGfxGetWindowHeight() * 0.8f);
 
     // set vector from shield inital to final position
-    AEVec2Set(&shieldInitialPos, shield.pos.x, shield.pos.y);
     AEVec2Set(&shieldInitialToShieldBlocking_vector, shieldBlockingPos.x - shieldInitialPos.x, shieldBlockingPos.y - shieldInitialPos.y);
     AEVec2Normalize(&shieldInitialToShieldBlocking_vector, &shieldInitialToShieldBlocking_vector);
 
@@ -56,7 +58,7 @@ void Player::update(double dt) {
         elapsedTimeMs = 0;
         break;
     case PLAYER_BLOCKING_STATES::ON_ENTER:
-        if (elapsedTimeMs >= shieldTransitionTimeMs) {
+        if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
             blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
             elapsedTimeMs = 0;
 
@@ -73,7 +75,7 @@ void Player::update(double dt) {
         elapsedTimeMs = 0;
         break;
     case PLAYER_BLOCKING_STATES::ON_EXIT:
-        if (elapsedTimeMs >= shieldTransitionTimeMs) {
+        if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
             blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
             elapsedTimeMs = 0;
 
@@ -86,11 +88,13 @@ void Player::update(double dt) {
         shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
         break;
     }
-    std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
+    //std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
     //std::cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
 
 void Player::render() {
+    AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
     this->_drawHealth(150, 150);
 
     switch (blockingState) {
@@ -98,7 +102,7 @@ void Player::render() {
     case PLAYER_BLOCKING_STATES::ON_ENTER:
     case PLAYER_BLOCKING_STATES::ON_UPDATE:
     case PLAYER_BLOCKING_STATES::ON_EXIT:
-        RenderHelper::getInstance()->texture("shield", shield.pos.x, shield.pos.y, shield.size.x, shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
+        RenderHelper::getInstance()->texture("shield", shield.pos.x + camOffset.x, shield.pos.y + camOffset.y, shield.size.x, shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
         break;
     }
 }
