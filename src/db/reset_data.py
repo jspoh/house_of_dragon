@@ -31,14 +31,14 @@ def constructData() -> dict:
         },
         "enemyAttributes": {
             "cat": {
-                "texturePath": "./Assets/animals/cat.jpg",
+                "texturePath": "./Assets/Combat_Enemy/cat.jpg",
                 "soundPath": "./Assets/sounds/cat.mp3",
                 "element": "fire",
                 "health": 100,
                 "damage": 10,
             },
             "dragon" : {
-                "texturePath": "./Assets/animals/dragon.jpg",
+                "texturePath": "./Assets/Combat_Enemy/dragon.jpg",
                 "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "earth",
                 "health": 150,
@@ -46,7 +46,7 @@ def constructData() -> dict:
 
             },
             "horse" : {
-                "texturePath": "./Assets/animals/horse.jpg",
+                "texturePath": "./Assets/Combat_Enemy/horse.jpg",
                 "soundPath": "./Assets/sounds/horse.mp3",
                 "element": "water",
                 "health": 120,
