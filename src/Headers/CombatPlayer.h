@@ -34,8 +34,12 @@ struct Shield {
 
 class Player : public Mob {
 private:
-	AEVec2 shieldInitialPos;
-	const AEVec2 shieldBlockingPos { 0, 0 };
+	AEVec2 shieldInitialPos;		// set in constructor
+	AEVec2 shieldBlockingPos { 0, 0 };
+	AEVec2 shieldInitialToShieldBlocking_vector;		// vector from shield initial pos to final blocking pos
+	static constexpr int shieldTransitionTimeMs = 500;
+	float transitionSpeed;
+	int elapsedTimeMs = 0;
 
 	Shield shield;
 
