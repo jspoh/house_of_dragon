@@ -17,6 +17,7 @@ Technology is prohibited.
 #pragma once
 
 #include "Mob.h"
+#include "Pch.h"
 
 enum class PLAYER_BLOCKING_STATES {
 	NOT_BLOCKING,
@@ -25,9 +26,23 @@ enum class PLAYER_BLOCKING_STATES {
 	ON_EXIT
 };
 
+struct Shield {
+	AEVec2 pos;
+	AEVec2 size;
+};
+
 
 class Player : public Mob {
 private:
+	AEVec2 shieldInitialPos;		// set in constructor
+	AEVec2 shieldBlockingPos { 0, 0 };
+	AEVec2 shieldInitialToShieldBlocking_vector;		// vector from shield initial pos to final blocking pos
+	static constexpr int shieldTransitionTimeMs = 500;
+	float transitionSpeed;
+	int elapsedTimeMs = 0;
+
+	Shield shield;
+
 	void _drawHealth(float screenX, float screenY);
 
 public:
@@ -36,7 +51,6 @@ public:
 	static constexpr int BLOCKING_TIMEOUT_MS = 2000;
 	static constexpr int BLOCKING_DURATION = 2000;
 
-	bool isBlocking;
 	PLAYER_BLOCKING_STATES blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
 
 	/**

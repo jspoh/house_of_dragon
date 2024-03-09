@@ -110,7 +110,6 @@ namespace {
     float maxBtnHeight = 100.f;
 
     /*im so sorry this code very spaghet but time crunch!!*/
-    // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
     void updateRenderBtns(std::vector<std::string> bvalues) {
         // rendering coordinates 
         btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
@@ -388,12 +387,14 @@ void CombatScene::Update(double dt)
 
     
 
-
+    player->update(dt);
 
 }
 
 void CombatScene::Render()
 {
+    //rendering player
+    player->render();
 
     //panel rendering
     f32 truex, truey;
@@ -403,8 +404,6 @@ void CombatScene::Render()
     //rendering enemies
 
 
-    //rendering player
-    player->render();
 
     // rendering whether enemies is dead
     for (Enemy* enemy : groups.enemies) { // check for dead/alive

@@ -16,11 +16,25 @@ Technology is prohibited.
 
 #include "CombatPlayer.h"
 #include "RenderHelper.h"
+#include "MyMath.h"
 #include <iostream>
 
 
 Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
+    RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
 
+    // set shield properties
+    AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
+    AEVec2Set(&shield.size, AEGfxGetWindowWidth() / 2.f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
+
+    // set vector from shield inital to final position
+    AEVec2Set(&shieldInitialPos, shield.pos.x, shield.pos.y);
+    AEVec2Set(&shieldInitialToShieldBlocking_vector, shieldBlockingPos.x - shieldInitialPos.x, shieldBlockingPos.y - shieldInitialPos.y);
+    AEVec2Normalize(&shieldInitialToShieldBlocking_vector, &shieldInitialToShieldBlocking_vector);
+
+    // get transition speed
+    float initialFinalDistance = AEVec2Distance(&shieldInitialPos, &shieldBlockingPos);
+    transitionSpeed = initialFinalDistance / (shieldTransitionTimeMs / 1000.f);
 }
 
 void Player::_drawHealth(float screenX, float screenY) {
@@ -28,24 +42,65 @@ void Player::_drawHealth(float screenX, float screenY) {
 }
 
 void Player::update(double dt) {
+    elapsedTimeMs += static_cast<int>(dt * 1000);
+
     if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
         blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
     }
-    else if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && !AEInputCheckCurr(AEVK_SPACE)) {
+    else if (!AEInputCheckCurr(AEVK_SPACE) && blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
         blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
     }
 
     switch (blockingState) {
     case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+        elapsedTimeMs = 0;
         break;
     case PLAYER_BLOCKING_STATES::ON_ENTER:
+        if (elapsedTimeMs >= shieldTransitionTimeMs) {
+            blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
+            elapsedTimeMs = 0;
+
+            // force shield to go to final
+            AEVec2Set(&shield.pos, shieldBlockingPos.x, shieldBlockingPos.y);
+            break;
+        }
+
         // translate the shield up
+        shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
+        shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
+        break;
+    case PLAYER_BLOCKING_STATES::ON_UPDATE:
+        elapsedTimeMs = 0;
+        break;
+    case PLAYER_BLOCKING_STATES::ON_EXIT:
+        if (elapsedTimeMs >= shieldTransitionTimeMs) {
+            blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
+            elapsedTimeMs = 0;
+
+            // force shield to go to initial
+            AEVec2Set(&shield.pos, shieldInitialPos.x, shieldInitialPos.y);
+            break;
+        }
+
+        shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
+        shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
         break;
     }
+    std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
+    //std::cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
 
 void Player::render() {
     this->_drawHealth(150, 150);
+
+    switch (blockingState) {
+    case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+    case PLAYER_BLOCKING_STATES::ON_ENTER:
+    case PLAYER_BLOCKING_STATES::ON_UPDATE:
+    case PLAYER_BLOCKING_STATES::ON_EXIT:
+        RenderHelper::getInstance()->texture("shield", shield.pos.x, shield.pos.y, shield.size.x, shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
+        break;
+    }
 }
 
 double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
