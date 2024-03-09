@@ -15,6 +15,7 @@ Technology is prohibited.
 
 
 #include "CollisionChecker.h"
+#include "AEEngine.h"
 
 
 /*class collision checker*/
@@ -60,4 +61,37 @@ bool CollisionChecker::areRectsIntersecting(float screenX1, float screenY1, floa
 		return _rectAABB(screenX1, screenY1, w1, h1, screenX2, screenY2, w2, h2);
 	}
 	return false;
+}
+
+bool CollisionChecker::isRectTouchingScreenXBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	if (rectScreenX - w / 2 <= 0) {
+		return true;		// left
+	}
+	if (rectScreenX + w / 2 >= AEGfxGetWindowWidth()) {
+		return true;		// right
+	}
+	return false;
+}
+
+bool CollisionChecker::isRectTouchingScreenYBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	if (rectScreenY - h / 2 <= 0) {
+		return true;		// top
+	}
+	if (rectScreenY + h / 2 >= AEGfxGetWindowHeight()) {
+		return true;		// bottom
+	}
+	return false;
+}
+
+
+bool CollisionChecker::isRectTouchingScreenBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	if (isRectTouchingScreenXBorder(rectScreenX, rectScreenY, w, h) || isRectTouchingScreenYBorder(rectScreenX, rectScreenY, w, h)) {
+		return true;
+	}
+	return false;
+}
+
+bool CollisionChecker::areCirclesIntersecting(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2) {
+	float distanceSq = (cx1 - cx2) * (cx1 - cx2) + (cy1 - cy2) * (cy1 - cy2);
+	return (cr1 + cr2) * (cr1 + cr2) >= distanceSq;
 }

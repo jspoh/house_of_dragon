@@ -20,6 +20,7 @@ Technology is prohibited.
 
 #include "AEEngine.h"
 #include "utils.h"
+#include "db.h"
 #include <unordered_map>
 #include <string>
 #include <iostream>
@@ -28,6 +29,7 @@ Technology is prohibited.
 #include <time.h>
 #include <array>
 #include <cctype>
+#include "MyMath.h"
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:
@@ -49,7 +51,7 @@ enum EVENT_TYPES {
 	OSCILLATING_TIMER,
 	MULTI_CLICK,
 	TYPING,
-	TRACKING,
+	ORANGE_THROWING,
 	NUM_EVENT_TYPES,
 	NONE_EVENT_TYPE,
 };
@@ -86,6 +88,8 @@ private:
 	bool _useOutline = true;
 	/*how many milliseconds before key type changes*/
 	const int _changeMs = 100;
+
+	int _mouseX=0, _mouseY=0, _prevMouseX=0, _prevMouseY=0;
 
 	/*spam key vars*/
 	const int _spamkeyTimeoutMs = 5000;
@@ -169,28 +173,42 @@ private:
 	int _wordsCompleted = 0;			// words player managed to type before timeends
 	const int _typingMaxScore = 5;
 
-	/*tracking event vars*/
-	const int _trackingEventTimeoutMs = 5000;
-	INNER_STATES _trackingState = INNER_STATES::ON_ENTER;
-	const int spawnIntervalMs = 1000;
-	const float _trackingRadius = 25.f;
-	const float _trackingSpeed = 5.f;
+	/*demon event vars*/
+	static constexpr int _orangeEventTimeoutMs = 5000;
+	static constexpr int _afterEventDisplayTimeoutMs = 1000;
+	INNER_STATES _orangeState = INNER_STATES::ON_ENTER;
+	static constexpr int spawnIntervalMs = 1000;
+	static constexpr float _orangeRadius = 30.f;
+	static constexpr float _orangeSpeed = 500.f;
+	static constexpr float _orangeGravity = 15.f;
+	static constexpr float _xResistance = 1.f;		// how much of speed lost per second
+	static constexpr float _speedLimit = 20.f;
+	static constexpr float _energyKeptBouncing = 0.7f;
 
-	struct TrackingEventHead {
+	static constexpr float _demonMinSpeed = 25.f;
+	static constexpr float _demonMaxSpeed = 200.f;
+	static constexpr float _demonRadius = 50.f;
+
+	struct Orange {
+		float x;				// pos in screen coords
+		float y;				// pos in screen coords
+		AEVec2 vel;
+		float radius;
+
+		bool isHeld;
+	};
+
+	struct Demon {
 		float x;
 		float y;
 		AEVec2 vel;
 		float radius;
-
-		// time since last spawn
-		float timeSinceSpawn;
-
-		// blink
-		float timeSinceChange;
-		bool blink;
+		bool isActive;
 	};
 
-	TrackingEventHead _trackingObj;
+	Orange _orangeObj{0};
+	static constexpr int NUM_DEMONS = 7;
+	std::array<Demon, NUM_DEMONS> demons{0};
 
 
 	/*ctor and methods*/
@@ -252,8 +270,8 @@ private:
 	void _typingEventUpdate(EVENT_RESULTS& result, double dt);
 	void _typingEventRender();
 
-	void _trackingEventUpdate(EVENT_RESULTS& result, double dt);
-	void _trackingEventRender();
+	void _orangeEventUpdate(EVENT_RESULTS& result, double dt);
+	void _orangeEventRender();
 
 public:
 	// output variable for event multiplier
