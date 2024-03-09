@@ -36,6 +36,7 @@ public:
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
+	void spawnEnemies(std::vector<std::string> enemyRefs);
 
 private:
 	CombatScene(SceneManager* _sceneMgr); // This is used to register to SceneManager
@@ -50,8 +51,6 @@ struct enemiesGroup {
 	std::vector<Enemy*> enemies;
 
 };
- enemiesGroup spawnEnemies(std::vector<std::string> enemyRefs);
-
 // !TODO: kuek
 /**
  * @brief 
