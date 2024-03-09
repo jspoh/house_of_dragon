@@ -212,6 +212,12 @@ AEGfxTexture* RenderHelper::getTextureByRef(int reference) {
 }
 
 void RenderHelper::removeTextureByRef(std::string reference) {
+	auto map = _textureRef.find(reference.c_str());
+	if (map == _textureRef.end()) {  // does not exist
+		std::cerr << "Reference " << reference << " does not exist!\n";
+		return;
+	}
+
 	AEGfxTexture* pTex = getTextureByRef(reference);
 	AEGfxTextureUnload(pTex);
 	_textureRef.erase(reference);

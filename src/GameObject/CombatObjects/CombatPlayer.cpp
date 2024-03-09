@@ -38,6 +38,9 @@ void Player::update(double dt) {
     switch (blockingState) {
     case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
         break;
+    case PLAYER_BLOCKING_STATES::ON_ENTER:
+        // translate the shield up
+        break;
     }
 }
 
