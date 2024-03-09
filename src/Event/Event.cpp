@@ -711,6 +711,11 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_trackingObj.x, _trackingObj.y, _trackingObj.radius, static_cast<float>(_mouseX), static_cast<float>(_mouseY))) {
 			_trackingObj.isHeld = true;
 		}
+		// check to ensure that the user cannot hold the ball past 75% of the screen
+		if (_trackingObj.isHeld && (_trackingObj.y <= AEGfxGetWindowHeight() * 0.25f || _trackingObj.y >= static_cast<float>(AEGfxGetWindowHeight()))) {
+			_trackingObj.isHeld = false;	// force user to let go
+			AEVec2Set(&_trackingObj.vel, 0, 0);			// reset velocity to 0
+		}
 
 		if (_trackingObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {
 			_trackingObj.x = _mouseX;
@@ -723,6 +728,9 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		else {
 			_trackingObj.isHeld = false;
 		}
+
+
+		//std::cout << (_trackingObj.y <= AEGfxGetWindowHeight() * 0.25f) << "\n";
 
 		//std::cout << "obj vel: " << _trackingObj.vel.x << ", " << _trackingObj.vel.y << "\n";
 
