@@ -388,23 +388,16 @@ void CombatScene::Update(double dt)
 
     
 
-
+    player->update(dt);
 
 }
 
 void CombatScene::Render()
 {
 
-    //panel rendering
-    f32 truex, truey;
-    AEGfxGetCamPosition(&truex, &truey);
-    RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, AEGfxGetWindowWidth(), 160);
-
     //rendering enemies
 
 
-    //rendering player
-    player->render();
 
     // rendering whether enemies is dead
     for (Enemy* enemy : groups.enemies) { // check for dead/alive
@@ -426,6 +419,13 @@ void CombatScene::Render()
         groups.enemies[i]->render(); // render all, draw all enemys
     }
 
+    //rendering player
+    player->render();
+
+    //panel rendering
+    f32 truex, truey;
+    AEGfxGetCamPosition(&truex, &truey);
+    RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, AEGfxGetWindowWidth(), 160);
     
 }
 
