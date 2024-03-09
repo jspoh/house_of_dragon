@@ -115,7 +115,7 @@ namespace {
         btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
         btnHeight = btnWidth / 3.f;
         btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-        lBtnX = padding + btnWidth / 2.f;;
+        lBtnX = padding + btnWidth / 2.f;
 
         bPosX = lBtnX;
 
@@ -127,7 +127,10 @@ namespace {
                 Point btnPos = stow(bPosX, btnY);  // button rendering position
 
                 AEInputGetCursorPosition(&mouseX, &mouseY);
-                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) { // clicked wt
+                //std::cout << bPosX << " | " << btnY << "\n";
+                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) { 
+                    //std::cout << "mouse in rect" << bv << "\n";
+                    // clicked wt
                     if (AEInputCheckTriggered(AEVK_LBUTTON)) {
                         /*click while on main menu*/
                         if (currentState == ACTION_BTNS::MAIN) {
