@@ -728,7 +728,7 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 
 		// !TODO: jspoh dont allow user to bring ball past 75% of screen from bottom
 		// obj not held, apply normal physics to object
-		if (!AEInputCheckCurr(AEVK_LBUTTON)) {
+		if (!_trackingObj.isHeld) {
 			// gravity
 			if (_trackingObj.y + _trackingObj.radius < AEGfxGetWindowHeight()) {
 				_trackingObj.vel.y += _trackingGravity * dt;
