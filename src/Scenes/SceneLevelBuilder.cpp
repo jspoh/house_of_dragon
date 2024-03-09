@@ -364,36 +364,16 @@ void SceneLevelBuilder::Update(double dt)
 	static int t_PanCloseToGroundValue = 80;
 	static int t_PanSideWays = 80;
 	static int PanDown = 0;
-	
-	//Activating Combat system
-	if (AEInputCheckTriggered(AEVK_V))
-	{
-		std::vector<std::string> names = { "cat", "cat","cat" };
-		CombatScene::sInstance->spawnEnemies(names);
-		CombatScene::sInstance->Init();
-		Combat = true;
-	}
-	if (Combat)
-		CombatScene::sInstance->Update(dt);
-
-	if (AEInputCheckTriggered(AEVK_Z)) //Activate Combat
-	{
-		Combat = true;
-		m_StopMovement = true;
-		t_MovementSpeed = 0.0f;
-	}
-	else
-		m_StopMovement = false;
 
 	//TESTING
 	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat? true: false;
 	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat? true: false;
 	if (AEInputCheckTriggered(AEVK_Z))
 	{
-		std::vector<std::string> names = { "cat", "cat","cat" };
 		TestTimer = 2.5f;
-        //CombatScene::sInstance->spawnEnemies(names);
-        //CombatScene::sInstance->Init();
+		std::vector<std::string> names = { "cat", "dragon","cat" };
+		CombatScene::sInstance->spawnEnemies(names);
+		CombatScene::sInstance->Init();
 	}
 	if (Combat)
 	{
@@ -409,6 +389,8 @@ void SceneLevelBuilder::Update(double dt)
 		m_PanCloseToGround = true;
 		t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30 ? 1 : 0;
 		PanDown -= PanDown > -100 ? 1 : 0;
+
+		CombatScene::sInstance->Update(dt);
 	}
 	else
 	{

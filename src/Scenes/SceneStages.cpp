@@ -7,7 +7,7 @@ SceneStages::SceneStages() : m_LevelBuilder(nullptr)
 {
 }	
 
-SceneStages::SceneStages(SceneManager* _sceneMgr)
+SceneStages::SceneStages(SceneManager* _sceneMgr) : m_LevelBuilder{nullptr}
 {
 	_sceneMgr->AddScene("SceneStages", this);
 }
