@@ -226,6 +226,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 			*m_SceneLevelDataList = t_curr;
 			m_SceneLevelDataList++;
 		}
+		m_SceneLevelDataList -= Database::getInstance()->data["levels"].size();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
