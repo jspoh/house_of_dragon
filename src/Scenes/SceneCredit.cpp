@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "SceneCredit.h"
 
 // should put in namespace to avoid cluttering

@@ -14,11 +14,11 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
+#include "Pch.h"
 #include "CombatScene.h"
 
 //#include "../../Backend/GameManager.h" //? Still thinking
 #include "SceneManager.h"
-#include "Pch.h"
 #include "Event.h"
 #include "CombatManager.h"
 #include "CombatPlayer.h"

@@ -1,4 +1,4 @@
-
+#include "Pch.h"
 #include "GameObject.h"
 GameObject::GameObject() 
 	:m_Scale(1, 1, 1), 

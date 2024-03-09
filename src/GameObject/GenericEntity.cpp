@@ -1,6 +1,6 @@
+#include "Pch.h"
 #include "GenericEntity.h"
 #include "GameObjectManager.h"
-#include "Pch.h"
 GenericEntity::GenericEntity()
 {
 }

@@ -1,8 +1,8 @@
+#include "Pch.h"
 #include "SceneBase.h"
 
 //#include "../Backend/GameManager.h" //? Still thinking
 #include "SceneManager.h"
-#include "Pch.h"
 #include "GameObject_Player.h"
 #include "GameObject_AmeTest.h"
 #include "GameObjectManager.h"

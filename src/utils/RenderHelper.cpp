@@ -13,7 +13,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
-
+#include "Pch.h"
 #include "RenderHelper.h"
 #include <iostream>
 

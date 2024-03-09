@@ -13,7 +13,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
-
+#include "Pch.h"
 #include "Event.h"
 
 Event* Event::_instance = nullptr;

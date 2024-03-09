@@ -7,6 +7,8 @@
 \date 23-1-2024
 \brief Header file to use Vector3
 **************************************************************************/
+
+#include "Pch.h"
 #include <cmath>
 #include "Vector3.h"
 

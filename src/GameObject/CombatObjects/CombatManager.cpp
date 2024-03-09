@@ -14,7 +14,7 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
-
+#include "Pch.h"
 #include "CombatManager.h"
 
 CombatManager* CombatManager::_instance = nullptr;

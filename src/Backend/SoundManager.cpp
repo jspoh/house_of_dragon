@@ -8,6 +8,7 @@
 \brief This source file manages sounds from AEAudio to play sounds from Fmod.
 **************************************************************************/
 
+#include "Pch.h"
 #include "SoundManager.h"
 #include <iostream>
 

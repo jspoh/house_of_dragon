@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "2DCollider.h"
 
 CCollider::CCollider()

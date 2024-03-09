@@ -13,7 +13,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
-
+#include "Pch.h"
 #include "Mob.h"
 
 Mob::Mob(Element element, float health, float dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {

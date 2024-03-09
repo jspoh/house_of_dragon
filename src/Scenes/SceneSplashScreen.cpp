@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "SceneSplashScreen.h"
 
 SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());

@@ -14,6 +14,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
+#include "Pch.h"
 #include "SceneLevelBuilder.h"
 
 SceneLevelBuilder::v_FloorData::v_FloorData():
@@ -781,7 +782,7 @@ Scene Object Spawning
 **********************************************************************************/
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
-	srand(static_cast<unsigned> (time(0)));
+	//srand(static_cast<unsigned> (time(0)));
 
 	//if(false) //Delete if not used
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)

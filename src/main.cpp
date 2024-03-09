@@ -1,5 +1,6 @@
 // ---------------------------------------------------------------------------
 // includes
+#include "Pch.h"
 #include <crtdbg.h> // To check for memory leaks
 #include <stdlib.h>
 #include "GameManager.h"

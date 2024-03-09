@@ -13,6 +13,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
+#include "Pch.h"
 #include "db.h"
 
 using json = nlohmann::json;

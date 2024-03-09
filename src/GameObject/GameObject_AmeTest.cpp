@@ -1,3 +1,4 @@
+#include "Pch.h"
 #include "GameObject_AmeTest.h"
 #include "GameObjectManager.h"
 
