@@ -92,6 +92,7 @@ private:
 	int _mouseX=0, _mouseY=0, _prevMouseX=0, _prevMouseY=0;
 
 	/*spam key vars*/
+	EVENT_KEYS _spamKeyChoice = EVENT_KEYS::E;
 	const int _spamkeyTimeoutMs = 5000;
 	const float _minSize = 100;
 	const float _targetSize = 200;
@@ -104,6 +105,7 @@ private:
 	const float nroc = 50;
 
 	/*oTimer vars*/
+	INNER_STATES oTimerEventState = INNER_STATES::ON_ENTER;
 	const int _oTimerTimeoutMs = 5000;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
@@ -227,7 +229,7 @@ private:
 	 */
 	void _renderTimer(int elapsedTimeMs, int timeoutMs);
 
-	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
+	void _showEventSpamKeyResult(float screenX, float screenY);
 
 	/*events*/
 
@@ -240,14 +242,16 @@ private:
 	 * \param useMultipleKeys
 	 * \param key2
 	 */
-	void _spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _spamKeyEventRender();
 
 	/**
 	 * renders an oscillating timer event.
 	 * aka swing meter, timing bar, power guage
 	 * 
 	 */
-	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
+	void _oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
+	void _oscillatingTimerEventRender();
 
 	/**
 	 * .
@@ -255,7 +259,8 @@ private:
 	 * \param 
 	 * \param timeout time in seconds for user to click
 	 */
-	void _multiClick(EVENT_RESULTS& result, double dt);
+	void _multiClickEventUpdate(EVENT_RESULTS& result, double dt);
+	void _multiClickEventRender();
 
 	/**
 	 * @brief	typing event.
@@ -306,6 +311,12 @@ public:
 	/**
 	 * put this in update loop. use `setActiveEvent` to trigger events
 	 * 
+	 * warning: deprecated. to be removed
+	 * 
 	 */
 	void updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
+
+	void update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamKey, EVENT_KEYS oTimerKey);
+
+	void render();
 };

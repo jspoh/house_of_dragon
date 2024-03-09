@@ -145,6 +145,10 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
+	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
+	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
+	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
@@ -170,13 +174,16 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
 	case EVENT_TYPES::SPAM_KEY:
-		_spamKey(result, dt, spamkey);
+		_spamKeyEventUpdate(result, dt, spamkey);
+		_spamKeyEventRender();
 		break;
 	case EVENT_TYPES::OSCILLATING_TIMER:
-		_oscillatingTimer(result, dt, oTimerKey);
+		_oscillatingTimerEventUpdate(result, dt, oTimerKey);
+		_oscillatingTimerEventRender();
 		break;
 	case EVENT_TYPES::MULTI_CLICK:
-		_multiClick(result, dt);
+		_multiClickEventUpdate(result, dt);
+		_multiClickEventRender();
 		break;
 	case EVENT_TYPES::TYPING:
 		_typingEventUpdate(result, dt);
@@ -195,6 +202,65 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	_prevMouseY = _mouseY;
 }
 
+
+void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
+	AEInputGetCursorPosition(&_mouseX, &_mouseY);
+	if (_prevMouseX == 0 || _prevMouseY == 0) {
+		_prevMouseX = _mouseX;
+		_prevMouseY = _mouseY;
+	}
+
+	switch (_activeEvent) {
+	case EVENT_TYPES::NONE_EVENT_TYPE:
+		break;
+	case EVENT_TYPES::SPAM_KEY:
+		_spamKeyEventUpdate(result, dt, spamkey);
+		break;
+	case EVENT_TYPES::OSCILLATING_TIMER:
+		_oscillatingTimerEventUpdate(result, dt, oTimerKey);
+		break;
+	case EVENT_TYPES::MULTI_CLICK:
+		_multiClickEventUpdate(result, dt);
+		break;
+	case EVENT_TYPES::TYPING:
+		_typingEventUpdate(result, dt);
+		break;
+	case EVENT_TYPES::ORANGE_THROWING:
+		_orangeEventUpdate(result, dt);
+		break;
+	default:
+		std::cerr << "Event::update reached end of switch case\n";
+		break;
+	}
+
+	_prevMouseX = _mouseX;
+	_prevMouseY = _mouseY;
+}
+
+void Event::render() {
+	switch (_activeEvent) {
+	case EVENT_TYPES::NONE_EVENT_TYPE:
+		break;
+	case EVENT_TYPES::SPAM_KEY:
+		_spamKeyEventRender();
+		break;
+	case EVENT_TYPES::OSCILLATING_TIMER:
+		_oscillatingTimerEventRender();
+		break;
+	case EVENT_TYPES::MULTI_CLICK:
+		_multiClickEventRender();
+		break;
+	case EVENT_TYPES::TYPING:
+		_typingEventRender();
+		break;
+	case EVENT_TYPES::ORANGE_THROWING:
+		_orangeEventRender();
+		break;
+	default:
+		std::cerr << "Event::render reached end of switch case\n";
+		break;
+	}
+}
 
 
 /*private*/
@@ -227,6 +293,7 @@ void Event::_resetState() {
 	this->_piVelocity = 0.f;
 	this->_oTimerOpacity = 1.f;
 	this->_piMoving = true;
+	oTimerEventState = INNER_STATES::ON_ENTER;
 
 	// multiclick
 	_mcoHits = 0;
@@ -257,14 +324,7 @@ void Event::_updateTime(double dt) {
 	_totalElapsedMs += idt;
 }
 
-void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY) {
-	/*event result duration over*/
-	if (_elapsedTimeMs >= _eventResultDuration * 1000) {
-		result = _eventResult;  // update result passed by caller so that they know event is over
-		_resetState();
-		return;
-	}
-
+void Event::_showEventSpamKeyResult(float screenX, float screenY) {
 	if (_eventResult == EVENT_RESULTS::SUCCESS) {
 		// draw success
 		RenderHelper::getInstance()->texture("circle", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
@@ -275,19 +335,25 @@ void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float 
 	}
 }
 
-void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
+void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
+	_spamKeyChoice = key;
+
 	//std::cout << _totalElapsedMs << "\n";
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
-	float worldX = worldPos.x;
-	float worldY = worldPos.y;
+	//float worldX = worldPos.x;
+	//float worldY = worldPos.y;
 
 	/*logic*/
+
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventSpamKeyResult(result, worldX, worldY);
+		/*event result duration over*/
+		if (_elapsedTimeMs >= _eventResultDuration * 1000) {
+			result = _eventResult;  // update result passed by caller so that they know event is over
+			_resetState();
+		}
 		return;
 	}
 
@@ -331,13 +397,27 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	/*rendering*/
 	//std::cout << _elapsedTimeMs << "\n";
 
-	// key in string format
-	std::string skey = eKeyToStr.find(key)->second;
-
 	if (_elapsedTimeMs > _changeMs) {
 		_useOutline = !_useOutline;
 		_elapsedTimeMs = 0;
 	}
+}
+
+void Event::_spamKeyEventRender() {
+	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
+
+	Point worldPos = stow(_spamkeyX, _spamkeyY);
+	float worldX = worldPos.x;
+	float worldY = worldPos.y;
+
+	// if event is over, is rendering event result
+	if (_isRenderingEventResult) {
+		_showEventSpamKeyResult(worldX, worldY);
+		return;
+	}
+
+	// key in string format
+	std::string skey = eKeyToStr.find(_spamKeyChoice)->second;
 
 	//RenderHelper::getInstance()->texture("keyoutline_" + skey, worldX, worldY, _targetSize, _targetSize);
 	if (_useOutline) {
@@ -348,17 +428,8 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	}
 }
 
-void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
+void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
-
-	/*logic*/
-	// check if timeout
-	if (_totalElapsedMs >= _oTimerTimeoutMs) {
-		result = EVENT_RESULTS::FAILURE;
-		_resetState();
-		return;
-	}
 
 	u8 aevk = AEVK_E;
 	switch (key) {
@@ -377,30 +448,33 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 		break;
 	}
 
-	// check if event is over
-	if (_piMoving) {
+	/*logic*/
+	switch (oTimerEventState) {
+	case INNER_STATES::ON_ENTER:
+		oTimerEventState = INNER_STATES::ON_UPDATE;
+		break;
+	case INNER_STATES::ON_UPDATE:
+		// check if timeout
+		if (_totalElapsedMs >= _oTimerTimeoutMs) {
+			oTimerEventState = INNER_STATES::ON_EXIT;
+			eventMultiplier = 0;
+			_elapsedTimeMs = 0;
+			break;
+		}
+
+		// check if event is over
 		if (AEInputCheckTriggered(aevk)) {
 			_piMoving = false;
-			_resetTime();	// using time to fade out
+			_elapsedTimeMs = 0;	// using time to fade out
 
 			// calculate multiplier
 			const float piDistanceToCenter = abs(_barX - _piX);
 			const float percentageMultiplier = ((_barWidth / 2.f) - piDistanceToCenter) / (_barWidth / 2.f);
 			eventMultiplier = percentageMultiplier * maxMultiplier;
 			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
+			oTimerEventState = INNER_STATES::ON_EXIT;
 		}
-	}
 
-	/*rendering*/
-	const std::string oTimerMesh = meshReferences[0];
-	const Point barTranslation = stow(_barX, _barY);
-
-	// power bar
-	RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
-
-	Point piTranslation = stow(_piX, _piY);
-
-	if (_piMoving) {
 		// power indicator movement logic. accerlerates until center of bar, then decelerates
 		// pi is left of or on the center of bar
 		if (_piX <= _barX) {
@@ -421,20 +495,11 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 		// guards to ensure that pi does not go out of bar
 		_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
 		_piX = _piX > _barX + _barWidth / 2.f ? _barX + _barWidth / 2.f : _piX;
-	}
 
-	// power indicator
-	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
-
-	// multiplier result
-	if (!_piMoving) {
-		std::ostringstream oss;
-		oss.precision(eventMultiplierPrecision);
-		oss << std::fixed << eventMultiplier << "x";
-		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
-
+		break;
+	case INNER_STATES::ON_EXIT:
 		// fade out event
-		if (_totalElapsedMs >= _oTimerTimeBeforeFadeOut * 1000) {
+		if (_elapsedTimeMs >= _oTimerTimeBeforeFadeOut * 1000) {
 			// if invisible, reset state as fade out completed
 			if (_oTimerOpacity <= 0.f) {
 				result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
@@ -446,13 +511,58 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 			float change = 1.f / _oTimerFadeOutDuration;
 			_oTimerOpacity -= static_cast<float>(change * dt);
 		}
+		break;
 	}
 }
 
+void Event::_oscillatingTimerEventRender() {
+	switch (oTimerEventState) {
+	case INNER_STATES::ON_ENTER:
+		break;
+	case INNER_STATES::ON_UPDATE: {
+		/*rendering*/
+		const std::string oTimerMesh = meshReferences[0];
+		const Point barTranslation = stow(_barX, _barY);
+
+		// power bar
+		RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+
+		Point piTranslation = stow(_piX, _piY);
+		// power indicator
+		RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
+		_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
+
+		break;
+	}
+	case INNER_STATES::ON_EXIT: {
+		if (_oTimerOpacity <= 0.f) {
+			break;
+		}
+		// power bar
+		const std::string oTimerMesh = meshReferences[0];
+		const Point barTranslation = stow(_barX, _barY);
+
+		RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+
+		Point piTranslation = stow(_piX, _piY);
+		// power indicator
+		RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
+		//_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
+
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
+		break;
+	}
+	}
+
+
+}
+
 // !TODO: consider changing cursor to crosshair when multiclick event is active
-void Event::_multiClick(EVENT_RESULTS& result, double dt) {
+void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _multiClickTimeoutMs);
 
 	// multiclick is based on duration only
 	if (_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) {
@@ -505,8 +615,6 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 		}
 		_mcoDisplayHits = _mcoDisplayHits < 0 ? 0 : _mcoDisplayHits;
 	}
-
-	/*rendering*/
 	// ensure that there are always mcoCount objects on screen
 	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
 		_multiClickObjects.push_back(MultiClickObject{
@@ -518,6 +626,14 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			});
 	}
 
+	for (MultiClickObject& mco : _multiClickObjects) {
+		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
+	}
+}
+
+void Event::_multiClickEventRender() {
+	_renderTimer(_totalElapsedMs, _multiClickTimeoutMs);
+
 	/*render*/
 	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoDisplayHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6.f);
 
@@ -526,7 +642,6 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 	}
 
 	for (MultiClickObject& mco : _multiClickObjects) {
-		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
 		if (mco.timeSinceChange >= _mcoBlinkDuration) {
 			mco.blink = !mco.blink;
 			mco.timeSinceChange = 0.f;

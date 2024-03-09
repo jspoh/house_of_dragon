@@ -24,6 +24,7 @@ Technology is prohibited.
 #include "CombatPlayer.h"
 
 #include <vector>
+#include <string>
 #include <unordered_map>
 
 
@@ -32,12 +33,11 @@ Technology is prohibited.
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
 namespace {
+    // game objects
     Player* player;
-
-    std::vector<Point*> coordinates; // coordinates for the aninmals which changes based on the number of enemies as well as the screen size
-    std::vector<Enemy*> enemies; // currently hardcoded for the 3 enemies, but how do we register the different amounts and their stats in?
     Enemy* SelectEnemy; // selected enemy for attack
-    int vectorcounter;
+
+
     // panel rendering
     double panelvelocity;
     Point panelpos;
@@ -45,11 +45,22 @@ namespace {
     bool panelflag;
     double currentTime;
     double totaltime;
+
+
+
+    // randomize the inital enemy attacker
     int randomEnemyStart;
+
+
     // enemy selection
     bool selectflag;
     int texSize;
 
+
+    // buttons coordinates;
+    float btnWidth;
+    float btnHeight;
+    float lBtnX;
 
     EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     enum ACTION_BTNS {
@@ -60,6 +71,15 @@ namespace {
         SELECT
     };
     ACTION_BTNS currentState = MAIN;
+    std::unordered_map<std::string, Element> elementMap = {
+        {"NO_ELEMENT", Element::NO_ELEMENT},
+        {"water",  Element::Water},
+        {"earth",  Element::Earth},
+        {"metal",  Element::Metal},
+        {"fire",  Element::Fire},
+        {"wood",  Element::Wood}
+    };
+
 
     std::unordered_map<std::string, ACTION_BTNS> stateMap = {
         {"MAIN", MAIN},
@@ -78,18 +98,22 @@ namespace {
     float padding = 100.f;
     float spacing = 50.f;
     enemiesGroup groups;
+
+
     float btnY = 550.f;
     float maxBtnHeight = 100.f;
 
     /*im so sorry this code very spaghet but time crunch!!*/
     // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
-    void updateRenderBtns(std::vector<std::string> bvalues) {
+    void updateBtns(std::vector<std::string> bvalues) {
+        // rendering coordinates 
         float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
         float btnHeight = btnWidth / 3.f;
         btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
         float lBtnX = padding + btnWidth / 2.f;
 
         float bPosX = lBtnX;
+
         if (selectflag == false) {
             RenderHelper::getInstance()->text("Select your Enemy", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
         }
@@ -158,6 +182,11 @@ namespace {
     }
 
 
+    void renderBtns() {
+
+    }
+    
+
 
 
 }
@@ -177,7 +206,8 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
         groups.coordinates[i].x = Enemypadding + i * Enemyspacing;
         groups.coordinates[i].y = AEGfxGetWindowHeight() / 2.f;
         // obtaining the infomation from json file
-        groups.enemies[i] = new Enemy(Element::Fire,100, 10, "./Assets/animals/cat.jpg", i + "temr", groups.coordinates[i].x, groups.coordinates[i].y, texSize);
+        groups.enemies[i] = new Enemy(elementMap.find(Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["element"])->second, Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["health"]
+            , Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["damage"], Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["texturePath"], enemyRefs[i]   , groups.coordinates[i].x, groups.coordinates[i].y, texSize);
         // error with json file input
     }
 
@@ -201,7 +231,7 @@ CombatScene::~CombatScene()
 void CombatScene::Load()
 {
     Event::getInstance();
-    //healthbar load
+    //healthbar load 
     RenderHelper::getInstance()->registerTexture("border", "./Assets/Combat/border.png");
     RenderHelper::getInstance()->registerTexture("panel", "./Assets/Combat/panel.png");
     RenderHelper::getInstance()->registerTexture("greenbar1", "./Assets/Health/green/start.png"); 
@@ -227,7 +257,7 @@ void CombatScene::Init()
     //player init
 
     player = new Player();
-    std::vector<std::string> names = { "cat", "cat","cat"};
+    std::vector<std::string> names = { "horse", "cat","cat"};
     CombatScene::spawnEnemies(names);
     SelectEnemy = NULL;
     selectflag = true;
@@ -240,19 +270,12 @@ void CombatScene::Init()
     totaltime = 1.f;
 
     randomEnemyStart = rand() % 3;
-    vectorcounter = 0;
+
+
+
+
     // all enemies init, not implemented using the py yet
-    coordinates.push_back(new Point{ 100, AEGfxGetWindowHeight() / 2.f});
-    enemies.push_back(new Enemy(Element::Water, 100, 10, "./Assets/animals/cat.jpg", "cat1", coordinates[vectorcounter]->x, coordinates[vectorcounter]->y, 50));
-    coordinates.push_back(new Point{ ((AEGfxGetWindowWidth() / 3.f) + 50), AEGfxGetWindowHeight() / 2.f });
-    vectorcounter++;
-    enemies.push_back(new Enemy(Element::Water, 100, 10, "./Assets/animals/dragon.jpg", "cat2", coordinates[vectorcounter]->x, coordinates[vectorcounter]->y, 50));
-    coordinates.push_back(new Point{ ((AEGfxGetWindowWidth() * 2 / 3.f) + 50), AEGfxGetWindowHeight() / 2.f });
-    vectorcounter++;
-    enemies.push_back(new Enemy(Element::Water, 100, 10, "./Assets/animals/horse.jpg", "cat3", coordinates[vectorcounter]->x, coordinates[vectorcounter]->y, 50));
-    for (int i{0 }; i <= vectorcounter; i++) {
-        coordinates[i]->x = AEGfxGetWindowWidth() * (1.f + i  / vectorcounter + 1.f) ;
-    }
+
     // selected enemy init
     Enemy* selectedEnemy;
     UNREFERENCED_PARAMETER(selectedEnemy);
@@ -278,7 +301,7 @@ void CombatScene::Update(double dt)
 
     if (AEInputCheckTriggered(AEVK_RBUTTON)) {
         selectflag = true;
-        SelectEnemy = enemies[0];
+        SelectEnemy = groups.enemies[0];
     }
     if (AEInputCheckTriggered(AEVK_3)) {
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
@@ -290,7 +313,7 @@ void CombatScene::Update(double dt)
         groups.enemies[i]->render(); // render all, draw all enemys
     }
     player->render();
-    for (Enemy* enemy : enemies) { // check for dead/alive
+    for (Enemy* enemy : groups.enemies) { // check for dead/alive
         if (enemy->isDead()) {
             RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
         }
@@ -318,19 +341,19 @@ void CombatScene::Update(double dt)
         switch (CombatManager::getInstance()->qtEventResult) {
         case EVENT_RESULTS::SUCCESS:
             std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-            for (Enemy* enemy : enemies) {
+            for (Enemy* enemy : groups.enemies) {
                 player->attack(*enemy, CombatManager::getInstance()->attackElement, Event::getInstance()->maxMultiplier);
             }
             break;
         case EVENT_RESULTS::FAILURE:
             std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-            for (Enemy* enemy : enemies) {
+            for (Enemy* enemy : groups.enemies) {
                 player->attack(*enemy, CombatManager::getInstance()->attackElement, Event::getInstance()->minMultiplier);
             }
             break;
         case EVENT_RESULTS::CUSTOM_MULTIPLIER:
             std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-            for (Enemy* enemy : enemies) {
+            for (Enemy* enemy : groups.enemies) {
                 player->attack(*enemy, CombatManager::getInstance()->attackElement, Event::getInstance()->eventMultiplier);
             }
             break;
@@ -340,10 +363,10 @@ void CombatScene::Update(double dt)
 
     // when is player turn and player is not playing a quicktime event
     if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
-        updateRenderBtns(btns[currentState]);  // render player action buttons
+        updateBtns(btns[currentState]);  // render player action buttons
     }
     else if (CombatManager::getInstance()->turn == TURN::ENEMY){
-            enemies[randomEnemyStart++]->attack(*player);  // Example: All enemies attack the player
+        groups.enemies[randomEnemyStart++]->attack(*player);  // Example: All enemies attack the player
             randomEnemyStart %= 3; // prevents from going out of vector
         
         CombatManager::getInstance()->next();  // perhaps can implement pause
@@ -380,12 +403,12 @@ void CombatScene::Exit()
 {
     std::cout << "Exiting CombatScene\n";
     delete CombatManager::getInstance();
-    for (Enemy* enemy : enemies) {
+    for (Enemy* enemy : groups.enemies) {
         delete enemy;
     }
 
     // Clear the vector after deleting the enemies
-    enemies.clear();
+    groups.enemies.clear();
     delete player;
 }
 
