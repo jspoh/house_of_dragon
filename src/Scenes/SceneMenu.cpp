@@ -103,6 +103,7 @@ void SceneMenu::Update(double dt)
 				{
 					AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
 					AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
+					
 					if (p1.x<mx && p1.y>my && p2.x > mx && p2.y < my)
 					{
 						switch (i)
@@ -176,6 +177,7 @@ void SceneMenu::Render()
 		AEMtx33 transform;
 		AEMtx33Trans(&transform, myMenu.buttonX[i], myMenu.buttonY[i]);
 
+
 		AEMtx33 model = { 0 };
 		AEMtx33Concat(&model, &transform, &scale);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -188,6 +190,7 @@ void SceneMenu::Render()
 		AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
 
 	}
+	//emit_walking_particle(particleArr, player->position, playerXMovement, playerYMovement); // emit particles with direction flags
 
 }
 

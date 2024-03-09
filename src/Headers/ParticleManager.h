@@ -5,28 +5,50 @@
 #include "utils.h"
 
 
+
+
 class ParticleManager : public Singleton<ParticleManager>
 {
 	friend Singleton<ParticleManager>;
 public:
-	~ParticleManager();
+	ParticleManager();
+	
 
 	void init_particle(const char* fileName);
-	void emit_enemy_death_particle(Point deadEnemyPos);
+	void emit_Particle(Point cursorPos);
 	void update_particles(float dt);
-
-	//void AddParticle(...);
+	void death_particle(Point deadEnemyPos);
+	void render_particles();
+	void ParticleManager::create_particles();
 private:
 	//Make a pooling system
-	ParticleManager();
-	static const int particlesNum = 200;
-	Particle particleArr[2]{};
+	~ParticleManager();
 
 
-	enum PARTICLE_TYPE {
-		Enemy_death
+	std::string circle1;
+
+	struct Particle_Prop
+	{
+		Point position;
+		Point velocity;
+		Point size;
+		f32 lifetime;
+		f32 alpha;
+		bool active = false;
+		s32 type;
+
 	};
 
 
+	static const int particlesNum = 100;
+	Particle_Prop particleArr[particlesNum];
+
+	enum PARTICLE_TYPE
+	{
+		enemyDeath,
+		tracingCursor
+	};
+	s32 numParticles = 200;
 
 };
+
