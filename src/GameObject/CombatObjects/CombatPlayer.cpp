@@ -27,6 +27,23 @@ void Player::_drawHealth(float screenX, float screenY) {
     RenderHelper::getInstance()->text(std::to_string(this->health), screenX, screenY);
 }
 
+void Player::update(double dt) {
+    if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+        blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+    }
+    else if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && !AEInputCheckCurr(AEVK_SPACE)) {
+        blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
+    }
+
+    switch (blockingState) {
+    case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+        break;
+    case PLAYER_BLOCKING_STATES::ON_ENTER:
+        // translate the shield up
+        break;
+    }
+}
+
 void Player::render() {
     this->_drawHealth(150, 150);
 }

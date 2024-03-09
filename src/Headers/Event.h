@@ -35,7 +35,7 @@ Technology is prohibited.
  * update `eKeyToStr` too and ensure that the image assets follow this format:
  * "./Assets/keys/keyboard_<key>.png"
  * "./Assets/keys/keyboard_<key>_outline.png"
- * 
+ *
  * other places to udpate:
  * Event::spamKey -> switch case
  */
@@ -67,7 +67,7 @@ enum EVENT_RESULTS {
 	NUM_EVENT_RESULTS
 };
 
-enum INNER_STATES {
+enum class INNER_STATES {
 	ON_ENTER,
 	ON_UPDATE,
 	ON_NEXT,	// redo action in update
@@ -83,13 +83,15 @@ private:
 	bool _isRenderingEventResult = false;  // is render success/failure animation
 	double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
 
+	Point camOffset{ 0 };
+
 	int _elapsedTimeMs = 0;
 	int _totalElapsedMs = 0;
 	bool _useOutline = true;
 	/*how many milliseconds before key type changes*/
 	const int _changeMs = 100;
 
-	int _mouseX=0, _mouseY=0, _prevMouseX=0, _prevMouseY=0;
+	int _mouseX = 0, _mouseY = 0, _prevMouseX = 0, _prevMouseY = 0;
 
 	/*spam key vars*/
 	EVENT_KEYS _spamKeyChoice = EVENT_KEYS::E;
@@ -157,7 +159,7 @@ private:
 	bool _mcoIsTransitioningOut = false;
 
 	/*typing event vars*/
-	const std::array<std::string, 5> _wordlist {
+	const std::array<std::string, 5> _wordlist{
 		"nian",
 		"dragon",
 		"angpao",
@@ -208,9 +210,9 @@ private:
 		bool isActive;
 	};
 
-	Orange _orangeObj{0};
+	Orange _orangeObj{ 0 };
 	static constexpr int NUM_DEMONS = 7;
-	std::array<Demon, NUM_DEMONS> demons{0};
+	std::array<Demon, NUM_DEMONS> demons{ 0 };
 
 
 	/*ctor and methods*/
@@ -222,10 +224,10 @@ private:
 
 	/**
 	 * used for timed events.
-	 * eg. multiClick, 
-	 * 
+	 * eg. multiClick,
+	 *
 	 * use milliseconds as args
-	 * 
+	 *
 	 */
 	void _renderTimer(int elapsedTimeMs, int timeoutMs);
 
@@ -235,7 +237,7 @@ private:
 
 	/**
 	 * renders spamkey event.
-	 * 
+	 *
 	 * \param screenX screen x position to render
 	 * \param screenY screen y position to render
 	 * \param key1
@@ -248,15 +250,15 @@ private:
 	/**
 	 * renders an oscillating timer event.
 	 * aka swing meter, timing bar, power guage
-	 * 
+	 *
 	 */
 	void _oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
 	void _oscillatingTimerEventRender();
 
 	/**
 	 * .
-	 * 
-	 * \param 
+	 *
+	 * \param
 	 * \param timeout time in seconds for user to click
 	 */
 	void _multiClickEventUpdate(EVENT_RESULTS& result, double dt);
@@ -264,12 +266,12 @@ private:
 
 	/**
 	 * @brief	typing event.
-	 * 
+	 *
 	 * IMPORTANT: update and render must both be called!
 	 * update function does not reset state. only render does
-	 * 
+	 *
 	 * if you want to use update without render, you must add reset state in exit
-	 * 
+	 *
 	 * this is to prevent rendering the wrong thing for even 1 frame
 	 */
 	void _typingEventUpdate(EVENT_RESULTS& result, double dt);
@@ -291,7 +293,7 @@ public:
 
 	/**
 	 * used to trigger event.
-	 * 
+	 *
 	 * \param event
 	 * \param dt
 	 * \param screenX
@@ -304,15 +306,15 @@ public:
 
 	/**
 	 * Used to start a random event.
-	 * 
+	 *
 	 */
 	void startRandomEvent();
-	
+
 	/**
 	 * put this in update loop. use `setActiveEvent` to trigger events
-	 * 
+	 *
 	 * warning: deprecated. to be removed
-	 * 
+	 *
 	 */
 	void updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
 
