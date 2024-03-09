@@ -33,6 +33,7 @@ CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance(
 
 namespace {
     Player* player;
+
     std::vector<Point*> coordinates; // coordinates for the aninmals which changes based on the number of enemies as well as the screen size
     std::vector<Enemy*> enemies; // currently hardcoded for the 3 enemies, but how do we register the different amounts and their stats in?
     Enemy* SelectEnemy; // selected enemy for attack
@@ -160,26 +161,25 @@ namespace {
 
 
 }
-enemiesGroup spawnEnemies(std::vector<std::string> enemyRefs) {
+void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
     // this function works by creating taking in the vector of enemies; but this means i dont have to 
     float Enemypadding = 50.0f;
-    enemiesGroup finalEnemiesGroup;     // `final` is c++ syntax, cannot use
-    finalEnemiesGroup.size = enemyRefs.size(); // number of enemies;
-    finalEnemiesGroup.coordinates.resize(finalEnemiesGroup.size); // setting the coordinates
-    finalEnemiesGroup.enemies.resize(finalEnemiesGroup.size); // setting up the checking of enemies
-    finalEnemiesGroup.activeEnemy.resize(finalEnemiesGroup.size);
-    finalEnemiesGroup.name.resize(finalEnemiesGroup.size); // might not be needed, after getting the information from the
-    float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (finalEnemiesGroup.size - 1) * spacing) / finalEnemiesGroup.size);
-    for (int i = 0; i < finalEnemiesGroup.size; i++) {
-        finalEnemiesGroup.activeEnemy[i] = true;
+
+    groups.size = enemyRefs.size(); // number of enemies;
+    groups.coordinates.resize(groups.size); // setting the coordinates
+    groups.enemies.resize(groups.size); // setting up the checking of enemies
+    groups.activeEnemy.resize(groups.size);
+    groups.name.resize(groups.size); // might not be needed, after getting the information from the
+    float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (groups.size - 1) * spacing) / groups.size);
+    for (int i = 0; i < groups.size; i++) {
+        groups.activeEnemy[i] = true;
         // coordindates
-        finalEnemiesGroup.coordinates[i].x = Enemypadding + i * Enemyspacing;
-        finalEnemiesGroup.coordinates[i].y = AEGfxGetWindowHeight() / 2.f;
+        groups.coordinates[i].x = Enemypadding + i * Enemyspacing;
+        groups.coordinates[i].y = AEGfxGetWindowHeight() / 2.f;
         // obtaining the infomation from json file
-        finalEnemiesGroup.enemies[i] = new Enemy(Element::Fire,100, 10, "./Assets/animals/cat.jpg", i + "temr", finalEnemiesGroup.coordinates[i].x, finalEnemiesGroup.coordinates[i].y, texSize);
+        groups.enemies[i] = new Enemy(Element::Fire,100, 10, "./Assets/animals/cat.jpg", i + "temr", groups.coordinates[i].x, groups.coordinates[i].y, texSize);
         // error with json file input
     }
-    return finalEnemiesGroup;
 
 
 
@@ -227,8 +227,8 @@ void CombatScene::Init()
     //player init
 
     player = new Player();
-    std::vector<std::string> names = { "cat", "cat"};
-    groups = spawnEnemies(names);
+    std::vector<std::string> names = { "cat", "cat","cat"};
+    CombatScene::spawnEnemies(names);
     SelectEnemy = NULL;
     selectflag = true;
 
