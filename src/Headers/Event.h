@@ -311,6 +311,12 @@ public:
 	/**
 	 * put this in update loop. use `setActiveEvent` to trigger events
 	 * 
+	 * warning: deprecated. to be removed
+	 * 
 	 */
 	void updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
+
+	void update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamKey, EVENT_KEYS oTimerKey);
+
+	void render();
 };

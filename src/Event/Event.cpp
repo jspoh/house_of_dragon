@@ -203,6 +203,65 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 }
 
 
+void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
+	AEInputGetCursorPosition(&_mouseX, &_mouseY);
+	if (_prevMouseX == 0 || _prevMouseY == 0) {
+		_prevMouseX = _mouseX;
+		_prevMouseY = _mouseY;
+	}
+
+	switch (_activeEvent) {
+	case EVENT_TYPES::NONE_EVENT_TYPE:
+		break;
+	case EVENT_TYPES::SPAM_KEY:
+		_spamKeyEventUpdate(result, dt, spamkey);
+		break;
+	case EVENT_TYPES::OSCILLATING_TIMER:
+		_oscillatingTimerEventUpdate(result, dt, oTimerKey);
+		break;
+	case EVENT_TYPES::MULTI_CLICK:
+		_multiClickEventUpdate(result, dt);
+		break;
+	case EVENT_TYPES::TYPING:
+		_typingEventUpdate(result, dt);
+		break;
+	case EVENT_TYPES::ORANGE_THROWING:
+		_orangeEventUpdate(result, dt);
+		break;
+	default:
+		std::cerr << "Event::update reached end of switch case\n";
+		break;
+	}
+
+	_prevMouseX = _mouseX;
+	_prevMouseY = _mouseY;
+}
+
+void Event::render() {
+	switch (_activeEvent) {
+	case EVENT_TYPES::NONE_EVENT_TYPE:
+		break;
+	case EVENT_TYPES::SPAM_KEY:
+		_spamKeyEventRender();
+		break;
+	case EVENT_TYPES::OSCILLATING_TIMER:
+		_oscillatingTimerEventRender();
+		break;
+	case EVENT_TYPES::MULTI_CLICK:
+		_multiClickEventRender();
+		break;
+	case EVENT_TYPES::TYPING:
+		_typingEventRender();
+		break;
+	case EVENT_TYPES::ORANGE_THROWING:
+		_orangeEventRender();
+		break;
+	default:
+		std::cerr << "Event::render reached end of switch case\n";
+		break;
+	}
+}
+
 
 /*private*/
 void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
