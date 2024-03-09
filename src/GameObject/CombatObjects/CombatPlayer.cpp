@@ -25,7 +25,7 @@ Player::Player(double health, double dmg, Element element) : Mob(element, health
 
     // set shield properties
     AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
-    AEVec2Set(&shield.size, AEGfxGetWindowWidth() / 2.f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
+    AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
 
     AEVec2Set(&shieldInitialPos, shield.pos.x, shield.pos.y);
     AEVec2Set(&shieldBlockingPos, 0, - AEGfxGetWindowHeight() * 0.8f);

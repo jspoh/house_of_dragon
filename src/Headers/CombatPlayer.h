@@ -37,13 +37,13 @@ private:
 	AEVec2 shieldInitialPos{ 0,0 };		// set in constructor
 	AEVec2 shieldBlockingPos{ 0, 0 };
 	AEVec2 shieldInitialToShieldBlocking_vector;		// vector from shield initial pos to final blocking pos
-	static constexpr int shieldTransitionTimeMs = 500;
+	static constexpr int shieldTransitionTimeMs = 250;
 	float transitionSpeed;
 	int elapsedTimeMs = 0;
 
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
-	AEVec2 camOffset;
+	AEVec2 camOffset{ 0,0 };
 
 	Shield shield;
 
