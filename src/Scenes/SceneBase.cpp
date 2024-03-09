@@ -50,7 +50,7 @@ void SceneBase::Init()
 
 
     //GameObjectManager::GetInstance()->FindObjectByReference("")
-    GameObject* deletetest = GameObjectManager::GetInstance()->FindObjectByReference("gg");
+    //GameObject* deletetest = GameObjectManager::GetInstance()->FindObjectByReference("gg");
     //deletetest->m_Active = false;
     //deletetest = GameObjectManager::GetInstance()->FindObjectByReference("reference2");
     //deletetest->m_Active = false;

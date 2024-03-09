@@ -77,8 +77,8 @@
 //		Application::GetCursorPos(&x, &y);
 //		int w = Application::GetWindowWidth();
 //		int h = Application::GetWindowHeight();
-//		float posX = static_cast<float>(x) / w * m_worldWidth;
-//		float posY = (h - static_cast<float>(y)) / h * m_worldHeight;
+//		float posX = static_cast<f32>(x) / w * m_worldWidth;
+//		float posY = (h - static_cast<f32>(y)) / h * m_worldHeight;
 //
 //		m_ghost->pos.Set(posX, m_worldHeight * 0.5f, 0); //IMPT
 //		m_ghost->active = true;
@@ -98,8 +98,8 @@
 //		Application::GetCursorPos(&x, &y);
 //		int w = Application::GetWindowWidth();
 //		int h = Application::GetWindowHeight();
-//		float posX = static_cast<float>(x) / w * m_worldWidth;
-//		float posY = (h - static_cast<float>(y)) / h * m_worldHeight;
+//		float posX = static_cast<f32>(x) / w * m_worldWidth;
+//		float posY = (h - static_cast<f32>(y)) / h * m_worldHeight;
 //
 //		go->pos = m_ghost->pos;
 //		go->vel.Set(m_ghost->pos.x - posX, 0, 0);
@@ -118,8 +118,8 @@
 //		Application::GetCursorPos(&x, &y);
 //		int w = Application::GetWindowWidth();
 //		int h = Application::GetWindowHeight();
-//		float posX = static_cast<float>(x) / w * m_worldWidth;
-//		float posY = (h - static_cast<float>(y)) / h * m_worldHeight;
+//		float posX = static_cast<f32>(x) / w * m_worldWidth;
+//		float posY = (h - static_cast<f32>(y)) / h * m_worldHeight;
 //
 //		m_ghost->pos.Set(posX, m_worldHeight * 0.5f, 0); //IMPT
 //		m_ghost->active = true;
@@ -139,8 +139,8 @@
 //		Application::GetCursorPos(&x, &y);
 //		int w = Application::GetWindowWidth();
 //		int h = Application::GetWindowHeight();
-//		float posX = static_cast<float>(x) / w * m_worldWidth;
-//		float posY = (h - static_cast<float>(y)) / h * m_worldHeight;
+//		float posX = static_cast<f32>(x) / w * m_worldWidth;
+//		float posY = (h - static_cast<f32>(y)) / h * m_worldHeight;
 //
 //		go->pos = m_ghost->pos;
 //		go->vel.Set(m_ghost->pos.x - posX, 0, 0);
@@ -158,7 +158,7 @@
 //		GameObject *go = (GameObject *)*it;
 //		if(go->active)
 //		{
-//			go->pos += go->vel * static_cast<float>(dt);
+//			go->pos += go->vel * static_cast<f32>(dt);
 //
 //			//Exercise 2a: Rebound game object at screen edges
 //			//Exercise 2b: Unspawn if it really leave the screen

@@ -271,7 +271,7 @@ void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 
 	std::array<int, 5> thresholds = { 100,75,50,25,0 };
 
-	int timeLeftPctg = static_cast<int>(ceil((static_cast<float>(elapsedTimeMs) / timeoutMs) * 100));		// time left percentage
+	int timeLeftPctg = static_cast<int>(ceil((static_cast<f32>(elapsedTimeMs) / timeoutMs) * 100));		// time left percentage
 
 	for (const int t : thresholds) {
 		if (timeLeftPctg >= t) {
@@ -391,7 +391,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 	if (AEInputCheckTriggered(aevk)) {
 		_size += proc;
 	}
-	_size -= static_cast<float>(nroc * dt);
+	_size -= static_cast<f32>(nroc * dt);
 	_size = _size < _minSize ? _minSize : _size;
 
 	/*rendering*/
@@ -478,11 +478,11 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 		// power indicator movement logic. accerlerates until center of bar, then decelerates
 		// pi is left of or on the center of bar
 		if (_piX <= _barX) {
-			_piVelocity += static_cast<float>(_piAcc * dt);
+			_piVelocity += static_cast<f32>(_piAcc * dt);
 		}
 		// pi is right of the center of bar
 		else {
-			_piVelocity -= static_cast<float>(_piAcc * dt);
+			_piVelocity -= static_cast<f32>(_piAcc * dt);
 		}
 
 		// cap velocity
@@ -490,7 +490,7 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 		_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
 
 		//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
-		_piX += static_cast<float>(_piVelocity * dt);
+		_piX += static_cast<f32>(_piVelocity * dt);
 
 		// guards to ensure that pi does not go out of bar
 		_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
@@ -509,7 +509,7 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 
 			// start fading out
 			float change = 1.f / _oTimerFadeOutDuration;
-			_oTimerOpacity -= static_cast<float>(change * dt);
+			_oTimerOpacity -= static_cast<f32>(change * dt);
 		}
 		break;
 	}
@@ -571,7 +571,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		_mcoIsTransitioningOut = true;
 		int score = (_mcoHits - _mcoMisses);
 		score = score < 0 ? 0 : score;
-		eventMultiplier = (score / static_cast<float>(_maxMcoHits)) * maxMultiplier;
+		eventMultiplier = (score / static_cast<f32>(_maxMcoHits)) * maxMultiplier;
 	}
 	if (_mcoIsTransitioningOut) {
 		if (_elapsedTimeMs <= _mcoTransitionTime * 1000) {	// transition out of state in this time
@@ -593,7 +593,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		bool hit = false;
 		int i = 0;
 		for (MultiClickObject& mco : _multiClickObjects) {
-			hit = CollisionChecker::isMouseInCircle(mco.x, mco.y, mco.radius, static_cast<float>(mouseX), static_cast<float>(mouseY));
+			hit = CollisionChecker::isMouseInCircle(mco.x, mco.y, mco.radius, static_cast<f32>(mouseX), static_cast<f32>(mouseY));
 			if (hit) {
 				std::cout << "mco hit\n";
 				_mcoHits++;
@@ -618,8 +618,8 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	// ensure that there are always mcoCount objects on screen
 	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
 		_multiClickObjects.push_back(MultiClickObject{
-			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
-			static_cast<float>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
+			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
+			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
 			_mcoRadius,
 			true,
 			0.f
@@ -627,7 +627,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	}
 
 	for (MultiClickObject& mco : _multiClickObjects) {
-		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
+		mco.timeSinceChange += static_cast<f32>(dt);	// no real game logic here. just for rendering the blinking effect
 	}
 }
 
@@ -680,7 +680,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 		// on update state
 		if (_elapsedTimeMs >= _typingTimeoutMs) {
 			_elapsedTimeMs = 0;
-			eventMultiplier = static_cast<float>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
+			eventMultiplier = static_cast<f32>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
 			_typingState = INNER_STATES::ON_EXIT;
 		}
 
@@ -817,7 +817,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 					hits++;
 				}
 			}
-			eventMultiplier = static_cast<float>(hits) / NUM_DEMONS * maxMultiplier;
+			eventMultiplier = static_cast<f32>(hits) / NUM_DEMONS * maxMultiplier;
 
 			_orangeState = INNER_STATES::ON_EXIT;
 			_elapsedTimeMs = 0;
@@ -831,22 +831,22 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			_orangeObj.y = 0;
 		}
 
-		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_orangeObj.x, _orangeObj.y, _orangeObj.radius, static_cast<float>(_mouseX), static_cast<float>(_mouseY))) {
+		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_orangeObj.x, _orangeObj.y, _orangeObj.radius, static_cast<f32>(_mouseX), static_cast<f32>(_mouseY))) {
 			_orangeObj.isHeld = true;
 		}
 		// check to ensure that the user cannot hold the ball past 75% of the screen
-		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f || _orangeObj.y >= static_cast<float>(AEGfxGetWindowHeight()))) {
+		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f || _orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()))) {
 			_orangeObj.isHeld = false;	// force user to let go
 			AEVec2Set(&_orangeObj.vel, 0, 0);			// reset velocity to 0
 		}
 
 		if (_orangeObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {
-			_orangeObj.x = static_cast<float>(_mouseX);
-			_orangeObj.y = static_cast<float>(_mouseY);
+			_orangeObj.x = static_cast<f32>(_mouseX);
+			_orangeObj.y = static_cast<f32>(_mouseY);
 
 			// get vector between last frame and this frame
-			_orangeObj.vel.x = static_cast<float>(_mouseX) - _prevMouseX;
-			_orangeObj.vel.y = static_cast<float>(_mouseY) - _prevMouseY;
+			_orangeObj.vel.x = static_cast<f32>(_mouseX) - _prevMouseX;
+			_orangeObj.vel.y = static_cast<f32>(_mouseY) - _prevMouseY;
 		}
 		else {
 			_orangeObj.isHeld = false;
@@ -862,13 +862,13 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		if (!_orangeObj.isHeld) {
 			// gravity
 			if (_orangeObj.y + _orangeObj.radius < AEGfxGetWindowHeight()) {
-				_orangeObj.vel.y += static_cast<float>(_orangeGravity * dt);
+				_orangeObj.vel.y += static_cast<f32>(_orangeGravity * dt);
 			}
 
 			// resistance
 			if (_orangeObj.vel.x > 0) {
 
-				_orangeObj.vel.x -= _orangeObj.vel.x - _xResistance * dt > 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.x;
+				_orangeObj.vel.x -= _orangeObj.vel.x - _xResistance * dt > 0 ? static_cast<f32>(_xResistance * dt) : _orangeObj.vel.x;
 
 				// set value to 0 when below 1 as float arithmetic is not precise
 				if (_orangeObj.vel.x < 1) {
@@ -877,7 +877,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			}
 			else if (_orangeObj.vel.x < 0) {
 
-				_orangeObj.vel.x += _orangeObj.vel.x + _xResistance * dt < 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.x;
+				_orangeObj.vel.x += _orangeObj.vel.x + _xResistance * dt < 0 ? static_cast<f32>(_xResistance * dt) : _orangeObj.vel.x;
 
 				// set value to 0 when above -1 as float arithmetic is not precise
 				if (_orangeObj.vel.x > -1) {
@@ -886,7 +886,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			}
 			if (_orangeObj.vel.y > 0) {
 
-				_orangeObj.vel.y -= _orangeObj.vel.y - _xResistance * dt > 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.y;
+				_orangeObj.vel.y -= _orangeObj.vel.y - _xResistance * dt > 0 ? static_cast<f32>(_xResistance * dt) : _orangeObj.vel.y;
 
 				// set value to 0 when below 1 as float arithmetic is not precise
 				// for y axis, must also check if object is near ground
@@ -896,7 +896,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			}
 			else if (_orangeObj.vel.y < 0) {
 
-				_orangeObj.vel.y += _orangeObj.vel.y + _xResistance * dt < 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.y;
+				_orangeObj.vel.y += _orangeObj.vel.y + _xResistance * dt < 0 ? static_cast<f32>(_xResistance * dt) : _orangeObj.vel.y;
 
 				// set value to 0 when above -1 as float arithmetic is not precise
 				// for y axis, must also check if object is near ground
@@ -917,8 +917,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 				_orangeObj.vel.y = -_orangeObj.vel.y * _energyKeptBouncing;
 			}
 
-			_orangeObj.x += static_cast<float>(_orangeObj.vel.x * AEFrameRateControllerGetFrameRate() * dt);
-			_orangeObj.y += static_cast<float>(_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
+			_orangeObj.x += static_cast<f32>(_orangeObj.vel.x * AEFrameRateControllerGetFrameRate() * dt);
+			_orangeObj.y += static_cast<f32>(_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
 			// clamp positions
 			_orangeObj.x = AEClamp(_orangeObj.x, _orangeObj.radius, AEGfxGetWindowWidth() - _orangeObj.radius);
@@ -935,8 +935,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 				d.vel.x = -d.vel.x;
 			}
 
-			d.x += static_cast<float>(d.vel.x * dt);
-			d.y += static_cast<float>(d.vel.y * dt);
+			d.x += static_cast<f32>(d.vel.x * dt);
+			d.y += static_cast<f32>(d.vel.y * dt);
 
 			// check for collision with ball (orange?)
 			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, _orangeObj.x, _orangeObj.y, _orangeObj.radius)) {
