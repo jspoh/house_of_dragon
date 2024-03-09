@@ -156,11 +156,9 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Backend\2DCollider.cpp" />
-    <ClCompile Include="src\Backend\Application.cpp" />
     <ClCompile Include="src\Backend\MouseController.cpp" />
     <ClCompile Include="src\Backend\SoundManager.cpp" />
     <ClCompile Include="src\Backend\GameManager.cpp" />
-    <ClCompile Include="src\Backend\Utils_EaseFunctions.c" />
     <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\db\db.cpp" />
     <ClCompile Include="src\Event\Event.cpp" />

@@ -23,7 +23,7 @@ void GameManager::Init()
 	SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
 
 	//Init Sound Manager
-	SoundManager::GetInstance()->Init();
+	//SoundManager::GetInstance()->Init();
 }
 
 void GameManager::Run()

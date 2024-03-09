@@ -1,15 +1,45 @@
+/* Start Header ************************************************************************/
+/*!
+\file SceneLevelBuilder.cpp
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 21 Feb 2024
+\brief Handles the update and rendering of the levels
+
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
 #include "SceneLevelBuilder.h"
 
-int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
-bool Combat = false;
+SceneLevelBuilder::v_FloorData::v_FloorData():
+	m_currFloorNum{0},
+	m_FloorNum{0},
+	m_currFloorTimer{0.0},
+	m_FloorSpeedTimer {0.5},
+	m_IsRender{true}
+{
+	AEMtx33Identity(&m_TransformFloorData);
+	AEMtx33Identity(&m_TransformFloorCurr);
+	AEMtx33Identity(&m_currFloorSpeed);
+	AEMtx33Identity(&m_Scale);
+	AEMtx33Identity(&m_Trans);
+	AEMtx33Identity(&m_OriginalTrans);
+}
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
-	:m_TexRef{""}, m_RenderOrder{0}, m_Transparency{-1.5f}
+	:m_TexRef{""}, 
+	m_RenderOrder{0}, 
+	m_Transparency{-1.5f}, 
+	m_Type{v_SceneObjectTypes::LAST_TYPE}
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
 	AEMtx33Identity(&m_Trans);
 }
-
 SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	:m_LevelName{""},
 	m_Completed{false},
@@ -20,25 +50,28 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	m_SceneObjTypes{},
 	m_SceneObjSpawnWeight{} {}
 
-
 SceneLevelBuilder::SceneLevelBuilder():
 	m_StopMovement{false},
 	m_PanCloseToGround{false},
 	m_CompletionStatus{0},
 	m_currLevel{0},
 	m_LvlNameTimer{ 0.0 },
-    m_LvlNameTransparency{ 0.0 }
+    m_LvlNameTransparency{ 0.0 },
+	m_currTransitionTransparency {1.0},
+	m_setTransitionTransparency {-1.0}
 {
-	RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png");
-	/////////////////////////////////////////////////////////////////////////////////
-	//LOAD ALL TEXTURES - SHIFT TO RENDERHELPER
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//LOAD ALL TEXTURES
 	/*********************************************
 	//Level Header
 	**********************************************/
 	RenderHelper::getInstance()->registerTexture("LVL_HEADER", "Assets/SceneObjects/LvlHeader.png");
-	
+	RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png"); //FOR TEST CASES OF ASSETS - TO BE REMOVED
+	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+
 	/*********************************************
-	//Forest
+	//Floor
 	**********************************************/
 	RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
 	RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
@@ -131,7 +164,10 @@ SceneLevelBuilder::SceneLevelBuilder():
 	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
-
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Allocate relevant memory depending on defined values (Check #define in .hpp)
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
@@ -150,16 +186,19 @@ SceneLevelBuilder::SceneLevelBuilder():
 			m_tileSP[i][j].m_Y = (50 / NUM_OF_TILESPAWNPOINTS * i) - 25;
 		}
 	}
+	//Set the Center floor num - the one the player is traversing on
+	t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 
-	///////////////////////////////////////////////////////////////////
-	// Load Level Data from Json
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Load All Level Data from Json
 	m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
 	for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
 	{
 		v_SceneLevelData t_curr{};
 		t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
 		t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
-		//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"];
+		//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
 		t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
 		t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
 		
@@ -184,11 +223,16 @@ SceneLevelBuilder::SceneLevelBuilder():
 		
 		m_SceneLevelDataList[i] = t_curr;
 	}
-	
-	CombatScene::sInstance->Load();
-	Init();
 
-	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Load Combat elements
+	CombatScene::sInstance->Load();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Initialise 3D engine & relevant values
+	Init();
 }
 SceneLevelBuilder::~SceneLevelBuilder()
 {                          
@@ -208,50 +252,50 @@ void SceneLevelBuilder::Init()
 				//Out of Screen Floor
 			case 0:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000 * (j-t_CenterFloorNum), -2829);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * static_cast<float>(j-t_CenterFloorNum), -2829.0f);
 				break;
 			case 1:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750 * (j - t_CenterFloorNum), -2229);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750.0f * static_cast<float>(j - t_CenterFloorNum), -2229.0f);
 				break;
 			case 2:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350 * (j - t_CenterFloorNum), -1629);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350.0f * static_cast<float>(j - t_CenterFloorNum), -1629.0f);
 				break;
 				//First Floor
 			case 3:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150 * (j - t_CenterFloorNum), -696);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150.0f * static_cast<float>(j - t_CenterFloorNum), -696.0f);
 				break;
 				//Second Floor
 			case 4:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150 * (j - t_CenterFloorNum), -282);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150.0f * static_cast<float>(j - t_CenterFloorNum), -282.0f);
 				break;
 				//Third floor
 			case 5:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555 * (j - t_CenterFloorNum), -50);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555.0f * static_cast<float>(j - t_CenterFloorNum), -50.0f);
 				break;
 				//Fourth floor
 			case 6:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270 * (j - t_CenterFloorNum), 39);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270.0f * static_cast<float>(j - t_CenterFloorNum), 39.0f);
 				break;
 				//Fifth floor
 			case 7:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130 * (j - t_CenterFloorNum), 69);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130.0f * static_cast<float>(j - t_CenterFloorNum), 69.0f);
 				break;
 				//Sixth floor
 			case 8:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59 * (j - t_CenterFloorNum), 78);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59.0f * static_cast<float>(j - t_CenterFloorNum), 78.0f);
 				break;
 				//Seventh floor
 			case 9:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25 * (j - t_CenterFloorNum), 80);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * static_cast<float>(j - t_CenterFloorNum), 80.0f);
 				break;
 			default:
 				std::cout << "Error pls check floor" << std::endl;
@@ -310,48 +354,6 @@ void SceneLevelBuilder::Init()
 
 void SceneLevelBuilder::Update(double dt)
 {
-	//Placement Tool (Remove once done)
-	static double x = 1, y = 1;
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		y += 0.5;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		y -= 0.5;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		x -= 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		x += 0.55;
-	}
-	static double mx = 0, my = 0;
-	if (AEInputCheckCurr(AEVK_UP))
-	{
-		mx += 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_DOWN))
-	{
-		mx -= 0.55;
-	}
-	if (AEInputCheckCurr(AEVK_RIGHT))
-	{
-		my += 12.55;
-	}
-	if (AEInputCheckCurr(AEVK_LEFT))
-	{
-		my -= 12.55;
-	}
-	//AEMtx33 scale = { 0 }, trans = { 0 };
-	//AEMtx33Scale(&scale, x, y);
-	//AEMtx33Trans(&trans, mx, my);
-	//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-	//
-	//cout << x << " " << y << " " << mx << endl;
-	
 	static double TestTimer = 2.0f;
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
@@ -384,7 +386,7 @@ void SceneLevelBuilder::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_Z))
 	{
 		std::vector<std::string> names = { "cat", "cat","cat" };
-		TestTimer = 2.0f;
+		TestTimer = 2.5f;
         //CombatScene::sInstance->spawnEnemies(names);
         //CombatScene::sInstance->Init();
 	}
@@ -414,20 +416,20 @@ void SceneLevelBuilder::Update(double dt)
 		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
 		PanDown += PanDown < 0 ? 4 : 0;
 	}
-		
-
-	if (AEInputCheckCurr(AEVK_X))
-	{
-
-	}
-	else
-	{
-
-	}
-
 	f32 t_x, t_y;
 	AEGfxGetCamPosition(&t_x, &t_y);
-	AEGfxSetCamPosition(t_x, t_y - PanDown);
+	AEGfxSetCamPosition(t_x, t_y - static_cast<float>(PanDown));
+
+	UpdateLvlName(dt);
+	//Change to next Level
+	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
+		SceneLevelBuilder::SpawnLvlName();
+
+	UpdateScreenTransition(dt);
+	if (AEInputCheckTriggered(AEVK_V))
+		FadeINBlack();
+	else if(AEInputCheckTriggered(AEVK_B))
+		FadeOutBlack();
 
 	if (!m_StopMovement)
 	{
@@ -464,15 +466,15 @@ void SceneLevelBuilder::Update(double dt)
 				};
 
 				//Incrementing speed
-				m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? dt * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? dt * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? dt * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? dt * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? dt * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? dt * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? dt * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? dt * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? dt * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? static_cast<float>(dt) * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : 0;
 				//Adding to floor
 				m_Floor[j][i].m_TransformFloorCurr.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0];
 				m_Floor[j][i].m_TransformFloorCurr.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1];
@@ -566,8 +568,8 @@ void SceneLevelBuilder::Update(double dt)
 					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
 
 					//CHANGE TO THIS ANGLE
-					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55) * (*it).m_Scale.m[0][0];
-					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85) * (*it).m_Scale.m[1][1];
+					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55f) * (*it).m_Scale.m[0][0];
+					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85f) * (*it).m_Scale.m[1][1];
 
 					//Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
@@ -580,11 +582,6 @@ void SceneLevelBuilder::Update(double dt)
 			}
 		}
 	}
-
-	UpdateLvlName(dt);
-	//Change to next Level
-	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
-		SceneLevelBuilder::SpawnLvlName();
 }
 void SceneLevelBuilder::Render()
 {
@@ -731,6 +728,16 @@ void SceneLevelBuilder::Render()
 
 	RenderLvlName();
 
+	//Screen Transition
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+	AEGfxSetTransparency(m_currTransitionTransparency);
+	AEMtx33 t_curr;
+	AEMtx33Identity(&t_curr);
+	AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+	AEGfxSetTransform(t_curr.m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
 }
@@ -834,8 +841,8 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			{
 				if (j == t_CenterFloorNum - 1 || j == t_CenterFloorNum + 1)
 				{
-					t_RandX = rand() % NUM_OF_TILESPAWNPOINTS / 2;
-					t_RandY = rand() % NUM_OF_TILESPAWNPOINTS / 2;
+					t_RandX = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
+					t_RandY = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
 				}
 				else
 				{
@@ -896,7 +903,7 @@ void SceneLevelBuilder::SpawnLvlName()
 	m_LvlNameTransparency = -1.2;
 }
 
-void SceneLevelBuilder::UpdateLvlName(float t_dt)
+void SceneLevelBuilder::UpdateLvlName(double t_dt)
 {
 	if (m_LvlNameTimer > MAX_LVLNAMETIMER - 1.0)
 	{
@@ -914,10 +921,10 @@ void SceneLevelBuilder::RenderLvlName()
 	f32 t_camX, t_camY;
 	AEGfxGetCamPosition(&t_camX, &t_camY);
 
-	AEVec2 RightOriginalHeaderPos{ 27.5, 175.7 };
-	AEVec2 LeftOriginalHeaderPos{ -27.5, 175.7};
-	AEVec2 RightMaxHeaderPos{ -15 + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7, 175.7 };
-	AEVec2 LeftMaxHeaderPos{ 15 - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7, 175.7};
+	AEVec2 RightOriginalHeaderPos{ 27.5f, 175.7f };
+	AEVec2 LeftOriginalHeaderPos{ -27.5f, 175.7f};
+	AEVec2 RightMaxHeaderPos{ -15.0f + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f};
+	AEVec2 LeftMaxHeaderPos{ 15.0f - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f};
 	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
 	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
 	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;
@@ -969,3 +976,60 @@ void SceneLevelBuilder::RenderLvlName()
 		currLeftHeaderPos = LeftOriginalHeaderPos;
 	}
 }
+
+/*********************************************************************************
+Screen Transition
+**********************************************************************************/
+void SceneLevelBuilder::UpdateScreenTransition(double t_dt)
+{
+	m_currTransitionTransparency += (m_setTransitionTransparency - m_currTransitionTransparency) / (50* t_dt);
+}
+void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
+void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
+
+
+
+////////////////////////////////////////////////////////////////////////////
+/*
+//Placement Tool (Remove once done)
+static double x = 1, y = 1;
+if (AEInputCheckCurr(AEVK_W))
+{
+	y += 0.5;
+}
+if (AEInputCheckCurr(AEVK_S))
+{
+	y -= 0.5;
+}
+if (AEInputCheckCurr(AEVK_A))
+{
+	x -= 0.55;
+}
+if (AEInputCheckCurr(AEVK_D))
+{
+	x += 0.55;
+}
+static double mx = 0, my = 0;
+if (AEInputCheckCurr(AEVK_UP))
+{
+	mx += 0.55;
+}
+if (AEInputCheckCurr(AEVK_DOWN))
+{
+	mx -= 0.55;
+}
+if (AEInputCheckCurr(AEVK_RIGHT))
+{
+	my += 12.55;
+}
+if (AEInputCheckCurr(AEVK_LEFT))
+{
+	my -= 12.55;
+}
+//AEMtx33 scale = { 0 }, trans = { 0 };
+//AEMtx33Scale(&scale, x, y);
+//AEMtx33Trans(&trans, mx, my);
+//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+//
+//cout << x << " " << y << " " << mx << endl;
+*/

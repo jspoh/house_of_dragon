@@ -16,12 +16,15 @@ SceneCredits* SceneCredits::sInstance = new SceneCredits(SceneManager::GetInstan
 
 SceneCredits::SceneCredits()
 {
-
+	pFontL = pFontM = pFontS = pFontxS = 0;
+	textPosX = textPosY = 0.0f;
 }
 
 SceneCredits::SceneCredits(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneCredits", this);
+	pFontL = pFontM = pFontS = pFontxS = 0;
+	textPosX = textPosY = 0.0f;
 }
 
 SceneCredits::~SceneCredits()
@@ -78,6 +81,7 @@ void SceneCredits::Init()
 
 void SceneCredits::Update(double dt)
 {
+	UNREFERENCED_PARAMETER(dt);
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
@@ -215,7 +219,14 @@ void SceneCredits::Exit()
 }
 void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
 {
-
+	UNREFERENCED_PARAMETER(transparency);
+	UNREFERENCED_PARAMETER(texture);
+	UNREFERENCED_PARAMETER(scaleY);
+	UNREFERENCED_PARAMETER(scaleX);
+	UNREFERENCED_PARAMETER(rotation);
+	UNREFERENCED_PARAMETER(positionX);
+	UNREFERENCED_PARAMETER(positionY);
+	UNREFERENCED_PARAMETER(mesh);
 	AEGfxSetBackgroundColor(0.0f, 0.2f, 1.0f);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);

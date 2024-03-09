@@ -18,7 +18,7 @@ public:
 	virtual void Exit();
 
 	// Set the maxAABB and minAABB
-	void SetAABB(Vector3 maxAABB, Vector3 minAABB);
+	void SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB);
 
 private:
 	const u32 spritesheet_rows = 5;

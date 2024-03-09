@@ -1,7 +1,7 @@
 /*!************************************************************************
 \file SoundManager.cpp
-\author Soh Wei Jie (weijie.soh)
-\par DP email: weijie.soh\@digipen.edu
+\author Soh Wei Jie (weijie.soh), Poh Jing Seng (jingseng.poh)
+\par DP email: weijie.soh\@digipen.edu, jingseng.poh\@digipen.edu
 \par Course: csd1451
 \par House 0F Dragons
 \date 23-1-2024
@@ -15,117 +15,75 @@ using namespace std;
 
 // Constructor
 SoundManager::SoundManager()
-	//: theSoundEngine(NULL)
 {
+	std::cout << "Initializing SoundManager..\n";
+	sfxGroup = AEAudioCreateGroup();
+	musicGroup = AEAudioCreateGroup();
 }
 
 // Destructor
 SoundManager::~SoundManager()
 {
-	// Clear out the sound map
-	soundMap.clear();
+	for (const auto& map : soundMap) {
+		AEAudioUnloadAudio(map.second);
+	}
+	for (const auto& map : musicMap) {
+		AEAudioUnloadAudio(map.second);
+	}
 
-	// Delete the sound engine
-	//if (theSoundEngine)
-	//{
-	//	delete theSoundEngine;
-	//	theSoundEngine = NULL;
-	//}
+	AEAudioUnloadAudioGroup(sfxGroup);
+	AEAudioUnloadAudioGroup(musicGroup);
+
+	// Clear out the maps
+	soundMap.clear();
+	musicMap.clear();
 }
 
-// Init this class and it will create the Sound Engine
-bool SoundManager::Init(void)
-{
-	// Create the sound engine
-	//theSoundEngine = createIrrKlangDevice();
-	//if (!theSoundEngine)
-	//	return false;	// error starting up the sound engine
-	std::cout << "SoundManager is running" << std::endl;
+bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic) {
+	// check if ref is already used
+	if (soundMap.find(ref) != soundMap.end() || musicMap.find(ref) != musicMap.end()) {
+		std::cerr << "Audio reference " << ref << " already exists!\n";
+		return false;
+	}
+
+	AEAudio audio = isMusic ? AEAudioLoadMusic(path.c_str()) : AEAudioLoadSound(path.c_str());
+
+	if (!AEAudioIsValidAudio(audio)) {
+		std::cerr << "SoundManager failed to load " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
+		return false;
+	}
+
+	if (isMusic) {
+		musicMap[ref] = audio;
+	}
+	else {
+		soundMap[ref] = audio;
+	}
+
+	std::cout << "SoundManager loaded " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
+
+
 	return true;
 }
-//
-//// Get the handler to the sound engine
-//ISoundEngine* CSoundEngine::GetSoundEngine(void)
-//{
-//	if (theSoundEngine == NULL)
-//	{
-//		if (Init() == false)
-//		{
-//			cout << "SoundEngine::GetSoundEngine() - The Sound Engine has not been initialised yet." << endl;
-//			return NULL;
-//		}
-//	}
-//
-//	return theSoundEngine;
-//}
-//
-//// Add a sound to this library
-//void CSoundEngine::AddSound(const std::string& _soundIndex, const std::string& _soundSource)
-//{
-//	if (theSoundEngine == NULL)
-//	{
-//		if (Init() == false)
-//		{
-//			cout << "SoundEngine::AddSound() - The Sound Engine has not been initialised yet." << endl;
-//			return;
-//		}
-//	}
-//
-//	// Clean up first if there is an existing goodie with the same name
-//	RemoveSound(_soundIndex);
-//
-//	// Add the mesh now
-//	soundMap[_soundIndex] = _soundSource;
-//}
-//
-//// Get a sound from this map 
-//std::string CSoundEngine::GetSound(const std::string& _soundIndex)
-//{
-//	if (theSoundEngine == NULL)
-//	{
-//		if (Init() == false)
-//		{
-//			cout << "SoundEngine::GetSound() - The Sound Engine has not been initialised yet." << endl;
-//			return std::string();
-//		}
-//	}
-//
-//	if (soundMap.count(_soundIndex) != 0)
-//	{
-//		return soundMap[_soundIndex];
-//	}
-//
-//	return std::string();
-//}
-//
-//// Remove a sound from this map
-//bool CSoundEngine::RemoveSound(const std::string& _soundIndex)
-//{
-//	if (theSoundEngine == NULL)
-//	{
-//		if (Init() == false)
-//		{
-//			cout << "SoundEngine::RemoveSound() - The Sound Engine has not been initialised yet." << endl;
-//			return NULL;
-//		}
-//	}
-//
-//	std::string aSoundName = GetSound(_soundIndex);
-//	if (!aSoundName.empty())
-//	{
-//		soundMap.erase(_soundIndex);
-//		return true;
-//	}
-//	return false;
-//}
-//
-//// Play a sound from this map
-//void CSoundEngine::PlayASound(const std::string& _soundIndex)
-//{
-//	std::string aSound = GetSound(_soundIndex);
-//	if (!theSoundEngine->isCurrentlyPlaying(aSound.c_str()))
-//	{
-//		// Play a sound
-//		theSoundEngine->play2D(aSound.c_str(), false, false);
-//	}
-//}
+
+void SoundManager::playAudio(std::string ref, float volume, bool loop, bool isMusic) {
+	AEAudio audio;
+
+	if (soundMap.find(ref) != soundMap.end()) {
+		audio = soundMap[ref];
+	}
+	else if (musicMap.find(ref) != soundMap.end()) {
+		audio = musicMap[ref];
+	}
+	else {
+		std::cerr << "Audio with ref " << ref << " does not exist!\n";
+		return;
+	}
+
+	AEAudioPlay(audio, isMusic ? musicGroup : sfxGroup, volume, 1.f, loop);
+}
+
+
+void SoundManager::setVolume(float volume, bool setMusic) {
+	AEAudioSetGroupVolume(setMusic ? musicGroup : sfxGroup, volume);
+}

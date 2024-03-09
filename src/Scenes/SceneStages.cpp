@@ -3,8 +3,6 @@
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
-//double m_FloorSpeedTimer = 0.5;
-
 SceneStages::SceneStages() : m_LevelBuilder(nullptr)
 {
 }	
@@ -38,15 +36,14 @@ void SceneStages::Update(double dt)
 		m_LevelBuilder->Update(dt);
 		int mouseX, mouseY;
 		AEInputGetCursorPosition(&mouseX, &mouseY);
-		AEGfxSetCamPosition((mouseX - AEGfxGetWindowWidth()/2)/MOUSE_SENSITIVITY, -(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY);
+		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY), 
+			static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY));
 	}
 }
 
 
 void SceneStages::Render()
 {
-	//std::cout << Database::getInstance()->data["levels"][0]["enemySpawnWeight"]["cat"] << "\n";
-
 	m_LevelBuilder->Render();
 }
 
@@ -64,10 +61,12 @@ FIX LAG AAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 (SIMI LANJIAO NO LAG ON OTHER PEOPLE COM)
 Fix Floor 
 Adjust SceneObject Placement
-Blocking
-Cloud Scrolling (Still Working)
-Add Backdrop 
 Add Lens Flare
-Integrate combat system (Still Working)
+
+Add Backdrop (by today)
+Blocking (by today)
+Cloud Scrolling (by today)
+Commenting Code (by today)
+Integrate combat system (by today)
 Integrate camera panning with combat (NEED TO IMPROVE/OVERHAUL)
 ***/

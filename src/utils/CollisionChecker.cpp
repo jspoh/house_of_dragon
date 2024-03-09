@@ -64,6 +64,10 @@ bool CollisionChecker::areRectsIntersecting(float screenX1, float screenY1, floa
 }
 
 bool CollisionChecker::isRectTouchingScreenXBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	UNREFERENCED_PARAMETER(rectScreenX);
+	UNREFERENCED_PARAMETER(rectScreenY);
+	UNREFERENCED_PARAMETER(h);
+
 	if (rectScreenX - w / 2 <= 0) {
 		return true;		// left
 	}
@@ -74,6 +78,7 @@ bool CollisionChecker::isRectTouchingScreenXBorder(float rectScreenX, float rect
 }
 
 bool CollisionChecker::isRectTouchingScreenYBorder(float rectScreenX, float rectScreenY, float w, float h) {
+	UNREFERENCED_PARAMETER(w);
 	if (rectScreenY - h / 2 <= 0) {
 		return true;		// top
 	}
