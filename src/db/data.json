@@ -67,11 +67,11 @@
       	 "dog": 1
       	}
        ],
-      "SceneOBJSpawnWeight": {
-        "Grass": 1,
+      "SceneOBJSpawnWeight":[ {
+        "Grass": 10,
         "Tree": 1,
         "Rock": 1
-      },
+      }],
       "DayTime": true
     },
     {
@@ -84,11 +84,11 @@
         "cat": 1,
         "dog": 1
       }],
-      "SceneOBJSpawnWeight": {
+      "SceneOBJSpawnWeight": [{
         "Grass": 1,
         "Tree": 1,
         "Rock": 1
-      },
+      }],
       "DayTime": true
     },
     {
@@ -97,15 +97,15 @@
       "completed": false,
       "maxEnemies": 3,
       "maxSceneOBJperTile": 5,
-      "enemySpawnWeight": {
+      "enemySpawnWeight": [{
         "cat": 1,
         "dog": 2
-      },
-      "SceneOBJSpawnWeight": {
+      }],
+      "SceneOBJSpawnWeight": [{
         "Grass": 1,
         "Tree": 1,
         "Rock": 1
-      },
+      }],
       "DayTime": false
     }
   ]

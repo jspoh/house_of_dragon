@@ -25,7 +25,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	m_StopMovement{false},
 	m_PanCloseToGround{false},
 	m_CompletionStatus{0},
-	m_currLevel{-1},
+	m_currLevel{0},
 	m_LvlNameTimer{ 0.0 },
     m_LvlNameTransparency{ 0.0 }
 {
@@ -132,15 +132,6 @@ SceneLevelBuilder::SceneLevelBuilder():
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
 
-	//TO BE DELETED
-	//pFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_Floor_Grass_3D.png");
-	//pSideRightFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Sand_3D.png");
-	//pSideLeftFloorTex = AEGfxTextureLoad("Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Sand_3D.png");
-	//pSkyTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
-	//pSunOverlayTex = AEGfxTextureLoad("Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
-	//pFogTex = AEGfxTextureLoad("Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
-	//pEnemyTex = AEGfxTextureLoad("Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
-
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
 	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
@@ -171,17 +162,26 @@ SceneLevelBuilder::SceneLevelBuilder():
 		//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"];
 		t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
 		t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
+		
+		for (auto& map : Database::getInstance()->data["levels"][i]["enemySpawnWeight"].items())
+		{
+			for (auto type = map.value().begin(); type != map.value().end(); type++)
+			{
+				//cout << type.key() <<" || "<< type.value() << endl; //Working example
+				t_curr.m_EnemyTypes.push_back(type.key());
+				t_curr.m_EnemySpawnWeight.push_back(type.value());
+			}
+		}
 
-		//for (int j = 0; j < Database::getInstance()->data["levels"][i]["enemySpawnWeight"].size(); j++)
-		//{
-		//	string type = Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j];
-		//	//t_curr.m_EnemyTypes.push_back(type);
-		//	//t_curr.m_EnemySpawnWeight.push_back(Database::getInstance()->data["levels"][i]["enemySpawnWeight"][j][type]);
-		//}
-
-		//t_curr.m_SceneObjTypes = Database::getInstance()->data["levels"][i]["levelName"];
-		//t_curr.m_SceneObjSpawnWeight = Database::getInstance()->data["levels"][i]["levelName"];
-		//
+		for (auto& map : Database::getInstance()->data["levels"][i]["SceneOBJSpawnWeight"].items())
+		{
+			for (auto type = map.value().begin(); type != map.value().end(); type++)
+			{
+				t_curr.m_SceneObjTypes.push_back(type.key());
+				t_curr.m_SceneObjSpawnWeight.push_back(type.value());
+			}
+		}
+		
 		m_SceneLevelDataList[i] = t_curr;
 	}
 	
@@ -651,53 +651,53 @@ void SceneLevelBuilder::Render()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//SceneObj
 	//Render Left Side
-	//for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
-	//{
-	//	for (int i = 0; i < NUM_OF_TILES - 1; i++)
-	//	{
-	//		////////////////////////////////////////////////
-	//		// CurrentTileNumFurthest = 4
-	//		// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-	//		////////////////////////////////////////////////
-	//		int tempTileNum = CurrentTileNumFurthest - i;
-	//		if (tempTileNum < 0)
-	//			tempTileNum += NUM_OF_TILES - 1;
+	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
+	{
+		for (int i = 0; i < NUM_OF_TILES - 1; i++)
+		{
+			////////////////////////////////////////////////
+			// CurrentTileNumFurthest = 4
+			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+			////////////////////////////////////////////////
+			int tempTileNum = CurrentTileNumFurthest - i;
+			if (tempTileNum < 0)
+				tempTileNum += NUM_OF_TILES - 1;
 
-	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-	//			it != m_FloorOBJs[j][tempTileNum].end();
-	//			it++)
-	//		{
-	//			AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
-	//			AEGfxSetTransparency((*it).m_Transparency);
-	//			AEGfxSetTransform((*it).m_TransformData.m);
-	//			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	//		}
-	//	}
-	//}
-	////Render Right Side
-	//for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
-	//{
-	//	for (int i = 0; i < NUM_OF_TILES - 1; i++)
-	//	{
-	//		////////////////////////////////////////////////
-	//		// CurrentTileNumFurthest = 4
-	//		// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-	//		////////////////////////////////////////////////
-	//		int tempTileNum = CurrentTileNumFurthest - i;
-	//		if (tempTileNum < 0)
-	//			tempTileNum += NUM_OF_TILES - 1;
+			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+				it != m_FloorOBJs[j][tempTileNum].end();
+				it++)
+			{
+				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+				AEGfxSetTransparency((*it).m_Transparency);
+				AEGfxSetTransform((*it).m_TransformData.m);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+			}
+		}
+	}
+	//Render Right Side
+	for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
+	{
+		for (int i = 0; i < NUM_OF_TILES - 1; i++)
+		{
+			////////////////////////////////////////////////
+			// CurrentTileNumFurthest = 4
+			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+			////////////////////////////////////////////////
+			int tempTileNum = CurrentTileNumFurthest - i;
+			if (tempTileNum < 0)
+				tempTileNum += NUM_OF_TILES - 1;
 
-	//		for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-	//			it != m_FloorOBJs[j][tempTileNum].end();
-	//			it++)
-	//		{
-	//			AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
-	//			AEGfxSetTransparency((*it).m_Transparency);
-	//			AEGfxSetTransform((*it).m_TransformData.m);
-	//			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	//		}
-	//	}
-	//}
+			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+				it != m_FloorOBJs[j][tempTileNum].end();
+				it++)
+			{
+				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
+				AEGfxSetTransparency((*it).m_Transparency);
+				AEGfxSetTransform((*it).m_TransformData.m);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+			}
+		}
+	}
 
 	RenderLvlName();
 
@@ -706,15 +706,6 @@ void SceneLevelBuilder::Render()
 }
 void SceneLevelBuilder::Exit()
 {
-	//Clear All Texture
-	//AEGfxTextureUnload(pFloorTex);
-	//AEGfxTextureUnload(pSideRightFloorTex);
-	//AEGfxTextureUnload(pSideLeftFloorTex);
-	//AEGfxTextureUnload(pSkyTex);
-	//AEGfxTextureUnload(pSunOverlayTex);
-	//AEGfxTextureUnload(pFogTex);
-	//AEGfxTextureUnload(pEnemyTex);
-
 	//Clear Floor
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
@@ -742,36 +733,87 @@ void SceneLevelBuilder::Exit()
 	AEGfxDestroyFont(pTextFont);
 }
 
+/*********************************************************************************
+Scene Object Spawning
+**********************************************************************************/
 void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 {
 	srand(static_cast<unsigned> (time(0)));
-	//if(false)
+
+	//if(false) //Delete if not used
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre
 		if (j == t_CenterFloorNum)
 			continue;
 
-		for (int i = MAX_NUM_SCENEOBJS_TILE/*3*//*rand() % NUM_OF_TILESPAWNPOINTS + MAX_NUM_SCENEOBJS_TILE/10*/; i > 0; i--)
+		//Spawn objs based on MAX_NUM_SCENEOBJS_TILE
+		for (int i = static_cast<int>(AEClamp(static_cast<float>(rand() % MAX_NUM_SCENEOBJS_TILE), 1.0f, static_cast<float>(MAX_NUM_SCENEOBJS_TILE))); i > 0; i--)
 		{
 			v_SceneObject newObj;
 
-			//Selecting Entities to Spawn
-			newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand()%(v_SceneObjectTypes::ETYPE_LAST - v_SceneObjectTypes::ETYPE_NONE) + v_SceneObjectTypes::ETYPE_NONE,
-				v_SceneObjectTypes::ETYPE_NONE + 1,
-				v_SceneObjectTypes::ETYPE_LAST - 1));
+			//Selecting Entity Group to Spawn
+			int TotalProb = 0; //Get total probability
+			for (int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			{
+				TotalProb += curr;
+			}
+			string Ref = "";
+			int randnum = AEClamp(rand() % TotalProb, 1, TotalProb);//This is the rand probability of which type of sceneobjects to spawn
+			int temp = 0;//Disregard this: for loop below
+			for(int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			{
+				randnum -= curr;
+				if (randnum < 0)
+				{
+					Ref = m_SceneLevelDataList[m_currLevel].m_SceneObjTypes[temp];
+					break;
+				}
+				temp++;
+			}
+
+			//Selecting Entity from entity group to spawn
+			bool tobeCentered = false;
+			if (Ref == "Grass")
+			{
+				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand() % (v_SceneObjectTypes::TYPE_End_Grass - v_SceneObjectTypes::TYPE_Grass) + v_SceneObjectTypes::TYPE_Grass,
+					v_SceneObjectTypes::TYPE_Grass + 1,
+					v_SceneObjectTypes::TYPE_End_Grass - 1));
+				tobeCentered = true;
+			}
+			else if (Ref == "Tree")
+			{
+				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand() % (v_SceneObjectTypes::TYPE_End_Tree - v_SceneObjectTypes::TYPE_Tree) + v_SceneObjectTypes::TYPE_Tree,
+					v_SceneObjectTypes::TYPE_Tree + 1,
+					v_SceneObjectTypes::TYPE_End_Tree - 1));
+				tobeCentered = false;
+			}
+			else if (Ref == "Rock")
+			{
+				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(rand() % (v_SceneObjectTypes::TYPE_End_Rock - v_SceneObjectTypes::TYPE_Rock) + v_SceneObjectTypes::TYPE_Rock,
+					v_SceneObjectTypes::TYPE_Rock + 1,
+					v_SceneObjectTypes::TYPE_End_Rock - 1));
+				tobeCentered = true;
+			}
 
 			//Random Selection of Spawn location on tile
 			int t_RandX, t_RandY;
-			if (j == t_CenterFloorNum - 1 || j == t_CenterFloorNum + 1)
+			if (!tobeCentered)
 			{
-				t_RandX = rand() % NUM_OF_TILESPAWNPOINTS / 2;
-				t_RandY = rand() % NUM_OF_TILESPAWNPOINTS / 2;
+				if (j == t_CenterFloorNum - 1 || j == t_CenterFloorNum + 1)
+				{
+					t_RandX = rand() % NUM_OF_TILESPAWNPOINTS / 2;
+					t_RandY = rand() % NUM_OF_TILESPAWNPOINTS / 2;
+				}
+				else
+				{
+					t_RandX = rand() % NUM_OF_TILESPAWNPOINTS;
+					t_RandY = rand() % NUM_OF_TILESPAWNPOINTS;
+				}
 			}
 			else
 			{
-				t_RandX = rand() % NUM_OF_TILESPAWNPOINTS;
-				t_RandY = rand() % NUM_OF_TILESPAWNPOINTS;
+				t_RandX = t_RandY = 0;
 			}
 					
 			
@@ -784,7 +826,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 				AEMtx33Trans(&newObj.m_Trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 
-			////Random Scaling
+			////Random Scaling ( TOBEDELETED
 			//float scale = (rand() % 20) * 0.01f + 0.1f;
 			//AEMtx33Scale(&newObj.m_Scale, scale, scale);
 			//Scaling (Uniform Scaling)
@@ -811,6 +853,10 @@ void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
 	}
 }
 
+
+/*********************************************************************************
+Level Name
+**********************************************************************************/
 void SceneLevelBuilder::SpawnLvlName()
 {
 	m_LvlNameTimer = MAX_LVLNAMETIMER;

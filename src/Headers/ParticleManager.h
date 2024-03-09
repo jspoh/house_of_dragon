@@ -19,7 +19,7 @@ public:
 	void update_particles(float dt);
 	void death_particle(Point deadEnemyPos);
 	void render_particles();
-	void ParticleManager::create_particles();
+	void create_particles();
 private:
 	//Make a pooling system
 	~ParticleManager();

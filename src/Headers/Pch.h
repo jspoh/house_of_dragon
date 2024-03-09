@@ -30,6 +30,7 @@ Technology is prohibited.
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <vector>
 #include "utils.h"
 #include "db.h"
 

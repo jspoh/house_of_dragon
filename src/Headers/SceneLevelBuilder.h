@@ -90,7 +90,33 @@ private:
 		EType_MysteryEnemyStrong,
 		EType_MysteryEnemyWeak,
 
-		ETYPE_NONE,
+		FIRST_TYPE,
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		TYPE_Grass, //To define objs that are grass
+		EType_Grass_Foliage_1,
+		EType_Grass_Foliage_2,
+		EType_Grass_Foliage_3,
+		EType_Grass_1,
+		EType_Grass_2,
+		EType_Grass_3,
+		TYPE_End_Grass, //To define the end of objs that are grass
+		TYPE_Rock, //To define objs that are grass
+		EType_Rock_BROWN_1,
+		EType_Rock_BROWN_2,
+		EType_Rock_BROWN_3,
+		EType_Rock_BROWN_4,
+		EType_Rock_BROWN_5,
+		EType_Rock_BROWN_6,
+		EType_Rock_WHITE_1,
+		EType_Rock_WHITE_2,
+		EType_Rock_WHITE_3,
+		EType_Rock_WHITE_4,
+		EType_Rock_WHITE_5,
+		EType_Rock_WHITE_6,
+		TYPE_End_Rock, //To define the end of objs that are grass
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		TYPE_Tree, // To define objs to be rand spawned on tile
 		EType_ForestTree_XL_1,
 		EType_ForestTree_XL_2,
 		EType_ForestTree_L_1,
@@ -107,25 +133,9 @@ private:
 		EType_NightTree_M_2,
 		EType_NightTree_S_1,
 		EType_NightTree_S_2,
-		EType_Grass_Foliage_1,
-		EType_Grass_Foliage_2,
-		EType_Grass_Foliage_3,
-		EType_Grass_1,
-		EType_Grass_2,
-		EType_Grass_3,
-		EType_Rock_BROWN_1,
-		EType_Rock_BROWN_2,
-		EType_Rock_BROWN_3,
-		EType_Rock_BROWN_4,
-		EType_Rock_BROWN_5,
-		EType_Rock_BROWN_6,
-		EType_Rock_WHITE_1,
-		EType_Rock_WHITE_2,
-		EType_Rock_WHITE_3,
-		EType_Rock_WHITE_4,
-		EType_Rock_WHITE_5,
-		EType_Rock_WHITE_6,
-		ETYPE_LAST,
+		TYPE_End_Tree, // To define the end of objs to be rand spawned on tile
+		///////////////////////////////////////////////////////////////////////////////////////////////
+		LAST_TYPE,
 
 		
 	};
@@ -155,23 +165,13 @@ private:
 		string m_LevelName;
 		bool m_Completed;
 		int m_MaxEnemies;
-		std::list<string> m_EnemyTypes;
-		std::list<int> m_EnemySpawnWeight;
-		std::list<string> m_SceneObjTypes;
-		std::list<int> m_SceneObjSpawnWeight;
+		std::vector<string> m_EnemyTypes;
+		std::vector<int> m_EnemySpawnWeight;
+		std::vector<string> m_SceneObjTypes;
+		std::vector<int> m_SceneObjSpawnWeight;
 
 		bool m_DayTime;
 	};					  
-
-	//Change soon
-	//AEGfxTexture* pFloorTex;
-	//AEGfxTexture* pSideLeftFloorTex;
-	//AEGfxTexture* pSideRightFloorTex;
-	//AEGfxTexture* pSkyTex;
-	//AEGfxTexture* pSunOverlayTex;
-	//AEGfxTexture* pFogTex;
-
-	//AEGfxTexture* pEnemyTex;
 
 	v_FloorData** m_Floor;
 	v_TileSpawnPoint** m_tileSP; //0 
