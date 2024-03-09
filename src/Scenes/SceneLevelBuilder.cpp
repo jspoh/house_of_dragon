@@ -3,13 +3,15 @@
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 bool Combat = false;
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
-	:m_TexRef{""}, m_RenderOrder{0}, m_Transparency{-1.5f}
+	:m_TexRef{""}, 
+	m_RenderOrder{0}, 
+	m_Transparency{-1.5f}, 
+	m_Type{v_SceneObjectTypes::LAST_TYPE}
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
 	AEMtx33Identity(&m_Trans);
 }
-
 SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	:m_LevelName{""},
 	m_Completed{false},
@@ -20,14 +22,15 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	m_SceneObjTypes{},
 	m_SceneObjSpawnWeight{} {}
 
-
 SceneLevelBuilder::SceneLevelBuilder():
 	m_StopMovement{false},
 	m_PanCloseToGround{false},
 	m_CompletionStatus{0},
 	m_currLevel{0},
 	m_LvlNameTimer{ 0.0 },
-    m_LvlNameTransparency{ 0.0 }
+    m_LvlNameTransparency{ 0.0 },
+	m_currTransitionTransparency {1.0},
+	m_setTransitionTransparency {-1.0}
 {
 	RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png");
 	/////////////////////////////////////////////////////////////////////////////////
@@ -208,50 +211,50 @@ void SceneLevelBuilder::Init()
 				//Out of Screen Floor
 			case 0:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000 * (j-t_CenterFloorNum), -2829);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * (j-t_CenterFloorNum), -2829.0f);
 				break;
 			case 1:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750 * (j - t_CenterFloorNum), -2229);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750.0f * (j - t_CenterFloorNum), -2229.0f);
 				break;
 			case 2:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350 * (j - t_CenterFloorNum), -1629);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350.0f * (j - t_CenterFloorNum), -1629.0f);
 				break;
 				//First Floor
 			case 3:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150 * (j - t_CenterFloorNum), -696);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150.0f * (j - t_CenterFloorNum), -696.0f);
 				break;
 				//Second Floor
 			case 4:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150 * (j - t_CenterFloorNum), -282);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150.0f * (j - t_CenterFloorNum), -282.0f);
 				break;
 				//Third floor
 			case 5:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555 * (j - t_CenterFloorNum), -50);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555.0f * (j - t_CenterFloorNum), -50.0f);
 				break;
 				//Fourth floor
 			case 6:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270 * (j - t_CenterFloorNum), 39);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270.0f * (j - t_CenterFloorNum), 39.0f);
 				break;
 				//Fifth floor
 			case 7:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130 * (j - t_CenterFloorNum), 69);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130.0f * (j - t_CenterFloorNum), 69.0f);
 				break;
 				//Sixth floor
 			case 8:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59 * (j - t_CenterFloorNum), 78);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59.0f * (j - t_CenterFloorNum), 78.0f);
 				break;
 				//Seventh floor
 			case 9:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25 * (j - t_CenterFloorNum), 80);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * (j - t_CenterFloorNum), 80.0f);
 				break;
 			default:
 				std::cout << "Error pls check floor" << std::endl;
@@ -384,7 +387,7 @@ void SceneLevelBuilder::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_Z))
 	{
 		std::vector<std::string> names = { "cat", "cat","cat" };
-		TestTimer = 2.0f;
+		TestTimer = 2.5f;
         //CombatScene::sInstance->spawnEnemies(names);
         //CombatScene::sInstance->Init();
 	}
@@ -414,20 +417,20 @@ void SceneLevelBuilder::Update(double dt)
 		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
 		PanDown += PanDown < 0 ? 4 : 0;
 	}
-		
-
-	if (AEInputCheckCurr(AEVK_X))
-	{
-
-	}
-	else
-	{
-
-	}
-
 	f32 t_x, t_y;
 	AEGfxGetCamPosition(&t_x, &t_y);
 	AEGfxSetCamPosition(t_x, t_y - PanDown);
+
+	UpdateLvlName(dt);
+	//Change to next Level
+	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
+		SceneLevelBuilder::SpawnLvlName();
+
+	UpdateScreenTransition(dt);
+	if (AEInputCheckTriggered(AEVK_V))
+		FadeINBlack();
+	else if(AEInputCheckTriggered(AEVK_B))
+		FadeOutBlack();
 
 	if (!m_StopMovement)
 	{
@@ -580,11 +583,6 @@ void SceneLevelBuilder::Update(double dt)
 			}
 		}
 	}
-
-	UpdateLvlName(dt);
-	//Change to next Level
-	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
-		SceneLevelBuilder::SpawnLvlName();
 }
 void SceneLevelBuilder::Render()
 {
@@ -730,6 +728,16 @@ void SceneLevelBuilder::Render()
 	CombatScene::sInstance->Render();
 
 	RenderLvlName();
+
+	//Screen Transition
+	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+	AEGfxSetTransparency(m_currTransitionTransparency);
+	AEMtx33 t_curr;
+	AEMtx33Identity(&t_curr);
+	AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+	AEGfxSetTransform(t_curr.m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	//Enable later
 	//GameObjectManager::GetInstance()->Render();
@@ -969,3 +977,13 @@ void SceneLevelBuilder::RenderLvlName()
 		currLeftHeaderPos = LeftOriginalHeaderPos;
 	}
 }
+
+/*********************************************************************************
+Screen Transition
+**********************************************************************************/
+void SceneLevelBuilder::UpdateScreenTransition(float t_dt)
+{
+	m_currTransitionTransparency += (m_setTransitionTransparency - m_currTransitionTransparency) / 10;
+}
+void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
+void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }

@@ -21,8 +21,7 @@ public:
 	void Update(double dt);
 	void Render();
 private:
-	//Init relevant values like floor translation
-	void Init();
+	void Init(); //Init relevant values like floor translation
 	void Exit();
 
 	void CreateRowOBJs(int t_tileNum);
@@ -32,6 +31,9 @@ private:
 	void UpdateLvlName(float t_dt);
 	void RenderLvlName();
 
+	void UpdateScreenTransition(float t_dt);
+	void FadeINBlack();
+	void FadeOutBlack();
 	struct v_FloorData
 	{
 		////////////////////////////////////////////////////////////////////////
@@ -182,10 +184,20 @@ private:
 	v_SceneLevelData* m_SceneLevelDataList;
 	int m_CompletionStatus; //0 - 100%
 	int m_currLevel;
+
+	///////////////////////////////////////////////////////
+	//LEVEL NAME DISPLAY
 	double m_LvlNameTimer;
 	double m_LvlNameTransparency;
 	s8 pTextFont;
 	
+	///////////////////////////////////////////////////////
+	//Screen Transition
+	double m_currTransitionTransparency;
+	double m_setTransitionTransparency;
+
+	///////////////////////////////////////////////////////
+	//TRANSFORM DATA
 	AEMtx33 m_TransformSkyData;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
