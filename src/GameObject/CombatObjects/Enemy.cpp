@@ -42,21 +42,32 @@ double Enemy::newHealth(double desiredX) {
 }
 
 void Enemy::update([[maybe_unused]] double dt) {
-    Point pos = wtos(_wpos.x, _wpos.y);
-
     int mouseX, mouseY;
     AEInputGetCursorPosition(&mouseX, &mouseY);
 
+    AEVec2 camOffset;
+    AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
+    Point pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
+
     if (AEInputCheckTriggered(AEVK_LBUTTON) && CollisionChecker::isMouseInRect(pos.x, pos.y, _size, _size, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-        std::cout << "enemy selected\n";
+        //std::cout << _textureRef << " enemy selected\n";
+        isSelected = !isSelected;
     }
+    //std::cout << camOffset.x << ", " << camOffset.y << "\n";
 }
 
 
 void Enemy::render() {
+    //AEVec2 camOffset;
+    //AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
     //std::cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
-    RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y + 100, this->_size  , this->_size  );
-    RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y + 100, this->_size + 50, this->_size + 50 ); // size should change
+    RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size  , this->_size  );
+
+    if (isSelected) {
+        RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
+    }
     
     RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
     RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);

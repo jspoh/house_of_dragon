@@ -45,6 +45,8 @@ public:
 
     bool isPlayingEvent = false;
 
+    Enemy* selectedEnemy = nullptr;
+
     static CombatManager* getInstance();
 
     void next();

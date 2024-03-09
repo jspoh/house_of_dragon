@@ -23,16 +23,18 @@ Technology is prohibited.
 
 class Enemy : public Mob {
 private:
-	std::string _textureRef;
+	std::string _textureRef = "";
 	// screen pos
-	Point _spos;
+	Point _spos{ 0 };
 	// world pos (rendering only!!!!)
-	Point _wpos;
+	Point _wpos{ 0 };
 	float _size = 50;
-	Point healthpos;
-	double fullhealth;
+	Point healthpos{ 0 };
+	double fullhealth = 0;
 
 public:
+	bool isSelected = false;
+
 	Enemy();
 	Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
 	~Enemy();
