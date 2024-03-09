@@ -3,6 +3,7 @@
 #include "Pch.h"
 #include "GameObjectManager.h"
 #include "ParticleManager.h"
+#include "CombatScene.h"
 
 #define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis

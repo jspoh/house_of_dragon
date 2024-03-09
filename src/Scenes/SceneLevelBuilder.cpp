@@ -1,7 +1,7 @@
 #include "SceneLevelBuilder.h"
 
 int t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
-
+bool Combat = false;
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	:m_TexRef{""}, m_RenderOrder{0}, m_Transparency{-1.5f}
 {
@@ -185,7 +185,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 		m_SceneLevelDataList[i] = t_curr;
 	}
 	
-
+	CombatScene::sInstance->Load();
 	Init();
 
 	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
@@ -551,12 +551,16 @@ void SceneLevelBuilder::Update(double dt)
 		SceneLevelBuilder::SpawnLvlName();
 
 	//Activating Combat system
-	//if (AEInputCheckTriggered(AEVK_V))
-	//{
-	//	CombatManager::getinstance()->SpawnEnemies("Cat");
-	//}
-	//CombatManager::getinstance()->Update();
-	//CombatManager::getinstance()->Render();
+	
+	if (AEInputCheckTriggered(AEVK_V))
+	{
+		std::vector<std::string> names = { "cat", "cat","cat" };
+		CombatScene::sInstance->spawnEnemies(names);
+		CombatScene::sInstance->Init();
+		Combat = true;
+	}
+	if(Combat)
+	CombatScene::sInstance->Update(dt);
 }
 void SceneLevelBuilder::Render()
 {
@@ -698,6 +702,8 @@ void SceneLevelBuilder::Render()
 			}
 		}
 	}
+	if (Combat)
+	CombatScene::sInstance->Render();
 
 	RenderLvlName();
 
@@ -731,6 +737,8 @@ void SceneLevelBuilder::Exit()
 
 	//Destroy Font
 	AEGfxDestroyFont(pTextFont);
+
+	CombatScene::sInstance->Exit();
 }
 
 /*********************************************************************************

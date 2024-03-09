@@ -38,10 +38,11 @@ public:
 	virtual void Exit();
 	void spawnEnemies(std::vector<std::string> enemyRefs);
 
+	static CombatScene* sInstance; // The pointer to the object that gets registered
 private:
 	CombatScene(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
-	static CombatScene* sInstance; // The pointer to the object that gets registered
+	
 };
 struct enemiesGroup {
 	int size;

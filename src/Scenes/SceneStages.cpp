@@ -66,7 +66,6 @@ Fix Floor
 Adjust SceneObject Placement
 Blocking
 Cloud Scrolling
-Probability Spawning based on Json (DOING NOW)
 Add Backdrop 
 Add Lens Flare
 ***/
