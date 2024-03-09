@@ -18,6 +18,13 @@ Technology is prohibited.
 
 #include "Mob.h"
 
+enum class PLAYER_BLOCKING_STATES {
+	NOT_BLOCKING,
+	ON_ENTER,
+	ON_UPDATE,
+	ON_EXIT
+};
+
 
 class Player : public Mob {
 private:
@@ -25,6 +32,12 @@ private:
 
 public:
 	Player(double health = 100, double dmg = 10, Element element = Element::NO_ELEMENT);
+
+	static constexpr int BLOCKING_TIMEOUT_MS = 2000;
+	static constexpr int BLOCKING_DURATION = 2000;
+
+	bool isBlocking;
+	PLAYER_BLOCKING_STATES blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
 
 	/**
 	 * .
@@ -35,6 +48,8 @@ public:
 	 * \return damage dealt
 	 */
 	double attack(Mob& target, Element attackEl, double qtMultiplier);
+
+	void update(double dt);
 
 	void render();
 };

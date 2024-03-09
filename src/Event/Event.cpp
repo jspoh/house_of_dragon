@@ -238,6 +238,8 @@ void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_K
 }
 
 void Event::render() {
+	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
 	switch (_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
@@ -404,6 +406,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 }
 
 void Event::_spamKeyEventRender() {
+
 	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
@@ -412,7 +415,7 @@ void Event::_spamKeyEventRender() {
 
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventSpamKeyResult(worldX, worldY);
+		_showEventSpamKeyResult(worldX + camOffset.x, worldY + camOffset.y);
 		return;
 	}
 
@@ -649,10 +652,10 @@ void Event::_multiClickEventRender() {
 
 		Point translate = stow(mco.x, mco.y);
 		if (mco.blink) {
-			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
+			RenderHelper::getInstance()->texture("clickme_light", translate.x + camOffset.x, translate.y + camOffset.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 		else {
-			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
+			RenderHelper::getInstance()->texture("clickme_dark", translate.x + camOffset.x, translate.y + camOffset.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 	}
 }
@@ -968,14 +971,14 @@ void Event::_orangeEventRender() {
 
 	case INNER_STATES::ON_UPDATE:
 		Point pos = stow(_orangeObj.x, _orangeObj.y);
-		RenderHelper::getInstance()->texture("ball", pos.x, pos.y, _orangeObj.radius, _orangeObj.radius, 1.f, Color{ 1.f, 0, 0, 1.f }, 0);
+		RenderHelper::getInstance()->texture("ball", pos.x + camOffset.x, pos.y + camOffset.y, _orangeObj.radius, _orangeObj.radius, 1.f, Color{ 1.f, 0, 0, 1.f }, 0);
 		for (const Demon& d : demons) {
 			if (!d.isActive) {
 				continue;
 			}
 
 			pos = stow(d.x, d.y);
-			RenderHelper::getInstance()->texture("nian", pos.x, pos.y, d.radius, d.radius, 1, Color{ 1,0,0,1 }, degToRad(0));
+			RenderHelper::getInstance()->texture("nian", pos.x + camOffset.x, pos.y + camOffset.y, d.radius, d.radius, 1, Color{ 1,0,0,1 }, degToRad(0));
 		}
 		_renderTimer(_elapsedTimeMs, _orangeEventTimeoutMs);
 		break;
