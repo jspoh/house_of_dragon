@@ -146,7 +146,7 @@ void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
 	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
-	e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
+	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
@@ -504,7 +504,6 @@ void Event::_oscillatingTimerEventRender() {
 // !TODO: consider changing cursor to crosshair when multiclick event is active
 void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _multiClickTimeoutMs);
 
 	// multiclick is based on duration only
 	if (_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) {
@@ -557,8 +556,6 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 		_mcoDisplayHits = _mcoDisplayHits < 0 ? 0 : _mcoDisplayHits;
 	}
-
-	/*rendering*/
 	// ensure that there are always mcoCount objects on screen
 	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
 		_multiClickObjects.push_back(MultiClickObject{
@@ -570,6 +567,14 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 			});
 	}
 
+	for (MultiClickObject& mco : _multiClickObjects) {
+		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
+	}
+}
+
+void Event::_multiClickEventRender() {
+	_renderTimer(_totalElapsedMs, _multiClickTimeoutMs);
+
 	/*render*/
 	RenderHelper::getInstance()->text("Hits: " + std::to_string(_mcoDisplayHits) + "/" + std::to_string(_maxMcoHits), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 6.f);
 
@@ -578,7 +583,6 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	}
 
 	for (MultiClickObject& mco : _multiClickObjects) {
-		mco.timeSinceChange += static_cast<float>(dt);	// no real game logic here. just for rendering the blinking effect
 		if (mco.timeSinceChange >= _mcoBlinkDuration) {
 			mco.blink = !mco.blink;
 			mco.timeSinceChange = 0.f;
@@ -592,10 +596,6 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 	}
-}
-
-void Event::_multiClickEventRender() {
-
 }
 
 // !TODO: change to sprite
