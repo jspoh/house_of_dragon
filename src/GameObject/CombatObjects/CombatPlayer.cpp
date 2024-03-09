@@ -62,6 +62,7 @@ void Player::update(double dt) {
 
             // force shield to go to final
             AEVec2Set(&shield.pos, shieldBlockingPos.x, shieldBlockingPos.y);
+            break;
         }
 
         // translate the shield up
@@ -78,6 +79,7 @@ void Player::update(double dt) {
 
             // force shield to go to initial
             AEVec2Set(&shield.pos, shieldInitialPos.x, shieldInitialPos.y);
+            break;
         }
 
         shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
