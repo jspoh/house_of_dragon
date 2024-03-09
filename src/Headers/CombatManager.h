@@ -47,6 +47,10 @@ public:
 
     Enemy* selectedEnemy = nullptr;
 
+    static constexpr int minAttackIntervalMs = 1000;
+    static constexpr int maxAttackIntervalMs = 5000;
+    int enemyNextTurnMs = 0;
+
     static CombatManager* getInstance();
 
     void next();

@@ -22,17 +22,34 @@ Mob::Mob(Element element, float health, float dmg) : health(health), dmg(dmg), e
 
 double Mob::attack(Mob& target) {
     DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
-    float multiplier = 1;
+    float elementMultiplier = 1;
     switch (dm) {
     case Weak:
-        multiplier = 0.5;
+        elementMultiplier = 0.5;
         break;
     case Strong:
-        multiplier = 2;
+        elementMultiplier = 2;
         break;
     }
 
-    float damage = this->dmg * multiplier;
+    float damage = this->dmg * elementMultiplier;
+    target.health -= damage;
+    return damage;
+}
+
+double Mob::attack(Mob& target, float multiplier) {
+    DamageMultiplier dm = ElementProperties::getEffectiveDamage(this->element, target.element);
+    float elementMultiplier = 1;
+    switch (dm) {
+    case Weak:
+        elementMultiplier = 0.5;
+        break;
+    case Strong:
+        elementMultiplier = 2;
+        break;
+    }
+
+    float damage = this->dmg * elementMultiplier * multiplier;
     target.health -= damage;
     return damage;
 }

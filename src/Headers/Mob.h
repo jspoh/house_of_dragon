@@ -40,5 +40,13 @@ public:
 	 */
 	virtual double attack(Mob& target);
 
+	/**
+	 * .
+	 * 
+	 * @param target
+	 * @param multiplier custom multiplier (can be used for stuff like blocking or anything special)
+	 */
+	virtual double attack(Mob& target, float multiplier);
+
 	virtual void reset();
 };

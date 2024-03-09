@@ -346,6 +346,7 @@ void CombatScene::Update(double dt)
 	if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
 		// end player's turn
 		CombatManager::getInstance()->next();
+		std::cout << "Enemy next turn in " << CombatManager::getInstance()->enemyNextTurnMs << "ms\n";
 		CombatManager::getInstance()->isPlayingEvent = false;
 
 		/*check if success or failure and modify damage accordingly*/
@@ -382,9 +383,32 @@ void CombatScene::Update(double dt)
 		updateBtns(btns[currentState]);  // render player action buttons
 	}
 	else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
-		groups.enemies[rand() % groups.enemies.size()]->attack(*player);  // Example: All enemies attack the player
+		CombatManager::getInstance()->enemyNextTurnMs -= static_cast<int>(dt * 1000);
 
-		CombatManager::getInstance()->next();  // perhaps can implement pause
+		if (CombatManager::getInstance()->enemyNextTurnMs <= 0) {
+			float multiplier = 1.f;
+			switch (player->blockingState) {
+			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+				multiplier = 1.f;
+				std::cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
+				break;
+			case PLAYER_BLOCKING_STATES::ON_ENTER:
+			case PLAYER_BLOCKING_STATES::ON_EXIT:
+				multiplier = 0.5f;
+				std::cout << "Attack not fully blocked by player, receiving " << multiplier << " damage multiplier against player\n";
+				break;
+			case PLAYER_BLOCKING_STATES::ON_UPDATE:
+				multiplier = 0.3f;
+				std::cout << "Attack blocked by player, receiving " << multiplier << " damage multiplier against player\n";
+				break;
+			}
+
+			int randEnemyIndex = rand() % groups.enemies.size();
+			std::cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
+			groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
+			CombatManager::getInstance()->next();
+		}
+
 	}
 
 
@@ -418,6 +442,9 @@ void CombatScene::Render()
 
 		if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
 			renderBtns(btns[currentState]);  // render player action buttons
+		}
+		else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
+			RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 		}
 	}
 	Event::getInstance()->render();
