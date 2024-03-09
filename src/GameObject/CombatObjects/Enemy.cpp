@@ -23,13 +23,12 @@ Enemy::Enemy(Element element, double health, double dmg, std::string texturePath
     this->_spos.x = screenX;
     this->_spos.y = screenY;
     this->fullhealth = health;
+    this->_textureRef = textureRef;
  
     _spos = Point{ screenX, screenY};
     this->_wpos = stow(_spos.x, _spos.y);
     this->healthpos.x = this->_wpos.x - 50;
     this->healthpos.y = this->_wpos.y + 50;
-
-    RenderHelper::getInstance()->registerTexture(textureRef, texturePath);  // problematic code stopping execution
 
     //RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }

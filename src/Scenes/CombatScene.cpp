@@ -61,6 +61,9 @@ namespace {
     float btnWidth;
     float btnHeight;
     float lBtnX;
+    float bPosX;
+    int mouseX, mouseY;
+    bool buttonpressed;
 
     EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     enum ACTION_BTNS {
@@ -107,12 +110,12 @@ namespace {
     // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
     void updateRenderBtns(std::vector<std::string> bvalues) {
         // rendering coordinates 
-        float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
-        float btnHeight = btnWidth / 3.f;
+        btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+        btnHeight = btnWidth / 3.f;
         btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-        float lBtnX = padding + btnWidth / 2.f;
+        lBtnX = padding + btnWidth / 2.f;;
 
-        float bPosX = lBtnX;
+        bPosX = lBtnX;
 
         if (selectflag == false) {
             RenderHelper::getInstance()->text("Select your Enemy", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
@@ -121,9 +124,8 @@ namespace {
             for (const std::string bv : bvalues) { // bruh wa this got got me too confused
                 Point btnPos = stow(bPosX, btnY);  // button rendering position
 
-                int mouseX, mouseY;
                 AEInputGetCursorPosition(&mouseX, &mouseY);
-                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) { // clicked wt
                     if (AEInputCheckTriggered(AEVK_LBUTTON)) {
                         /*click while on main menu*/
                         if (currentState == ACTION_BTNS::MAIN) {
@@ -169,6 +171,27 @@ namespace {
                             std::cout << "Fleeing fight\n";
                         }
                     }
+                    
+                }
+                else {
+                    
+                }
+            }
+        }
+    }
+
+
+    void renderBtns(std::vector<std::string> bvalues) {
+        if (selectflag == false) {
+            RenderHelper::getInstance()->text("Select your Enemy", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
+        }
+        else {
+            for (const std::string bv : bvalues) { // bruh wa this got got me too confused
+                Point btnPos = stow(bPosX, btnY);  // button rendering position
+
+                int mouseX, mouseY;
+                AEInputGetCursorPosition(&mouseX, &mouseY);
+                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
                     RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
                 }
                 else {
@@ -180,6 +203,7 @@ namespace {
             }
         }
     }
+    
 
 
 
@@ -244,6 +268,9 @@ void CombatScene::Load()
     RenderHelper::getInstance()->registerTexture("bar1", "./Assets/Health/start.png");
     RenderHelper::getInstance()->registerTexture("bar2", "./Assets/Health/end.png");
     RenderHelper::getInstance()->registerTexture("bar3", "./Assets/Health/bar.png");
+    RenderHelper::getInstance()->registerTexture("cat", "./Assets/Combat_Enemy/cat.jpg");
+    RenderHelper::getInstance()->registerTexture("horse", "./Assets/Combat_Enemy/horse.jpg");
+    RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.jpg");
 
 
 }
@@ -255,8 +282,6 @@ void CombatScene::Init()
     //player init
 
     player = new Player();
-    std::vector<std::string> names = { "horse", "cat","cat"};
-    CombatScene::spawnEnemies(names);
     SelectEnemy = NULL;
     selectflag = true;
 
@@ -280,7 +305,7 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
-
+    //updating panel 
     if (currentTime < totaltime) { // should include this in render.cpp instead
         currentTime += AEFrameRateControllerGetFrameTime();
         double percenttime = currentTime / totaltime;
@@ -294,7 +319,6 @@ void CombatScene::Update(double dt)
         panelflag = false;
     }
 
-    RenderHelper::getInstance()->texture("panel", panelpos.x, panelpos.y , AEGfxGetWindowWidth(), 160);
 
     if (AEInputCheckTriggered(AEVK_RBUTTON)) {
         selectflag = true;
@@ -303,30 +327,12 @@ void CombatScene::Update(double dt)
     if (AEInputCheckTriggered(AEVK_3)) {
         Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
     }
-    
-    for (int i = 0; i < groups.size;i++) {
-        //if()
-
-        groups.enemies[i]->render(); // render all, draw all enemys
-    }
-    player->render();
-    for (Enemy* enemy : groups.enemies) { // check for dead/alive
-        if (enemy->isDead()) {
-            RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
-        }
-        else if (player->isDead()) {
-            RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
-        }
-    }
-    //!TODO
-    //draw health of enemy
-    //use function `ston` screen to normalized to render text
-
-    //!TODO
-    //draw text describing the action of enemy, disappear after 1 second, or render attack animation
+   
 
     Point p = stow(100, 100);
-    Event::getInstance()->updateRenderLoop(CombatManager::getInstance()->qtEventResult, dt);
+    Event::getInstance()->update(CombatManager::getInstance()->qtEventResult, dt);
+
+
 
     // if player has finished quicktime event
     if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
@@ -377,22 +383,35 @@ void CombatScene::Update(double dt)
 
 void CombatScene::Render()
 {
-    // unfortunately i cant use this render function lol, i mixed update and render together in event for ease of usage
-    //cat->render();
-    //player->render();
 
-    //if (cat->isDead()) {
-    //    RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
-    //}
-    //else if (player->isDead()) {
-    //    RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
-    //}
-    // //!TODO
-    // //draw health of enemy
-    // //use function `ston` screen to normalized to render text
+    //panel rendering
+    RenderHelper::getInstance()->texture("panel", panelpos.x, panelpos.y, AEGfxGetWindowWidth(), 160);
 
-    // //!TODO
-    // //draw text describing the action of enemy, disappear after 1 second, or render attack animation
+    //rendering enemies
+    for (int i = 0; i < groups.size; i++) {
+        //if()
+
+        groups.enemies[i]->render(); // render all, draw all enemys
+    }
+
+    //rendering player
+    player->render();
+
+    // rendering whether enemies is dead
+    for (Enemy* enemy : groups.enemies) { // check for dead/alive
+        if (enemy->isDead()) {
+            RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+        }
+        else if (player->isDead()) {
+            RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
+        }
+
+        if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
+            renderBtns(btns[currentState]);  // render player action buttons
+        }
+    }
+    Event::getInstance()->render();
+
     
 }
 
