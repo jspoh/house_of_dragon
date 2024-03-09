@@ -1,4 +1,5 @@
 #include "SceneMenu.h"
+#include "SoundManager.h"
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
@@ -36,6 +37,8 @@ void SceneMenu::Load()
 	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/aetting.png");
 	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/quit.png");
 
+	SoundManager::GetInstance()->registerAudio("btnClickSound", "./Assets/Audio/SFX/button_click.mp3");
+	SoundManager::GetInstance()->registerAudio("titleMusic", "./Assets/Audio/Music/sample.mp3");
 }
 
 void SceneMenu::Init()
@@ -53,7 +56,7 @@ void SceneMenu::Init()
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight + 10) + 200;
 	}
 
-	
+	SoundManager::GetInstance()->playAudio("titleMusic", 1, true, true);
 
 }
 
@@ -84,54 +87,56 @@ void SceneMenu::Update(double dt)
 
 
 
-			if (AEInputCheckTriggered(AEVK_LBUTTON))
+	if (AEInputCheckTriggered(AEVK_LBUTTON))
+	{
+		SoundManager::GetInstance()->playAudio("btnClickSound");
+
+		s32 mxx, myy;
+		AEInputGetCursorPosition(&mxx, &myy);
+		float mx = static_cast<float>(mxx);
+		float my = static_cast<float>(myy);
+		mx -= 1200 / 2;
+
+		my = -my;
+		my += 650.0f / 2.0f;
+
+		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
+		AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
+		//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
+
+		for (int i = 0; i < 4; ++i)
+		{
+			AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
+			AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
+
+			if (p1.x<mx && p1.y>my && p2.x > mx && p2.y < my)
 			{
-				s32 mxx, myy;
-				AEInputGetCursorPosition(&mxx, &myy);
-				float mx = static_cast<float>(mxx);
-				float my = static_cast<float>(myy);
-				mx -= 1200 / 2;
-
-				my = -my;
-				my += 650.0f / 2.0f;
-
-				//std::cout << "X: " << mx << "    Y: " << my << std::endl;
-				AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
-				//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
-
-				for (int i = 0; i < 4; ++i)
+				switch (i)
 				{
-					AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
-					AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
-					
-					if (p1.x<mx && p1.y>my && p2.x > mx && p2.y < my)
-					{
-						switch (i)
-						{
-						case 0:
-							SceneManager::GetInstance()->SetActiveScene("SceneStages");
-							break;
-						case 1:
-							SceneManager::GetInstance()->SetActiveScene("SceneCredits");
-							break;
-						case 2:
-							SceneManager::GetInstance()->SetActiveScene("");
-							break;
-						case 3:
-							SceneManager::GetInstance()->SetActiveScene("");
+				case 0:
+					SceneManager::GetInstance()->SetActiveScene("SceneStages");
+					break;
+				case 1:
+					SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+					break;
+				case 2:
+					SceneManager::GetInstance()->SetActiveScene("");
+					break;
+				case 3:
+					SceneManager::GetInstance()->SetActiveScene("");
 
-							break;
-						}
-					}
-
+					break;
 				}
-
 			}
 
-			//else myMenu.hovering[i] = false;
+		}
 
-		//}
-	//}
+	}
+
+	//else myMenu.hovering[i] = false;
+
+//}
+//}
 	return;
 
 }

@@ -16,6 +16,7 @@ using namespace std;
 // Constructor
 SoundManager::SoundManager()
 {
+	std::cout << "Initializing SoundManager..\n";
 	sfxGroup = AEAudioCreateGroup();
 	musicGroup = AEAudioCreateGroup();
 }
