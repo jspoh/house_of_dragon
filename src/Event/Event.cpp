@@ -676,7 +676,7 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		};
 		
 		for (Demon& d : demons) {
-			d.x = rand() % AEGfxGetWindowWidth() * 1.f;								// !TODO: jspoh dont let enemies spawn in collision area
+			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - _demonRadius * 2) + _demonRadius;								// !TODO: jspoh dont let enemies spawn in collision area
 			d.y = AEGfxGetWindowHeight() * 0.1f;
 			AEVec2Set(&d.vel, rand() % 2 == 0 ? _demonSpeed : -_demonSpeed, 0);		// !TODO: jspoh make speed into a range
 			d.radius = _demonRadius;
