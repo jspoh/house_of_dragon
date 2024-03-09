@@ -92,6 +92,7 @@ private:
 	int _mouseX=0, _mouseY=0, _prevMouseX=0, _prevMouseY=0;
 
 	/*spam key vars*/
+	EVENT_KEYS _spamKeyChoice = EVENT_KEYS::E;
 	const int _spamkeyTimeoutMs = 5000;
 	const float _minSize = 100;
 	const float _targetSize = 200;
@@ -240,14 +241,16 @@ private:
 	 * \param useMultipleKeys
 	 * \param key2
 	 */
-	void _spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::E);
+	void _spamKeyEventRender();
 
 	/**
 	 * renders an oscillating timer event.
 	 * aka swing meter, timing bar, power guage
 	 * 
 	 */
-	void _oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
+	void _oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key = EVENT_KEYS::SPACE);
+	void _oscillatingTimerEventRender();
 
 	/**
 	 * .
@@ -255,7 +258,8 @@ private:
 	 * \param 
 	 * \param timeout time in seconds for user to click
 	 */
-	void _multiClick(EVENT_RESULTS& result, double dt);
+	void _multiClickEventUpdate(EVENT_RESULTS& result, double dt);
+	void _multiClickEventRender();
 
 	/**
 	 * @brief	typing event.

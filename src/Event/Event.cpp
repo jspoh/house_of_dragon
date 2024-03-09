@@ -145,6 +145,10 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
+	e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
+	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
+	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
@@ -170,13 +174,16 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
 	case EVENT_TYPES::SPAM_KEY:
-		_spamKey(result, dt, spamkey);
+		_spamKeyEventUpdate(result, dt, spamkey);
+		_spamKeyEventRender();
 		break;
 	case EVENT_TYPES::OSCILLATING_TIMER:
-		_oscillatingTimer(result, dt, oTimerKey);
+		_oscillatingTimerEventUpdate(result, dt, oTimerKey);
+		_oscillatingTimerEventRender();
 		break;
 	case EVENT_TYPES::MULTI_CLICK:
-		_multiClick(result, dt);
+		_multiClickEventUpdate(result, dt);
+		_multiClickEventRender();
 		break;
 	case EVENT_TYPES::TYPING:
 		_typingEventUpdate(result, dt);
@@ -258,13 +265,6 @@ void Event::_updateTime(double dt) {
 }
 
 void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY) {
-	/*event result duration over*/
-	if (_elapsedTimeMs >= _eventResultDuration * 1000) {
-		result = _eventResult;  // update result passed by caller so that they know event is over
-		_resetState();
-		return;
-	}
-
 	if (_eventResult == EVENT_RESULTS::SUCCESS) {
 		// draw success
 		RenderHelper::getInstance()->texture("circle", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
@@ -275,9 +275,10 @@ void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float 
 	}
 }
 
-void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
+void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
+	_spamKeyChoice = key;
+
 	//std::cout << _totalElapsedMs << "\n";
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
@@ -285,9 +286,14 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	float worldY = worldPos.y;
 
 	/*logic*/
+
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventSpamKeyResult(result, worldX, worldY);
+		/*event result duration over*/
+		if (_elapsedTimeMs >= _eventResultDuration * 1000) {
+			result = _eventResult;  // update result passed by caller so that they know event is over
+			_resetState();
+		}
 		return;
 	}
 
@@ -331,13 +337,27 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	/*rendering*/
 	//std::cout << _elapsedTimeMs << "\n";
 
-	// key in string format
-	std::string skey = eKeyToStr.find(key)->second;
-
 	if (_elapsedTimeMs > _changeMs) {
 		_useOutline = !_useOutline;
 		_elapsedTimeMs = 0;
 	}
+}
+
+void Event::_spamKeyEventRender() {
+	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
+
+	Point worldPos = stow(_spamkeyX, _spamkeyY);
+	float worldX = worldPos.x;
+	float worldY = worldPos.y;
+
+	// if event is over, is rendering event result
+	if (_isRenderingEventResult) {
+		_showEventSpamKeyResult(_eventResult, worldX, worldY);
+		return;
+	}
+
+	// key in string format
+	std::string skey = eKeyToStr.find(_spamKeyChoice)->second;
 
 	//RenderHelper::getInstance()->texture("keyoutline_" + skey, worldX, worldY, _targetSize, _targetSize);
 	if (_useOutline) {
@@ -348,7 +368,7 @@ void Event::_spamKey(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	}
 }
 
-void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
+void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
 	_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
 
@@ -449,8 +469,12 @@ void Event::_oscillatingTimer(EVENT_RESULTS& result, double dt, EVENT_KEYS key) 
 	}
 }
 
+void Event::_oscillatingTimerEventRender() {
+
+}
+
 // !TODO: consider changing cursor to crosshair when multiclick event is active
-void Event::_multiClick(EVENT_RESULTS& result, double dt) {
+void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 	_renderTimer(_totalElapsedMs, _multiClickTimeoutMs);
 
@@ -540,6 +564,10 @@ void Event::_multiClick(EVENT_RESULTS& result, double dt) {
 			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 	}
+}
+
+void Event::_multiClickEventRender() {
+
 }
 
 // !TODO: change to sprite
