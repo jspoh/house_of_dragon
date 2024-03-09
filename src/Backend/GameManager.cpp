@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "MyMath.h"
 
 ////Define an error callback
 //static void error_callback(int error, const char* description)
@@ -17,6 +18,9 @@ GameManager::~GameManager()
 
 void GameManager::Init()
 {
+	// seed PRNG
+	Math::InitRNG();
+
 	//Load Textures
 
 	//Init Scene Manager

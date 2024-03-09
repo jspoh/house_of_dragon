@@ -34,9 +34,9 @@ namespace {
 
 // constructor
 Event::Event() {
-	double time;
-	AEGetTime(&time);
-	srand(static_cast<unsigned int>(time));
+	//double time;
+	//AEGetTime(&time);
+	//srand(static_cast<unsigned int>(time));
 
 	for (std::pair<EVENT_KEYS, std::string> map : eKeyToStr) {
 		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + ".png");
