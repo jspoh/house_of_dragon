@@ -33,6 +33,11 @@ Technology is prohibited.
 #include <vector>
 #include "utils.h"
 #include "db.h"
+#include "json.hpp"
+#include "CollisionChecker.h"
+#include "Vector3.h"
+#include "SingletonTemplate.h"
+#include "MyMath.h"
 
 using namespace std;  // we shouldnt do this, crowds namespace
 
