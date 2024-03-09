@@ -389,6 +389,7 @@ void CombatScene::Update(double dt)
 			float multiplier = 1.f;
 			switch (player->blockingState) {
 			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 				multiplier = 1.f;
 				std::cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
 				break;

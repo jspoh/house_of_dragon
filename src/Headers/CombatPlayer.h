@@ -23,7 +23,8 @@ enum class PLAYER_BLOCKING_STATES {
 	NOT_BLOCKING,
 	ON_ENTER,
 	ON_UPDATE,
-	ON_EXIT
+	ON_EXIT,
+	ON_COOLDOWN
 };
 
 struct Shield {
@@ -37,9 +38,12 @@ private:
 	AEVec2 shieldInitialPos{ 0,0 };		// set in constructor
 	AEVec2 shieldBlockingPos{ 0, 0 };
 	AEVec2 shieldInitialToShieldBlocking_vector;		// vector from shield initial pos to final blocking pos
-	static constexpr int shieldTransitionTimeMs = 250;
+	static constexpr int shieldTransitionTimeMs = 100;
 	float transitionSpeed;
 	int elapsedTimeMs = 0;
+	// !TODO: jspoh json difficulty settinng
+	static constexpr int shieldUpTimeMs = 500;
+	static constexpr int timeBeforeNextBlockMs = 1000;
 
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
