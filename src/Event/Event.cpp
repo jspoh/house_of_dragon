@@ -596,7 +596,10 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		bool hit = false;
 		int i = 0;
 		for (MultiClickObject& mco : _multiClickObjects) {
-			hit = CollisionChecker::isMouseInCircle(mco.x, mco.y, mco.radius, static_cast<f32>(mouseX), static_cast<f32>(mouseY));
+			Point worldPos = stow(mco.x, mco.y);
+			Point collisionPos = wtos(worldPos.x - camOffset.x, worldPos.y - camOffset.y);
+
+			hit = CollisionChecker::isMouseInCircle(collisionPos.x, collisionPos.y, mco.radius, static_cast<f32>(mouseX), static_cast<f32>(mouseY));
 			if (hit) {
 				std::cout << "mco hit\n";
 				_mcoHits++;
@@ -652,10 +655,10 @@ void Event::_multiClickEventRender() {
 
 		Point translate = stow(mco.x, mco.y);
 		if (mco.blink) {
-			RenderHelper::getInstance()->texture("clickme_light", translate.x + camOffset.x, translate.y + camOffset.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
+			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 		else {
-			RenderHelper::getInstance()->texture("clickme_dark", translate.x + camOffset.x, translate.y + camOffset.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
+			RenderHelper::getInstance()->texture("clickme_dark", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
 	}
 }
