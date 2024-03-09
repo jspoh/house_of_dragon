@@ -110,7 +110,7 @@ namespace {
     float maxBtnHeight = 100.f;
 
     /*im so sorry this code very spaghet but time crunch!!*/
-    void updateRenderBtns(std::vector<std::string> bvalues) {
+    void updateBtns(std::vector<std::string> bvalues) {
         // rendering coordinates 
         btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
         btnHeight = btnWidth / 3.f;
@@ -140,16 +140,12 @@ namespace {
                             if (SelectEnemy == NULL) {
                                 //RenderHelper::getInstance()->text("Select your Enemy", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
                                 selectflag = false;
-
-
-
                             }
                             else {
                                 /*if user presses attack*/
                                 CombatManager::getInstance()->isPlayingEvent = true;
 
                                 Event::getInstance()->startRandomEvent();
-
 
                                 if (bv == "FIRE") {
                                     CombatManager::getInstance()->attackElement = Fire;
@@ -166,6 +162,7 @@ namespace {
                                 else if (bv == "EARTH") {
                                     CombatManager::getInstance()->attackElement = Earth;
                                 }
+
 
                             }
                         }
@@ -334,9 +331,6 @@ void CombatScene::Update(double dt)
         selectflag = true;
         SelectEnemy = groups.enemies[0];
     }
-    if (AEInputCheckTriggered(AEVK_3)) {
-        Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);
-    }
    
 
     Point p = stow(100, 100);
@@ -376,7 +370,7 @@ void CombatScene::Update(double dt)
 
     // when is player turn and player is not playing a quicktime event
     if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
-        updateRenderBtns(btns[currentState]);  // render player action buttons
+        updateBtns(btns[currentState]);  // render player action buttons
     }
     else if (CombatManager::getInstance()->turn == TURN::ENEMY){
         groups.enemies[randomEnemyStart++]->attack(*player);  // Example: All enemies attack the player
