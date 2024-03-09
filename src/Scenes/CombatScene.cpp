@@ -38,6 +38,9 @@ namespace {
     Enemy* SelectEnemy; // selected enemy for attack
 
 
+    //camera coordinates;
+    f32 camX, camY;
+
     // panel rendering
     double panelvelocity;
     Point panelpos;
@@ -55,7 +58,7 @@ namespace {
     // enemy selection
     bool selectflag;
     int texSize;
-
+    
 
     // buttons coordinates;
     float btnWidth;
@@ -98,7 +101,7 @@ namespace {
         {"YES", "NO"},  // confirmation. only used for flee option
         {"Select your enemy!"}
     };
-    float padding = 100.f;
+    float padding = 50.f;
     float spacing = 50.f;
     enemiesGroup groups;
 
@@ -182,6 +185,8 @@ namespace {
 
 
     void renderBtns(std::vector<std::string> bvalues) {
+        f32 truex, truey;
+        AEGfxGetCamPosition(&truex, &truey);
         if (selectflag == false) {
             RenderHelper::getInstance()->text("Select your Enemy", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
         }
@@ -192,10 +197,10 @@ namespace {
                 int mouseX, mouseY;
                 AEInputGetCursorPosition(&mouseX, &mouseY);
                 if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-                    RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
+                    RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
                 }
                 else {
-                    RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
+                    RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
                 }
 
                 RenderHelper::getInstance()->text(bv, bPosX, btnY);
@@ -214,8 +219,9 @@ namespace {
 }
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
     // this function works by creating taking in the vector of enemies; but this means i dont have to 
-    float Enemypadding = 50.0f;
 
+    float Enemypadding = 50.0f;
+    texSize = 50.f;
     groups.size = enemyRefs.size(); // number of enemies;
     groups.coordinates.resize(groups.size); // setting the coordinates
     groups.enemies.resize(groups.size); // setting up the checking of enemies
@@ -294,6 +300,10 @@ void CombatScene::Init()
 
     randomEnemyStart = rand() % 3;
 
+    
+
+    
+
 
 
 
@@ -306,6 +316,7 @@ void CombatScene::Init()
 void CombatScene::Update(double dt)
 {
     //updating panel 
+    AEGfxGetCamPosition(&camX, &camY);
     if (currentTime < totaltime) { // should include this in render.cpp instead
         currentTime += AEFrameRateControllerGetFrameTime();
         double percenttime = currentTime / totaltime;
@@ -385,14 +396,12 @@ void CombatScene::Render()
 {
 
     //panel rendering
-    RenderHelper::getInstance()->texture("panel", panelpos.x, panelpos.y, AEGfxGetWindowWidth(), 160);
+    f32 truex, truey;
+    AEGfxGetCamPosition(&truex, &truey);
+    RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, AEGfxGetWindowWidth(), 160);
 
     //rendering enemies
-    for (int i = 0; i < groups.size; i++) {
-        //if()
 
-        groups.enemies[i]->render(); // render all, draw all enemys
-    }
 
     //rendering player
     player->render();
@@ -411,6 +420,11 @@ void CombatScene::Render()
         }
     }
     Event::getInstance()->render();
+    for (int i = 0; i < groups.size; i++) {
+        //if()
+
+        groups.enemies[i]->render(); // render all, draw all enemys
+    }
 
     
 }

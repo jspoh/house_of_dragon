@@ -38,10 +38,9 @@ double Enemy::newHealth(double desiredX) {
 }
 void Enemy::render() {
     //std::cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
+    RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y + 100, this->_size  , this->_size  );
     RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y + 100, this->_size + 50, this->_size + 50 ); // size should change
-    RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y + 100, this->_size, this->_size);
-
-
+    
     RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
     RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);
     RenderHelper::getInstance()->texture("bar2", this->_wpos.x + (fullhealth / 100) * 100 - 40, this->healthpos.y, 10, 10);
@@ -60,7 +59,9 @@ void Enemy::render() {
         RenderHelper::getInstance()->texture("redbar1", this->_wpos.x - 50, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("redbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y, (health / 100) * 100, 10);
         RenderHelper::getInstance()->texture("redbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y, 10, 10);
+
     }
+
 
     /* need to change the values into variable, formaula::healthbar1 = (position x - (standardsize), position y - (standardsize);(texSize,texSize)
     healthbar2 = (position x - (standardsize - texSize/2) + (health / healthlength) * healthlength/2,  position y - (standardsize);(healthlength,texSize)

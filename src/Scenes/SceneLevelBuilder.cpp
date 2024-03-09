@@ -361,24 +361,24 @@ void SceneLevelBuilder::Update(double dt)
 	static int PanDown = 0;
 	
 	//Activating Combat system
-	//if (AEInputCheckTriggered(AEVK_V))
-	//{
-	//	std::vector<std::string> names = { "cat", "cat","cat" };
-	//	CombatScene::sInstance->spawnEnemies(names);
-	//	CombatScene::sInstance->Init();
-	//	Combat = true;
-	//}
-	//if (Combat)
-	//	CombatScene::sInstance->Update(dt);
+	if (AEInputCheckTriggered(AEVK_V))
+	{
+		std::vector<std::string> names = { "cat", "cat","cat" };
+		CombatScene::sInstance->spawnEnemies(names);
+		CombatScene::sInstance->Init();
+		Combat = true;
+	}
+	if (Combat)
+		CombatScene::sInstance->Update(dt);
 
-	//if (AEInputCheckTriggered(AEVK_Z)) //Activate Combat
-	//{
-	//	Combat = true;
-	//	m_StopMovement = true;
-	//	t_MovementSpeed = 0.0f;
-	//}
-	//else
-	//	m_StopMovement = false;
+	if (AEInputCheckTriggered(AEVK_Z)) //Activate Combat
+	{
+		Combat = true;
+		m_StopMovement = true;
+		t_MovementSpeed = 0.0f;
+	}
+	else
+		m_StopMovement = false;
 
 	//TESTING
 	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat? true: false;
