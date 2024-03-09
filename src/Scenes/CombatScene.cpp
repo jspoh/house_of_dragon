@@ -253,8 +253,8 @@ void CombatScene::Load()
 {
 	Event::getInstance();
 	//healthbar load
-	RenderHelper::getInstance()->registerTexture("border", "./Assets/Combat/border.png");
-	RenderHelper::getInstance()->registerTexture("panel", "./Assets/Combat/panel.png");
+	RenderHelper::getInstance()->registerTexture("border", "./Assets/Combat_Items/Combat/border.png");
+	RenderHelper::getInstance()->registerTexture("panel", "./Assets/Combat_Items/Combat/panel.png");
 	RenderHelper::getInstance()->registerTexture("greenbar1", "./Assets/Health/green/start.png");
 	RenderHelper::getInstance()->registerTexture("greenbar2", "./Assets/Health/green/end.png");
 	RenderHelper::getInstance()->registerTexture("greenbar3", "./Assets/Health/green/bar.png");

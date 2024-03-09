@@ -57,11 +57,11 @@ void Player::update(double dt) {
 
 	switch (blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-		std::cout << "Player blocking state: NOT_BLOCKING\n";
+		//std::cout << "Player blocking state: NOT_BLOCKING\n";
 		elapsedTimeMs = 0;
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
-		std::cout << "Player blocking state: ON_ENTER\n";
+		//std::cout << "Player blocking state: ON_ENTER\n";
 		if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
 			elapsedTimeMs = 0;
@@ -76,14 +76,14 @@ void Player::update(double dt) {
 		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
-		std::cout << "Player blocking state: ON_UPDATE\n";
+		//std::cout << "Player blocking state: ON_UPDATE\n";
 		if (elapsedTimeMs >= shieldUpTimeMs) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
 			elapsedTimeMs = 0;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
-		std::cout << "Player blocking state: ON_EXIT\n";
+		//std::cout << "Player blocking state: ON_EXIT\n";
 		if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 			elapsedTimeMs = 0;
@@ -97,7 +97,7 @@ void Player::update(double dt) {
 		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-		std::cout << "Player blocking state: ON_COOLDOWN\n";
+		//std::cout << "Player blocking state: ON_COOLDOWN\n";
 		if (elapsedTimeMs >= timeBeforeNextBlockMs) {
 			elapsedTimeMs = 0;
 			blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
