@@ -145,8 +145,8 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
-	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
+	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
+	e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
@@ -234,6 +234,7 @@ void Event::_resetState() {
 	this->_piVelocity = 0.f;
 	this->_oTimerOpacity = 1.f;
 	this->_piMoving = true;
+	oTimerEventState = INNER_STATES::ON_ENTER;
 
 	// multiclick
 	_mcoHits = 0;
@@ -264,7 +265,7 @@ void Event::_updateTime(double dt) {
 	_totalElapsedMs += idt;
 }
 
-void Event::_showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY) {
+void Event::_showEventSpamKeyResult(float screenX, float screenY) {
 	if (_eventResult == EVENT_RESULTS::SUCCESS) {
 		// draw success
 		RenderHelper::getInstance()->texture("circle", screenX, screenY, _minSize, _minSize, 1.0f, Color{ 0,1,0,0 });
@@ -282,8 +283,8 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 	//std::cout << _totalElapsedMs << "\n";
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
-	float worldX = worldPos.x;
-	float worldY = worldPos.y;
+	//float worldX = worldPos.x;
+	//float worldY = worldPos.y;
 
 	/*logic*/
 
@@ -352,7 +353,7 @@ void Event::_spamKeyEventRender() {
 
 	// if event is over, is rendering event result
 	if (_isRenderingEventResult) {
-		_showEventSpamKeyResult(_eventResult, worldX, worldY);
+		_showEventSpamKeyResult(worldX, worldY);
 		return;
 	}
 
@@ -370,15 +371,6 @@ void Event::_spamKeyEventRender() {
 
 void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
-	_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
-
-	/*logic*/
-	// check if timeout
-	if (_totalElapsedMs >= _oTimerTimeoutMs) {
-		result = EVENT_RESULTS::FAILURE;
-		_resetState();
-		return;
-	}
 
 	u8 aevk = AEVK_E;
 	switch (key) {
@@ -397,30 +389,33 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 		break;
 	}
 
-	// check if event is over
-	if (_piMoving) {
+	/*logic*/
+	switch (oTimerEventState) {
+	case INNER_STATES::ON_ENTER:
+		oTimerEventState = INNER_STATES::ON_UPDATE;
+		break;
+	case INNER_STATES::ON_UPDATE:
+		// check if timeout
+		if (_totalElapsedMs >= _oTimerTimeoutMs) {
+			oTimerEventState = INNER_STATES::ON_EXIT;
+			eventMultiplier = 0;
+			_elapsedTimeMs = 0;
+			break;
+		}
+
+		// check if event is over
 		if (AEInputCheckTriggered(aevk)) {
 			_piMoving = false;
-			_resetTime();	// using time to fade out
+			_elapsedTimeMs = 0;	// using time to fade out
 
 			// calculate multiplier
 			const float piDistanceToCenter = abs(_barX - _piX);
 			const float percentageMultiplier = ((_barWidth / 2.f) - piDistanceToCenter) / (_barWidth / 2.f);
 			eventMultiplier = percentageMultiplier * maxMultiplier;
 			eventMultiplier = precisionRound(eventMultiplier, eventMultiplierPrecision);
+			oTimerEventState = INNER_STATES::ON_EXIT;
 		}
-	}
 
-	/*rendering*/
-	const std::string oTimerMesh = meshReferences[0];
-	const Point barTranslation = stow(_barX, _barY);
-
-	// power bar
-	RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
-
-	Point piTranslation = stow(_piX, _piY);
-
-	if (_piMoving) {
 		// power indicator movement logic. accerlerates until center of bar, then decelerates
 		// pi is left of or on the center of bar
 		if (_piX <= _barX) {
@@ -441,20 +436,11 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 		// guards to ensure that pi does not go out of bar
 		_piX = _piX < _barX - _barWidth / 2.f ? _barX - _barWidth / 2.f : _piX;
 		_piX = _piX > _barX + _barWidth / 2.f ? _barX + _barWidth / 2.f : _piX;
-	}
 
-	// power indicator
-	RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
-
-	// multiplier result
-	if (!_piMoving) {
-		std::ostringstream oss;
-		oss.precision(eventMultiplierPrecision);
-		oss << std::fixed << eventMultiplier << "x";
-		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
-
+		break;
+	case INNER_STATES::ON_EXIT:
 		// fade out event
-		if (_totalElapsedMs >= _oTimerTimeBeforeFadeOut * 1000) {
+		if (_elapsedTimeMs >= _oTimerTimeBeforeFadeOut * 1000) {
 			// if invisible, reset state as fade out completed
 			if (_oTimerOpacity <= 0.f) {
 				result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
@@ -466,10 +452,52 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 			float change = 1.f / _oTimerFadeOutDuration;
 			_oTimerOpacity -= static_cast<float>(change * dt);
 		}
+		break;
 	}
 }
 
 void Event::_oscillatingTimerEventRender() {
+	switch (oTimerEventState) {
+	case INNER_STATES::ON_ENTER:
+		break;
+	case INNER_STATES::ON_UPDATE: {
+		/*rendering*/
+		const std::string oTimerMesh = meshReferences[0];
+		const Point barTranslation = stow(_barX, _barY);
+
+		// power bar
+		RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+
+		Point piTranslation = stow(_piX, _piY);
+		// power indicator
+		RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
+		_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
+
+		break;
+	}
+	case INNER_STATES::ON_EXIT: {
+		if (_oTimerOpacity <= 0.f) {
+			break;
+		}
+		// power bar
+		const std::string oTimerMesh = meshReferences[0];
+		const Point barTranslation = stow(_barX, _barY);
+
+		RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
+
+		Point piTranslation = stow(_piX, _piY);
+		// power indicator
+		RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
+		//_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
+
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), _barX, _barY + 50.f);
+		break;
+	}
+	}
+
 
 }
 

@@ -105,6 +105,7 @@ private:
 	const float nroc = 50;
 
 	/*oTimer vars*/
+	INNER_STATES oTimerEventState = INNER_STATES::ON_ENTER;
 	const int _oTimerTimeoutMs = 5000;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
@@ -228,7 +229,7 @@ private:
 	 */
 	void _renderTimer(int elapsedTimeMs, int timeoutMs);
 
-	void _showEventSpamKeyResult(EVENT_RESULTS& result, float screenX, float screenY);
+	void _showEventSpamKeyResult(float screenX, float screenY);
 
 	/*events*/
 
