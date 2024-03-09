@@ -75,7 +75,7 @@ void SceneStages::Update(double dt)
 
 	// Update the animation timer.
    // animation_timer should go up to animation_duration_per_frame.
-	animation_timer += dt;
+	animation_timer += static_cast<float>(dt);
 	if (animation_timer >= animation_duration_per_frame)
 	{
 		// When the time is up go to the next sprite.
