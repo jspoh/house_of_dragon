@@ -51,7 +51,7 @@ enum EVENT_TYPES {
 	OSCILLATING_TIMER,
 	MULTI_CLICK,
 	TYPING,
-	TRACKING,
+	ORANGE_THROWING,
 	NUM_EVENT_TYPES,
 	NONE_EVENT_TYPE,
 };
@@ -173,22 +173,23 @@ private:
 	int _wordsCompleted = 0;			// words player managed to type before timeends
 	const int _typingMaxScore = 5;
 
-	/*tracking event vars*/
-	const int _trackingEventTimeoutMs = 5000;
-	INNER_STATES _trackingState = INNER_STATES::ON_ENTER;
-	const int spawnIntervalMs = 1000;
-	const float _trackingRadius = 30.f;
-	const float _trackingSpeed = 500.f;
-	const float _trackingGravity = 15.f;
-	const float _xResistance = 1.f;		// how much of speed lost per second
-	const float _speedLimit = 20.f;
-	const float _energyKeptBouncing = 0.7f;
+	/*demon event vars*/
+	static constexpr int _orangeEventTimeoutMs = 5000;
+	static constexpr int _afterEventDisplayTimeoutMs = 1000;
+	INNER_STATES _orangeState = INNER_STATES::ON_ENTER;
+	static constexpr int spawnIntervalMs = 1000;
+	static constexpr float _orangeRadius = 30.f;
+	static constexpr float _orangeSpeed = 500.f;
+	static constexpr float _orangeGravity = 15.f;
+	static constexpr float _xResistance = 1.f;		// how much of speed lost per second
+	static constexpr float _speedLimit = 20.f;
+	static constexpr float _energyKeptBouncing = 0.7f;
 
 	static constexpr float _demonMinSpeed = 25.f;
 	static constexpr float _demonMaxSpeed = 200.f;
-	const float _demonRadius = 50.f;
+	static constexpr float _demonRadius = 50.f;
 
-	struct TrackingEventHead {
+	struct Orange {
 		float x;				// pos in screen coords
 		float y;				// pos in screen coords
 		AEVec2 vel;
@@ -205,8 +206,8 @@ private:
 		bool isActive;
 	};
 
-	TrackingEventHead _trackingObj{0};
-	static const int NUM_DEMONS = 5;
+	Orange _orangeObj{0};
+	static constexpr int NUM_DEMONS = 7;
 	std::array<Demon, NUM_DEMONS> demons{0};
 
 
@@ -269,8 +270,8 @@ private:
 	void _typingEventUpdate(EVENT_RESULTS& result, double dt);
 	void _typingEventRender();
 
-	void _trackingEventUpdate(EVENT_RESULTS& result, double dt);
-	void _trackingEventRender();
+	void _orangeEventUpdate(EVENT_RESULTS& result, double dt);
+	void _orangeEventRender();
 
 public:
 	// output variable for event multiplier

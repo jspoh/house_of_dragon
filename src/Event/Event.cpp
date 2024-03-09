@@ -145,7 +145,7 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	e = EVENT_TYPES::TRACKING;  // hardcoded for testing
+	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -162,8 +162,8 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
 	AEInputGetCursorPosition(&_mouseX, &_mouseY);
 	if (_prevMouseX == 0 || _prevMouseY == 0) {
-		_prevMouseX == _mouseX;
-		_prevMouseY == _mouseY;
+		_prevMouseX = _mouseX;
+		_prevMouseY = _mouseY;
 	}
 
 	switch (_activeEvent) {
@@ -182,9 +182,9 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 		_typingEventUpdate(result, dt);
 		_typingEventRender();
 		break;
-	case EVENT_TYPES::TRACKING:
-		_trackingEventUpdate(result, dt);
-		_trackingEventRender();
+	case EVENT_TYPES::ORANGE_THROWING:
+		_orangeEventUpdate(result, dt);
+		_orangeEventRender();
 		break;
 	default:
 		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
@@ -240,6 +240,9 @@ void Event::_resetState() {
 	_typed.clear();
 	_typingState = INNER_STATES::ON_ENTER;
 	_wordsCompleted = 0;
+
+	// orange event
+	_orangeState = INNER_STATES::ON_ENTER;
 }
 
 void Event::_resetTime() {
@@ -634,7 +637,7 @@ void Event::_typingEventRender() {
 				col = { 0, 1, 0, 1 };	// green
 			}
 			else {
-				col = { 0.5f, 0.5f, 0.5f, 1 };	// grey
+				col = { 0.9f, 0.9f, 0.9f, 1 };	// grey
 			}
 
 			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currXOffset, currYOffset, col.r, col.g, col.b, col.a);
@@ -660,150 +663,153 @@ void Event::_typingEventRender() {
 }
 
 
-void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
+void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
-	switch (_trackingState) {
+	switch (_orangeState) {
 	case INNER_STATES::ON_ENTER: {
-		const int dirDeg = rand() % 360;
-		const float dirRad = degToRad(dirDeg);
-		_trackingObj = TrackingEventHead{
+		//const int dirDeg = rand() % 360;
+		//const float dirRad = degToRad(static_cast<const float>(dirDeg));
+		_orangeObj = Orange{
 			AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f,			// pos
 			//{cosf(dirRad), sinf(dirRad)},				// velocity
 			{0,0},										// velocity
-			_trackingRadius,							// radius
+			_orangeRadius,							// radius
 			false
 		};
-		
+
 		for (Demon& d : demons) {
 			const float demonSpeed = rand() % static_cast<int>(_demonMaxSpeed - _demonMinSpeed) + _demonMinSpeed;
 
 			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - _demonRadius * 2) + _demonRadius;
 			d.y = AEGfxGetWindowHeight() * 0.1f;
-			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);		// !TODO: jspoh make speed into a range
+			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);
 			d.radius = _demonRadius;
 			d.isActive = true;
 		}
 
-		//AEVec2Normalize(&_trackingObj.vel, &_trackingObj.vel);
-		//AEVec2Scale(&_trackingObj.vel, &_trackingObj.vel, _trackingSpeed);
-		_trackingState = INNER_STATES::ON_UPDATE;
+		//AEVec2Normalize(&_orangeObj.vel, &_orangeObj.vel);
+		//AEVec2Scale(&_orangeObj.vel, &_orangeObj.vel, _orangeSpeed);
+		_orangeState = INNER_STATES::ON_UPDATE;
 		break;
 	}
 
 	case INNER_STATES::ON_UPDATE: {
-		//Point pos = wtos(_trackingObj.x, _trackingObj.y);
-		//if (CollisionChecker::isRectTouchingScreenXBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
-		//	_trackingObj.vel.x = -_trackingObj.vel.x;
-		//}
-		//else if (CollisionChecker::isRectTouchingScreenYBorder(pos.x, pos.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
-		//	_trackingObj.vel.y = -_trackingObj.vel.y;
-		//}
+		if (_elapsedTimeMs >= _orangeEventTimeoutMs) {
+			int hits{};
+			for (const Demon& d : demons) {
+				if (!d.isActive) {
+					hits++;
+				}
+			}
+			eventMultiplier = static_cast<float>(hits) / NUM_DEMONS * maxMultiplier;
 
-		//_trackingObj.x += _trackingObj.vel.x * dt;
-		//_trackingObj.y += _trackingObj.vel.y * dt;
+			_orangeState = INNER_STATES::ON_EXIT;
+			_elapsedTimeMs = 0;
+			break;
+		}
 
 		/*new impl*/
 		if (AEInputCheckTriggered(AEVK_R)) {
-			AEVec2Set(&_trackingObj.vel, 0, 0);
-			_trackingObj.x = 0;
-			_trackingObj.y = 0;
+			AEVec2Set(&_orangeObj.vel, 0, 0);
+			_orangeObj.x = 0;
+			_orangeObj.y = 0;
 		}
 
-		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_trackingObj.x, _trackingObj.y, _trackingObj.radius, static_cast<float>(_mouseX), static_cast<float>(_mouseY))) {
-			_trackingObj.isHeld = true;
+		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(_orangeObj.x, _orangeObj.y, _orangeObj.radius, static_cast<float>(_mouseX), static_cast<float>(_mouseY))) {
+			_orangeObj.isHeld = true;
 		}
 		// check to ensure that the user cannot hold the ball past 75% of the screen
-		if (_trackingObj.isHeld && (_trackingObj.y <= AEGfxGetWindowHeight() * 0.25f || _trackingObj.y >= static_cast<float>(AEGfxGetWindowHeight()))) {
-			_trackingObj.isHeld = false;	// force user to let go
-			AEVec2Set(&_trackingObj.vel, 0, 0);			// reset velocity to 0
+		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f || _orangeObj.y >= static_cast<float>(AEGfxGetWindowHeight()))) {
+			_orangeObj.isHeld = false;	// force user to let go
+			AEVec2Set(&_orangeObj.vel, 0, 0);			// reset velocity to 0
 		}
 
-		if (_trackingObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {
-			_trackingObj.x = _mouseX;
-			_trackingObj.y = _mouseY;
+		if (_orangeObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {
+			_orangeObj.x = static_cast<float>(_mouseX);
+			_orangeObj.y = static_cast<float>(_mouseY);
 
 			// get vector between last frame and this frame
-			_trackingObj.vel.x = _mouseX - _prevMouseX;
-			_trackingObj.vel.y = _mouseY - _prevMouseY;
+			_orangeObj.vel.x = static_cast<float>(_mouseX) - _prevMouseX;
+			_orangeObj.vel.y = static_cast<float>(_mouseY) - _prevMouseY;
 		}
 		else {
-			_trackingObj.isHeld = false;
+			_orangeObj.isHeld = false;
 		}
 
 
-		//std::cout << (_trackingObj.y <= AEGfxGetWindowHeight() * 0.25f) << "\n";
+		//std::cout << (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f) << "\n";
 
-		//std::cout << "obj vel: " << _trackingObj.vel.x << ", " << _trackingObj.vel.y << "\n";
+		//std::cout << "obj vel: " << _orangeObj.vel.x << ", " << _orangeObj.vel.y << "\n";
 
 		// !TODO: jspoh dont allow user to bring ball past 75% of screen from bottom
 		// obj not held, apply normal physics to object
-		if (!_trackingObj.isHeld) {
+		if (!_orangeObj.isHeld) {
 			// gravity
-			if (_trackingObj.y + _trackingObj.radius < AEGfxGetWindowHeight()) {
-				_trackingObj.vel.y += _trackingGravity * dt;
+			if (_orangeObj.y + _orangeObj.radius < AEGfxGetWindowHeight()) {
+				_orangeObj.vel.y += static_cast<float>(_orangeGravity * dt);
 			}
 
 			// resistance
-			if (_trackingObj.vel.x > 0) {
+			if (_orangeObj.vel.x > 0) {
 
-				_trackingObj.vel.x -= _trackingObj.vel.x - _xResistance * dt > 0 ? _xResistance * dt : _trackingObj.vel.x;
+				_orangeObj.vel.x -= _orangeObj.vel.x - _xResistance * dt > 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.x;
 
 				// set value to 0 when below 1 as float arithmetic is not precise
-				if (_trackingObj.vel.x < 1) {
-					_trackingObj.vel.x = 0;
+				if (_orangeObj.vel.x < 1) {
+					_orangeObj.vel.x = 0;
 				}
 			}
-			else if (_trackingObj.vel.x < 0) {
+			else if (_orangeObj.vel.x < 0) {
 
-				_trackingObj.vel.x += _trackingObj.vel.x + _xResistance * dt < 0 ? _xResistance * dt : _trackingObj.vel.x;
+				_orangeObj.vel.x += _orangeObj.vel.x + _xResistance * dt < 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.x;
 
 				// set value to 0 when above -1 as float arithmetic is not precise
-				if (_trackingObj.vel.x > -1) {
-					_trackingObj.vel.x = 0;
+				if (_orangeObj.vel.x > -1) {
+					_orangeObj.vel.x = 0;
 				}
 			}
-			if (_trackingObj.vel.y > 0) {
+			if (_orangeObj.vel.y > 0) {
 
-				_trackingObj.vel.y -= _trackingObj.vel.y - _xResistance * dt > 0 ? _xResistance * dt : _trackingObj.vel.y;
+				_orangeObj.vel.y -= _orangeObj.vel.y - _xResistance * dt > 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.y;
 
 				// set value to 0 when below 1 as float arithmetic is not precise
 				// for y axis, must also check if object is near ground
-				if (_trackingObj.vel.y < 1 && _trackingObj.y + _trackingObj.radius >= AEGfxGetWindowHeight()) {
-					_trackingObj.vel.y = 0;
+				if (_orangeObj.vel.y < 1 && _orangeObj.y + _orangeObj.radius >= AEGfxGetWindowHeight()) {
+					_orangeObj.vel.y = 0;
 				}
 			}
-			else if (_trackingObj.vel.y < 0) {
+			else if (_orangeObj.vel.y < 0) {
 
-				_trackingObj.vel.y += _trackingObj.vel.y + _xResistance * dt < 0 ? _xResistance * dt : _trackingObj.vel.y;
+				_orangeObj.vel.y += _orangeObj.vel.y + _xResistance * dt < 0 ? static_cast<float>(_xResistance * dt) : _orangeObj.vel.y;
 
 				// set value to 0 when above -1 as float arithmetic is not precise
 				// for y axis, must also check if object is near ground
-				if (_trackingObj.vel.y > -1 && _trackingObj.y + _trackingObj.radius >= AEGfxGetWindowHeight()) {
-					_trackingObj.vel.y = 0;
+				if (_orangeObj.vel.y > -1 && _orangeObj.y + _orangeObj.radius >= AEGfxGetWindowHeight()) {
+					_orangeObj.vel.y = 0;
 				}
 			}
 
 			// clamp velocity
-			_trackingObj.vel.x = AEClamp(_trackingObj.vel.x, -_speedLimit, _speedLimit);
-			_trackingObj.vel.y = AEClamp(_trackingObj.vel.y, -_speedLimit, _speedLimit);
+			_orangeObj.vel.x = AEClamp(_orangeObj.vel.x, -_speedLimit, _speedLimit);
+			_orangeObj.vel.y = AEClamp(_orangeObj.vel.y, -_speedLimit, _speedLimit);
 
 			// invert x/y vector when collide w wall to provide illusion of bouncing
-			if (CollisionChecker::isRectTouchingScreenXBorder(_trackingObj.x, _trackingObj.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
-				_trackingObj.vel.x = -_trackingObj.vel.x * _energyKeptBouncing;
+			if (CollisionChecker::isRectTouchingScreenXBorder(_orangeObj.x, _orangeObj.y, _orangeObj.radius * 2, _orangeObj.radius * 2)) {
+				_orangeObj.vel.x = -_orangeObj.vel.x * _energyKeptBouncing;
 			}
-			if (CollisionChecker::isRectTouchingScreenYBorder(_trackingObj.x, _trackingObj.y, _trackingObj.radius * 2, _trackingObj.radius * 2)) {
-				_trackingObj.vel.y = -_trackingObj.vel.y * _energyKeptBouncing;
+			if (CollisionChecker::isRectTouchingScreenYBorder(_orangeObj.x, _orangeObj.y, _orangeObj.radius * 2, _orangeObj.radius * 2)) {
+				_orangeObj.vel.y = -_orangeObj.vel.y * _energyKeptBouncing;
 			}
 
-			_trackingObj.x += _trackingObj.vel.x * AEFrameRateControllerGetFrameRate() * dt;
-			_trackingObj.y += _trackingObj.vel.y * AEFrameRateControllerGetFrameRate() * dt;
+			_orangeObj.x += static_cast<float>(_orangeObj.vel.x * AEFrameRateControllerGetFrameRate() * dt);
+			_orangeObj.y += static_cast<float>(_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
 			// clamp positions
-			_trackingObj.x = AEClamp(_trackingObj.x, _trackingObj.radius, AEGfxGetWindowWidth() - _trackingObj.radius);
-			_trackingObj.y = AEClamp(_trackingObj.y, _trackingObj.radius, AEGfxGetWindowHeight() - _trackingObj.radius);
+			_orangeObj.x = AEClamp(_orangeObj.x, _orangeObj.radius, AEGfxGetWindowWidth() - _orangeObj.radius);
+			_orangeObj.y = AEClamp(_orangeObj.y, _orangeObj.radius, AEGfxGetWindowHeight() - _orangeObj.radius);
 		}
-		
+
 		// update demon
 		for (Demon& d : demons) {
 			if (!d.isActive) {
@@ -814,11 +820,11 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 				d.vel.x = -d.vel.x;
 			}
 
-			d.x += d.vel.x * dt;
-			d.y += d.vel.y * dt;
+			d.x += static_cast<float>(d.vel.x * dt);
+			d.y += static_cast<float>(d.vel.y * dt);
 
 			// check for collision with ball (orange?)
-			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, _trackingObj.x, _trackingObj.y, _trackingObj.radius)) {
+			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, _orangeObj.x, _orangeObj.y, _orangeObj.radius)) {
 				//std::cout << "collided\n";
 				d.isActive = false;
 			}
@@ -832,18 +838,22 @@ void Event::_trackingEventUpdate(EVENT_RESULTS& result, double dt) {
 		break;
 
 	case INNER_STATES::ON_EXIT:
+		if (_elapsedTimeMs >= _afterEventDisplayTimeoutMs) {
+			result = EVENT_RESULTS::CUSTOM_MULTIPLIER;
+			_resetState();
+		}
 		break;
 	}
 }
 
-void Event::_trackingEventRender() {
-	switch (_trackingState) {
+void Event::_orangeEventRender() {
+	switch (_orangeState) {
 	case INNER_STATES::ON_ENTER:
 		break;
 
 	case INNER_STATES::ON_UPDATE:
-		Point pos = stow(_trackingObj.x, _trackingObj.y);
-		RenderHelper::getInstance()->texture("ball", pos.x, pos.y, _trackingObj.radius, _trackingObj.radius, 1.f, Color{1.f, 0, 0, 1.f}, 0);
+		Point pos = stow(_orangeObj.x, _orangeObj.y);
+		RenderHelper::getInstance()->texture("ball", pos.x, pos.y, _orangeObj.radius, _orangeObj.radius, 1.f, Color{ 1.f, 0, 0, 1.f }, 0);
 		for (const Demon& d : demons) {
 			if (!d.isActive) {
 				continue;
@@ -852,12 +862,17 @@ void Event::_trackingEventRender() {
 			pos = stow(d.x, d.y);
 			RenderHelper::getInstance()->texture("nian", pos.x, pos.y, d.radius, d.radius, 1, Color{ 1,0,0,1 }, degToRad(0));
 		}
+		_renderTimer(_elapsedTimeMs, _orangeEventTimeoutMs);
 		break;
 
 	case INNER_STATES::ON_NEXT:
 		break;
 
 	case INNER_STATES::ON_EXIT:
+		std::ostringstream oss;
+		oss.precision(eventMultiplierPrecision);
+		oss << std::fixed << eventMultiplier << "x";
+		RenderHelper::getInstance()->text(oss.str(), AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 		break;
 	}
 }
