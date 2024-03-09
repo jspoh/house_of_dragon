@@ -47,7 +47,7 @@ Point wtos(float x, float y) {
 float precisionRound(float x, int precision) {
 	int mult = static_cast<int>(pow(10, precision));
 	int num = static_cast<int>(x * mult + 0.5f);
-	return num / static_cast<float>(mult);
+	return num / static_cast<f32>(mult);
 }
 
 float degToRad(float degrees) {

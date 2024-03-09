@@ -98,7 +98,7 @@ void GameObject_Player::Update(double _dt)
 	}
 
 	if (AEInputCheckCurr(AEVK_W)) {
-		this->m_LocalPos.y += speed * _dt;
+		this->m_LocalPos.y += speed * static_cast<float>(_dt);
 
 		if (animation_timer >= animation_duration_per_frame)
 		{
@@ -116,7 +116,7 @@ void GameObject_Player::Update(double _dt)
 	}
 
 	if (AEInputCheckCurr(AEVK_S)) {
-		this->m_LocalPos.y -= speed * _dt;
+		this->m_LocalPos.y -= speed * static_cast<float>(_dt);
 		if (animation_timer >= animation_duration_per_frame)
 		{
 			animation_timer = 0;
@@ -220,10 +220,10 @@ void GameObject_Player::Exit()
 }
 
 // Set the maxAABB and minAABB
-void GameObject_Player::SetAABB(Vector3 maxAABB, Vector3 minAABB)
+void GameObject_Player::SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB)
 {
-	this->maxAABB = maxAABB;
-	this->minAABB = minAABB;
+	this->maxAABB = t_maxAABB;
+	this->minAABB = t_minAABB;
 }
 
 GameObject_Player* Create::test(const std::string& _refName,

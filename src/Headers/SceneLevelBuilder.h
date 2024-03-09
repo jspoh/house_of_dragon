@@ -43,10 +43,10 @@ private:
 	void DestroyRowOBJs(int t_tileNum);
 
 	void SpawnLvlName();
-	void UpdateLvlName(double t_dt);
+	void UpdateLvlName(f32 t_dt);
 	void RenderLvlName();
 
-	void UpdateScreenTransition(double t_dt);
+	void UpdateScreenTransition(f32 t_dt);
 	void FadeINBlack();
 	void FadeOutBlack();
 
@@ -78,8 +78,8 @@ private:
 		A more efficient check than consistently checking AABB/checking distance.
         */
         ////////////////////////////////////////////////////////////////////////
-		double m_currFloorTimer;
-		double m_FloorSpeedTimer;
+		f32 m_currFloorTimer;
+		f32 m_FloorSpeedTimer;
 
 		//And this is basically Render or Not
 		bool m_IsRender;
@@ -88,8 +88,8 @@ private:
 
 	struct v_TileSpawnPoint
 	{
-		double m_X;
-		double m_Y;
+		f32 m_X;
+		f32 m_Y;
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,14 +205,14 @@ private:
 
 	///////////////////////////////////////////////////////
 	//LEVEL NAME DISPLAY
-	double m_LvlNameTimer;
-	double m_LvlNameTransparency;
+	f32 m_LvlNameTimer;
+	f32 m_LvlNameTransparency;
 	s8 pTextFont;
 	
 	///////////////////////////////////////////////////////
 	//Screen Transition
-	double m_currTransitionTransparency;
-	double m_setTransitionTransparency;
+	f32 m_currTransitionTransparency;
+	f32 m_setTransitionTransparency;
 
 	///////////////////////////////////////////////////////
 	//TRANSFORM DATA

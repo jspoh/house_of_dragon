@@ -35,7 +35,7 @@ void TestScene::Update(double dt)
 {
     //EVENT_RESULTS results;
     //Event::getInstance()->updateRenderLoop(results, dt, EVENT_KEYS::E, EVENT_KEYS::SPACE);
-
+    UNREFERENCED_PARAMETER(dt);
     RenderHelper::getInstance()->texture(0);
 }
 

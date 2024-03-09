@@ -88,15 +88,15 @@ void SceneMenu::Update(double dt)
 			{
 				s32 mxx, myy;
 				AEInputGetCursorPosition(&mxx, &myy);
-				float mx = static_cast<float>(mxx);
-				float my = static_cast<float>(myy);
+				float mx = static_cast<f32>(mxx);
+				float my = static_cast<f32>(myy);
 				mx -= 1200 / 2;
 
 				my = -my;
 				my += 650.0f / 2.0f;
 
 				//std::cout << "X: " << mx << "    Y: " << my << std::endl;
-				AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
+				//AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
 				//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
 
 				for (int i = 0; i < 4; ++i)

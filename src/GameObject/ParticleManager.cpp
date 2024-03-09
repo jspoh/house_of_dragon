@@ -69,14 +69,14 @@ void ParticleManager::create_particles()
 		if (!particleArr[i].active)
 		{
 			particleArr[i].position = emitterPos;
-			particleArr[i].size.x = sizeMin + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (sizeMax - sizeMin)));
+			particleArr[i].size.x = sizeMin + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (sizeMax - sizeMin)));
 			particleArr[i].size.y = particleArr[i].size.x;
 			particleArr[i].alpha = 1.0f;
 			particleArr[i].lifetime = lifetime;
 			particleArr[i].active = true;
 			particleArr[i].type = type;
 
-			float angle = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f * PI;
+			float angle = static_cast<f32>(rand()) / static_cast<f32>(RAND_MAX) * 2.0f * PI;
 			particleArr[i].velocity.x = speed * cos(angle);
 			particleArr[i].velocity.y = speed * sin(angle);
 
@@ -99,16 +99,16 @@ void ParticleManager::death_particle(Point deadEnemyPos)
 	const float PARTICLE_LIFETIME = 1.2f;
 
 	int particlesEmittedThisBurst = 0;
-	float angleIncrement = (2.0f * PI) / static_cast<float>(MAX_PARTICLES_PER_BURST);
+	float angleIncrement = (2.0f * PI) / static_cast<f32>(MAX_PARTICLES_PER_BURST);
 	float currentAngle = 0.0f;
 
 	for (int i = 0; i < particlesNum; ++i) {
 		if (!particleArr[i].active) {
 			if (particlesEmittedThisBurst < MAX_PARTICLES_PER_BURST) {
-				float speed = PARTICLE_SPEED_MIN + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (PARTICLE_SPEED_MAX - PARTICLE_SPEED_MIN)));
+				float speed = PARTICLE_SPEED_MIN + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (PARTICLE_SPEED_MAX - PARTICLE_SPEED_MIN)));
 				//particles[i].position = enemyDeathPosition;
-				particleArr[i].size.x = PARTICLE_SIZE_MIN + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN)));
-				particleArr[i].size.y = PARTICLE_SIZE_MIN + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN)));
+				particleArr[i].size.x = PARTICLE_SIZE_MIN + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN)));
+				particleArr[i].size.y = PARTICLE_SIZE_MIN + static_cast<f32>(rand()) / (static_cast<f32>(RAND_MAX / (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN)));
 				particleArr[i].alpha = 1.0f;
 				particleArr[i].lifetime = PARTICLE_LIFETIME;
 				particleArr[i].active = true;

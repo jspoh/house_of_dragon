@@ -60,7 +60,6 @@ namespace {
     // buttons coordinates;
     float btnWidth;
     float btnHeight;
-    float lBtnX;
 
     EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
     enum ACTION_BTNS {
@@ -107,7 +106,7 @@ namespace {
     // definitely not good practice to put event handling together with drawing but it helps with the time complexity..
     void updateBtns(std::vector<std::string> bvalues) {
         // rendering coordinates 
-        float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+        float btnWidth = static_cast<f32>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
         float btnHeight = btnWidth / 3.f;
         btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
         float lBtnX = padding + btnWidth / 2.f;
@@ -123,7 +122,7 @@ namespace {
 
                 int mouseX, mouseY;
                 AEInputGetCursorPosition(&mouseX, &mouseY);
-                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+                if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<f32>(mouseX), static_cast<f32>(mouseY))) {
                     if (AEInputCheckTriggered(AEVK_LBUTTON)) {
                         /*click while on main menu*/
                         if (currentState == ACTION_BTNS::MAIN) {
@@ -195,11 +194,11 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
     float Enemypadding = 50.0f;
 
     groups.size = enemyRefs.size(); // number of enemies;
-    groups.coordinates.resize(groups.size); // setting the coordinates
+    groups.coordinates.resize(static_cast<size_t>(groups.size)); // setting the coordinates
     groups.enemies.resize(groups.size); // setting up the checking of enemies
     groups.activeEnemy.resize(groups.size);
     groups.name.resize(groups.size); // might not be needed, after getting the information from the
-    float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (groups.size - 1) * spacing) / groups.size);
+    float Enemyspacing = static_cast<f32>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (groups.size - 1) * spacing) / groups.size);
     for (int i = 0; i < groups.size; i++) {
         groups.activeEnemy[i] = true;
         // coordindates
@@ -276,9 +275,9 @@ void CombatScene::Init()
 
     // all enemies init, not implemented using the py yet
 
-    // selected enemy init
-    Enemy* selectedEnemy;
-    UNREFERENCED_PARAMETER(selectedEnemy);
+    // selected enemy init //Giving Warning
+    //Enemy* selectedEnemy;
+    //UNREFERENCED_PARAMETER(selectedEnemy);
 }
 
 void CombatScene::Update(double dt)
