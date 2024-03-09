@@ -88,7 +88,7 @@ void ParticleManager::create_particles()
 
 
 
-void ParticleManager::death_particle(Point deadEnemyPos)
+void ParticleManager::death_particle([[maybe_unused]] Point deadEnemyPos)
 {
 
 	const int MAX_PARTICLES_PER_BURST = 100;

@@ -20,7 +20,7 @@ Technology is prohibited.
 #include <iostream>
 
 
-Player::Player(double health, double dmg, Element element) : Mob(element, health, dmg) {
+Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
     RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
 
     // set shield properties
@@ -107,7 +107,7 @@ void Player::render() {
     }
 }
 
-double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
+float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
     DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
     float multiplier = 1;
     std::cout << "attackEl enum: " << attackEl << "\n";
@@ -122,7 +122,7 @@ double Player::attack(Mob& target, Element attackEl, double qtMultiplier) {
         break;
     }
 
-    double damage = this->dmg * multiplier * qtMultiplier;
+    float damage = this->dmg * multiplier * qtMultiplier;
     target.health -= damage;
     return damage;
 }

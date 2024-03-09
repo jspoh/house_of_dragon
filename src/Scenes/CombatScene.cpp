@@ -35,38 +35,19 @@ CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance(
 namespace {
 	// game objects
 	Player* player;
-	Enemy* SelectEnemy; // selected enemy for attack
-
 
 	//camera coordinates;
 	f32 camX, camY;
 
 	// panel rendering
-	double panelvelocity;
 	Point panelpos;
-	double panelfinalY;
+	float panelfinalY;
 	bool panelflag;
-	double currentTime;
-	double totaltime;
+	float currentTime;
+	float totaltime;
 
+	enemiesGroup groups{ 0 };
 
-
-	// randomize the inital enemy attacker
-	int randomEnemyStart;
-
-
-	// enemy selection
-	bool selectflag;
-	int texSize;
-
-
-	// buttons coordinates;
-	float btnWidth;
-	float btnHeight;
-	float lBtnX;
-	float bPosX;
-	int mouseX, mouseY;
-	bool buttonpressed;
 
 	EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 	enum ACTION_BTNS {
@@ -102,7 +83,6 @@ namespace {
 	};
 	float padding = 50.f;
 	float spacing = 50.f;
-	enemiesGroup groups;
 
 
 	float btnY = 550.f;
@@ -111,16 +91,17 @@ namespace {
 	/*im so sorry this code very spaghet but time crunch!!*/
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
-		btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
-		btnHeight = btnWidth / 3.f;
+		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+		float btnHeight = btnWidth / 3.f;
 		btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-		lBtnX = padding + btnWidth / 2.f;
+		float lBtnX = padding + btnWidth / 2.f;
 
-		bPosX = lBtnX;
+		float bPosX = lBtnX;
 
 		for (const std::string bv : bvalues) { // bruh wa this got got me too confused
 			Point btnPos = stow(bPosX, btnY);  // button rendering position
 
+			int mouseX, mouseY;
 			AEInputGetCursorPosition(&mouseX, &mouseY);
 			//std::cout << bPosX << " | " << btnY << "\n";
 			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
@@ -188,19 +169,19 @@ namespace {
 		}
 
 		// rendering coordinates 
-		btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
-		btnHeight = btnWidth / 3.f;
+		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+		float btnHeight = btnWidth / 3.f;
 		btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-		lBtnX = padding + btnWidth / 2.f;
-
-		bPosX = lBtnX;
+		float lBtnX = padding + btnWidth / 2.f;
+		 
+		float bPosX = lBtnX;
 
 		for (const std::string bv : bvalues) { // bruh wa this got got me too confused
 			Point btnPos = stow(bPosX, btnY);  // button rendering position
 
-			int mouseX, mouseY;
-			AEInputGetCursorPosition(&mouseX, &mouseY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			int mX, mY;
+			AEInputGetCursorPosition(&mX, &mY);
+			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY))) {
 				RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
@@ -225,8 +206,8 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
 
 	float Enemypadding = 50.0f;
-	texSize = 50.f;
-	groups.size = enemyRefs.size(); // number of enemies;
+	float texSize = 50.f;
+	groups.size = static_cast<int>(enemyRefs.size()); // number of enemies;
 	groups.coordinates.resize(groups.size); // setting the coordinates
 	groups.enemies.resize(groups.size); // setting up the checking of enemies
 	groups.activeEnemy.resize(groups.size);
@@ -300,8 +281,6 @@ void CombatScene::Init()
 	//player init
 
 	player = new Player();
-	SelectEnemy = NULL;
-	selectflag = true;
 
 	panelflag = true;
 	panelpos.x = 0; // constant value
@@ -310,8 +289,6 @@ void CombatScene::Init()
 	currentTime = 0;
 	totaltime = 1.f;
 
-	randomEnemyStart = rand() % 3;
-
 }
 
 void CombatScene::Update(double dt)
@@ -319,9 +296,9 @@ void CombatScene::Update(double dt)
 	//updating panel 
 	AEGfxGetCamPosition(&camX, &camY);
 	if (currentTime < totaltime) { // should include this in render.cpp instead
-		currentTime += AEFrameRateControllerGetFrameTime();
-		double percenttime = currentTime / totaltime;
-		double t = percenttime;
+		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		float percenttime = static_cast<float>(currentTime / totaltime);
+		float t = percenttime;
 		if (t > totaltime) {
 			t = totaltime;
 		}
@@ -405,8 +382,7 @@ void CombatScene::Update(double dt)
 		updateBtns(btns[currentState]);  // render player action buttons
 	}
 	else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
-		groups.enemies[randomEnemyStart++]->attack(*player);  // Example: All enemies attack the player
-		randomEnemyStart %= 3; // prevents from going out of vector
+		groups.enemies[rand() % groups.enemies.size()]->attack(*player);  // Example: All enemies attack the player
 
 		CombatManager::getInstance()->next();  // perhaps can implement pause
 	}
@@ -425,7 +401,7 @@ void CombatScene::Render()
 	//panel rendering
 	f32 truex, truey;
 	AEGfxGetCamPosition(&truex, &truey);
-	RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, AEGfxGetWindowWidth(), 160);
+	RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 	//rendering enemies
 

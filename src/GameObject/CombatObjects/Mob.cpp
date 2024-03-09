@@ -16,7 +16,7 @@ Technology is prohibited.
 
 #include "Mob.h"
 
-Mob::Mob(Element element, double health, double dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {
+Mob::Mob(Element element, float health, float dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {
 
 }
 
@@ -32,7 +32,7 @@ double Mob::attack(Mob& target) {
         break;
     }
 
-    double damage = this->dmg * multiplier;
+    float damage = this->dmg * multiplier;
     target.health -= damage;
     return damage;
 }

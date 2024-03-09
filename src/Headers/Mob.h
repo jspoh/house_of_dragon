@@ -21,13 +21,13 @@ Technology is prohibited.
 
 class Mob {
 public:
-	double maxHealth = 100;
-	double health = maxHealth;
-	double dmg;
+	float maxHealth = 100;
+	float health = maxHealth;
+	float dmg;
 	Element element;
 
 	Mob();
-	Mob(Element element, double health, double dmg);
+	Mob(Element element, float health, float dmg);
 
 	bool isDead();
 

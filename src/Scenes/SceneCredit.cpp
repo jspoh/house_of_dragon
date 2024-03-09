@@ -4,7 +4,6 @@
 static char strBuffer[1024];
 static char strBuffer1[1024];
 static float speed =30;
-static float dt;
 static Point text;
 static float scrolling;
 static float timef;
@@ -93,7 +92,7 @@ void SceneCredits::Render()
 
 	scrolling += timef * speed;
 
-	texture(credits.bg, 0.f, AEGfxGetWindowWidth(), AEGfxGetWindowHeight(), 0.f, 0.f, credits.mesh, 1);
+	texture(credits.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, credits.mesh, 1.f);
 	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxTextureSet(NULL, 0, 0);
@@ -217,6 +216,8 @@ void SceneCredits::Exit()
 
 	
 }
+
+// we already have RenderHelper..
 void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
 {
 	UNREFERENCED_PARAMETER(transparency);

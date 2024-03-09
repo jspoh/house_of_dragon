@@ -19,7 +19,7 @@ void GameObject::Init()
 {
 
 }
-void GameObject::Update(double dt)
+void GameObject::Update([[maybe_unused]] double dt)
 {
 }
 void GameObject::Render()

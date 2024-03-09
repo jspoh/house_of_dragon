@@ -50,7 +50,6 @@ struct enemiesGroup {
 	std::vector<Point> coordinates;
 	std::vector<std::string> name;
 	std::vector<Enemy*> enemies;
-
 };
 // !TODO: kuek
 /**

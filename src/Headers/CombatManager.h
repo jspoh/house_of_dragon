@@ -50,6 +50,4 @@ public:
     static CombatManager* getInstance();
 
     void next();
-
-    void setSelectedEnemy(Enemy* enemy); // set the selected enemy for the damage intake
 };

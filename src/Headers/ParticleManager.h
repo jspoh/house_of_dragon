@@ -41,7 +41,7 @@ private:
 
 
 	static const int particlesNum = 100;
-	Particle_Prop particleArr[particlesNum];
+	Particle_Prop particleArr[particlesNum]{ 0 };
 
 	enum PARTICLE_TYPE
 	{

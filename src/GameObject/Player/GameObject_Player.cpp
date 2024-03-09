@@ -4,6 +4,7 @@
 //#include"../../Backend/Pch.h"
 GameObject_Player::GameObject_Player()
 {
+	pTex = nullptr;
 }
 
 GameObject_Player::~GameObject_Player()
@@ -61,7 +62,7 @@ void GameObject_Player::Update(double _dt)
 	}
 
 	if (AEInputCheckCurr(AEVK_A)) {
-		this->m_LocalPos.x -= speed * _dt;
+		this->m_LocalPos.x -= static_cast<float>(speed * _dt);
 		if (animation_timer >= animation_duration_per_frame)
 		{
 			animation_timer = 0;
@@ -256,7 +257,7 @@ void movement_dash(GameObject_Player* player, Vector3 destination, float speed, 
 	if (player->timer <= 3.0f)
 	{
 
-		player->m_LocalPos += direction_p * speed * _dt;
+		player->m_LocalPos += direction_p * speed * static_cast<float>(_dt);
 
 
 	}

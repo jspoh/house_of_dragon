@@ -5,7 +5,6 @@
 #include "Pch.h"
 
 
-class SceneManager;
 class SceneCredits : public Scene
 {
 public:
@@ -30,11 +29,13 @@ public:
 		float x, y;
 	};
 
-	struct {
+	struct Credits {
 		AEGfxVertexList* mesh;
 		AEGfxTexture* bg;
 		s8 fontID;
-	}credits;
+	};
+
+	Credits credits{ 0 };
 
 
 	void texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency);

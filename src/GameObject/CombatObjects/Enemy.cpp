@@ -22,7 +22,7 @@ Technology is prohibited.
 //}
 
 
-Enemy::Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
+Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
     : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
     this->_spos.x = screenX;
     this->_spos.y = screenY;
@@ -35,10 +35,6 @@ Enemy::Enemy(Element element, double health, double dmg, std::string texturePath
     this->healthpos.y = this->_wpos.y + 50;
 
     //RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
-}
-double Enemy::newHealth(double desiredX) { 
-    return this->health;
-
 }
 
 void Enemy::update([[maybe_unused]] double dt) {

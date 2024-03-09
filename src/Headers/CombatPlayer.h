@@ -50,7 +50,7 @@ private:
 	void _drawHealth(float screenX, float screenY);
 
 public:
-	Player(double health = 100, double dmg = 10, Element element = Element::NO_ELEMENT);
+	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
 
 	static constexpr int BLOCKING_TIMEOUT_MS = 2000;
 	static constexpr int BLOCKING_DURATION = 2000;
@@ -65,7 +65,7 @@ public:
 	 * \param qtMultiplier quicktime event multiplier
 	 * \return damage dealt
 	 */
-	double attack(Mob& target, Element attackEl, double qtMultiplier);
+	float attack(Mob& target, Element attackEl, float qtMultiplier);
 
 	void update(double dt);
 

@@ -30,18 +30,17 @@ private:
 	Point _wpos{ 0 };
 	float _size = 50;
 	Point healthpos{ 0 };
-	double fullhealth = 0;
+	float fullhealth = 0;
 
 public:
 	bool isSelected = false;
 
 	Enemy();
-	Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
 	~Enemy();
 
 	void update([[maybe_unused]] double dt);
 	void render();
-	double newHealth(double desiredX);
 };
 
 
