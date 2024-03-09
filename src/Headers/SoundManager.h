@@ -16,12 +16,33 @@
 
 class SoundManager : public Singleton<SoundManager>
 {
+private:
+	AEAudioGroup sfxGroup;
+	AEAudioGroup musicGroup;
+
 protected:
-	std::unordered_map<std::string, std::string> soundMap;
+	std::unordered_map<std::string, AEAudio> soundMap;
+	std::unordered_map<std::string, AEAudio> musicMap;
 
 public:
 	// Constructor
 	SoundManager();
 	~SoundManager();
+
+	bool registerAudio(std::string ref, std::string path, bool isMusic=false);
+
+	/**
+	 * .
+	 * 
+	 * \param ref
+	 * \param volume between 0 and 1, in percentage
+	 * \param loop whether to loop the audio or not.
+	 *			0	-> play once
+	 *			1	-> play twice
+	 *			-1	-> play forever
+	 */
+	void playAudio(std::string ref, float volume=1.f, bool loop=false, bool isMusic=false);
+
+	void setVolume(float volume, bool setMusic=false);
 };
 
