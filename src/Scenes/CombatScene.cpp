@@ -255,6 +255,7 @@ void CombatScene::Init()
     }
     // selected enemy init
     Enemy* selectedEnemy;
+    UNREFERENCED_PARAMETER(selectedEnemy);
 }
 
 void CombatScene::Update(double dt)
@@ -273,7 +274,7 @@ void CombatScene::Update(double dt)
         panelflag = false;
     }
 
-    RenderHelper::getInstance()->texture("panel", panelpos.x, panelpos.y , AEGfxGetWindowWidth(), 160);
+    RenderHelper::getInstance()->texture("panel", panelpos.x, panelpos.y , static_cast<f32>(AEGfxGetWindowWidth()), 160.0f);
 
     if (AEInputCheckTriggered(AEVK_RBUTTON)) {
         selectflag = true;

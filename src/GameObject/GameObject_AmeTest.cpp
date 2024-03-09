@@ -37,6 +37,7 @@ void GameObject_AmeTest::Init()
 
 void GameObject_AmeTest::Update(double _dt)
 {
+	UNREFERENCED_PARAMETER(_dt);
 	// Update the animation timer.
 	   // animation_timer should go up to animation_duration_per_frame.
 	animation_timer += (f32)AEFrameRateControllerGetFrameTime()*2;
@@ -114,10 +115,10 @@ void GameObject_AmeTest::Exit()
 }
 
 // Set the maxAABB and minAABB
-void GameObject_AmeTest::SetAABB(Vector3 maxAABB, Vector3 minAABB)
+void GameObject_AmeTest::SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB)
 {
-	this->maxAABB = maxAABB;
-	this->minAABB = minAABB;
+	this->maxAABB = t_maxAABB;
+	this->minAABB = t_minAABB;
 }
 
 GameObject_AmeTest* Create::Ame(const std::string& _refName,

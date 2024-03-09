@@ -30,9 +30,6 @@
     <ClCompile Include="src\GameObject\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Backend\Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Backend\SoundManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -70,9 +67,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\GameObject_AmeTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Backend\Utils_EaseFunctions.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\Player\GameObject_Player.cpp">

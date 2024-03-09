@@ -59,7 +59,7 @@ void SceneMenu::Init()
 
 void SceneMenu::Update(double dt)
 {
-
+	UNREFERENCED_PARAMETER(dt);
 	if (AEInputCheckTriggered(AEVK_1)) {
 		SceneManager::GetInstance()->SetActiveScene("TestScene");
 	}
@@ -88,8 +88,8 @@ void SceneMenu::Update(double dt)
 			{
 				s32 mxx, myy;
 				AEInputGetCursorPosition(&mxx, &myy);
-				float mx = mxx;
-				float my = myy;
+				float mx = static_cast<float>(mxx);
+				float my = static_cast<float>(myy);
 				mx -= 1200 / 2;
 
 				my = -my;
@@ -171,14 +171,12 @@ void SceneMenu::Render()
 
 	for (int i = 3; i >= 0; --i)
 	{
-		AEMtx33 scale = { 0 };
+		scale = { 0 };
 		AEMtx33Scale(&scale, myMenu.buttonWidth, myMenu.buttonHeight);
 
-		AEMtx33 transform;
 		AEMtx33Trans(&transform, myMenu.buttonX[i], myMenu.buttonY[i]);
 
-
-		AEMtx33 model = { 0 };
+		model = { 0 };
 		AEMtx33Concat(&model, &transform, &scale);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);

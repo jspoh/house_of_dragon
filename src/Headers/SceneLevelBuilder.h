@@ -1,4 +1,19 @@
 #pragma once
+/* Start Header ************************************************************************/
+/*!
+\file SceneLevelBuilder.h
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 21 Feb 2024
+\brief Handles the update and rendering of the levels
+
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
 
 #include "Pch.h"
 #include "GameObjectManager.h"
@@ -28,14 +43,16 @@ private:
 	void DestroyRowOBJs(int t_tileNum);
 
 	void SpawnLvlName();
-	void UpdateLvlName(float t_dt);
+	void UpdateLvlName(double t_dt);
 	void RenderLvlName();
 
-	void UpdateScreenTransition(float t_dt);
+	void UpdateScreenTransition(double t_dt);
 	void FadeINBlack();
 	void FadeOutBlack();
+
 	struct v_FloorData
 	{
+		v_FloorData();
 		////////////////////////////////////////////////////////////////////////
 		/*
 		There are two different transforms that each floor tile stores.
@@ -50,9 +67,9 @@ private:
 		////////////////////////////////////////////////////////////////////////
 		AEMtx33 m_TransformFloorData;
 		AEMtx33 m_TransformFloorCurr;
-		int m_currFloorNum = 0;
-		int m_FloorNum = 0;
-		AEMtx33 m_currFloorSpeed = { 0 };
+		int m_currFloorNum;
+		int m_FloorNum;
+		AEMtx33 m_currFloorSpeed;
 
 		////////////////////////////////////////////////////////////////////////
         /*
@@ -61,11 +78,11 @@ private:
 		A more efficient check than consistently checking AABB/checking distance.
         */
         ////////////////////////////////////////////////////////////////////////
-		double m_currFloorTimer = 0;
-		double m_FloorSpeedTimer = 0.5;
+		double m_currFloorTimer;
+		double m_FloorSpeedTimer;
 
 		//And this is basically Render or Not
-		bool m_IsRender = true;
+		bool m_IsRender;
 		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
 	};
 
@@ -179,6 +196,7 @@ private:
 	v_FloorData** m_Floor;
 	v_TileSpawnPoint** m_tileSP; //0 
 	std::list<v_SceneObject>** m_FloorOBJs;
+	int t_CenterFloorNum;
 	//v_WallData** m_Wall;
 
 	v_SceneLevelData* m_SceneLevelDataList;
@@ -205,8 +223,8 @@ private:
 
 	bool m_StopMovement;
 	bool m_PanCloseToGround;
-	/*bool m_PanLeft;
-	bool m_PanRight;*/
 
 	int CurrentTileNumFurthest;
+
+	bool Combat = false;
 };
