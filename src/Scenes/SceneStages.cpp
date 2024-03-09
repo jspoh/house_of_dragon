@@ -62,10 +62,12 @@ void SceneStages::Exit()
 TODO:
 FIX LAG AAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 (SIMI LANJIAO NO LAG ON OTHER PEOPLE COM)
-Fix Floor
+Fix Floor 
 Adjust SceneObject Placement
 Blocking
-Cloud Scrolling
+Cloud Scrolling (Still Working)
 Add Backdrop 
 Add Lens Flare
+Integrate combat system (Still Working)
+Integrate camera panning with combat (NEED TO IMPROVE/OVERHAUL)
 ***/

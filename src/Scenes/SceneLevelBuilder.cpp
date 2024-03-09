@@ -352,46 +352,82 @@ void SceneLevelBuilder::Update(double dt)
 	//
 	//cout << x << " " << y << " " << mx << endl;
 	
-
+	static double TestTimer = 2.0f;
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
 	static int t_PanSideWays = 80;
 	static int PanDown = 0;
-	t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<float>(dt * 5.f) : 0;
+	
+	//Activating Combat system
+	//if (AEInputCheckTriggered(AEVK_V))
+	//{
+	//	std::vector<std::string> names = { "cat", "cat","cat" };
+	//	CombatScene::sInstance->spawnEnemies(names);
+	//	CombatScene::sInstance->Init();
+	//	Combat = true;
+	//}
+	//if (Combat)
+	//	CombatScene::sInstance->Update(dt);
 
-	if (AEInputCheckCurr(AEVK_Z))
+	//if (AEInputCheckTriggered(AEVK_Z)) //Activate Combat
+	//{
+	//	Combat = true;
+	//	m_StopMovement = true;
+	//	t_MovementSpeed = 0.0f;
+	//}
+	//else
+	//	m_StopMovement = false;
+
+	//TESTING
+	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat? true: false;
+	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat? true: false;
+	if (AEInputCheckTriggered(AEVK_Z))
 	{
-		m_StopMovement = true;
-		t_MovementSpeed = 0.0f;
+		std::vector<std::string> names = { "cat", "cat","cat" };
+		TestTimer = 2.0f;
+        //CombatScene::sInstance->spawnEnemies(names);
+        //CombatScene::sInstance->Init();
 	}
-	else
-		m_StopMovement = false;
-
-	if (AEInputCheckCurr(AEVK_X))
+	if (Combat)
 	{
+		////////////////////////////////////////////////////////////////
+		//Slow Down
+		/*t_MovementSpeed -= t_MovementSpeed > 0 ? static_cast<float>(dt * 3.f) : 0;*/
+		TestTimer -= dt;
+		if (TestTimer < 0.0f)
+			m_StopMovement = true;
+
+		////////////////////////////////////////////////////////////////
+		//Slow Down
 		m_PanCloseToGround = true;
-		t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30? 1 : 0;
+		t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30 ? 1 : 0;
 		PanDown -= PanDown > -100 ? 1 : 0;
 	}
 	else
 	{
+		////////////////////////////////////////////////////////////////
+		//Reset
+		t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<float>(dt * 5.f) : 0;
+		m_StopMovement = false;
+
 		m_PanCloseToGround = false;
-		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 1 : 0;
-		PanDown += PanDown < 0 ? 1 : 0;
+		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
+		PanDown += PanDown < 0 ? 4 : 0;
+	}
+		
+
+	if (AEInputCheckCurr(AEVK_X))
+	{
+
+	}
+	else
+	{
+
 	}
 
-	//NOT WORKING WILL GIVE UP
-	//if (AEInputCheckCurr(AEVK_C))
-	//{
-	//	t_PanSideWays -= t_PanSideWays > 30 ? 1 : 0;
-	//}
-	//else
-	//{
-	//	t_PanSideWays += t_PanSideWays < 80 ? 1 : 0;
-	//}
-
-	AEGfxSetCamPosition(0, -PanDown);
-	
+	f32 t_x, t_y;
+	AEGfxGetCamPosition(&t_x, &t_y);
+	AEGfxSetCamPosition(t_x, t_y - PanDown);
 
 	if (!m_StopMovement)
 	{
@@ -549,18 +585,6 @@ void SceneLevelBuilder::Update(double dt)
 	//Change to next Level
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
-
-	//Activating Combat system
-	
-	if (AEInputCheckTriggered(AEVK_V))
-	{
-		std::vector<std::string> names = { "cat", "cat","cat" };
-		CombatScene::sInstance->spawnEnemies(names);
-		CombatScene::sInstance->Init();
-		Combat = true;
-	}
-	if(Combat)
-	CombatScene::sInstance->Update(dt);
 }
 void SceneLevelBuilder::Render()
 {
@@ -868,7 +892,7 @@ Level Name
 void SceneLevelBuilder::SpawnLvlName()
 {
 	m_LvlNameTimer = MAX_LVLNAMETIMER;
-	m_currLevel+= m_currLevel<3?1:-2;
+	//m_currLevel += m_currLevel<3?1:-2;
 	m_LvlNameTransparency = -1.2;
 }
 
@@ -876,11 +900,11 @@ void SceneLevelBuilder::UpdateLvlName(float t_dt)
 {
 	if (m_LvlNameTimer > MAX_LVLNAMETIMER - 1.0)
 	{
-		m_LvlNameTransparency += m_LvlNameTransparency > 1.0 ? 0.0 : 0.05;
+		m_LvlNameTransparency += m_LvlNameTransparency > 1.0 ? 0.0 : 0.08;
 	}
 	else if (m_LvlNameTimer < 1.0)
 	{
-		m_LvlNameTransparency -= m_LvlNameTransparency < -1.0 ? 0.0 : 0.05;
+		m_LvlNameTransparency -= m_LvlNameTransparency < -1.0 ? 0.0 : 0.08;
 	}
 	m_LvlNameTimer -= t_dt;
 }
