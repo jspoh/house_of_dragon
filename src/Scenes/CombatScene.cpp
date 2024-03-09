@@ -334,6 +334,13 @@ void CombatScene::Update(double dt)
         selectflag = true;
         SelectEnemy = groups.enemies[0];
     }
+
+    // select enemy
+    if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+        for (Enemy* e : groups.enemies) {
+            e->update(dt);
+        }
+    }
    
 
     Point p = stow(100, 100);

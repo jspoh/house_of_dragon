@@ -41,7 +41,7 @@ public:
 	 *			1	-> play twice
 	 *			-1	-> play forever
 	 */
-	void playAudio(std::string ref, float volume=1.f, bool loop=false, bool isMusic=false);
+	void playAudio(std::string ref, float volume=1.f, int loop=0, bool isMusic=false);
 
 	void setVolume(float volume, bool setMusic=false);
 };

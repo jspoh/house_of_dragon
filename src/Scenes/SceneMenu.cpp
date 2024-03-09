@@ -56,7 +56,7 @@ void SceneMenu::Init()
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight + 10) + 200;
 	}
 
-	SoundManager::GetInstance()->playAudio("titleMusic", 1, true, true);
+	SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
 
 }
 

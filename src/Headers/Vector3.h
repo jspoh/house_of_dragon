@@ -63,11 +63,11 @@ struct Vector3
 	
 	//Return a copy of this vector, normalized
 	//Throw a divide by zero exception if normalizing a zero vector
-	Vector3 Normalized( void ) const throw( DivideByZero );
+	Vector3 Normalized( void ) const;
 	
 	//Normalize this vector and return a reference to it
 	//Throw a divide by zero exception if normalizing a zero vector
-	Vector3& Normalize( void ) throw( DivideByZero );
+	Vector3& Normalize( void );
 	
 	friend std::ostream& operator<<( std::ostream& os, Vector3& rhs); //print to ostream
 

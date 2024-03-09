@@ -17,6 +17,10 @@ Technology is prohibited.
 #include "Enemy.h"
 #include "utils.h"
 
+//Enemy::Enemy() {
+//
+//}
+
 
 Enemy::Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
     : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
@@ -36,6 +40,19 @@ double Enemy::newHealth(double desiredX) {
     return this->health;
 
 }
+
+void Enemy::update([[maybe_unused]] double dt) {
+    Point pos = wtos(_wpos.x, _wpos.y);
+
+    int mouseX, mouseY;
+    AEInputGetCursorPosition(&mouseX, &mouseY);
+
+    if (AEInputCheckTriggered(AEVK_LBUTTON) && CollisionChecker::isMouseInRect(pos.x, pos.y, _size, _size, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+        std::cout << "enemy selected\n";
+    }
+}
+
+
 void Enemy::render() {
     //std::cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
     RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y + 100, this->_size  , this->_size  );

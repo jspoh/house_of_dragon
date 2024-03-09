@@ -380,7 +380,7 @@ Return a copy of this vector, normalized
 	Resulting normalized vector
 */
 /******************************************************************************/
-Vector3 Vector3::Normalized( void ) const throw( DivideByZero )
+Vector3 Vector3::Normalized( void ) const
 {
 	float d = Length();
 	if(d <= Math::m_EPSILON && -d <= Math::m_EPSILON)
@@ -401,7 +401,7 @@ Normalize this vector and return a reference to it
 	Reference to this vector
 */
 /******************************************************************************/
-Vector3& Vector3::Normalize( void ) throw( DivideByZero )
+Vector3& Vector3::Normalize( void )
 {
 	float d = Length();
 	if(d <= Math::m_EPSILON && -d <= Math::m_EPSILON)

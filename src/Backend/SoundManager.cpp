@@ -66,7 +66,7 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 	return true;
 }
 
-void SoundManager::playAudio(std::string ref, float volume, bool loop, bool isMusic) {
+void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMusic) {
 	AEAudio audio;
 
 	if (soundMap.find(ref) != soundMap.end()) {

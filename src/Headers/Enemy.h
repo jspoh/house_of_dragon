@@ -37,6 +37,7 @@ public:
 	Enemy(Element element, double health, double dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
 	~Enemy();
 
+	void update([[maybe_unused]] double dt);
 	void render();
 	double newHealth(double desiredX);
 };
