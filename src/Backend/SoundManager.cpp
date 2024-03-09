@@ -1,7 +1,7 @@
 /*!************************************************************************
 \file SoundManager.cpp
-\author Soh Wei Jie (weijie.soh)
-\par DP email: weijie.soh\@digipen.edu
+\author Soh Wei Jie (weijie.soh), Poh Jing Seng (jingseng.poh)
+\par DP email: weijie.soh\@digipen.edu, jingseng.poh\@digipen.edu
 \par Course: csd1451
 \par House 0F Dragons
 \date 23-1-2024
