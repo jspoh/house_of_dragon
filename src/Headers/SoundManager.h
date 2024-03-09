@@ -1,8 +1,8 @@
 #pragma once
 /*!************************************************************************
 \file SoundManager.h
-\author Soh Wei Jie (weijie.soh)
-\par DP email: weijie.soh\@digipen.edu
+\author Soh Wei Jie (weijie.soh), Poh Jing Seng (jingseng.poh)
+\par DP email: weijie.soh\@digipen.edu, jingseng.poh\@digipen.edu
 \par Course: csd1451
 \par House 0F Dragons
 \date 23-1-2024
@@ -10,42 +10,39 @@
 **************************************************************************/
 
 #include "SingletonTemplate.h"
-#include <map>
+#include "AEAudio.h"
+#include <unordered_map>
 #include <string>
 
 class SoundManager : public Singleton<SoundManager>
 {
-protected:
-	// Destructor
-	// ///////////////////////////////////////////////////////////
-	// Change To Fmod
-	// ///////////////////////////////////////////////////////////
-	//ISoundEngine* theSoundEngine; 
+private:
+	AEAudioGroup sfxGroup;
+	AEAudioGroup musicGroup;
 
-	// The library map of all the sounds created
-	std::map<std::string, std::string> soundMap;
+protected:
+	std::unordered_map<std::string, AEAudio> soundMap;
+	std::unordered_map<std::string, AEAudio> musicMap;
 
 public:
 	// Constructor
 	SoundManager();
-	virtual ~SoundManager();
+	~SoundManager();
 
-	// Init this class and it will create the Sound Engine
-	bool Init(void);
+	bool registerAudio(std::string ref, std::string path, bool isMusic=false);
 
-	// Get the handler to the sound engine
-	// 	// ///////////////////////////////////////////////////////////
-	// Change To Fmod
-	// ///////////////////////////////////////////////////////////
-	//ISoundEngine* GetSoundEngine(void);
+	/**
+	 * .
+	 * 
+	 * \param ref
+	 * \param volume between 0 and 1, in percentage
+	 * \param loop whether to loop the audio or not.
+	 *			0	-> play once
+	 *			1	-> play twice
+	 *			-1	-> play forever
+	 */
+	void playAudio(std::string ref, float volume=1.f, bool loop=false, bool isMusic=false);
 
-	// Add a sound to this library
-	void AddSound(const std::string& _soundIndex, const std::string& _soundSource);
-	// Get a sound from this map 
-	std::string GetSound(const std::string& _soundIndex);
-	// Remove a sound from this map
-	bool RemoveSound(const std::string& _soundIndex);
-	// Play a sound from this map
-	void PlayASound(const std::string& _soundIndex);
+	void setVolume(float volume, bool setMusic=false);
 };
 
