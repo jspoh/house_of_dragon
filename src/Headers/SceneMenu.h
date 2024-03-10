@@ -8,8 +8,7 @@
 #define ScreenTransitionTimer 3.0f
 
 class SceneManager;
-class SceneMenu : public Scene
-{
+class SceneMenu : public Scene {
 public:
 	SceneMenu();
 	SceneMenu(SceneManager* _sceneMgr);
@@ -50,7 +49,7 @@ public:
 
 private:
 
-	Menu myMenu;
+	Menu myMenu{ 0 };
 
 	//SceneMenu(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
