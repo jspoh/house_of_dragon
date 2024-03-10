@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Particle.h"
-
-class ParticleManager {
+class ParticleManager : public Singleton<ParticleManager> {
 public:
-	~ParticleManager();
+	~ParticleManager() override;
 
-	static ParticleManager* GetInstance();
+	//static ParticleManager* GetInstance();
 
 	void init();
 
@@ -33,8 +31,11 @@ public:
 		Color color;
 	};
 
+	// YOU SHOULDNT BE USING THIS!! ONLY FOR SINGLETON TEMPLATE!!
+	ParticleManager();
+
 private:
-	static ParticleManager* instance;
+	//static ParticleManager* instance;
 
 	static constexpr int PROJECTED_MAX_PARTICLES = 2048;
 	static constexpr int particlesCreationRate = 120;		// number of particles to create per second
@@ -58,7 +59,6 @@ private:
 	float posX = 0;
 	float posY = 0;
 
-	ParticleManager();
 
 
 	void createParticle(float posX, float posY);

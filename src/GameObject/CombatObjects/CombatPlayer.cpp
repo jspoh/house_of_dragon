@@ -38,6 +38,10 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 	transitionSpeed = initialFinalDistance / (shieldTransitionTimeMs / 1000.f);
 }
 
+Player::~Player() {
+	RenderHelper::getInstance()->removeTextureByRef("shield");
+}
+
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Jackie";
 		std::string level = "  Lv:1";

@@ -244,7 +244,7 @@ CombatScene::~CombatScene()
 
 void CombatScene::Load()
 {
-	Event::getInstance();
+ 	Event::getInstance();
 	//healthbar load
 	RenderHelper::getInstance()->registerTexture("border", "./Assets/Combat_Items/Combat/border.png");
 	RenderHelper::getInstance()->registerTexture("panel", "./Assets/Combat_Items/Combat/panel.png");
@@ -287,6 +287,26 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
+	if (!CombatManager::getInstance()->isInCombat) {
+		return;
+	}
+
+
+	if (AEInputCheckTriggered(AEVK_K)) {
+		// kill all enemies
+		for (const Enemy* e : groups.enemies) {
+			delete e;
+		}
+
+		groups.enemies.clear();
+		
+		CombatManager::getInstance()->end();
+		delete player;
+		player = nullptr;
+		return;
+	}
+
+
 	//updating panel 
 	AEGfxGetCamPosition(&camX, &camY);
 	if (currentTime < totaltime) { // should include this in render.cpp instead
@@ -302,6 +322,7 @@ void CombatScene::Update(double dt)
 		panelflag = false;
 	}
 
+	player->update(dt);
 
 	//if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 	//	selectflag = true;
@@ -407,20 +428,25 @@ void CombatScene::Update(double dt)
 			}
 			else {
 				std::cout << "Transition to next level\n";
+				// all enemies shldve been deleted
+				delete player;
+				player = nullptr;
 				CombatManager::getInstance()->end();
+				return;
 			}
 		}
 
 	}
 
-
-
-	player->update(dt);
-
 }
 
 void CombatScene::Render()
 {
+	// dont render if no longer in combat
+	if (!CombatManager::getInstance()->isInCombat) {
+		return;
+	}
+
 	//rendering player
 	player->render();
 
@@ -470,7 +496,7 @@ void CombatScene::Render()
 		groups.enemies[i]->render(); // render all, draw all enemys
 	}
 
-
+	
 }
 
 void CombatScene::Exit()
@@ -479,9 +505,9 @@ void CombatScene::Exit()
 	for (Enemy* enemy : groups.enemies) {
 		delete enemy;
 	}
+	groups.enemies.clear();
 	delete CombatManager::getInstance();
 	// Clear the vector after deleting the enemies
-	groups.enemies.clear();
 	delete player;
 }
 

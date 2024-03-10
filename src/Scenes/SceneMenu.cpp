@@ -73,7 +73,7 @@ void SceneMenu::Update(double dt)
 	int mX, mY;
 	AEInputGetCursorPosition(&mX, &mY);
 
-	ParticleManager::GetInstance()->setParticlePos(mX, mY);
+	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
 	ParticleManager::GetInstance()->update(dt);
 
 
