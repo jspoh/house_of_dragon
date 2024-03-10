@@ -22,6 +22,9 @@ Technology is prohibited.
 //}
 
 
+//local variables
+float paddingY = 90;
+
 Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
     : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
     this->_spos.x = screenX;
@@ -40,7 +43,6 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
 void Enemy::update([[maybe_unused]] double dt) {
     int mouseX, mouseY;
     AEInputGetCursorPosition(&mouseX, &mouseY);
-
     AEVec2 camOffset;
     AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
@@ -65,24 +67,24 @@ void Enemy::render() {
         RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
     }
     
-    RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-    RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);
-    RenderHelper::getInstance()->texture("bar2", this->_wpos.x + (fullhealth / 100) * 100 - 40, this->healthpos.y, 10, 10);
+    //RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
+    //RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);
+    //RenderHelper::getInstance()->texture("bar2", this->_wpos.x + (fullhealth / 100) * 100 - 40, this->healthpos.y, 10, 10);
     //healthbar; currently hardcoded so its not as usable
     if (this->health > 66) {
-        RenderHelper::getInstance()->texture("greenbar1", this->_wpos.x - 50, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-        RenderHelper::getInstance()->texture("greenbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y, (health / 100) * 100, 10);
-        RenderHelper::getInstance()->texture("greenbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y, 10, 10);
+        RenderHelper::getInstance()->texture("greenbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
+        RenderHelper::getInstance()->texture("greenbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y - paddingY, (health / 100) * 100, 10);
+        RenderHelper::getInstance()->texture("greenbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y - paddingY, 10, 10);
     }
     else if (this->health > 33) {
-        RenderHelper::getInstance()->texture("yellowbar1", this->_wpos.x - 50, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-        RenderHelper::getInstance()->texture("yellowbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y, (health / 100) * 100, 10);
-        RenderHelper::getInstance()->texture("yellowbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y, 10, 10);
+        RenderHelper::getInstance()->texture("yellowbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
+        RenderHelper::getInstance()->texture("yellowbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y - paddingY, (health / 100) * 100, 10);
+        RenderHelper::getInstance()->texture("yellowbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y - paddingY, 10, 10);
     }
     else {
-        RenderHelper::getInstance()->texture("redbar1", this->_wpos.x - 50, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-        RenderHelper::getInstance()->texture("redbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y, (health / 100) * 100, 10);
-        RenderHelper::getInstance()->texture("redbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y, 10, 10);
+        RenderHelper::getInstance()->texture("redbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
+        RenderHelper::getInstance()->texture("redbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y - paddingY, (health / 100) * 100, 10);
+        RenderHelper::getInstance()->texture("redbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y - paddingY, 10, 10);
 
     }
 

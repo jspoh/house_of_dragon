@@ -22,7 +22,6 @@ Technology is prohibited.
 
 Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
-
 	// set shield properties
 	AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
 	AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
@@ -40,7 +39,32 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 }
 
 void Player::_drawHealth(float screenX, float screenY) {
-	RenderHelper::getInstance()->text(std::to_string(this->health), screenX, screenY);
+	std::string name = "Jackie";
+		std::string level = "  Lv:1";
+	float paddingY = 50;
+	float paddingX = 90;
+	Point panelPos = stow(screenX, screenY);
+	//panel rendering
+	f32 truex, truey;
+	AEGfxGetCamPosition(&truex, &truey);
+	RenderHelper::getInstance()->texture("panel", panelPos.x + truex , panelPos.y   + truey + paddingY, 270, 100);
+	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
+	if (this->health > 66) {
+		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20  , 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
+		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+	}
+	else if (this->health > 33) {
+		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x + truex - 50, panelPos.y + truey - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - 45 + (health / 100) * 50, panelPos.y + truey - paddingY, (health / 100) * 100, 10);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + (health / 100) * 100 - 40, panelPos.y + truey - paddingY, 10, 10);
+	}
+	else {
+		RenderHelper::getInstance()->texture("redbar1", panelPos.x + truex - 50, panelPos.y + truey - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - 45 + (health / 100) * 50, panelPos.y + truey - paddingY, (health / 100) * 100, 10);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + (health / 100) * 100 - 40, panelPos.y + truey - paddingY, 10, 10);
+
+	}
 }
 
 void Player::update(double dt) {
@@ -111,7 +135,6 @@ void Player::update(double dt) {
 
 void Player::render() {
 	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
-
 	this->_drawHealth(150, 150);
 
 	switch (blockingState) {
