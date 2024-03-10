@@ -1,42 +1,48 @@
 #include "Pch.h"
 #include "ParticleManager.h"
+#include "SingletonTemplate.h" 
 #include <fstream>
+
+
+
+
 
 ParticleManager::ParticleManager()
 {
+	RenderHelper::getInstance()->registerTexture( circle1 , "./Assets/Particle_Effects/Single Particles/PNG (Black background) delete/circle_01.png");
 }
 
 ParticleManager::~ParticleManager()
 {
 }
 
-void  ParticleManager::init_particle(const char* fileName)
+void  ParticleManager::init_particle()
 {
+
 	
-	RenderHelper::getInstance()->registerTexture( circle1 , ".Assets/Particle_Effects/Single Particles/PNG (Black background) delete/circle_01.png");
-	std::ifstream ifs(fileName); // Open an input file stream with the provided fileName
+	//std::ifstream ifs(fileName); // Open an input file stream with the provided fileName
 
-	if (ifs.is_open())
-	{
-		for (int i = 0; i < particlesNum; ++i)
-		{
-			// Read particle properties from the file
-			ifs >> particleArr[i].position.x >> particleArr[i].position.y
-				>> particleArr[i].velocity.x >> particleArr[i].velocity.y
-				>> particleArr[i].size.x
-				>> particleArr[i].size.y
-				>> particleArr[i].lifetime
-				>> particleArr[i].alpha
-				>> particleArr[i].active;
-		}
+	//if (ifs.is_open())
+	//{
+	//	for (int i = 0; i < particlesNum; ++i)
+	//	{
+	//		// Read particle properties from the file
+	//		ifs >> particleArr[i].position.x >> particleArr[i].position.y
+	//			>> particleArr[i].velocity.x >> particleArr[i].velocity.y
+	//			>> particleArr[i].size.x
+	//			>> particleArr[i].size.y
+	//			>> particleArr[i].lifetime
+	//			>> particleArr[i].alpha
+	//			>> particleArr[i].active;
+	//	}
 
-		ifs.close(); // Close the file stream
-	}
-	else
-	{
-		// Error opening the file
-		// Handle the error appropriately
-	}
+	//	ifs.close(); // Close the file stream
+	//}
+	//else
+	//{
+	//	// Error opening the file
+	//	// Handle the error appropriately
+	//}
 }
 
 void ParticleManager::render_particles()

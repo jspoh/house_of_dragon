@@ -20,11 +20,11 @@ Technology is prohibited.
 #include <unordered_map>
 #include <string>
 #include <array>
-
+#include "SingletonTemplate.h"
 
 struct Color;
 
-class RenderHelper /*: Singleton<RenderHelper>*/ {
+class RenderHelper : Singleton<RenderHelper> {
 private:
 	static RenderHelper* _instance;
 	AEGfxVertexList* _defaultMesh;

@@ -1,16 +1,20 @@
 #include "Pch.h"
 #include "SceneMenu.h"
 #include "SoundManager.h"
+#include "ParticleManager.h"
+#include "SingletonTemplate.h"
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
 {
+	//ParticleManager::GetInstance()->init_particle();
 }
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneMenu", this);
+	//ParticleManager::GetInstance()->init_particle();
 }
 
 SceneMenu::~SceneMenu()
@@ -40,6 +44,7 @@ void SceneMenu::Load()
 
 	SoundManager::GetInstance()->registerAudio("btnClickSound", "./Assets/Audio/SFX/button_click.mp3");
 	SoundManager::GetInstance()->registerAudio("titleMusic", "./Assets/Audio/Music/sample.mp3");
+
 }
 
 void SceneMenu::Init()
@@ -59,11 +64,16 @@ void SceneMenu::Init()
 
 	SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
 
+	
+
 }
 
 void SceneMenu::Update(double dt)
 {
 	UNREFERENCED_PARAMETER(dt);
+	ParticleManager::GetInstance()->update_particles(dt);
+
+
 	if (AEInputCheckTriggered(AEVK_1)) {
 		SceneManager::GetInstance()->SetActiveScene("TestScene");
 	}
@@ -71,26 +81,13 @@ void SceneMenu::Update(double dt)
 		SceneManager::GetInstance()->SetActiveScene("CombatScene");
 	}
 
-	//for (int i = 3; i >= 0; --i)
-	//{
 
-	//	if (myMenu.levelActived[i] == 1) {
-	//		myMenu.hovering[i] = true;
-	//		static float counter = 0;
-	//if (counter >= 2.0f)
-	//	counter -= 2.0f;
-	//else
-	//	counter += dt;
-
-	//   AEVec2 xx ;
- //  AEVec2Lerp(xx, 0.0f, 360.0f, counter);
- //  ///// need do lerp for the transition 
-
-
-
-	if (AEInputCheckTriggered(AEVK_LBUTTON))
+	if (AEInputCheckReleased(AEVK_LBUTTON))
 	{
-		SoundManager::GetInstance()->playAudio("btnClickSound");
+
+
+
+		
 
 		s32 mxx, myy;
 		AEInputGetCursorPosition(&mxx, &myy);
@@ -101,8 +98,15 @@ void SceneMenu::Update(double dt)
 		my = -my;
 		my += 650.0f / 2.0f;
 
+		SoundManager::GetInstance()->playAudio("btnClickSound");
+
+		Point cursorPos = { mx, my };
+		ParticleManager::GetInstance()->emit_Particle(cursorPos);
+
 		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
 		//AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
+		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
+		AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
 		//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
 
 		for (int i = 0; i < 4; ++i)
@@ -121,25 +125,33 @@ void SceneMenu::Update(double dt)
 					SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 					break;
 				case 2:
-					//SceneManager::GetInstance()->SetActiveScene("");
+					SceneManager::GetInstance()->SetActiveScene("");
 					break;
 				case 3:
-					//SceneManager::GetInstance()->SetActiveScene("");
+					SceneManager::GetInstance()->SetActiveScene("");
+
 					break;
 				}
 			}
 
+
+
+
 		}
 
+
+	
 	}
 
-	//else myMenu.hovering[i] = false;
+		//else myMenu.hovering[i] = false;
 
-//}
-//}
-	return;
+	//}
+	//}
+		return;
 
+	
 }
+
 
 void SceneMenu::Render()
 {
@@ -171,7 +183,10 @@ void SceneMenu::Render()
 	AEGfxTextureSet(myMenu.bg, 0, 0);
 	AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
 
-
+	//ParticleManager* particleManager = ParticleManager::emit_Particle();
+	//particleManager->update_particles(AEFrameRateControllerGetFrameTime());
+	ParticleManager::GetInstance()->render_particles();
+	//particleManager.render_particles();
 
 
 	for (int i = 3; i >= 0; --i)
@@ -207,4 +222,5 @@ void SceneMenu::Exit()
 	AEGfxMeshFree(myMenu.mesh);
 	AEGfxTextureUnload(myMenu.pointer);
 	AEGfxTextureUnload(myMenu.bg);
+
 }

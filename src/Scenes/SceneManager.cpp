@@ -5,6 +5,7 @@
 
 SceneManager::SceneManager() : activeScene(nullptr), nextScene(nullptr)
 {
+
 }
 
 SceneManager::~SceneManager()

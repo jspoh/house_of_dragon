@@ -13,15 +13,15 @@ class ParticleManager : public Singleton<ParticleManager>
 public:
 	ParticleManager();
 	
-
-	void init_particle(const char* fileName);
+	//void init_particle(const char* texturePath);
+	void init_particle();
 	void emit_Particle(Point cursorPos);
 	void update_particles(float dt);
 	void death_particle(Point deadEnemyPos);
 	void render_particles();
 	void create_particles();
 private:
-	//Make a pooling system
+	
 	~ParticleManager();
 
 

@@ -117,7 +117,7 @@ RenderHelper::~RenderHelper() {
 
 RenderHelper* RenderHelper::getInstance() {
 	if (_instance == nullptr) {
-		_instance = new RenderHelper();
+		_instance = new RenderHelper;
 	}
 	return _instance;
 }
