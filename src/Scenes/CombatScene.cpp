@@ -463,7 +463,7 @@ void CombatScene::Render()
 	for (const int index : deadEnemies) {
 		// !TODO: add death animation (perhaps smoke particles to signify death)
 
-
+		delete groups.enemies[index];
 		groups.enemies.erase(groups.enemies.begin() + index);
 	}
 
