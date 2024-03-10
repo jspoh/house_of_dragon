@@ -98,11 +98,13 @@ RenderHelper::~RenderHelper() {
 	AEGfxMeshFree(_defaultMesh);
 	
 	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
+		std::cout << "Automatically removing texture with ref " << map.first << "\n";
 		AEGfxTextureUnload(map.second);
 		map.second = nullptr;
 	}
 
 	for (std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
+		std::cout << "Automatically removing mesh with ref " << map.first << "\n";
 		AEGfxMeshFree(map.second);
 		map.second = nullptr;
 	}
@@ -111,6 +113,7 @@ RenderHelper::~RenderHelper() {
 		if (pTex == nullptr) {
 			continue;
 		}
+		std::cout << "Automatically removing texture with id \n";
 		AEGfxTextureUnload(pTex);
 		pTex = nullptr;
 	}
@@ -229,6 +232,8 @@ void RenderHelper::removeTextureByRef(std::string reference) {
 	AEGfxTexture* pTex = getTextureByRef(reference);
 	AEGfxTextureUnload(pTex);
 	_textureRef.erase(reference);
+
+	std::cout << "Manually removed texture with ref " << reference << "\n";
 }
 
 void RenderHelper::removeTextureByRef(int reference) {
@@ -239,6 +244,8 @@ void RenderHelper::removeTextureByRef(int reference) {
 	}
 	AEGfxTextureUnload(pTex);
 	_textureIdRefs[reference] = nullptr;
+
+	std::cout << "Manually removed texture with ref " << reference << "\n";
 }
 
 void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
