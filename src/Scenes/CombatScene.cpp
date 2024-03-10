@@ -298,9 +298,7 @@ void CombatScene::Update(double dt)
 			delete e;
 		}
 
-		for (int i = static_cast<int>(groups.enemies.size())-1; i >= 0; i--) {
-			groups.enemies.erase(groups.enemies.begin() + i);
-		}
+		groups.enemies.clear();
 		
 		CombatManager::getInstance()->end();
 		delete player;
