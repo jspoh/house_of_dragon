@@ -5,27 +5,23 @@
 
 ParticleManager* ParticleManager::instance = nullptr;
 
-ParticleManager* ParticleManager::GetInstance()
-{
-	if (instance == nullptr)
-	{
+ParticleManager* ParticleManager::GetInstance() {
+	if (instance == nullptr) {
 		instance = new ParticleManager();
 	}
 	return instance;
 }
 
-ParticleManager::ParticleManager()
-{
+ParticleManager::ParticleManager() {
 	particles.reserve(PROJECTED_MAX_PARTICLES);
 }
 
-ParticleManager::~ParticleManager()
-{
+ParticleManager::~ParticleManager() {
+
 }
 
 
-void ParticleManager::createParticle(float x, float y)
-{
+void ParticleManager::createParticle(float x, float y) {
 	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
 	const float randDir = rand() % 360 / Math::m_PI * 180.f;
 
@@ -34,12 +30,11 @@ void ParticleManager::createParticle(float x, float y)
 	int sizeDiff = rand() % maxSizeDiff;
 	sizeDiff = rand() % 2 ? sizeDiff : -sizeDiff;
 
-	if (AEInputCheckCurr(AEVK_LBUTTON))
-	{
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
 		speed *= 5;
 	}
 
-	const Particle newParticle = Particle{
+	const ParticleManager::Particle newParticle = ParticleManager::Particle{
 		true,													// isactive
 		{x, y},													// pos
 		{randSize + sizeDiff, randSize + sizeDiff},				// initial size
@@ -58,15 +53,12 @@ void ParticleManager::setParticlePos(float x, float y) {
 	posY = y;
 }
 
-void ParticleManager::init()
-{
+void ParticleManager::init() {
 
 }
 
-void ParticleManager::update(double dt)
-{
-	for (Particle& p : particles)
-	{
+void ParticleManager::update(double dt) {
+	for (ParticleManager::Particle& p : particles) {
 		// update flag of inactive instances
 		if (p.color.a <= 0 || p.size.x <= 0 || p.size.y <= 0)
 		{
@@ -95,10 +87,8 @@ void ParticleManager::update(double dt)
 	// vector of indexes of inactive particles
 	std::vector<int> indexes{};
 	// remove inactive particles
-	for (int i{}; i < particles.size(); i++)
-	{
-		if (!particles[i].isActive)
-		{
+	for (int i{}; i < particles.size(); i++) {
+		if (!particles[i].isActive) {
 			indexes.push_back(i);
 		}
 	}
@@ -106,25 +96,21 @@ void ParticleManager::update(double dt)
 	// sort indexes in descending order so erasing doesnt go out of range
 	std::sort(indexes.rbegin(), indexes.rend());
 
-	for (const int i : indexes)
-	{
+	for (const int i : indexes) {
 		particles.erase(particles.begin() + i);
 	}
 
 
 	// create particles
 	int toCreate = static_cast<int>(particlesCreationRate / AEFrameRateControllerGetFrameRate());
-	for (int i{}; i < toCreate; i++)
-	{
+	for (int i{}; i < toCreate; i++) {
 		createParticle(posX, posY);
 	}
 }
 
 
-void ParticleManager::render()
-{
-	for (const Particle& p : particles)
-	{
+void ParticleManager::render() {
+	for (const ParticleManager::Particle& p : particles) {
 		const Point pos = stow(p.pos.x, p.pos.y);
 		RenderHelper::getInstance()->rect(pos.x, pos.y, p.size.x, p.size.y, 0, p.color, p.color.a);
 	}

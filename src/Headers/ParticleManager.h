@@ -22,6 +22,17 @@ public:
 	 */
 	void setParticlePos(float x, float y);
 
+	struct Particle {
+		bool isActive;
+		AEVec2 pos;
+		AEVec2 initialSize;
+		AEVec2 size;
+		float sizeMultiplier;
+		AEVec2 vel;
+		float speed;
+		Color color;
+	};
+
 private:
 	static ParticleManager* instance;
 
