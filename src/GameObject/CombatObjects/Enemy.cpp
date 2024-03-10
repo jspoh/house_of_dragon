@@ -95,8 +95,9 @@ void Enemy::render() {
 
 Enemy::~Enemy() {
     std::cout << "Destroying enemy with texture ref: " << this->_textureRef << "\n";
-    RenderHelper::getInstance()->removeTextureByRef(this->_textureRef);
-    RenderHelper::getInstance()->removeTextureByRef("healthbar1");
-    RenderHelper::getInstance()->removeTextureByRef("healthbar2");
-    RenderHelper::getInstance()->removeTextureByRef("healthbar3");
+    // dont free here!!!!!!!!!!!!
+    //RenderHelper::getInstance()->removeTextureByRef(this->_textureRef);
+    //RenderHelper::getInstance()->removeTextureByRef("healthbar1");
+    //RenderHelper::getInstance()->removeTextureByRef("healthbar2");
+    //RenderHelper::getInstance()->removeTextureByRef("healthbar3");
 }
