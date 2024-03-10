@@ -20,9 +20,9 @@ public:
 	void death_particle(Point deadEnemyPos);
 	void render_particles();
 	void create_particles();
+	~ParticleManager();
 private:
 	
-	~ParticleManager();
 
 
 	std::string circle1;

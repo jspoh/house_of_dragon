@@ -10,6 +10,7 @@
 #include "Event.h"
 #include "db.h"
 #include "CombatManager.h"
+#include "ParticleManager.h"
 
 class GameManager
 {

@@ -76,4 +76,6 @@ void GameManager::Exit()
 	//delete CombatManager::getInstance();
 	delete RenderHelper::getInstance();
 	delete Database::getInstance();
+
+	delete ParticleManager::GetInstance();
 }
