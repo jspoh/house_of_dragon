@@ -372,8 +372,8 @@ void SceneLevelBuilder::Update(double dt)
 	static int PanDown = 0;
 
 	//TESTING
-	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat? true: false;
-	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat? true: false;
+	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat;
+	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
 	if (AEInputCheckTriggered(AEVK_Z))
 	{
 		TestTimer = 2.5f;
@@ -383,6 +383,9 @@ void SceneLevelBuilder::Update(double dt)
 	}
 	if (Combat)
 	{
+		// check if combat is over and update accordingly
+		Combat = CombatManager::getInstance()->isInCombat;
+
 		////////////////////////////////////////////////////////////////
 		//Slow Down
 		/*t_MovementSpeed -= t_MovementSpeed > 0 ? static_cast<f32>(dt * 3.f) : 0;*/
