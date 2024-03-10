@@ -97,16 +97,15 @@ bool RenderHelper::removeMeshByRef(std::string reference) {
 RenderHelper::~RenderHelper() {
 	AEGfxMeshFree(_defaultMesh);
 	
-	for (const std::pair<std::string, AEGfxTexture*> map : _textureRef) {
+	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
 		AEGfxTextureUnload(map.second);
+		map.second = nullptr;
 	}
 
-	for (const std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
+	for (std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
 		AEGfxMeshFree(map.second);
+		map.second = nullptr;
 	}
-
-	_textureRef.clear();
-	_meshRef.clear();
 
 	for (AEGfxTexture* pTex : _textureIdRefs) {
 		if (pTex == nullptr) {
@@ -115,6 +114,9 @@ RenderHelper::~RenderHelper() {
 		AEGfxTextureUnload(pTex);
 		pTex = nullptr;
 	}
+
+	_textureRef.clear();
+	_meshRef.clear();
 }
 
 RenderHelper* RenderHelper::getInstance() {

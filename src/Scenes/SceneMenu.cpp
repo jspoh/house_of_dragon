@@ -8,13 +8,13 @@ SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
 {
-	//ParticleManager::GetInstance()->init_particle();
+	//ParticleManager::GetInstance()->init();
 }
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneMenu", this);
-	//ParticleManager::GetInstance()->init_particle();
+	//ParticleManager::GetInstance()->init();
 }
 
 SceneMenu::~SceneMenu()
@@ -64,13 +64,17 @@ void SceneMenu::Init()
 
 	SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
 
-	
+	ParticleManager::GetInstance()->init();
 
 }
 
 void SceneMenu::Update(double dt)
 {
-	ParticleManager::GetInstance()->update_particles(static_cast<float>(dt));
+	int mX, mY;
+	AEInputGetCursorPosition(&mX, &mY);
+
+	ParticleManager::GetInstance()->setParticlePos(mX, mY);
+	ParticleManager::GetInstance()->update(dt);
 
 
 	if (AEInputCheckTriggered(AEVK_1)) {
@@ -100,7 +104,6 @@ void SceneMenu::Update(double dt)
 		SoundManager::GetInstance()->playAudio("btnClickSound");
 
 		Point cursorPos = { mx, my };
-		ParticleManager::GetInstance()->emit_Particle(cursorPos);
 
 		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
 		//AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
@@ -184,7 +187,6 @@ void SceneMenu::Render()
 
 	//ParticleManager* particleManager = ParticleManager::emit_Particle();
 	//particleManager->update_particles(AEFrameRateControllerGetFrameTime());
-	ParticleManager::GetInstance()->render_particles();
 	//particleManager.render_particles();
 
 
@@ -209,6 +211,7 @@ void SceneMenu::Render()
 	}
 	//emit_walking_particle(particleArr, player->position, playerXMovement, playerYMovement); // emit particles with direction flags
 
+	ParticleManager::GetInstance()->render();
 }
 
 void SceneMenu::Exit()
@@ -221,5 +224,4 @@ void SceneMenu::Exit()
 	AEGfxMeshFree(myMenu.mesh);
 	AEGfxTextureUnload(myMenu.pointer);
 	AEGfxTextureUnload(myMenu.bg);
-
 }
