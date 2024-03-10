@@ -3,14 +3,14 @@
 #include "MyMath.h"
 
 
-ParticleManager* ParticleManager::instance = nullptr;
-
-ParticleManager* ParticleManager::GetInstance() {
-	if (instance == nullptr) {
-		instance = new ParticleManager();
-	}
-	return instance;
-}
+//ParticleManager* ParticleManager::instance = nullptr;
+//
+//ParticleManager* ParticleManager::GetInstance() {
+//	if (instance == nullptr) {
+//		instance = new ParticleManager();
+//	}
+//	return instance;
+//}
 
 ParticleManager::ParticleManager() {
 	particles.reserve(PROJECTED_MAX_PARTICLES);

@@ -120,7 +120,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -147,6 +147,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -180,7 +181,6 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClCompile Include="src\GameObject\GameObject.cpp" />
     <ClCompile Include="src\GameObject\GameObjectManager.cpp" />
     <ClCompile Include="src\GameObject\GenericEntity.cpp" />
-    <ClCompile Include="src\GameObject\Particle.cpp" />
     <ClCompile Include="src\GameObject\ParticleManager.cpp" />
     <ClCompile Include="src\GameObject\Player\GameObject_Player.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -219,7 +219,6 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClInclude Include="src\Headers\Mob.h" />
     <ClInclude Include="src\Headers\MouseController.h" />
     <ClInclude Include="src\Headers\MyMath.h" />
-    <ClInclude Include="src\Headers\Particle.h" />
     <ClInclude Include="src\Headers\ParticleManager.h" />
     <ClInclude Include="src\Headers\Pch.h" />
     <ClInclude Include="src\Headers\Scene.h" />

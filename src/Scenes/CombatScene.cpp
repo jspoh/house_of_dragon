@@ -298,7 +298,7 @@ void CombatScene::Update(double dt)
 			delete e;
 		}
 
-		for (int i = groups.enemies.size()-1; i >= 0; i--) {
+		for (int i = static_cast<int>(groups.enemies.size())-1; i >= 0; i--) {
 			groups.enemies.erase(groups.enemies.begin() + i);
 		}
 		
