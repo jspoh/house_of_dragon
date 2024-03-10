@@ -43,7 +43,7 @@ void SceneMenu::Load()
 	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/quit.png");
 
 	SoundManager::GetInstance()->registerAudio("btnClickSound", "./Assets/Audio/SFX/button_click.mp3");
-	SoundManager::GetInstance()->registerAudio("titleMusic", "./Assets/Audio/Music/sample.mp3");
+	//SoundManager::GetInstance()->registerAudio("titleMusic", "./Assets/Audio/Music/sample.mp3");
 
 }
 
@@ -62,7 +62,7 @@ void SceneMenu::Init()
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight + 10) + 200;
 	}
 
-	SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
+	//SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
 
 	ParticleManager::GetInstance()->init();
 

@@ -292,19 +292,19 @@ void CombatScene::Update(double dt)
 	}
 
 
-	if (AEInputCheckTriggered(AEVK_K)) {
-		// kill all enemies
-		for (const Enemy* e : groups.enemies) {
-			delete e;
-		}
+	//if (AEInputCheckTriggered(AEVK_K)) {
+	//	// kill all enemies
+	//	for (const Enemy* e : groups.enemies) {
+	//		delete e;
+	//	}
 
-		groups.enemies.clear();
-		
-		CombatManager::getInstance()->end();
-		delete player;
-		player = nullptr;
-		return;
-	}
+	//	groups.enemies.clear();
+	//	
+	//	CombatManager::getInstance()->end();
+	//	delete player;
+	//	player = nullptr;
+	//	return;
+	//}
 
 
 	//updating panel 
