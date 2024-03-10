@@ -76,6 +76,7 @@ bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mes
 	}
 	catch (const std::exception& e) {
 		std::cerr << "Failed to register mesh " << mesh << " with reference " << reference << " with error: " << e.what() << "\n";
+		throw std::exception();
 		return false;
 	}
 }
@@ -88,6 +89,7 @@ bool RenderHelper::removeMeshByRef(std::string reference) {
 	}
 	catch (const std::exception& e) {
 		std::cerr << "Failed to remove mesh with reference " << reference << " with error: " << e.what() << "\n";
+		throw std::exception();
 		return false;
 	}
 }
@@ -167,6 +169,7 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
 		std::cerr << "Texture failed to load\n";
+		throw std::exception();
 		return false;
 	}
 	_textureRef[reference] = pTex;
@@ -177,17 +180,19 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 bool RenderHelper::registerTexture(int reference, std::string path) {
 	if (reference >= MAX_TEXTURE_IDS) {
 		std::cerr << "reference cannot be greater than array size!\n";
-		//throw std::exception();
+		throw std::exception();
 		return false;
 	}
 	if (_textureIdRefs[reference] != nullptr) {
 		std::cerr << "int reference already used\n";
+		throw std::exception();
 		return false;
 	}
 
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
 		std::cerr << "Texture failed to load\n";
+		throw std::exception();
 		return false;
 	}
 	_textureIdRefs[reference] = pTex;
@@ -199,6 +204,7 @@ AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
 	auto map = _textureRef.find(reference.c_str());
 	if (map == _textureRef.end()) {  // does not exist
 		std::cerr << "Reference " << reference << " does not exist!\n";
+		throw std::exception();
 		return nullptr;
 	}
 	return map->second;

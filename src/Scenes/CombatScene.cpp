@@ -194,13 +194,6 @@ namespace {
 
 	}
 
-
-
-
-
-
-
-
 }
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
@@ -272,6 +265,7 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.jpg");
 
 
+	std::cout << "CombatScene loaded\n";
 }
 
 
