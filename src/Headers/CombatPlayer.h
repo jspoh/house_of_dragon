@@ -55,6 +55,7 @@ private:
 
 public:
 	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
+	~Player();
 
 	static constexpr int BLOCKING_TIMEOUT_MS = 2000;
 	static constexpr int BLOCKING_DURATION = 2000;

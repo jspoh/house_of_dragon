@@ -1,6 +1,7 @@
 #include "Pch.h"
 #include "GameManager.h"
 #include "MyMath.h"
+#include "CombatScene.h"
 
 ////Define an error callback
 //static void error_callback(int error, const char* description)
