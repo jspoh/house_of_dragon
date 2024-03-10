@@ -46,7 +46,7 @@ namespace {
 	float currentTime;
 	float totaltime;
 
-	enemiesGroup groups{ 0 };
+	enemiesGroup groups;
 
 
 	EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
@@ -207,13 +207,13 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 
 	float Enemypadding = 50.0f;
 	float texSize = 50.f;
-	groups.size = static_cast<int>(enemyRefs.size()); // number of enemies;
-	groups.coordinates.resize(groups.size); // setting the coordinates
-	groups.enemies.resize(groups.size); // setting up the checking of enemies
-	groups.activeEnemy.resize(groups.size);
-	groups.name.resize(groups.size); // might not be needed, after getting the information from the
-	float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (groups.size - 1) * spacing) / groups.size);
-	for (int i = 0; i < groups.size; i++) {
+	int sz = static_cast<int>(enemyRefs.size()); // number of enemies;
+	groups.coordinates.resize(sz); // setting the coordinates
+	groups.enemies.resize(sz); // setting up the checking of enemies
+	groups.activeEnemy.resize(sz);
+	groups.names.resize(sz); // might not be needed, after getting the information from the
+	float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (sz - 1) * spacing) / sz);
+	for (int i = 0; i < sz; i++) {
 		groups.activeEnemy[i] = true;
 		// coordindates
 		groups.coordinates[i].x = Enemypadding + i * Enemyspacing;
@@ -280,7 +280,7 @@ void CombatScene::Init()
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
 
-	player = new Player();
+	player = new Player(100, 1000);
 
 	panelflag = true;
 	panelpos.x = 0; // constant value
@@ -288,7 +288,7 @@ void CombatScene::Init()
 	panelfinalY = -AEGfxGetWindowHeight() / 2.9f;
 	currentTime = 0;
 	totaltime = 1.f;
-
+	CombatManager::getInstance()->start();
 }
 
 void CombatScene::Update(double dt)
@@ -404,10 +404,17 @@ void CombatScene::Update(double dt)
 				break;
 			}
 
-			int randEnemyIndex = rand() % groups.enemies.size();
-			std::cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
-			groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
-			CombatManager::getInstance()->next();
+			// enemy to attack player if there are still enemies left
+			if (groups.enemies.size()) {
+				int randEnemyIndex = rand() % groups.enemies.size();
+				std::cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
+				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
+				CombatManager::getInstance()->next();
+			}
+			else {
+				std::cout << "Transition to next level\n";
+				CombatManager::getInstance()->end();
+			}
 		}
 
 	}
@@ -431,11 +438,13 @@ void CombatScene::Render()
 	//rendering enemies
 
 
-
+	std::vector<int> deadEnemies;
+	int i{};
 	// rendering whether enemies is dead
 	for (Enemy* enemy : groups.enemies) { // check for dead/alive
 		if (enemy->isDead()) {
-			RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+			//RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+			deadEnemies.push_back(i);
 		}
 		else if (player->isDead()) {
 			RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
@@ -447,9 +456,21 @@ void CombatScene::Render()
 		else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
 			RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 		}
+		i++;
 	}
+
+	// remove all dead enemies
+	for (const int index : deadEnemies) {
+		// !TODO: add death animation (perhaps smoke particles to signify death)
+
+
+		groups.enemies.erase(groups.enemies.begin() + index);
+	}
+
+
+
 	Event::getInstance()->render();
-	for (int i = 0; i < groups.size; i++) {
+	for (i = 0; i < groups.enemies.size(); i++) {
 		//if()
 
 		groups.enemies[i]->render(); // render all, draw all enemys
@@ -461,11 +482,10 @@ void CombatScene::Render()
 void CombatScene::Exit()
 {
 	std::cout << "Exiting CombatScene\n";
-	delete CombatManager::getInstance();
 	for (Enemy* enemy : groups.enemies) {
 		delete enemy;
 	}
-
+	delete CombatManager::getInstance();
 	// Clear the vector after deleting the enemies
 	groups.enemies.clear();
 	delete player;

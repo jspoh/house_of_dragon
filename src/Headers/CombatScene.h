@@ -45,10 +45,9 @@ private:
 	
 };
 struct enemiesGroup {
-	int size;
 	std::vector<bool> activeEnemy;
 	std::vector<Point> coordinates;
-	std::vector<std::string> name;
+	std::vector<std::string> names;
 	std::vector<Enemy*> enemies;
 };
 // !TODO: kuek

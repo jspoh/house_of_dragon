@@ -9,6 +9,7 @@
 #include "SoundManager.h"
 #include "Event.h"
 #include "db.h"
+#include "CombatManager.h"
 
 class GameManager
 {

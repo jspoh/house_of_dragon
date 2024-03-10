@@ -30,8 +30,20 @@ CombatManager* CombatManager::getInstance() {
     return _instance;
 }
 
+void CombatManager::start() {
+    turn = TURN::PLAYER;
+    isInCombat = true;
+}
+
 void CombatManager::next() {
-    turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
+    //turn = static_cast<TURN>((turn + 1) % TURN::NUM_TURNS);
+    turn = turn == TURN::PLAYER ? TURN::ENEMY : TURN::PLAYER;
 
     enemyNextTurnMs = rand() % (maxAttackIntervalMs - minAttackIntervalMs) + minAttackIntervalMs;
+}
+
+
+void CombatManager::end() {
+    turn = TURN::NONE_TURN;
+    isInCombat = false;
 }

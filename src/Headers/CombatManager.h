@@ -21,37 +21,61 @@ Technology is prohibited.
 #include "Pch.h"
 #include "Enemy.h"
 namespace {
-    enum TURN {
-        PLAYER,
-        ENEMY,
-        NUM_TURNS
-    };
+	enum TURN {
+		NONE_TURN,
+		PLAYER,
+		ENEMY,
+		NUM_TURNS
+	};
 }
 
 class CombatManager {
 private:
-    static CombatManager* _instance;
+	static CombatManager* _instance;
 
 
 
 
 public:
-    ~CombatManager();
+	~CombatManager();
 
-    TURN turn = TURN::PLAYER;
-    EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
-    double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
-    Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
+	TURN turn = TURN::PLAYER;
+	EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
+	double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
+	Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
 
-    bool isPlayingEvent = false;
+	bool isPlayingEvent = false;
 
-    Enemy* selectedEnemy = nullptr;
+	Enemy* selectedEnemy = nullptr;
 
-    static constexpr int minAttackIntervalMs = 1000;
-    static constexpr int maxAttackIntervalMs = 5000;
-    int enemyNextTurnMs = 0;
+	static constexpr int minAttackIntervalMs = 1000;
+	static constexpr int maxAttackIntervalMs = 5000;
+	int enemyNextTurnMs = 0;
 
-    static CombatManager* getInstance();
+	static CombatManager* getInstance();
 
-    void next();
+	/**
+	 * for level scene to .
+	 */
+	bool isInCombat = false;
+
+	/**
+	 * start combat manager turn based system.
+	 *
+	 */
+	void start();
+
+	/**
+	 * go to next turn
+	 *
+	 * end current player's turn and give turn to the next player (or enemy in our case).
+	 *
+	 */
+	void next();
+
+	/**
+	 * combat is over, end turn system.
+	 *
+	 */
+	void end();
 };

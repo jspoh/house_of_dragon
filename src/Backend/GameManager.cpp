@@ -73,6 +73,7 @@ void GameManager::Exit()
 	SoundManager::Destroy();
 
 	delete Event::getInstance();
+	//delete CombatManager::getInstance();
 	delete RenderHelper::getInstance();
 	delete Database::getInstance();
 }
