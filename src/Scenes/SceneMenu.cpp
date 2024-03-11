@@ -8,13 +8,12 @@ SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
 {
-	//ParticleManager::GetInstance()->init();
+
 }
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneMenu", this);
-	//ParticleManager::GetInstance()->init();
 }
 
 SceneMenu::~SceneMenu()
@@ -88,10 +87,6 @@ void SceneMenu::Update(double dt)
 	if (AEInputCheckReleased(AEVK_LBUTTON))
 	{
 
-
-
-		
-
 		s32 mxx, myy;
 		AEInputGetCursorPosition(&mxx, &myy);
 		float mx = static_cast<float>(mxx);
@@ -105,11 +100,6 @@ void SceneMenu::Update(double dt)
 
 		Point cursorPos = { mx, my };
 
-		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
-		//AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
-		//std::cout << "X: " << mx << "    Y: " << my << std::endl;
-		//AEVec2 p1 = { myMenu.buttonX[0] , myMenu.buttonY[0] };
-		//AEVec2 p2 = { myMenu.buttonX[3] + myMenu.buttonWidth, myMenu.buttonY[3] + myMenu.buttonHeight };
 
 		for (int i = 0; i < 4; ++i)
 		{
@@ -141,14 +131,8 @@ void SceneMenu::Update(double dt)
 
 		}
 
-
-	
 	}
 
-		//else myMenu.hovering[i] = false;
-
-	//}
-	//}
 		return;
 
 	
@@ -209,8 +193,6 @@ void SceneMenu::Render()
 		AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
 
 	}
-	//emit_walking_particle(particleArr, player->position, playerXMovement, playerYMovement); // emit particles with direction flags
-
 	ParticleManager::GetInstance()->render();
 }
 

@@ -79,7 +79,7 @@ public:
 private:
 
 	//SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
-
+	float m_elapsedTime;
 	static SceneCredits* sInstance; // The pointer to the object that gets registered
 
 };
