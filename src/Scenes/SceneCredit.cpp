@@ -87,7 +87,7 @@ void SceneCredits::Update(double dt)
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
 
 	m_elapsedTime += static_cast<float>(dt);
-	if (m_elapsedTime >= 15.0f)
+	if (m_elapsedTime >= 14.0f)
 	{
 		// Close the application
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
@@ -135,7 +135,7 @@ void SceneCredits::Render()
 	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.5f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "kUEK WEI JIE");
+	sprintf_s(strBuffer, "KUEK WEI JIE");
 	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
@@ -212,11 +212,11 @@ void SceneCredits::Render()
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 
-	float remainingTime = 15.0f - m_elapsedTime;
-	sprintf_s(strBuffer, "Time remaining: %.1f seconds", remainingTime);
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	//float remainingTime = 15.0f - m_elapsedTime;
+	//sprintf_s(strBuffer, "Time remaining: %.1f seconds", remainingTime);
+	//AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	//AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	//textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 
 }

@@ -34,7 +34,7 @@ void SceneMenu::Load()
 
 	myMenu.mesh = AEGfxMeshEnd();
 
-	myMenu.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
+	myMenu.bg = AEGfxTextureLoad("Assets/Menu/bg.png");
 	myMenu.pointer = AEGfxTextureLoad("Assets/Menu/buttons/dagger.png");
 	myMenu.button[0] = AEGfxTextureLoad("Assets/Menu/buttons/olay.png");
 	myMenu.button[1] = AEGfxTextureLoad("Assets/Menu/buttons/xredit.png");
@@ -83,8 +83,21 @@ void SceneMenu::Update(double dt)
 		SceneManager::GetInstance()->SetActiveScene("CombatScene");
 	}
 
+	//if (AEInputCheckTriggered(AEVK_F))
+	//{
+	//	// Get the current mouse position
+	//	s32 mxx, myy;
+	//	AEInputGetCursorPosition(&mxx, &myy);
+	//	float mx = static_cast<float>(mxx);
+	//	float my = static_cast<float>(myy);
 
-	if (AEInputCheckReleased(AEVK_LBUTTON))
+
+	//	// Create fireworks particles at the mouse position
+	//	ParticleManager::GetInstance()->createExplosionParticle(mx, my);
+	//}
+
+
+	if (AEInputCheckCurr(AEVK_LBUTTON))
 	{
 
 		s32 mxx, myy;
@@ -108,6 +121,7 @@ void SceneMenu::Update(double dt)
 
 			if (p1.x<mx && p1.y>my && p2.x > mx && p2.y < my)
 			{
+				myMenu.hovering[i] = true;
 				switch (i)
 				{
 				case 0:
@@ -120,22 +134,25 @@ void SceneMenu::Update(double dt)
 					SceneManager::GetInstance()->SetActiveScene("");
 					break;
 				case 3:
-					SceneManager::GetInstance()->SetActiveScene("");
-
+					SceneManager::GetInstance()->Exit();
 					break;
 				}
 			}
 
-
-
-
 		}
-
-	}
 
 		return;
 
-	
+	}
+
+	else
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			myMenu.hovering[i] = false;
+		}
+
+	}
 }
 
 
@@ -151,7 +168,7 @@ void SceneMenu::Render()
 
 
 	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 5670, 3780);
+	AEMtx33Scale(&scale, 1200, 650);
 
 	AEMtx33 transform;
 	AEMtx33Trans(&transform, 0, 0);
@@ -176,6 +193,7 @@ void SceneMenu::Render()
 
 	for (int i = 3; i >= 0; --i)
 	{
+
 		scale = { 0 };
 		AEMtx33Scale(&scale, myMenu.buttonWidth, myMenu.buttonHeight);
 
@@ -191,6 +209,28 @@ void SceneMenu::Render()
 		AEGfxSetTransform(model.m);
 		AEGfxTextureSet(myMenu.button[i], 0, 0);
 		AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+
+
+		if (myMenu.hovering[i])
+		{
+			AEMtx33 daggerScale = { 0 };
+			AEMtx33Scale(&daggerScale, 40.0f, 40.0f);
+
+			AEMtx33 daggerTranslate = { 0 };
+			AEMtx33Trans(&daggerTranslate, myMenu.buttonX[i] - myMenu.buttonWidth / 2.0f - 30.0f, myMenu.buttonY[i]);
+
+			AEMtx33 daggerTransform = { 0 };
+			AEMtx33Concat(&daggerTransform, &daggerScale, &daggerTranslate);
+
+			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+			AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+			AEGfxSetColorToAdd(0, 0, 0, 1);
+			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+			AEGfxSetTransparency(1);
+			AEGfxSetTransform(daggerTransform.m);
+			AEGfxTextureSet(myMenu.pointer, 0, 0);
+			AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+		}
 
 	}
 	ParticleManager::GetInstance()->render();

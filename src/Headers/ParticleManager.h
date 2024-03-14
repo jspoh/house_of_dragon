@@ -20,6 +20,15 @@ public:
 	 */
 	void setParticlePos(float x, float y);
 
+	enum ParticleType
+	{
+		REGULAR,
+		EXPLOSION,
+		FIREWORK
+
+
+	};
+
 	struct Particle {
 		bool isActive;
 		AEVec2 pos;
@@ -29,7 +38,17 @@ public:
 		AEVec2 vel;
 		float speed;
 		Color color;
+		ParticleType type;
 	};
+
+
+	void createParticle(float posX, float posY);
+	void createExplosionParticle(float x, float y);
+	void createFireworkParticle(float x, float y, float explosionRadius);
+	void updateRegularParticle(Particle& particle, double dt);
+	void updateExplosionParticle(Particle& particle, double dt);
+	void updateFireworkParticle(Particle& particle, double dt);
+
 
 	// YOU SHOULDNT BE USING THIS!! ONLY FOR SINGLETON TEMPLATE!!
 	ParticleManager();
@@ -61,5 +80,5 @@ private:
 
 
 
-	void createParticle(float posX, float posY);
+
 };

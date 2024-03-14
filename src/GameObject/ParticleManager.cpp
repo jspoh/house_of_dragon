@@ -20,6 +20,11 @@ ParticleManager::~ParticleManager() {
 
 }
 
+void ParticleManager::init() {
+
+}
+
+
 
 void ParticleManager::createParticle(float x, float y) {
 	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
@@ -53,60 +58,104 @@ void ParticleManager::setParticlePos(float x, float y) {
 	posY = y;
 }
 
-void ParticleManager::init() {
-
-}
-
-void ParticleManager::update(double dt) {
+void ParticleManager::update(double dt)
+{
 	for (ParticleManager::Particle& p : particles) {
-		// update flag of inactive instances
-		if (p.color.a <= 0 || p.size.x <= 0 || p.size.y <= 0)
-		{
-			p.isActive = false;
+		switch (p.type) {
+		case ParticleType::REGULAR:
+			updateRegularParticle(p, dt);
+			break;
+		case ParticleType::EXPLOSION:
+			updateExplosionParticle(p, dt);
+			break;
+		case ParticleType::FIREWORK:
+			updateFireworkParticle(p, dt);
+			break;
 		}
 
-		// update opacity
-		p.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
-		p.color.r -= darkenRate;
-		p.color.g -= darkenRate;
-		p.color.b -= darkenRate;
 
-		// update size
-		p.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
-		p.size.x = p.initialSize.x * p.sizeMultiplier;
-		p.size.y = p.initialSize.y * p.sizeMultiplier;
-
-		// apply gravity
-		p.vel.y += static_cast<float>(GRAVITY * dt);
-
-		// update position
-		p.pos.x += p.vel.x * p.speed * static_cast<float>(dt);
-		p.pos.y += p.vel.y * p.speed * static_cast<float>(dt);
+		// update flag of inactive instances
+		if (p.color.a <= 0 || p.size.x <= 0 || p.size.y <= 0) {
+			p.isActive = false;
+		}
 	}
 
-	// vector of indexes of inactive particles
-	std::vector<int> indexes{};
-	// remove inactive particles
-	for (int i{}; i < particles.size(); i++) {
+	std::vector<int> indexes;
+	for (int i = 0; i < particles.size(); i++) {
 		if (!particles[i].isActive) {
 			indexes.push_back(i);
 		}
 	}
 
-	// sort indexes in descending order so erasing doesnt go out of range
 	std::sort(indexes.rbegin(), indexes.rend());
 
 	for (const int i : indexes) {
 		particles.erase(particles.begin() + i);
 	}
 
-
-	// create particles
 	int toCreate = static_cast<int>(particlesCreationRate / AEFrameRateControllerGetFrameRate());
-	for (int i{}; i < toCreate; i++) {
+	for (int i = 0; i < toCreate; i++) {
 		createParticle(posX, posY);
 	}
+
+
 }
+//void ParticleManager::update(double dt) {
+//	for (ParticleManager::Particle& p : particles) {
+//		// update flag of inactive instances
+//		if (p.color.a <= 0 || p.size.x <= 0 || p.size.y <= 0)
+//		{
+//			p.isActive = false;
+//		}
+//
+//		// update opacity
+//		p.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
+//		p.color.r -= darkenRate;
+//		p.color.g -= darkenRate;
+//		p.color.b -= darkenRate;
+//
+//		// update size
+//		p.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+//		p.size.x = p.initialSize.x * p.sizeMultiplier;
+//		p.size.y = p.initialSize.y * p.sizeMultiplier;
+//
+//		// apply gravity
+//		p.vel.y += static_cast<float>(GRAVITY * dt);
+//
+//		// update position
+//		p.pos.x += p.vel.x * p.speed * static_cast<float>(dt);
+//		p.pos.y += p.vel.y * p.speed * static_cast<float>(dt);
+//	}
+//
+//	// vector of indexes of inactive particles
+//	std::vector<int> indexes{};
+//	// remove inactive particles
+//	for (int i{}; i < particles.size(); i++) {
+//		if (!particles[i].isActive) {
+//			indexes.push_back(i);
+//		}
+//	}
+//
+//	// sort indexes in descending order so erasing doesnt go out of range
+//	std::sort(indexes.rbegin(), indexes.rend());
+//
+//	for (const int i : indexes) {
+//		particles.erase(particles.begin() + i);
+//	}
+//
+//
+//	// create particles
+//	int toCreate = static_cast<int>(particlesCreationRate / AEFrameRateControllerGetFrameRate());
+//	for (int i{}; i < toCreate; i++) {
+//		createParticle(posX, posY);
+//	}
+//
+//}
+
+
+
+
+
 
 
 void ParticleManager::render() {
@@ -115,3 +164,155 @@ void ParticleManager::render() {
 		RenderHelper::getInstance()->rect(pos.x, pos.y, p.size.x, p.size.y, 0, p.color, p.color.a);
 	}
 }
+
+
+//void ParticleManager::createParticle(float x, float y) {
+//    const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
+//    const float randDir = rand() % 360 / Math::m_PI * 180.f;
+//    float speed = rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed;
+//    int sizeDiff = rand() % maxSizeDiff;
+//    sizeDiff = rand() % 2 ? sizeDiff : -sizeDiff;
+//
+//    if (AEInputCheckCurr(AEVK_LBUTTON)) {
+//        speed *= 5;
+//    }
+//
+//    const ParticleManager::Particle newParticle = ParticleManager::Particle{
+//        true,
+//        {x, y},
+//        {randSize + sizeDiff, randSize + sizeDiff},
+//        {randSize + sizeDiff, randSize + sizeDiff},
+//        1.f,
+//        {cosf(randDir), sinf(randDir)},
+//        speed,
+//        {0.25f, 1.f, 0.25f, 1},
+//        ParticleType::REGULAR
+//    };
+//
+//    particles.push_back(newParticle);
+//}
+
+void ParticleManager::createExplosionParticle(float x, float y) {
+    const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH*10;
+    const float randAngle = rand() % 360 * Math::m_PI / 180.f;
+    const float randDistance = rand() % maxPosOffset;
+
+    const ParticleManager::Particle newParticle = ParticleManager::Particle{
+        true,
+        {x + cosf(randAngle) * randDistance, y + sinf(randAngle) * randDistance},
+        {randSize, randSize},
+        {randSize, randSize},
+        1.f,
+        {cosf(randAngle), sinf(randAngle)},
+        rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed,
+        {1.f, 0.5f, 0.f, 1},
+        ParticleType::EXPLOSION
+    };
+
+    particles.push_back(newParticle);
+}
+
+void ParticleManager::createFireworkParticle(float x, float y, float explosionRadius) {
+	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH*20;
+	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
+	const float randRadius = rand() % static_cast<int>(explosionRadius);
+
+	// Generate random color
+	const float red = static_cast<float>(rand()) / RAND_MAX;
+	const float green = static_cast<float>(rand()) / RAND_MAX;
+	const float blue = static_cast<float>(rand()) / RAND_MAX;
+
+	const ParticleManager::Particle newParticle = ParticleManager::Particle{
+		true,
+		{x + cosf(randAngle) * randRadius, y + sinf(randAngle) * randRadius},
+		{1.f, randSize}, // Change width to 1.f for line-shaped particles
+		{1.f, randSize},
+		1.f,
+		{cosf(randAngle), sinf(randAngle)},
+		rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed,
+		{red, green, blue, 1.f}, // Set random color for the particle
+		ParticleType::FIREWORK
+	};
+
+	particles.push_back(newParticle);
+}
+
+void ParticleManager::updateRegularParticle(Particle& particle, double dt) {
+    particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
+    particle.color.r -= darkenRate;
+    particle.color.g -= darkenRate;
+    particle.color.b -= darkenRate;
+
+    particle.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+    particle.size.x = particle.initialSize.x * particle.sizeMultiplier;
+    particle.size.y = particle.initialSize.y * particle.sizeMultiplier;
+
+    particle.vel.y += static_cast<float>(GRAVITY * dt);
+
+    particle.pos.x += particle.vel.x * particle.speed * static_cast<float>(dt);
+    particle.pos.y += particle.vel.y * particle.speed * static_cast<float>(dt);
+}
+
+void ParticleManager::updateExplosionParticle(Particle& particle, double dt) {
+    particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
+
+    particle.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+    particle.size.x = particle.initialSize.x * particle.sizeMultiplier;
+    particle.size.y = particle.initialSize.y * particle.sizeMultiplier;
+
+    particle.pos.x += particle.vel.x * particle.speed * static_cast<float>(dt);
+    particle.pos.y += particle.vel.y * particle.speed * static_cast<float>(dt);
+}
+
+void ParticleManager::updateFireworkParticle(Particle& particle, double dt) {
+    particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
+
+    particle.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+    particle.size.x = particle.initialSize.x * particle.sizeMultiplier;
+    particle.size.y = particle.initialSize.y * particle.sizeMultiplier;
+
+    particle.vel.y += static_cast<float>(GRAVITY * dt);
+
+    particle.pos.x += particle.vel.x * particle.speed * static_cast<float>(dt);
+    particle.pos.y += particle.vel.y * particle.speed * static_cast<float>(dt);
+}
+
+
+
+//void ParticleManager::createFireworkParticle(float x, float y, float explosionRadius) {
+//	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
+//	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
+//	const float randRadius = rand() % static_cast<int>(explosionRadius);
+//
+//	const ParticleManager::Particle newParticle = ParticleManager::Particle{
+//		true, // isactive
+//		{x + cosf(randAngle) * randRadius, y + sinf(randAngle) * randRadius}, // pos
+//		{randSize, randSize}, // initial size
+//		{randSize, randSize}, // size
+//		1.f, // size multiplier
+//		{cosf(randAngle), sinf(randAngle)}, // normalized vector containing direction
+//		rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed, // speed of particle
+//		{1.f, rand() % 2 ? 0.f : 1.f, 0.f, 1}, // color (red or green)
+//	};
+//
+//	particles.push_back(newParticle);
+//}
+//
+//void ParticleManager::createExplosionParticle(float x, float y) {
+//	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
+//	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
+//	const float randDistance = rand() % maxPosOffset;
+//
+//	const ParticleManager::Particle newParticle = ParticleManager::Particle{
+//		true, // isactive
+//		{x + cosf(randAngle) * randDistance, y + sinf(randAngle) * randDistance}, // pos
+//		{randSize, randSize}, // initial size
+//		{randSize, randSize}, // size
+//		1.f, // size multiplier
+//		{cosf(randAngle), sinf(randAngle)}, // normalized vector containing direction
+//		rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed, // speed of particle
+//		{1.f, 0.5f, 0.f, 1}, // color (orange)
+//	};
+//
+//	particles.push_back(newParticle);
+//}
