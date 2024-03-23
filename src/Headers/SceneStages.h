@@ -22,6 +22,10 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
+	void Util_Window_Update(void); 
+	void Util_Window_MoveTo(AEVec2 newPos);
+	void Util_Window_Resize(float width, float height);
+	void Util_Window_Shake(float duration, float strength);
 private:
 	SceneStages(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
@@ -48,6 +52,24 @@ private:
 	AEGfxVertexList* pMesh = 0;
 
 	s8 pTextFont;
+
+	int mouseX, mouseY; //For GetCursorPosition Function, s32
+
+	////////////////////////////////////////////////////////////////////////
+	//Screen shake
+	AEVec2 m_ScreenCentre;
+	AEVec2 m_ScreenTopRight, m_ScreenTopLeft, m_ScreenBottomRight, m_ScreenBottomLeft;
+
+	AEVec2 m_WindowPos;
+	AEVec2 m_WindowScale;
+	AEVec2 m_NewWindowPos;
+	AEVec2 m_NewWindowScale;
+
+	float m_MovingSpeed;
+	float m_ScalingSpeed;
+
+	bool m_ActivateOrNot;
+	double m_ScreenShakeTimer, m_ScreenShakeModifier;
 
 };
 

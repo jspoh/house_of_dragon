@@ -48,6 +48,14 @@ void SceneStages::Init()
 	RenderHelper::getInstance()->registerTexture("LoadAnimationRoad", "Assets/LoadingAnimation.png");
 
 	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 100);
+
+	mouseX = AEGfxGetWindowWidth() / 2;
+	mouseY = AEGfxGetWindowHeight();
+	m_MovingSpeed = 0.1f;
+	m_ScalingSpeed = 0.2f;
+	m_ActivateOrNot = false;
+	m_ScreenShakeTimer = 0.0f;
+	m_ScreenShakeModifier = 1.0f;
 }
 
 void SceneStages::Update(double dt)
@@ -63,16 +71,16 @@ void SceneStages::Update(double dt)
 	if (m_LevelBuilder != nullptr)
 	{
 		m_LevelBuilder->Update(dt);
+		Util_Window_Update();
+
 		//Start the camera movement when load screen is finished
-		if (m_LoadScreenTimer <= 0)
-		{
-			int mouseX, mouseY;
-			AEInputGetCursorPosition(&mouseX, &mouseY);
-			AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY),
-				static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY));
-		}
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY),
+				            static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY));
 	}
 
+	if (AEInputCheckTriggered(AEVK_M))
+		Util_Window_Shake(5.0, 10);
 
 	// Update the animation timer.
    // animation_timer should go up to animation_duration_per_frame.
@@ -125,7 +133,7 @@ void SceneStages::Render()
 		char strBuffer[1024];
 		sprintf_s(strBuffer, "LOADING");
 		AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
-		AEGfxPrint(pTextFont, strBuffer, -TextWidth + 0.4f, 0.25f, 0.8f, 1.0f, 1.0f, 1.0f, transparency - 0.8f);
+		AEGfxPrint(pTextFont, strBuffer, static_cast<float>(-mouseX)/2750.f /*-TextWidth*/ - 0.2f, static_cast<float>(mouseY) / 2000.f - 0.2f, 0.8f, 1.0f, 1.0f, 1.0f, transparency - 0.8f);
 
 		//Load animation
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -137,8 +145,7 @@ void SceneStages::Render()
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 1000.0f, 800.0f);
 		f32 x{}, y{};
-		AEGfxGetCamPosition(&x, &y);
-		AEMtx33TransApply(&t_curr, &t_curr, x, y - 100.0f);
+		AEMtx33TransApply(&t_curr, &t_curr, /*mouseX*/0.f, /*mouseY*/ -100.0f);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -154,6 +161,62 @@ void SceneStages::Exit()
 
 	delete m_LevelBuilder;
 	m_LevelBuilder = nullptr;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//Update values (Lerping)
+void SceneStages::Util_Window_Update(void)
+{
+	if (m_ScreenShakeTimer > 0.0f)
+	{
+		AESysSetWindowTitle("ooooooooowwwwww");
+		//AEGfxSetCamPosition(
+		//	(int)AEClamp(AERandFloat(m_WindowPos.x - (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier, (float)m_WindowPos.x + (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier), 0.0f, (float)CP_System_GetDisplayWidth() - (float)m_WindowScale.x / 2.0f),
+		//	(int)AEClamp(AERandFloat(m_WindowPos.y - (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier, (float)m_WindowPos.y + (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier), 37.0f, (float)CP_System_GetDisplayHeight() - 37.0f)
+		//);
+		m_ScreenShakeTimer -= AEFrameRateControllerGetFrameTime();
+		return;
+	}
+
+	AESysSetWindowTitle("House_OF_Dragon v0.LETSFINISHTHIS");
+	if (m_ActivateOrNot)
+	{
+		//AEVec2Lerp(&m_WindowPos, &m_WindowPos, &m_NewWindowPos, m_MovingSpeed);
+		//AEVec2Lerp(&m_WindowScale, &m_WindowScale, &m_NewWindowScale, m_ScalingSpeed);
+
+		//CP_System_SetWindowPosition(
+		//	(int)CP_Math_ClampFloat(m_WindowPos.x, 0, CP_System_GetDisplayWidth() - m_WindowScale.x),
+		//	(int)CP_Math_ClampFloat(m_WindowPos.y, 0, CP_System_GetDisplayHeight() - m_WindowScale.y - 37));
+		//CP_System_SetWindowSize((int)m_WindowScale.x, (int)m_WindowScale.y);
+
+		//if (CP_Vector_Length(CP_Vector_Subtract(m_NewWindowPos, m_WindowPos)) + CP_Vector_Length(CP_Vector_Subtract(m_NewWindowScale, m_WindowScale)) < 0.01f)
+		//	m_ActivateOrNot = false;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//Move to specific position
+void SceneStages::Util_Window_MoveTo(AEVec2 newPos)
+{
+	m_NewWindowPos = newPos;
+	m_ActivateOrNot = true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//Scaling window size
+void SceneStages::Util_Window_Resize(float width, float height)
+{
+	m_NewWindowScale.x = width;
+	m_NewWindowScale.y = height;
+	m_ActivateOrNot = true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//Screen Shake
+void SceneStages::Util_Window_Shake(float duration, float strength)
+{
+	m_ScreenShakeTimer = duration;
+	m_ScreenShakeModifier = strength;
 }
 
 /**********************************
