@@ -59,14 +59,14 @@ void Player::_drawHealth(float screenX, float screenY) {
 		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else if (this->health > 33) {
-		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x + truex - 50, panelPos.y + truey - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - 45 + (health / 100) * 50, panelPos.y + truey - paddingY, (health / 100) * 100, 10);
-		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + (health / 100) * 100 - 40, panelPos.y + truey - paddingY, 10, 10);
+		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else {
-		RenderHelper::getInstance()->texture("redbar1", panelPos.x + truex - 50, panelPos.y + truey - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - 45 + (health / 100) * 50, panelPos.y + truey - paddingY, (health / 100) * 100, 10);
-		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + (health / 100) * 100 - 40, panelPos.y + truey - paddingY, 10, 10);
+		RenderHelper::getInstance()->texture("redbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 
 	}
 }

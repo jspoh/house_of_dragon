@@ -35,7 +35,7 @@ CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance(
 namespace {
 	// game objects
 	Player* player;
-
+	bool playerAlive;
 	//camera coordinates;
 	f32 camX, camY;
 
@@ -45,9 +45,9 @@ namespace {
 	bool panelflag;
 	float currentTime;
 	float totaltime;
+	float startingPanelY;
 
 	enemiesGroup groups;
-
 
 	EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 	enum ACTION_BTNS {
@@ -275,10 +275,11 @@ void CombatScene::Init()
 	//player init
 
 	player = new Player(100, 1000);
-
+	playerAlive = true;
 	panelflag = true;
 	panelpos.x = 0; // constant value
 	panelpos.y = -AEGfxGetWindowHeight() / 1.7f; // starting posY for the panel
+	startingPanelY = panelpos.y;
 	panelfinalY = -AEGfxGetWindowHeight() / 2.9f;
 	currentTime = 0;
 	totaltime = 1.f;
@@ -291,6 +292,21 @@ void CombatScene::Update(double dt)
 		return;
 	}
 
+
+		for (Enemy* enemy : groups.enemies) { // check for dead/alive
+		if (enemy->isDead()) {
+			RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+		}
+		else if (player->isDead()) {
+			// Set player to dead
+			if (playerAlive) {
+				playerAlive = false;
+				// Reset the panel position to slide back down
+				panelflag = true;
+				currentTime = 0.0f; // Reset the time for sliding animation
+			}
+		}
+		}
 
 	//if (AEInputCheckTriggered(AEVK_K)) {
 	//	// kill all enemies
@@ -305,11 +321,26 @@ void CombatScene::Update(double dt)
 	//	player = nullptr;
 	//	return;
 	//}
-
-
+		if (AEInputCheckTriggered(AEVK_G)) {
+			// kill all enemies
+			playerAlive = false;
+		}
 	//updating panel 
+		const float slideAnimationDuration = 1.0f;
 	AEGfxGetCamPosition(&camX, &camY);
-	if (currentTime < totaltime) { // should include this in render.cpp instead
+	if (!playerAlive && currentTime < slideAnimationDuration) {
+		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
+		float t = percenttime;
+		if (t > slideAnimationDuration) {
+			t = slideAnimationDuration;
+		}
+		panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
+	}
+	else {
+		panelflag = false; // Reset panel flag when animation is complete
+	}
+	if (playerAlive && currentTime < totaltime) { // should include this in render.cpp instead
 		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(currentTime / totaltime);
 		float t = percenttime;
@@ -446,7 +477,10 @@ void CombatScene::Render()
 	if (!CombatManager::getInstance()->isInCombat) {
 		return;
 	}
+	if (!playerAlive) {
+		RenderHelper::getInstance()->text("you have died", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
 
+	}
 	//rendering player
 	player->render();
 
@@ -463,7 +497,7 @@ void CombatScene::Render()
 	// rendering whether enemies is dead
 	for (Enemy* enemy : groups.enemies) { // check for dead/alive
 		if (enemy->isDead()) {
-			//RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+			RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
 			deadEnemies.push_back(i);
 		}
 		else if (player->isDead()) {
