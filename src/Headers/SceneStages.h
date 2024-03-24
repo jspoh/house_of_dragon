@@ -22,10 +22,7 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
-	void Util_Window_Update(void); 
-	void Util_Window_MoveTo(AEVec2 newPos);
-	void Util_Window_Resize(float width, float height);
-	void Util_Window_Shake(float duration, float strength);
+	void Util_Camera_Shake(float duration, float strength);
 private:
 	SceneStages(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
@@ -35,6 +32,8 @@ private:
 
 	double m_LoadScreenTimer;
 
+	//////////////////////////////////////////////////////////////////////////
+	// Animation
 	const u32 spritesheet_rows = 7;
 	const u32 spritesheet_cols = 9;
 	const u32 spritesheet_max_sprites = 60;
@@ -57,18 +56,6 @@ private:
 
 	////////////////////////////////////////////////////////////////////////
 	//Screen shake
-	AEVec2 m_ScreenCentre;
-	AEVec2 m_ScreenTopRight, m_ScreenTopLeft, m_ScreenBottomRight, m_ScreenBottomLeft;
-
-	AEVec2 m_WindowPos;
-	AEVec2 m_WindowScale;
-	AEVec2 m_NewWindowPos;
-	AEVec2 m_NewWindowScale;
-
-	float m_MovingSpeed;
-	float m_ScalingSpeed;
-
-	bool m_ActivateOrNot;
 	double m_ScreenShakeTimer, m_ScreenShakeModifier;
 
 };
