@@ -570,9 +570,10 @@ void CombatScene::Render()
 			i++;
 		}
 
-
-		for (const int index : deadEnemies) {
-			// !TODO: add death animation (perhaps smoke particles to signify death)
+	// remove all dead enemies
+	std::sort(deadEnemies.rbegin(), deadEnemies.rend());		// sort in reverse order. else removing multiple might cause indexoutofrange
+	for (const int index : deadEnemies) {
+		// !TODO: add death animation (perhaps smoke particles to signify death)
 
 			delete groups.enemies[index];
 			groups.enemies.erase(groups.enemies.begin() + index);

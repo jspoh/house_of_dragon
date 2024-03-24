@@ -4,11 +4,25 @@
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
-SceneStages::SceneStages() : m_LevelBuilder(nullptr), m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME)
+SceneStages::SceneStages() : 
+	m_LevelBuilder(nullptr), 
+	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
+	mouseX(0),
+	mouseY(0),
+	m_ScreenShakeModifier(0),
+	m_ScreenShakeTimer(0),
+	pTextFont(0)
 {
 }	
 
-SceneStages::SceneStages(SceneManager* _sceneMgr) : m_LevelBuilder{nullptr}, m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME)
+SceneStages::SceneStages(SceneManager* _sceneMgr) :
+	m_LevelBuilder{ nullptr },
+	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
+	mouseX(0),
+	mouseY(0),
+	m_ScreenShakeModifier(0),
+	m_ScreenShakeTimer(0),
+	pTextFont(0)
 {
 	_sceneMgr->AddScene("SceneStages", this);
 }
@@ -51,9 +65,7 @@ void SceneStages::Init()
 
 	mouseX = AEGfxGetWindowWidth() / 2;
 	mouseY = AEGfxGetWindowHeight();
-	m_MovingSpeed = 0.1f;
-	m_ScalingSpeed = 0.2f;
-	m_ActivateOrNot = false;
+
 	m_ScreenShakeTimer = 0.0f;
 	m_ScreenShakeModifier = 1.0f;
 }
@@ -71,16 +83,29 @@ void SceneStages::Update(double dt)
 	if (m_LevelBuilder != nullptr)
 	{
 		m_LevelBuilder->Update(dt);
-		Util_Window_Update();
 
-		//Start the camera movement when load screen is finished
+		//Start the camera movement
 		AEInputGetCursorPosition(&mouseX, &mouseY);
-		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY),
-				            static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY));
+		//                                   |                Move Based On Mouse Pos                |  |                          Screen Shake                                     |
+		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier)),
+				            static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY) - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier));
+
+		//Shaking Camera additional logic
+		if (m_ScreenShakeTimer > 0.0f)
+		{
+			AESysSetWindowTitle("ooooooooowwwwww");
+			m_ScreenShakeTimer -= dt;
+		}
+		else
+		{
+			AESysSetWindowTitle("House_OF_Dragon v0.LETSFINISHTHIS");
+			m_ScreenShakeTimer = 0.f;
+		}
 	}
 
+	//Call this for screen shake
 	if (AEInputCheckTriggered(AEVK_M))
-		Util_Window_Shake(5.0, 10);
+		Util_Camera_Shake(0.5, 100);
 
 	// Update the animation timer.
    // animation_timer should go up to animation_duration_per_frame.
@@ -144,8 +169,7 @@ void SceneStages::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 1000.0f, 800.0f);
-		f32 x{}, y{};
-		AEMtx33TransApply(&t_curr, &t_curr, /*mouseX*/0.f, /*mouseY*/ -100.0f);
+		AEMtx33TransApply(&t_curr, &t_curr, 0.f, -100.0f);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -164,56 +188,8 @@ void SceneStages::Exit()
 }
 
 //////////////////////////////////////////////////////////////////////////////
-//Update values (Lerping)
-void SceneStages::Util_Window_Update(void)
-{
-	if (m_ScreenShakeTimer > 0.0f)
-	{
-		AESysSetWindowTitle("ooooooooowwwwww");
-		//AEGfxSetCamPosition(
-		//	(int)AEClamp(AERandFloat(m_WindowPos.x - (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier, (float)m_WindowPos.x + (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier), 0.0f, (float)CP_System_GetDisplayWidth() - (float)m_WindowScale.x / 2.0f),
-		//	(int)AEClamp(AERandFloat(m_WindowPos.y - (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier, (float)m_WindowPos.y + (float)m_ScreenShakeTimer * (float)m_ScreenShakeModifier), 37.0f, (float)CP_System_GetDisplayHeight() - 37.0f)
-		//);
-		m_ScreenShakeTimer -= AEFrameRateControllerGetFrameTime();
-		return;
-	}
-
-	AESysSetWindowTitle("House_OF_Dragon v0.LETSFINISHTHIS");
-	if (m_ActivateOrNot)
-	{
-		//AEVec2Lerp(&m_WindowPos, &m_WindowPos, &m_NewWindowPos, m_MovingSpeed);
-		//AEVec2Lerp(&m_WindowScale, &m_WindowScale, &m_NewWindowScale, m_ScalingSpeed);
-
-		//CP_System_SetWindowPosition(
-		//	(int)CP_Math_ClampFloat(m_WindowPos.x, 0, CP_System_GetDisplayWidth() - m_WindowScale.x),
-		//	(int)CP_Math_ClampFloat(m_WindowPos.y, 0, CP_System_GetDisplayHeight() - m_WindowScale.y - 37));
-		//CP_System_SetWindowSize((int)m_WindowScale.x, (int)m_WindowScale.y);
-
-		//if (CP_Vector_Length(CP_Vector_Subtract(m_NewWindowPos, m_WindowPos)) + CP_Vector_Length(CP_Vector_Subtract(m_NewWindowScale, m_WindowScale)) < 0.01f)
-		//	m_ActivateOrNot = false;
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//Move to specific position
-void SceneStages::Util_Window_MoveTo(AEVec2 newPos)
-{
-	m_NewWindowPos = newPos;
-	m_ActivateOrNot = true;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//Scaling window size
-void SceneStages::Util_Window_Resize(float width, float height)
-{
-	m_NewWindowScale.x = width;
-	m_NewWindowScale.y = height;
-	m_ActivateOrNot = true;
-}
-
-//////////////////////////////////////////////////////////////////////////////
 //Screen Shake
-void SceneStages::Util_Window_Shake(float duration, float strength)
+void SceneStages::Util_Camera_Shake(float duration, float strength)
 {
 	m_ScreenShakeTimer = duration;
 	m_ScreenShakeModifier = strength;

@@ -14,7 +14,7 @@ public:
 
 	/**
 	 * set particle spawn position.
-	 * 
+	 *
 	 * \param x
 	 * \param y
 	 */
@@ -22,10 +22,13 @@ public:
 
 	enum ParticleType
 	{
+		START_PARTICLE_ID = 100,//USED FOR CHECKING WITHIN RANGE (DO NOT ALTER)
+
 		REGULAR,
 		EXPLOSION,
-		FIREWORK
+		FIREWORK,
 
+		END_PARTICLE_ID = 120//USED FOR CHECKING WITHIN RANGE
 
 	};
 
@@ -39,6 +42,8 @@ public:
 		float speed;
 		Color color;
 		ParticleType type;
+		float lifetime;
+		float transparency;
 	};
 
 
@@ -65,8 +70,8 @@ private:
 	static constexpr float darkenRate = 0.01f;				// rate which the particles darken
 	static constexpr int maxPosOffset = 20;				// max positional offset when creating particle
 	static constexpr int maxSizeDiff = 10;			// max size difference
-	static constexpr float PARTICLE_MIN_WIDTH = 3.f;
-	static constexpr float PARTICLE_MAX_WIDTH = 5.f;
+	static constexpr float PARTICLE_MIN_WIDTH = 30.f;
+	static constexpr float PARTICLE_MAX_WIDTH = 50.f;
 	// assuming particle is square-ish..?? not rly
 	static constexpr float PARTICLE_MIN_HEIGHT = PARTICLE_MIN_WIDTH;
 	static constexpr float PARTICLE_MAX_HEIGHT = PARTICLE_MAX_WIDTH;
