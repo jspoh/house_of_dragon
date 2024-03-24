@@ -613,9 +613,39 @@ void SceneLevelBuilder::Render()
 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
+	static double x = 1.0, y = 1.0;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 0.01;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 0.01;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x -= 0.01;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x += 0.01;
+	}
+	static double mx = 1.0, my = 0;
+	if (AEInputCheckCurr(AEVK_UP))
+	{
+		mx += 0.01;
+	}
+	if (AEInputCheckCurr(AEVK_DOWN))
+	{
+		mx -= 0.01;
+	}
+	cout << x << " " << y << " " << mx << endl;
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+	// (night) -1.0f, -1.0f, 0.33f
+	// (Dusk)  1.0f, 0.34f, 0.3f
+	// (Dawn)  1.0f, 0.73f, 1.0f
+	AEGfxSetColorToMultiply(-1.0f, -1.0f, 0.33f, 1.0f);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1102,11 +1132,10 @@ void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mouseX + (m_sunPos.x - mouseX) * (i+ varience[i] + 1) / 8, mouseY + (m_sunPos.y - mouseY) * (i + varience[i] + 1) / 8);
 	}
 }
-
 void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 {
 	int mouseX, mouseY;
-	float t_CloudMaxSpeed = 1000.0f;// - to go left, + to go right
+	float t_CloudMaxSpeed = 10.0f;// - to go left, + to go right
 	AEInputGetCursorPosition(&mouseX, &mouseY);
 	for (int i = 0; i < m_TransformCloudsData.size(); i++)
 	{
