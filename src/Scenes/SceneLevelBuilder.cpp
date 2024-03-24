@@ -348,10 +348,18 @@ void SceneLevelBuilder::Init()
 
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
+	AEMtx33 m_temp;
+	AEMtx33Identity(&m_temp);
 	//DO SKY DATA
 	AEMtx33Scale(&scale, 1700.0f, 600.f);
-	AEMtx33Trans(&trans, 0, 200);
+	AEMtx33Trans(&trans, 0, 220);
 	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
+	for (int i = 0; i < 9; i++)
+	{
+		m_TransformCloudsData.push_back(m_temp);
+		AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
+		AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
+	}
 
 	//Do Sun Data
 	m_sunOverlayScale = { 120.f, 120.f };
@@ -362,13 +370,9 @@ void SceneLevelBuilder::Init()
 	AEMtx33Scale(&scale, m_sunOverlayScale.x, m_sunOverlayScale.y);
 	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
 	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
-	AEMtx33 m_temp;
-	AEMtx33Identity(&m_temp);
 	for (int i = 0; i < 8; i++)
-	{
 		m_TransformSunLensData.push_back(m_temp);
-	}
-
+	
 	//DO FOG DATA
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
@@ -448,7 +452,7 @@ void SceneLevelBuilder::Update(double dt)
 
 	//Sun Overlay Update
 	UpdateLensFlare(dt);
-
+	UpdateClouds(dt);
 
 	if (!m_StopMovement)
 	{
@@ -646,11 +650,34 @@ void SceneLevelBuilder::Render()
 
 	//////////////////////////////////////////////////////////////////////////////////////
 	//Cloud
-	AEGfxSetTransform(m_TransformSkyData.m);
+	//First Layer
+	AEGfxSetTransform(m_TransformCloudsData[0].m);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(m_TransformCloudsData[1].m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(m_TransformCloudsData[2].m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//Second Layer
+	AEGfxSetTransform(m_TransformCloudsData[3].m);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(m_TransformCloudsData[4].m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(m_TransformCloudsData[5].m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//Third Layer
+	AEGfxSetTransform(m_TransformCloudsData[6].m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(m_TransformCloudsData[7].m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(m_TransformCloudsData[8].m);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -1068,11 +1095,52 @@ void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 	//Furthest from sun -> Closest to sun
 	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
 	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < m_TransformSunLensData.size(); i++)
 	{
 		AEMtx33Identity(&m_TransformSunLensData[i]);
 		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x+ scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
 		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mouseX + (m_sunPos.x - mouseX) * (i+ varience[i] + 1) / 8, mouseY + (m_sunPos.y - mouseY) * (i + varience[i] + 1) / 8);
+	}
+}
+
+void SceneLevelBuilder::UpdateClouds(f32 t_dt)
+{
+	int mouseX, mouseY;
+	float t_CloudMaxSpeed = 1000.0f;// - to go left, + to go right
+	AEInputGetCursorPosition(&mouseX, &mouseY);
+	for (int i = 0; i < m_TransformCloudsData.size(); i++)
+	{
+		if (i / 3 != 1)//Special case for this texture pack
+		{
+			AEMtx33Identity(&m_TransformCloudsData[i]);
+			AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
+			/***********************************************************************************************************************
+			The Clouds interpolation works by having three different tiles for each layer.
+
+			When the tiles reach or exceed their position by their size, they move to the back by teleporting
+			(300 move right ->)     Tile 1         (1700 value apart)            Tile 2             (1700 value apart)             Tile 3
+											  ||
+											  \/
+			Tile 3     (1700 value apart)       Tile 1         (1700 value apart)            Tile 2
+			and vice versa.
+
+			The second calculation is the parallax movement relative to the mouse position. The movement of the mouse creates slight movement
+			in the clouds, creating depth.
+			************************************************************************************************************************/
+			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
+			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((50) / (3 - i / 3))),
+				                                                                                    220.f + static_cast<f32>(mouseY) / static_cast<f32>(((90) / (3 - i / 3))));
+		}
+		else
+		{
+			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], t_CloudMaxSpeed * t_dt, 0.0f);;
+		}
+
+		//To do infinite Interpolation
+		if (m_TransformCloudsData[i].m[0][2] > m_TransformCloudsData[i].m[0][0])
+			m_TransformCloudsData[i].m[0][2] -= m_TransformCloudsData[i].m[0][0] * 2;
+		if (m_TransformCloudsData[i].m[0][2] < -m_TransformCloudsData[i].m[0][0])
+			m_TransformCloudsData[i].m[0][2] += m_TransformCloudsData[i].m[0][0] * 2;
 	}
 }
 ////////////////////////////////////////////////////////////////////////////

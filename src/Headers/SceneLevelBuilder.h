@@ -51,6 +51,7 @@ private:
 	void FadeOutBlack();
 	void RenderLoadScreen();
 	void UpdateLensFlare(f32 t_dt);
+	void UpdateClouds(f32 t_dt);
 
 	struct v_FloorData
 	{
@@ -219,6 +220,7 @@ private:
 	///////////////////////////////////////////////////////
 	//TRANSFORM DATA
 	AEMtx33 m_TransformSkyData;
+	vector<AEMtx33> m_TransformCloudsData;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
 	vector<AEMtx33> m_TransformSunLensData;
