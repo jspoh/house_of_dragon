@@ -89,6 +89,12 @@ SceneLevelBuilder::SceneLevelBuilder():
 	RenderHelper::getInstance()->registerTexture("SKY_TEST_4", "Assets/SceneObjects/SKY/4.png");
 	RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_1", "Assets/SceneObjects/SKY/lense_ghost_3.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_2", "Assets/SceneObjects/SKY/lense_ghost_1.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_3", "Assets/SceneObjects/SKY/lense_ghost_2.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_4", "Assets/SceneObjects/SKY/lense_chroma_ring.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_5", "Assets/SceneObjects/SKY/lense_bokeh.png");
+
 	/*********************************************
 	//Fog
 	**********************************************/
@@ -348,19 +354,25 @@ void SceneLevelBuilder::Init()
 	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
 
 	//Do Sun Data
+	m_sunOverlayScale = { 120.f, 120.f };
+	m_sunPos = { 350, 350 };
 	AEMtx33Scale(&scale, 50.0f, 50.f);
-	AEMtx33Trans(&trans, 350, 350);
+	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
 	AEMtx33Concat(&m_TransformSunData, &trans, &scale);
-	AEMtx33Scale(&scale, 120.0f, 120.f);
-	AEMtx33Trans(&trans, 349, 350);
+	AEMtx33Scale(&scale, m_sunOverlayScale.x, m_sunOverlayScale.y);
+	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
 	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
+	AEMtx33 m_temp;
+	AEMtx33Identity(&m_temp);
+	for (int i = 0; i < 8; i++)
+	{
+		m_TransformSunLensData.push_back(m_temp);
+	}
 
 	//DO FOG DATA
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-
-
 }
 
 void SceneLevelBuilder::Update(double dt)
@@ -371,6 +383,8 @@ void SceneLevelBuilder::Update(double dt)
 	static int t_PanSideWays = 80;
 	static int PanDown = 0;
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Setup
 	//TESTING
 	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat;
 	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
@@ -416,16 +430,25 @@ void SceneLevelBuilder::Update(double dt)
 	AEGfxGetCamPosition(&t_x, &t_y);
 	AEGfxSetCamPosition(t_x, t_y - static_cast<f32>(PanDown));
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Game 3D Environment Update Cycle
+
+	//Level Name
 	UpdateLvlName(static_cast<f32>(dt));
-	//Change to next Level
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
 
+	//Screen Basic Transition
 	UpdateScreenTransition(static_cast<f32>(dt));
+	//Remove during final build
 	if (AEInputCheckTriggered(AEVK_V))
 		FadeINBlack();
 	else if(AEInputCheckTriggered(AEVK_B))
 		FadeOutBlack();
+
+	//Sun Overlay Update
+	UpdateLensFlare(dt);
+
 
 	if (!m_StopMovement)
 	{
@@ -608,6 +631,7 @@ void SceneLevelBuilder::Render()
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
+	/////////////////////////////////////////////////////////////////////////////////
 	//Sun
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 	AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
@@ -620,6 +644,7 @@ void SceneLevelBuilder::Render()
 	AEGfxSetTransform(m_TransformSunOverlayData.m);
 	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
+	//////////////////////////////////////////////////////////////////////////////////////
 	//Cloud
 	AEGfxSetTransform(m_TransformSkyData.m);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
@@ -735,6 +760,41 @@ void SceneLevelBuilder::Render()
 	CombatScene::sInstance->Render();
 
 	RenderLvlName();
+
+	static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
+	//Lens Flare
+	AEGfxSetTransparency(transparency[7]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[7].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[6]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[6].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[5]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[5].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[4]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[4].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[3]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[3].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[2]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[2].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[1]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[1].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransparency(transparency[0]);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
+	AEGfxSetTransform(m_TransformSunLensData[0].m);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	//Screen Transition
 	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -995,7 +1055,26 @@ void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
 void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
-
+void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
+{
+	int mouseX, mouseY;
+	AEInputGetCursorPosition(&mouseX, &mouseY);
+	mouseX -= AEGfxGetWindowWidth() / 2;
+	mouseX *= 1.5;
+	static int y = -120;
+	mouseY = mouseY / 1.5 + y;
+	mouseY *= -1;
+	
+	//Furthest from sun -> Closest to sun
+	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
+	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
+	for (int i = 0; i < 8; i++)
+	{
+		AEMtx33Identity(&m_TransformSunLensData[i]);
+		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x+ scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
+		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mouseX + (m_sunPos.x - mouseX) * (i+ varience[i] + 1) / 8, mouseY + (m_sunPos.y - mouseY) * (i + varience[i] + 1) / 8);
+	}
+}
 ////////////////////////////////////////////////////////////////////////////
 /*
 //Placement Tool (Remove once done)
