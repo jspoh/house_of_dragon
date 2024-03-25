@@ -210,6 +210,7 @@ void UpdateHands(float t_dt)
 //Render all hands
 void RenderHands()
 {
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxSetTransform(Hand4PosData.first.m);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_04"), 0, 0);
@@ -1106,6 +1107,7 @@ void SceneLevelBuilder::Render()
 	{
 		RenderLvlName();
 
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
 		//Lens Flare
 		AEGfxSetTransparency(transparency[7]);
