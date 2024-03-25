@@ -97,7 +97,7 @@ void SceneMenu::Update(double dt)
 	//}
 
 
-	if (AEInputCheckCurr(AEVK_LBUTTON))
+	if (AEInputCheckTriggered(AEVK_LBUTTON))
 	{
 
 		s32 mxx, myy;
@@ -246,4 +246,6 @@ void SceneMenu::Exit()
 	AEGfxMeshFree(myMenu.mesh);
 	AEGfxTextureUnload(myMenu.pointer);
 	AEGfxTextureUnload(myMenu.bg);
+	
+	SoundManager::GetInstance()->removeAudio("btnClickSound");
 }
