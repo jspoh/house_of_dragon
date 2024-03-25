@@ -16,6 +16,7 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "SceneLevelBuilder.h"
+#include "CombatPlayer.h"
 
 //Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
 //First data is left, second data is right
@@ -108,7 +109,7 @@ void UpdateHands(float t_dt)
 			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
 			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
 
-			if (t_AnimationDuration > 999) t_AnimationDuration = 0.1;
+			if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000;
 			break;
 		case 2:
 			//Hold
@@ -120,7 +121,7 @@ void UpdateHands(float t_dt)
 			LerpSpeed = 15;
 			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
 			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4);
-			if (t_AnimationDuration > 999) t_AnimationDuration = 2.0; // Blocking Duration (Replace here)
+			if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000; // Blocking Duration (Replace here)
 			break;
 		case 3:
 			//Exit
@@ -132,14 +133,18 @@ void UpdateHands(float t_dt)
 			LerpSpeed = 5;
 			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
 			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
-			if(t_AnimationDuration > 999) t_AnimationDuration = 0.3;
+			if(t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000;
+			break;
+		case 4:
+			// cooldown
+			if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000;
 			break;
 		default:
 			cout << "ERROR IN BLOCKING ANIMATION" << endl;
 		}
 		if (t_AnimationDuration < 0.0)
 		{
-			t_AnimationFrame = t_AnimationFrame < 3 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			t_AnimationFrame = t_AnimationFrame < 4 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
 			t_AnimationDuration = 9999.0;
 		}
 		
@@ -148,6 +153,7 @@ void UpdateHands(float t_dt)
 		switch (t_AnimationFrame)
 		{
 		case 0://Init
+		case 4:
 			AEMtx33Identity(&Hand4PosData.second);
 			Hand2PosData.first = Hand4PosData.second;
 			AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
@@ -189,8 +195,8 @@ void UpdateHands(float t_dt)
 		}
 		break;
 	default:
-		t_AnimationFrame = 0;
-		t_AnimationDuration = 9999.0;
+		t_AnimationFrame = t_AnimationFrame != 0 ? 4 : 0;	// stay in cooldown until cooldown is over
+		t_AnimationDuration = t_AnimationFrame == 4 ? t_AnimationDuration : 9999.0;	// dont reset timer until cooldown is over
 		Hand1PosData.first = Hand1PosData.second = {};
 		Hand2PosData.first = Hand2PosData.second = {};
 		Hand3PosData.first = Hand3PosData.second = {};

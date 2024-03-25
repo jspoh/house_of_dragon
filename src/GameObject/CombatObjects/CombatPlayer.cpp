@@ -36,7 +36,8 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 
 	// get transition speed
 	float initialFinalDistance = AEVec2Distance(&shieldInitialPos, &shieldBlockingPos);
-	transitionSpeed = initialFinalDistance / (shieldTransitionTimeMs / 1000.f);
+	transitionUpSpeed = initialFinalDistance / (shieldUpTransitionTimeMs / 1000.f);
+	transitionDownSpeed = initialFinalDistance / (shieldDownTransitionTimeMs / 1000.f);
 }
 
 Player::~Player() {
@@ -103,7 +104,7 @@ void Player::update(double dt) {
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
 		//std::cout << "Player blocking state: ON_ENTER\n";
-		if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
+		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
 			elapsedTimeMs = 0;
 
@@ -113,8 +114,8 @@ void Player::update(double dt) {
 		}
 
 		// translate the shield up
-		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
-		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
+		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionUpSpeed * dt);
+		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionUpSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
 		//std::cout << "Player blocking state: ON_UPDATE\n";
@@ -125,7 +126,7 @@ void Player::update(double dt) {
 		break;
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
 		//std::cout << "Player blocking state: ON_EXIT\n";
-		if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
+		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 			elapsedTimeMs = 0;
 
@@ -134,8 +135,8 @@ void Player::update(double dt) {
 			break;
 		}
 
-		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
-		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
+		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionDownSpeed * dt);
+		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionDownSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 		//std::cout << "Player blocking state: ON_COOLDOWN\n";
