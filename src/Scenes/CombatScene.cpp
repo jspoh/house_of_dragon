@@ -39,12 +39,12 @@ namespace {
 	bool extraflagtest;
 	bool deadfinalflag;
 	const float slideAnimationDuration = 1.f;
+	float dialogueMaxTime = 0.8f;
+	float dialougeTime;
 
 	//camera coordinates;
 	f32 camX, camY;
 
-	//dialogue variables
-	bool dialogueflag;
 	
 	//death buttons values
 	Point deathBtnMenuPoint;
@@ -80,12 +80,17 @@ namespace {
 
 	enemiesGroup groups;
 
+
+	std::string itemUsed;
+	std::string attackUsed;
 	enum DIALOGUE {
 		BLOCKING,
 		PLAYER_ATTACK,
 		ENEMYDEATH,
-		ITEM
+		ITEM,
+		NONE
 	};
+	DIALOGUE dialogueState;
 
 	EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 	enum ACTION_BTNS {
@@ -126,6 +131,16 @@ namespace {
 	float btnY = 550.f;
 	float maxBtnHeight = 100.f;
 
+
+
+	void resetDialogue() {
+		dialougeTime = 0;
+		dialogueState = DIALOGUE::NONE;
+	}
+
+
+
+
 	/*im so sorry this code very spaghet but time crunch!!*/
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
@@ -153,31 +168,37 @@ namespace {
 						else if (bv == "BACK" || bv == "NO") {
 							currentState = ACTION_BTNS::MAIN;
 						}
-						else if (currentState == ACTION_BTNS::ATTACK) {
+						else if (currentState == ACTION_BTNS::ATTACK ) {
 							if (bv == "FIRE") {
 								std::cout << "fire pressed\n";
+								attackUsed = "FIRE";
 								CombatManager::getInstance()->attackElement = Fire;
 							}
 							else if (bv == "WATER") {
 								std::cout << "water pressed\n";
+								attackUsed = "WATER";
 								CombatManager::getInstance()->attackElement = Water;
 							}
 							else if (bv == "METAL") {
 								std::cout << "metal pressed\n";
+								attackUsed = "METAL";
 								CombatManager::getInstance()->attackElement = Metal;
 							}
 							else if (bv == "WOOD") {
 								std::cout << "wood pressed\n";
+								attackUsed = "WOOD";
 								CombatManager::getInstance()->attackElement = Wood;
 							}
 							else if (bv == "EARTH") {
 								std::cout << "earth pressed\n";
+								attackUsed = "EARTH";
 								CombatManager::getInstance()->attackElement = Earth;
 							}
 
 							if (CombatManager::getInstance()->selectedEnemy != nullptr && CombatManager::getInstance()->attackElement != Element::NO_ELEMENT) {
 								/*if user presses attack*/
 								CombatManager::getInstance()->isPlayingEvent = true;
+
 
 								Event::getInstance()->startRandomEvent();
 							}
@@ -192,15 +213,31 @@ namespace {
 						else if (currentState == ACTION_BTNS::ITEMS) {
 							if (bv == "BACON") {
 								std::cout << "Bacon eaten\n";
+								itemUsed = "BACON";
 								player->healthGain(10);
+								dialogueState = DIALOGUE::ITEM;
+								
+							}
+							else if (bv == "CHICKEN") {
+								std::cout << "CHICKEN eaten\n";
+								itemUsed = "CHICKEN";
+								player->healthGain(-10);
+								dialogueState = DIALOGUE::ITEM;
+
 							}
 							else if (bv == "BEEF") {
 								std::cout << "BEEF eaten\n";
+								itemUsed = "BEEF";
 								player->healthGain(-20);
+								dialogueState = DIALOGUE::ITEM;
+
 							}
 							else if (bv == "CAT") {
 								std::cout << "CAT eaten\n";
+								itemUsed = "CAT";
 								player->healthGain(20);
+								dialogueState = DIALOGUE::ITEM;
+
 							}
 							currentState = ACTION_BTNS::MAIN;
 						}
@@ -372,13 +409,13 @@ void CombatScene::Init()
 {
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
+	dialogueState = DIALOGUE::NONE;
 	 wpos = stow(  static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>( AEGfxGetWindowHeight()) / 2);
 	player = new Player(100, 1000);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
 	panelflag = true;
-	dialogueflag = false;
 	panelpos.x = 0; // constant value
 	panelpos.y = -AEGfxGetWindowHeight() / 1.7f; // starting posY for the panel
 	startingPanelY = panelpos.y;
@@ -388,6 +425,8 @@ void CombatScene::Init()
 	FinalScaleDead.x = 500;
 	initalScaleDead.y = 50;
 	FinalScaleDead.y = 100;
+
+	dialougeTime = 0.f;
 	
 
 	deathBtnWidthEnd = 300.f;
@@ -414,6 +453,16 @@ void CombatScene::Update(double dt)
 		return;
 	}
 
+	if (dialogueState != DIALOGUE::NONE) {
+		if (dialougeTime < dialogueMaxTime) {
+			dialougeTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		}
+		else {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				resetDialogue();
+			}
+		}
+	}
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 		if (enemy->isDead()) {
@@ -531,8 +580,11 @@ void CombatScene::Update(double dt)
 
 	// if player has finished quicktime event
 	if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+
 		// end player's turn
 		CombatManager::getInstance()->next();
+		dialogueState = DIALOGUE::PLAYER_ATTACK;
+
 		std::cout << "Enemy next turn in " << CombatManager::getInstance()->enemyNextTurnMs << "ms\n";
 		CombatManager::getInstance()->isPlayingEvent = false;
 
@@ -566,7 +618,7 @@ void CombatScene::Update(double dt)
 	}
 
 	// when is player turn and player is not playing a quicktime event
-	if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
+	if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 		updateBtns(btns[currentState]);  // render player action buttons
 	}
 	else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
@@ -646,12 +698,24 @@ void CombatScene::Render()
 			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
 			//}
 
-			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
+			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
 			else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
 				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
+			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance()->isPlayingEvent) {
+				if (dialogueState == DIALOGUE::ITEM) {
+					std::string fulloutput = "You have consumed " + itemUsed + "!";
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+				}
+				else if (dialogueState == DIALOGUE::PLAYER_ATTACK) {
+					std::string fulloutput = "You used " + attackUsed + "!";
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+
+				}
+			}
+
 			i++;
 			//enemy->render();
 		}
