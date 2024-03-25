@@ -26,6 +26,7 @@ Technology is prohibited.
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include "SceneStages.h"
 
 
 //additional
@@ -627,6 +628,9 @@ void CombatScene::Update(double dt)
 		CombatManager::getInstance()->enemyNextTurnMs -= static_cast<int>(dt * 1000);
 
 		if (CombatManager::getInstance()->enemyNextTurnMs <= 0) {
+			SceneStages::sInstance->Util_Camera_Shake(0.5, 100);
+			//Util_Camera_Shake(0.5, 100);
+
 			float multiplier = 1.f;
 			switch (player->blockingState) {
 			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:

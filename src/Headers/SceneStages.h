@@ -23,10 +23,10 @@ public:
 	virtual void Exit();
 
 	void Util_Camera_Shake(float duration, float strength);
+	static SceneStages* sInstance; // The pointer to the object that gets registered
 private:
 	SceneStages(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
-	static SceneStages* sInstance; // The pointer to the object that gets registered
 
 	SceneLevelBuilder* m_LevelBuilder;
 
