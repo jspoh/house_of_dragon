@@ -105,15 +105,15 @@ void SceneCredits::Render()
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxTextureSet(NULL, 0, 0);
 
-	f32 TextWidth =0, TextHeight = 0;
+	f32 TextWidth = 0, TextHeight = 0;
 
 	sprintf_s(strBuffer, "Press 'Q' to exit");
 	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY + 0.20f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	
+
 	sprintf_s(strBuffer, "HOUSE OF DRAGON");
 	AEGfxGetPrintSize(pFontL, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontL, strBuffer, 0-TextWidth/2, textPosY+0.01f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	AEGfxPrint(pFontL, strBuffer, 0 - TextWidth / 2, textPosY + 0.01f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 
 	sprintf_s(strBuffer, "Created By");
 	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
@@ -122,12 +122,12 @@ void SceneCredits::Render()
 
 	sprintf_s(strBuffer, "SOH WEI JIE");
 	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY -0.3f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.3f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "POH JING SENG");
 	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY -0.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "YANG YUJIE");
@@ -231,10 +231,9 @@ void SceneCredits::Exit()
 	AEGfxDestroyFont(pFontxS);
 
 
-	
+
 }
 
-// we already have RenderHelper..
 void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
 {
 	UNREFERENCED_PARAMETER(transparency);
