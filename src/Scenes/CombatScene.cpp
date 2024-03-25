@@ -45,8 +45,6 @@ namespace {
 	//camera coordinates;
 	f32 camX, camY;
 
-	//dialogue variables
-	bool dialogueflag;
 	
 	//death buttons values
 	Point deathBtnMenuPoint;
@@ -84,7 +82,7 @@ namespace {
 
 
 	std::string itemUsed;
-	
+	std::string attackUsed;
 	enum DIALOGUE {
 		BLOCKING,
 		PLAYER_ATTACK,
@@ -170,31 +168,37 @@ namespace {
 						else if (bv == "BACK" || bv == "NO") {
 							currentState = ACTION_BTNS::MAIN;
 						}
-						else if (currentState == ACTION_BTNS::ATTACK) {
+						else if (currentState == ACTION_BTNS::ATTACK ) {
 							if (bv == "FIRE") {
 								std::cout << "fire pressed\n";
+								attackUsed = "FIRE";
 								CombatManager::getInstance()->attackElement = Fire;
 							}
 							else if (bv == "WATER") {
 								std::cout << "water pressed\n";
+								attackUsed = "WATER";
 								CombatManager::getInstance()->attackElement = Water;
 							}
 							else if (bv == "METAL") {
 								std::cout << "metal pressed\n";
+								attackUsed = "METAL";
 								CombatManager::getInstance()->attackElement = Metal;
 							}
 							else if (bv == "WOOD") {
 								std::cout << "wood pressed\n";
+								attackUsed = "WOOD";
 								CombatManager::getInstance()->attackElement = Wood;
 							}
 							else if (bv == "EARTH") {
 								std::cout << "earth pressed\n";
+								attackUsed = "EARTH";
 								CombatManager::getInstance()->attackElement = Earth;
 							}
 
 							if (CombatManager::getInstance()->selectedEnemy != nullptr && CombatManager::getInstance()->attackElement != Element::NO_ELEMENT) {
 								/*if user presses attack*/
 								CombatManager::getInstance()->isPlayingEvent = true;
+
 
 								Event::getInstance()->startRandomEvent();
 							}
@@ -213,6 +217,13 @@ namespace {
 								player->healthGain(10);
 								dialogueState = DIALOGUE::ITEM;
 								
+							}
+							else if (bv == "CHICKEN") {
+								std::cout << "CHICKEN eaten\n";
+								itemUsed = "CHICKEN";
+								player->healthGain(-10);
+								dialogueState = DIALOGUE::ITEM;
+
 							}
 							else if (bv == "BEEF") {
 								std::cout << "BEEF eaten\n";
@@ -405,7 +416,6 @@ void CombatScene::Init()
 	extraflagtest = true;
 	deadfinalflag = false;
 	panelflag = true;
-	dialogueflag = false;
 	panelpos.x = 0; // constant value
 	panelpos.y = -AEGfxGetWindowHeight() / 1.7f; // starting posY for the panel
 	startingPanelY = panelpos.y;
@@ -570,8 +580,11 @@ void CombatScene::Update(double dt)
 
 	// if player has finished quicktime event
 	if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+
 		// end player's turn
 		CombatManager::getInstance()->next();
+		dialogueState = DIALOGUE::PLAYER_ATTACK;
+
 		std::cout << "Enemy next turn in " << CombatManager::getInstance()->enemyNextTurnMs << "ms\n";
 		CombatManager::getInstance()->isPlayingEvent = false;
 
@@ -688,15 +701,21 @@ void CombatScene::Render()
 			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
-			else if (dialogueState != DIALOGUE::NONE) {
+			else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
+				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+			}
+			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance()->isPlayingEvent) {
 				if (dialogueState == DIALOGUE::ITEM) {
 					std::string fulloutput = "You have consumed " + itemUsed + "!";
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 				}
+				else if (dialogueState == DIALOGUE::PLAYER_ATTACK) {
+					std::string fulloutput = "You used " + attackUsed + "!";
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+
+				}
 			}
-			else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
-				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
-			}
+
 			i++;
 			//enemy->render();
 		}
