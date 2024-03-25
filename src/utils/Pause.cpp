@@ -4,7 +4,7 @@
 
 
 Pause::Pause() : isPaused{ false } {
-
+	camOffset = { 0, 0 };
 }
 
 Pause& Pause::getInstance() {
@@ -37,7 +37,7 @@ void Pause::update(double dt) {
 	int btnY = btnYStart;
 
 	for (auto& [b, scale] : btns) {
-		Point pos = wtos(0, btnY);
+		Point pos = wtos(0, static_cast<float>(btnY));
 		if (CollisionChecker::isMouseInRect(pos.x, pos.y, BTN_WIDTH * scale, BTN_HEIGHT * scale, static_cast<float>(mX), static_cast<float>(mY))) {
 			
 			scale = HOVER_BTN_SCALE;
