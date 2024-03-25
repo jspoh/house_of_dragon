@@ -17,6 +17,228 @@ Technology is prohibited.
 #include "Pch.h"
 #include "SceneLevelBuilder.h"
 
+//Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
+//First data is left, second data is right
+std::pair<AEMtx33, AEMtx33> Hand1PosData{};
+std::pair<AEMtx33, AEMtx33> Hand2PosData{};
+std::pair<AEMtx33, AEMtx33> Hand3PosData{};
+std::pair<AEMtx33, AEMtx33> Hand4PosData{};
+enum HandAnimationType
+{
+	None,
+	Punch,
+	Block,
+	Ready,
+};
+HandAnimationType HandStateAnimationType = None; //Can use enum
+void UpdateHands(float t_dt)
+{
+	static int t_AnimationFrame = 0;
+	static double t_AnimationDuration = 0.0;
+	double LerpSpeed = 10.0;
+	AEVec2 targetPos{};
+	f32 mouseX, mouseY;
+	AEGfxGetCamPosition(&mouseX, &mouseY);
+	//mouseX += AEGfxGetWindowWidth() / 2;
+	//mouseY -= AEGfxGetWindowHeight() / 2;
+	//Placement Tool (Remove once done)
+	static float x = 0, y = 0;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 0.5;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 0.5;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x -= 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x += 0.55;
+	}
+	static float mx = 0, my = 0;
+	if (AEInputCheckCurr(AEVK_UP))
+	{
+		my += 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_DOWN))
+	{
+		my -= 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_RIGHT))
+	{
+		mx += 0.55;
+	}
+	if (AEInputCheckCurr(AEVK_LEFT))
+	{
+		mx -= 0.55;
+	}
+	cout << x << " " << y << " " << mx << " " << my << endl;
+
+	switch (HandStateAnimationType)
+	{
+	case Punch:
+		break;
+	case Block:
+		switch (t_AnimationFrame)
+		{
+		case 0:		
+			//Init
+			AEMtx33Identity(&Hand3PosData.second);
+			Hand1PosData.first = Hand3PosData.second;
+			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+			targetPos = { -304.25f + mouseX, -526.f + mouseY };
+			AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
+			AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+			targetPos = { -160.95f + mouseX, -499.5f + mouseY };
+			AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+			if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+			break;
+		case 1:
+			//Start of block
+			targetPos = { -304.25f + mouseX, -384.f + mouseY };
+			LerpSpeed = 2;
+			Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
+			Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+			targetPos = { -160.95f + mouseX, -266.4f + mouseY };
+			LerpSpeed = 2;
+			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
+			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
+
+			if (t_AnimationDuration > 999) t_AnimationDuration = 0.1;
+			break;
+		case 2:
+			//Hold
+			targetPos = { -304.25f + mouseX, -384.0f + mouseY };
+			LerpSpeed = 1.1;
+			Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
+			Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+			targetPos = { 277.5f + mouseX, -94.35f + mouseY };
+			LerpSpeed = 15;
+			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
+			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4);
+			if (t_AnimationDuration > 999) t_AnimationDuration = 2.0; // Blocking Duration (Replace here)
+			break;
+		case 3:
+			//Exit
+			targetPos = { -425.35f + mouseX, -498.5f + mouseY };
+			LerpSpeed = 5;
+			Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
+			Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+			targetPos = { 555.f + mouseX, -510.25f + mouseY };
+			LerpSpeed = 5;
+			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
+			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
+			if(t_AnimationDuration > 999) t_AnimationDuration = 0.3;
+			break;
+		default:
+			cout << "ERROR IN BLOCKING ANIMATION" << endl;
+		}
+		if (t_AnimationDuration < 0.0)
+		{
+			t_AnimationFrame = t_AnimationFrame < 3 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			t_AnimationDuration = 9999.0;
+		}
+		
+		break;
+	case Ready: //For Getting ready in combat
+		switch (t_AnimationFrame)
+		{
+		case 0://Init
+			AEMtx33Identity(&Hand4PosData.second);
+			Hand2PosData.first = Hand4PosData.second;
+			AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
+			targetPos = { -39.0f + mouseX, -170.0f + mouseY };
+			AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
+			AEMtx33ScaleApply(&Hand4PosData.second, &Hand4PosData.second, 252, 319);
+			targetPos = { 45.1f + mouseX, -76.5f + mouseY };
+			AEMtx33TransApply(&Hand4PosData.second, &Hand4PosData.second, targetPos.x, targetPos.y);
+			if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+			break;
+		case 1://Ready Up
+			targetPos = { -39.0f + mouseX, -170.0f + mouseY };
+			LerpSpeed = 2;
+			Hand2PosData.first.m[0][2] += (targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed;
+			Hand2PosData.first.m[1][2] += (targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed;
+			targetPos = { 45.1f + mouseX, -76.5f + mouseY };
+			LerpSpeed = 2;
+			Hand4PosData.second.m[0][2] += (targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed;
+			Hand4PosData.second.m[1][2] += (targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed;
+			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
+			break;
+
+		case 2: //Ready Down
+			targetPos = { -39.0f + mouseX, -526.f + mouseY };
+			LerpSpeed = 2;
+			Hand2PosData.first.m[0][2] += (targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed;
+			Hand2PosData.first.m[1][2] += (targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed;
+			targetPos = { 45.1f + mouseX, -526.f + mouseY };
+			LerpSpeed = 2;
+			Hand4PosData.second.m[0][2] += (targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed;
+			Hand4PosData.second.m[1][2] += (targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed;
+			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
+			break;
+		}
+		if (t_AnimationDuration < 0.0)
+		{
+			t_AnimationFrame = t_AnimationFrame < 2 ? ++t_AnimationFrame : 1; //Loop Animation // Remove this if u want one off
+			t_AnimationDuration = 9999.0;
+		}
+		break;
+	default:
+		t_AnimationFrame = 0;
+		t_AnimationDuration = 9999.0;
+		Hand1PosData.first = Hand1PosData.second = {};
+		Hand2PosData.first = Hand2PosData.second = {};
+		Hand3PosData.first = Hand3PosData.second = {};
+		Hand4PosData.first = Hand4PosData.second = {};
+		break;
+	}
+
+	t_AnimationDuration -= t_dt;
+
+	//AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+//AEMtx33ScaleApply(&Hand2PosData.second, &Hand2PosData.second, 191.5, 307);
+//AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+//AEMtx33ScaleApply(&Hand4PosData.second, &Hand4PosData.second, 252, 319);
+//AEMtx33TransApply(&Hand4PosData.second, &Hand4PosData.second, 200, 0);
+
+}
+//Render all hands
+void RenderHands()
+{
+	AEGfxSetTransparency(1.0f);
+	AEGfxSetTransform(Hand4PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_04"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand4PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_04"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+	AEGfxSetTransform(Hand1PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_01"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand1PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_01"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand2PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_02"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand2PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_02"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand3PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_03"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand3PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_03"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+}
+
 SceneLevelBuilder::v_FloorData::v_FloorData():
 	m_currFloorNum{0},
 	m_FloorNum{0},
@@ -257,6 +479,18 @@ SceneLevelBuilder::SceneLevelBuilder():
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialise 3D engine & relevant values
 	Init();
+
+	///////////////////////////////////////////////
+	// TO BE MOVED TO PLAYER COMBAT
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_01", "Assets/Combat_UI/MyFist_Left_1.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_02", "Assets/Combat_UI/MyFist_Left_2.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_03", "Assets/Combat_UI/MyFist_Left_3.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_04", "Assets/Combat_UI/MyFist_Left_4.png");
+
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_01", "Assets/Combat_UI/MyFist_Right_1.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_02", "Assets/Combat_UI/MyFist_Right_2.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_03", "Assets/Combat_UI/MyFist_Right_3.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_04", "Assets/Combat_UI/MyFist_Right_4.png");
 }
 SceneLevelBuilder::~SceneLevelBuilder()
 {                          
@@ -397,6 +631,8 @@ void SceneLevelBuilder::Update(double dt)
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Setup
 	//TESTING
+	{
+
 	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat;
 	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
 	if (AEInputCheckTriggered(AEVK_Z))
@@ -441,6 +677,7 @@ void SceneLevelBuilder::Update(double dt)
 	AEGfxGetCamPosition(&t_x, &t_y);
 	AEGfxSetCamPosition(t_x, t_y - static_cast<f32>(PanDown));
 
+	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Game 3D Environment Update Cycle
 
@@ -456,6 +693,17 @@ void SceneLevelBuilder::Update(double dt)
 		FadeINBlack();
 	else if(AEInputCheckTriggered(AEVK_B))
 		FadeOutBlack();
+	
+	if (AEInputCheckCurr(AEVK_SPACE))
+		HandStateAnimationType = Block;
+	else if (AEInputCheckCurr(AEVK_Q))
+		HandStateAnimationType = Punch;
+	else if (AEInputCheckCurr(AEVK_E))
+		HandStateAnimationType = Ready;
+	else
+		HandStateAnimationType = None;
+
+	UpdateHands(dt);
 
 	//Sun Overlay Update
 	UpdateLensFlare(dt);
@@ -620,34 +868,6 @@ void SceneLevelBuilder::Render()
 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
-	//To BE DELETED
-	static double x = 1.0, y = 1.0;
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		y += 1.01;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		y -= 1.01;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		x -= 1.01;
-	}
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		x += 1.01;
-	}
-	static double mx = 1.0, my = 0;
-	if (AEInputCheckCurr(AEVK_UP))
-	{
-		mx += 1.01;
-	}
-	if (AEInputCheckCurr(AEVK_DOWN))
-	{
-		mx -= 1.01;
-	}
-	cout << x << " " << y << " " << mx << endl;
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
 	// (night) -1.0f, -1.0f, 0.33f
@@ -882,6 +1102,7 @@ void SceneLevelBuilder::Render()
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//UI / MISC RENDER
+	RenderHands();
 	{
 		RenderLvlName();
 
@@ -930,6 +1151,8 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
+
+	
 }
 void SceneLevelBuilder::Exit()
 {
