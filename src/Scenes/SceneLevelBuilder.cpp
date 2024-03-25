@@ -98,7 +98,14 @@ SceneLevelBuilder::SceneLevelBuilder():
 	/*********************************************
 	//Fog
 	**********************************************/
-	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
+	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_NEW_Color.png");
+
+	/*********************************************
+	//BackDrop
+	**********************************************/
+	RenderHelper::getInstance()->registerTexture("BACKDROP_1", "Assets/SceneObjects/BACKGROUND/BackDrop_01.png");
+	RenderHelper::getInstance()->registerTexture("BACKDROP_2", "Assets/SceneObjects/BACKGROUND/BackDrop_02.png");
+	RenderHelper::getInstance()->registerTexture("BACKDROP_3", "Assets/SceneObjects/BACKGROUND/BackDrop_03.png");
 
 	/*********************************************
 	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
@@ -328,7 +335,7 @@ void SceneLevelBuilder::Init()
 	}
 	
 
-	AEMtx33 scale, trans;
+	AEMtx33 scale, trans, rotate;
 	//////////////////////////////////////////////////////////////////
 	//// Create Scene Objects
 	//// Use this to spawn objects into scene when starting
@@ -613,31 +620,32 @@ void SceneLevelBuilder::Render()
 
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
+	//To BE DELETED
 	static double x = 1.0, y = 1.0;
 	if (AEInputCheckCurr(AEVK_W))
 	{
-		y += 0.01;
+		y += 1.01;
 	}
 	if (AEInputCheckCurr(AEVK_S))
 	{
-		y -= 0.01;
+		y -= 1.01;
 	}
 	if (AEInputCheckCurr(AEVK_A))
 	{
-		x -= 0.01;
+		x -= 1.01;
 	}
 	if (AEInputCheckCurr(AEVK_D))
 	{
-		x += 0.01;
+		x += 1.01;
 	}
 	static double mx = 1.0, my = 0;
 	if (AEInputCheckCurr(AEVK_UP))
 	{
-		mx += 0.01;
+		mx += 1.01;
 	}
 	if (AEInputCheckCurr(AEVK_DOWN))
 	{
-		mx -= 0.01;
+		mx -= 1.01;
 	}
 	cout << x << " " << y << " " << mx << endl;
 	// Set the the color to multiply to white, so that the sprite can 
@@ -645,7 +653,7 @@ void SceneLevelBuilder::Render()
 	// (night) -1.0f, -1.0f, 0.33f
 	// (Dusk)  1.0f, 0.34f, 0.3f
 	// (Dawn)  1.0f, 0.73f, 1.0f
-	AEGfxSetColorToMultiply(-1.0f, -1.0f, 0.33f, 1.0f);
+	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
@@ -656,215 +664,272 @@ void SceneLevelBuilder::Render()
 
 	////////////////////////////////////////////////////////////////////////
 	//SKY RENDER
-	AEGfxSetTransparency(1.0f);
-	//Sky
-	//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
-	//AEGfxSetTransform(m_TransformSkyData.m);
-	//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformSkyData.m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	/////////////////////////////////////////////////////////////////////////////////
-	//Sun
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetTransparency(1.0f);
-	AEGfxSetTransform(m_TransformSunData.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
-	AEGfxSetTransform(m_TransformSunOverlayData.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//////////////////////////////////////////////////////////////////////////////////////
-	//Cloud
-	//First Layer
-	AEGfxSetTransform(m_TransformCloudsData[0].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformCloudsData[1].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformCloudsData[2].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	//Second Layer
-	AEGfxSetTransform(m_TransformCloudsData[3].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformCloudsData[4].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformCloudsData[5].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	//Third Layer
-	AEGfxSetTransform(m_TransformCloudsData[6].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformCloudsData[7].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformCloudsData[8].m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//// Floors
-	//// //////////////////////////////////////////////////////////////////////////////////
-	//// Tell the engine to get ready to draw something with texture.
-	//// Set the color to add to nothing, so that we don't alter the sprite's color
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-
-	std::string texRef = "Floor_Center_";// + LEVELNUM
-	//Main Floor
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
-	for (int i = NUM_OF_TILES - 1; i > -1; i--)
 	{
-		if (m_Floor[t_CenterFloorNum][i].m_IsRender)
+		AEGfxSetTransparency(1.0f);
+		//Sky
+		//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
+		//AEGfxSetTransform(m_TransformSkyData.m);
+		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformSkyData.m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		/////////////////////////////////////////////////////////////////////////////////
+		//Sun
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetTransparency(1.0f);
+		AEGfxSetTransform(m_TransformSunData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
+		AEGfxSetTransform(m_TransformSunOverlayData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		//Cloud
+		//First Layer
+		AEGfxSetTransform(m_TransformCloudsData[0].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[1].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[2].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//Second Layer
+		AEGfxSetTransform(m_TransformCloudsData[3].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[4].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[5].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//Third Layer
+		AEGfxSetTransform(m_TransformCloudsData[6].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[7].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[8].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// BACKDROP RENDER
+	{
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
+		for (int i = 0; i < 9; i++)
 		{
-			AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
+			AEMtx33 temp;
+			AEMtx33Identity(&temp);
+			AEMtx33ScaleApply(&temp, &temp, 240.0f, 360.f);
+			AEMtx33TransApply(&temp, &temp, (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
+				                                       205.f + static_cast<f32>(mouseY / 90.0f));
+
+			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
-	}
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
+		for (int i = 0; i < 5; i++)
+		{
+			AEMtx33 temp;
+			AEMtx33Identity(&temp);
+			AEMtx33ScaleApply(&temp, &temp, 640.0f, 360.0f);
+			AEMtx33TransApply(&temp, &temp, (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
+				                                               205.f + static_cast<f32>(mouseY / 70.0f));
 
-	////Left Floor
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
-	for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
+			AEGfxSetTransform(temp.m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
+		for (int i = 0; i < 5; i++)
+		{
+			AEMtx33 temp;
+			AEMtx33Identity(&temp);
+			AEMtx33ScaleApply(&temp, &temp, 480.0f, 360.f);
+			AEMtx33TransApply(&temp, &temp, (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
+				                                               205.f + static_cast<f32>(mouseY / 50.0f));
+
+			AEGfxSetTransform(temp.m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FLOOR RENDER
 	{
+		//// Tell the engine to get ready to draw something with texture.
+		//// Set the color to add to nothing, so that we don't alter the sprite's color
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+
+		std::string texRef = "Floor_Center_";// + LEVELNUM
+		//Main Floor
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
 		{
-			if (m_Floor[j][i].m_IsRender)
+			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 			{
-				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
-	}
-	//Right Floor
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
-	for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
-	{
-		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+
+		////Left Floor
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
+		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
 		{
-			if (m_Floor[j][i].m_IsRender)
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				if (m_Floor[j][i].m_IsRender)
+				{
+					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
 			}
 		}
+		//Right Floor
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
+		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				if (m_Floor[j][i].m_IsRender)
+				{
+					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//Fog
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
-	AEGfxSetTransform(m_TransformFogData.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
+	// FOG RENDER
+	{
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
+		AEGfxSetTransform(m_TransformFogData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//SceneObj
-	//Render Left Side
-	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
+	//SCENEOBJ RENDER
 	{
-		for (int i = 0; i < NUM_OF_TILES - 1; i++)
+		//Render Left Side
+		for (int j = 0; j < SIZE_OF_FLOOR / 2; j++)
 		{
-			////////////////////////////////////////////////
-			// CurrentTileNumFurthest = 4
-			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-			////////////////////////////////////////////////
-			int tempTileNum = CurrentTileNumFurthest - i;
-			if (tempTileNum < 0)
-				tempTileNum += NUM_OF_TILES - 1;
-
-			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-				it != m_FloorOBJs[j][tempTileNum].end();
-				it++)
+			for (int i = 0; i < NUM_OF_TILES - 1; i++)
 			{
-				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
-				AEGfxSetTransparency((*it).m_Transparency);
-				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				////////////////////////////////////////////////
+				// CurrentTileNumFurthest = 4
+				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+				////////////////////////////////////////////////
+				int tempTileNum = CurrentTileNumFurthest - i;
+				if (tempTileNum < 0)
+					tempTileNum += NUM_OF_TILES - 1;
+
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+					it != m_FloorOBJs[j][tempTileNum].end();
+					it++)
+				{
+					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxSetTransparency((*it).m_Transparency);
+					AEGfxSetTransform((*it).m_TransformData.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+		//Render Right Side
+		for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR / 2; j--)
+		{
+			for (int i = 0; i < NUM_OF_TILES - 1; i++)
+			{
+				////////////////////////////////////////////////
+				// CurrentTileNumFurthest = 4
+				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+				////////////////////////////////////////////////
+				int tempTileNum = CurrentTileNumFurthest - i;
+				if (tempTileNum < 0)
+					tempTileNum += NUM_OF_TILES - 1;
+
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+					it != m_FloorOBJs[j][tempTileNum].end();
+					it++)
+				{
+					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxSetTransparency((*it).m_Transparency);
+					AEGfxSetTransform((*it).m_TransformData.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
 			}
 		}
 	}
-	//Render Right Side
-	for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
-	{
-		for (int i = 0; i < NUM_OF_TILES - 1; i++)
-		{
-			////////////////////////////////////////////////
-			// CurrentTileNumFurthest = 4
-			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-			////////////////////////////////////////////////
-			int tempTileNum = CurrentTileNumFurthest - i;
-			if (tempTileNum < 0)
-				tempTileNum += NUM_OF_TILES - 1;
 
-			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-				it != m_FloorOBJs[j][tempTileNum].end();
-				it++)
-			{
-				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
-				AEGfxSetTransparency((*it).m_Transparency);
-				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-			}
-		}
-	}
-	if (Combat)
-	CombatScene::sInstance->Render();
-
-	RenderLvlName();
-
-	static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
-	//Lens Flare
-	AEGfxSetTransparency(transparency[7]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[7].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[6]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[6].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[5]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[5].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[4]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[4].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[3]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[3].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[2]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[2].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[1]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[1].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransparency(transparency[0]);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
-	AEGfxSetTransform(m_TransformSunLensData[0].m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//Screen Transition
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-	AEGfxSetTransparency(m_currTransitionTransparency);
-	AEMtx33 t_curr;
-	AEMtx33Identity(&t_curr);
-	AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-	AEGfxSetTransform(t_curr.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//Enable later
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//GAMEOBJ RENDER
 	//GameObjectManager::GetInstance()->Render();
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Render
+	if (Combat)
+		CombatScene::sInstance->Render();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//UI / MISC RENDER
+	{
+		RenderLvlName();
+
+		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
+		//Lens Flare
+		AEGfxSetTransparency(transparency[7]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[7].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[6]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[6].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[5]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[5].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[4]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[4].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[3]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[3].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[2]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[2].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[1]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[1].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[0]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[0].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//Screen Transition
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxSetTransparency(m_currTransitionTransparency);
+		AEMtx33 t_curr;
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
 }
 void SceneLevelBuilder::Exit()
 {
@@ -1157,8 +1222,8 @@ void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 			in the clouds, creating depth.
 			************************************************************************************************************************/
 			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
-			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((50) / (3 - i / 3))),
-				                                                                                    220.f + static_cast<f32>(mouseY) / static_cast<f32>(((90) / (3 - i / 3))));
+			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
+				                                                                                    305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
 		}
 		else
 		{
