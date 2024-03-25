@@ -17,6 +17,7 @@ Technology is prohibited.
 #include "Pch.h"
 #include "SceneLevelBuilder.h"
 #include "CombatPlayer.h"
+#include "Pause.h"
 
 //Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
 //First data is left, second data is right
@@ -789,6 +790,12 @@ void SceneLevelBuilder::Update(double dt)
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
 	}
+
+	Pause::getInstance().update(dt);
+	if (Pause::getInstance().isPaused) {
+		return;
+	}
+
 	if (Combat)
 	{
 		// check if combat is over and update accordingly
@@ -1300,7 +1307,7 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
-	
+	Pause::getInstance().render();
 }
 void SceneLevelBuilder::Exit()
 {
