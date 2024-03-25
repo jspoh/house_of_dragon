@@ -37,8 +37,24 @@ namespace {
 	Player* player;
 	bool playerAlive;
 	bool extraflagtest;
+	bool deadfinalflag;
+	const float slideAnimationDuration = 1.f;
+
 	//camera coordinates;
 	f32 camX, camY;
+
+	//dialogue variables
+	bool dialogueflag;
+	
+	//death buttons values
+	Point deathBtnMenuPoint;
+	Point deathBtnRespawnPoint;
+	float deathBtnWidthStart;
+	float deathbtnHeightStart;
+	float deathBtnWidthEnd;
+	float deathbtnHeightEnd;
+	Point deathBtncurrScale;
+
 
 	//timer for the lerp
 	//const float slideAnimationDuration = 1.0f;
@@ -47,7 +63,6 @@ namespace {
 	float panelfinalY;
 	bool panelflag;
 	float currentTime;
-	float totaltime;
 	float startingPanelY;
 	//world pos
 	Point wpos;
@@ -66,6 +81,13 @@ namespace {
 
 
 	enemiesGroup groups;
+
+	enum DIALOGUE {
+		BLOCKING,
+		PLAYER_ATTACK,
+		ENEMYDEATH,
+		ITEM
+	};
 
 	EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 	enum ACTION_BTNS {
@@ -177,6 +199,38 @@ namespace {
 		}
 	}
 
+	void updateDeathBtns() {
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		//main menu
+		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				std::cout << "does it work";
+			}
+		}
+		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd -5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				std::cout << "does it work";
+			}
+		}
+	}
+	void renderDeathBtns() {
+		Point trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
+		Point trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
+
+		f32 truex, truey;
+		AEGfxGetCamPosition(&truex, &truey);
+
+		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + truex, trueCoordinatesMenu.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->text("Respawn", deathBtnMenuPoint.x, btnY + deathBtnMenuPoint.y );
+		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + truex, trueCoordinatesRespawn.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
+	
+			//RenderHelper::getInstance()->text("Respawn", deathBtnMenuPoint.x,deathBtnMenuPoint.y);
+		
+
+
+	}
+
 
 	void renderBtns(std::vector<std::string> bvalues) {
 		f32 truex, truey;
@@ -202,7 +256,7 @@ namespace {
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive) {
+			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag ) {
 				RenderHelper::getInstance()->texture("button", btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight + btnWordPadding * 2);
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
@@ -301,21 +355,31 @@ void CombatScene::Init()
 {
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
-	 wpos = stow(AEGfxGetWindowWidth() / 2, AEGfxGetWindowHeight() / 2);
+	 wpos = stow(  static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>( AEGfxGetWindowHeight()) / 2);
 	player = new Player(100, 1000);
 	playerAlive = true;
 	extraflagtest = true;
+	deadfinalflag = false;
 	panelflag = true;
+	dialogueflag = false;
 	panelpos.x = 0; // constant value
 	panelpos.y = -AEGfxGetWindowHeight() / 1.7f; // starting posY for the panel
 	startingPanelY = panelpos.y;
 	panelfinalY = -AEGfxGetWindowHeight() / 2.9f;
 	currentTime = 0;
-	totaltime = 1.f;
 	initalScaleDead.x = 250;
 	FinalScaleDead.x = 500;
 	initalScaleDead.y = 50;
 	FinalScaleDead.y = 100;
+	
+
+	deathBtnWidthEnd = 300.f;
+	deathbtnHeightEnd = 150.f;
+
+	deathBtnRespawnPoint.x = AEGfxGetWindowWidth() / 2 - deathBtnWidthEnd / 2 - 50.f;
+	deathBtnMenuPoint.x = AEGfxGetWindowWidth() / 2 + deathBtnWidthEnd / 2 + 50.f;
+	deathBtnRespawnPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
+	deathBtnMenuPoint.y =  static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
 
 	currScaleDead.x = initalScaleDead.x;
 	currScaleDead.y = initalScaleDead.y;
@@ -328,6 +392,7 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
+
 	if (!CombatManager::getInstance()->isInCombat) {
 		return;
 	}
@@ -338,15 +403,12 @@ void CombatScene::Update(double dt)
 			RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
 		}
 		if (player->isDead()) {
-			// Set player to dead
-			//if (playerAlive) {
-			//	playerAlive = false;
-			//}
-			//else {
-			//	// Reset the panel position to slide back down
-			//	panelflag = true;
-			//	currentTime = 0.0f; // Reset the time for sliding animation
-			//}
+			 //Set player to dead
+			if (playerAlive) {
+				playerAlive = false;
+				deadfinalflag = false;
+			}
+
 		}
 		}
 
@@ -357,7 +419,9 @@ void CombatScene::Update(double dt)
 				currentTime = 0.0f; // Reset the time for sliding animation
 			}
 		}
-
+		if (!playerAlive) {
+			updateDeathBtns();
+		}
 	//if (AEInputCheckTriggered(AEVK_K)) {
 	//	// kill all enemies
 	//	for (const Enemy* e : groups.enemies) {
@@ -376,7 +440,6 @@ void CombatScene::Update(double dt)
 			playerAlive = false;
 		}
 	//updating panel 
-		const float slideAnimationDuration = 1.f;
 
 	AEGfxGetCamPosition(&camX, &camY);
 	if (!playerAlive && currentTime < slideAnimationDuration) {
@@ -392,20 +455,22 @@ void CombatScene::Update(double dt)
 
 		panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
 	}
-	else {
-		panelflag = false; // Reset panel flag when animation is complete
+	else if (!playerAlive && currentTime >= slideAnimationDuration) {
+		deadfinalflag = true; // Reset panel flag when animation is complete
 	}
-	if (playerAlive && currentTime < totaltime) { // should include this in render.cpp instead
+
+
+	if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
 		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		float percenttime = static_cast<float>(currentTime / totaltime);
+		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
 		float t = percenttime;
-		if (t > totaltime) {
-			t = totaltime;
+		if (t > slideAnimationDuration) {
+			t = slideAnimationDuration;
 		}
 		panelpos.y = lerp(-AEGfxGetWindowHeight() / 1.7f, panelfinalY, t);
 		btnIncreaseY = lerp(btnDecreaseStart, 0, t);
 	}
-	else {
+	else if(playerAlive) {
 		panelflag = false;
 	}
 
@@ -568,6 +633,7 @@ void CombatScene::Render()
 				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
 			i++;
+			//enemy->render();
 		}
 	}
 
@@ -575,8 +641,16 @@ void CombatScene::Render()
 	else if (!playerAlive){
 		//rendering out the objects
 		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
+		/*for (Enemy* enemy : groups.enemies) {
+			enemy->render();
+		}*/
+
 		RenderHelper::getInstance()->texture("playerdead", wpos.x + truex, wpos.y+  truey, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 		renderBtns(btns[currentState]);
+		//
+		if(deadfinalflag)
+			renderDeathBtns();
+		//}
 
 	}
 
@@ -590,7 +664,6 @@ for (const int index : deadEnemies) {
 	}
 	Event::getInstance()->render();
 	for (i = 0; i < groups.enemies.size(); i++) {
-		//if()
 
 		groups.enemies[i]->render(); // render all, draw all enemys
 	}
