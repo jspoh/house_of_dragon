@@ -36,29 +36,32 @@ void UpdateHands(float t_dt)
 {
 	static int t_AnimationFrame = 0;
 	static double t_AnimationDuration = 0.0;
+	static bool LeftSide = false;
 	double LerpSpeed = 10.0;
 	AEVec2 targetPos{};
-	f32 mouseX, mouseY;
-	AEGfxGetCamPosition(&mouseX, &mouseY);
-	//mouseX += AEGfxGetWindowWidth() / 2;
-	//mouseY -= AEGfxGetWindowHeight() / 2;
+	f32 camX, camY;
+	AEGfxGetCamPosition(&camX, &camY);
+	static int mouseX{}, mouseY{};
+
+	//camX += AEGfxGetWindowWidth() / 2;
+	//camY -= AEGfxGetWindowHeight() / 2;
 	//Placement Tool (Remove once done)
 	static float x = 0, y = 0;
 	if (AEInputCheckCurr(AEVK_W))
 	{
-		y += 0.5;
+		y += 5.5;
 	}
 	if (AEInputCheckCurr(AEVK_S))
 	{
-		y -= 0.5;
+		y -= 5.5;
 	}
 	if (AEInputCheckCurr(AEVK_A))
 	{
-		x -= 0.55;
+		x -= 5.55;
 	}
 	if (AEInputCheckCurr(AEVK_D))
 	{
-		x += 0.55;
+		x += 5.55;
 	}
 	static float mx = 0, my = 0;
 	if (AEInputCheckCurr(AEVK_UP))
@@ -77,77 +80,195 @@ void UpdateHands(float t_dt)
 	{
 		mx -= 0.55;
 	}
-	cout << x << " " << y << " " << mx << " " << my << endl;
+	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 
 	switch (HandStateAnimationType)
 	{
 	case Punch:
+		if (!LeftSide) //Left Hand Punch
+			switch (t_AnimationFrame)
+			{
+			case 0://Init
+				AEMtx33Identity(&Hand2PosData.first);
+				AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
+				targetPos = { -804.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
+				AEInputGetCursorPosition(&mouseX, &mouseY);
+				mouseX -= AEGfxGetWindowWidth() / 2;
+				mouseY -= AEGfxGetWindowHeight() / 2;
+				mouseY *= -1;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1: //End Point
+				targetPos = { (float)mouseX - 166.0f + camX, (float)mouseY - 198.0f + camY };
+				LerpSpeed = 1.05;
+				Hand2PosData.first.m[0][2] += abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0;
+				Hand2PosData.first.m[1][2] += abs((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) : 0;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.25;
+				break;
+			}
+		else
+			switch (t_AnimationFrame)
+			{
+			case 0://Init
+				AEMtx33Identity(&Hand2PosData.second);
+				AEMtx33ScaleApply(&Hand2PosData.second, &Hand2PosData.second, 191.5, 307);
+				targetPos = { 804.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand2PosData.second, &Hand2PosData.second, targetPos.x, targetPos.y);
+				AEInputGetCursorPosition(&mouseX, &mouseY);
+				mouseX -= AEGfxGetWindowWidth() / 2;
+				mouseY -= AEGfxGetWindowHeight() / 2;
+				mouseY *= -1;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1: //End Point
+				targetPos = { (float)mouseX + 166.0f + camX, (float)mouseY - 198.0f + camY };
+				LerpSpeed = 1.05;
+				Hand2PosData.second.m[0][2] += abs((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) : 0;
+				Hand2PosData.second.m[1][2] += abs((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) : 0;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.25;
+				break;
+			}
+		if (t_AnimationDuration < 0.0)
+		{
+			t_AnimationFrame = t_AnimationFrame < 1 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			t_AnimationDuration = 9999.0;
+			if (t_AnimationFrame == 0)
+			{
+				LeftSide = rand() % 2 - 1;
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+			}
+		}
 		break;
 	case Block:
-		switch (t_AnimationFrame)
-		{
-		case 0:		
-			//Init
-			AEMtx33Identity(&Hand3PosData.second);
-			Hand1PosData.first = Hand3PosData.second;
-			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
-			targetPos = { -304.25f + mouseX, -526.f + mouseY };
-			AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
-			AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
-			targetPos = { -160.95f + mouseX, -499.5f + mouseY };
-			AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
-			if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
-			break;
-		case 1:
-			//Start of block
-			targetPos = { -304.25f + mouseX, -384.f + mouseY };
-			LerpSpeed = 2;
-			Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
-			Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
-			targetPos = { -160.95f + mouseX, -266.4f + mouseY };
-			LerpSpeed = 2;
-			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
-			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
+		if (!LeftSide) //Right Hand Blocking
+			switch (t_AnimationFrame)
+			{
+			case 0:
+				//Init
+				AEMtx33Identity(&Hand3PosData.second);
+				Hand1PosData.first = Hand3PosData.second;
+				AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+				targetPos = { -304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+				targetPos = { -160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1:
+				//Start of block
+				targetPos = { -304.25f + camX, -384.f + camY };
+				LerpSpeed = 2;
+				Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
+				Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+				targetPos = { -160.95f + camX, -266.4f + camY };
+				LerpSpeed = 2;
+				Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
+				Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
 
-			if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000;
-			break;
-		case 2:
-			//Hold
-			targetPos = { -304.25f + mouseX, -384.0f + mouseY };
-			LerpSpeed = 1.1;
-			Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
-			Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
-			targetPos = { 277.5f + mouseX, -94.35f + mouseY };
-			LerpSpeed = 15;
-			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
-			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4);
-			if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000; // Blocking Duration (Replace here)
-			break;
-		case 3:
-			//Exit
-			targetPos = { -425.35f + mouseX, -498.5f + mouseY };
-			LerpSpeed = 5;
-			Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
-			Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
-			targetPos = { 555.f + mouseX, -510.25f + mouseY };
-			LerpSpeed = 5;
-			Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
-			Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
-			if(t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000;
-			break;
-		case 4:
-			// cooldown
-			if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000;
-			break;
-		default:
-			cout << "ERROR IN BLOCKING ANIMATION" << endl;
-		}
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.1;
+				break;
+			case 2:
+				//Hold
+				targetPos = { -304.25f + camX, -384.0f + camY };
+				LerpSpeed = 1.1;
+				Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
+				Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+				targetPos = { 277.5f + camX, -94.35f + camY };
+				LerpSpeed = 15;
+				Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
+				Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 2.0; // Blocking Duration (Replace here)
+				break;
+			case 3:
+				//Exit
+				targetPos = { -425.35f + camX, -498.5f + camY };
+				LerpSpeed = 5;
+				Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
+				Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+				targetPos = { 555.f + camX, -510.25f + camY };
+				LerpSpeed = 5;
+				Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
+				Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.3;
+				break;
+			default:
+				cout << "ERROR IN BLOCKING ANIMATION" << endl;
+			}
+		else //Left Hand Blocking
+			switch (t_AnimationFrame)
+			{
+			case 0:
+				//Init
+				AEMtx33Identity(&Hand3PosData.first);
+				Hand1PosData.second = Hand3PosData.first;
+				AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+				targetPos = { 160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+				targetPos = { 304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1:
+				//Start of block
+				targetPos = { 160.95f + camX, -266.4f + camY };
+				LerpSpeed = 2;
+				Hand3PosData.first.m[0][2] += (targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed;
+				Hand3PosData.first.m[1][2] += (targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed;
+				targetPos = { 304.25f + camX, -384.f + camY };
+				LerpSpeed = 2;
+				Hand1PosData.second.m[0][2] += (targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed;
+				Hand1PosData.second.m[1][2] += (targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed;
+
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.1;
+				break;
+			case 2:
+				//Hold
+				targetPos = { -277.5f + camX, -94.35f + camY };
+				LerpSpeed = 15;
+				Hand3PosData.first.m[0][2] += (targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed;
+				Hand3PosData.first.m[1][2] += (targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4);;
+				targetPos = { 304.25f + camX, -384.0f + camY };
+				LerpSpeed = 1.1;
+				Hand1PosData.second.m[0][2] += (targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed;
+				Hand1PosData.second.m[1][2] += (targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 2.0; // Blocking Duration (Replace here)
+				break;
+			case 3:
+				//Exit
+				targetPos = { -555.f + camX, -510.25f + camY };
+				LerpSpeed = 5;
+				Hand3PosData.first.m[0][2] += (targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed;
+				Hand3PosData.first.m[1][2] += (targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed;
+				targetPos = { 425.35f + camX, -498.5f + camY };
+				LerpSpeed = 5;
+				Hand1PosData.second.m[0][2] += (targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed;
+				Hand1PosData.second.m[1][2] += (targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.3;
+				break;
+			default:
+				cout << "ERROR IN BLOCKING ANIMATION" << endl;
+			}
+
 		if (t_AnimationDuration < 0.0)
 		{
 			t_AnimationFrame = t_AnimationFrame < 4 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
 			t_AnimationDuration = 9999.0;
+			if (t_AnimationFrame == 0)
+			{
+				LeftSide = rand() % 2 - 1;
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+			}
 		}
-		
+
 		break;
 	case Ready: //For Getting ready in combat
 		switch (t_AnimationFrame)
@@ -157,19 +278,19 @@ void UpdateHands(float t_dt)
 			AEMtx33Identity(&Hand4PosData.second);
 			Hand2PosData.first = Hand4PosData.second;
 			AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
-			targetPos = { -39.0f + mouseX, -170.0f + mouseY };
+			targetPos = { -39.0f + camX, -170.0f + camY };
 			AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
 			AEMtx33ScaleApply(&Hand4PosData.second, &Hand4PosData.second, 252, 319);
-			targetPos = { 45.1f + mouseX, -76.5f + mouseY };
+			targetPos = { 45.1f + camX, -76.5f + camY };
 			AEMtx33TransApply(&Hand4PosData.second, &Hand4PosData.second, targetPos.x, targetPos.y);
 			if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 			break;
 		case 1://Ready Up
-			targetPos = { -39.0f + mouseX, -170.0f + mouseY };
+			targetPos = { -39.0f + camX, -170.0f + camY };
 			LerpSpeed = 2;
 			Hand2PosData.first.m[0][2] += (targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed;
 			Hand2PosData.first.m[1][2] += (targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed;
-			targetPos = { 45.1f + mouseX, -76.5f + mouseY };
+			targetPos = { 45.1f + camX, -76.5f + camY };
 			LerpSpeed = 2;
 			Hand4PosData.second.m[0][2] += (targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed;
 			Hand4PosData.second.m[1][2] += (targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed;
@@ -177,21 +298,30 @@ void UpdateHands(float t_dt)
 			break;
 
 		case 2: //Ready Down
-			targetPos = { -39.0f + mouseX, -526.f + mouseY };
-			LerpSpeed = 2;
+			targetPos = { -39.0f + camX, -526.f + camY };
+			LerpSpeed = 15;
 			Hand2PosData.first.m[0][2] += (targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed;
 			Hand2PosData.first.m[1][2] += (targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed;
-			targetPos = { 45.1f + mouseX, -526.f + mouseY };
-			LerpSpeed = 2;
+			targetPos = { 45.1f + camX, -526.f + camY };
+			LerpSpeed = 15;
 			Hand4PosData.second.m[0][2] += (targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed;
 			Hand4PosData.second.m[1][2] += (targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed;
 			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
 			break;
+		default:
+			cout << "ERROR IN READYING ANIMATION" << endl;
 		}
 		if (t_AnimationDuration < 0.0)
 		{
 			t_AnimationFrame = t_AnimationFrame < 2 ? ++t_AnimationFrame : 1; //Loop Animation // Remove this if u want one off
 			t_AnimationDuration = 9999.0;
+			if (t_AnimationFrame == 0)
+			{
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+			}
 		}
 		break;
 	default:
