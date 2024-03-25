@@ -49,8 +49,6 @@ namespace {
 	//death buttons values
 	Point deathBtnMenuPoint;
 	Point deathBtnRespawnPoint;
-	float deathBtnWidthStart;
-	float deathbtnHeightStart;
 	float deathBtnWidthEnd;
 	float deathbtnHeightEnd;
 	Point deathBtncurrScale;
@@ -222,8 +220,8 @@ namespace {
 		AEGfxGetCamPosition(&truex, &truey);
 
 		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + truex, trueCoordinatesMenu.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->text("Respawn", deathBtnMenuPoint.x, btnY + deathBtnMenuPoint.y );
 		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + truex, trueCoordinatesRespawn.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
+		//RenderHelper::getInstance()->text("No enemy selected", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 	
 			//RenderHelper::getInstance()->text("Respawn", deathBtnMenuPoint.x,deathBtnMenuPoint.y);
 		
@@ -458,6 +456,9 @@ void CombatScene::Update(double dt)
 	else if (!playerAlive && currentTime >= slideAnimationDuration) {
 		deadfinalflag = true; // Reset panel flag when animation is complete
 	}
+	else {
+		deadfinalflag = false;
+	}
 
 
 	if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
@@ -648,7 +649,7 @@ void CombatScene::Render()
 		RenderHelper::getInstance()->texture("playerdead", wpos.x + truex, wpos.y+  truey, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 		renderBtns(btns[currentState]);
 		//
-		if(deadfinalflag)
+		if(deadfinalflag == true)
 			renderDeathBtns();
 		//}
 
@@ -663,10 +664,16 @@ for (const int index : deadEnemies) {
 		groups.enemies.erase(groups.enemies.begin() + index);
 	}
 	Event::getInstance()->render();
-	for (i = 0; i < groups.enemies.size(); i++) {
+	if (playerAlive) {
+		for (i = 0; i < groups.enemies.size(); i++) {
 
-		groups.enemies[i]->render(); // render all, draw all enemys
+			groups.enemies[i]->render(); // render all, draw all enemys
+		}
 	}
+	//for (i = 0; i < groups.enemies.size(); i++) {
+
+	//	groups.enemies[i]->render(); // render all, draw all enemys
+	//}
 
 
 
