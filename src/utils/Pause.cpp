@@ -51,6 +51,7 @@ void Pause::update(double dt) {
 
 				}
 				else if (b == "EXIT") {
+					isPaused = false;
 					AEGfxSetCamPosition(0, 0);
 					SceneManager::GetInstance()->SetActiveScene("SceneMenu");
 				}

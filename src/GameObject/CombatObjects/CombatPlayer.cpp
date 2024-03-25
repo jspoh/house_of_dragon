@@ -41,7 +41,7 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 }
 
 Player::~Player() {
-	RenderHelper::getInstance()->removeTextureByRef("shield");
+	//RenderHelper::getInstance()->removeTextureByRef("shield");	// let renderhelper manage
 }
 
 

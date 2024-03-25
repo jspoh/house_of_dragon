@@ -173,37 +173,37 @@ namespace {
 							if (bv == "FIRE") {
 								std::cout << "fire pressed\n";
 								attackUsed = "FIRE";
-								CombatManager::getInstance()->attackElement = Fire;
+								CombatManager::getInstance().attackElement = Fire;
 							}
 							else if (bv == "WATER") {
 								std::cout << "water pressed\n";
 								attackUsed = "WATER";
-								CombatManager::getInstance()->attackElement = Water;
+								CombatManager::getInstance().attackElement = Water;
 							}
 							else if (bv == "METAL") {
 								std::cout << "metal pressed\n";
 								attackUsed = "METAL";
-								CombatManager::getInstance()->attackElement = Metal;
+								CombatManager::getInstance().attackElement = Metal;
 							}
 							else if (bv == "WOOD") {
 								std::cout << "wood pressed\n";
 								attackUsed = "WOOD";
-								CombatManager::getInstance()->attackElement = Wood;
+								CombatManager::getInstance().attackElement = Wood;
 							}
 							else if (bv == "EARTH") {
 								std::cout << "earth pressed\n";
 								attackUsed = "EARTH";
-								CombatManager::getInstance()->attackElement = Earth;
+								CombatManager::getInstance().attackElement = Earth;
 							}
 
-							if (CombatManager::getInstance()->selectedEnemy != nullptr && CombatManager::getInstance()->attackElement != Element::NO_ELEMENT) {
+							if (CombatManager::getInstance().selectedEnemy != nullptr && CombatManager::getInstance().attackElement != Element::NO_ELEMENT) {
 								/*if user presses attack*/
-								CombatManager::getInstance()->isPlayingEvent = true;
+								CombatManager::getInstance().isPlayingEvent = true;
 
 
 								Event::getInstance()->startRandomEvent();
 							}
-							else if (CombatManager::getInstance()->selectedEnemy == nullptr && CombatManager::getInstance()->attackElement != Element::NO_ELEMENT) {
+							else if (CombatManager::getInstance().selectedEnemy == nullptr && CombatManager::getInstance().attackElement != Element::NO_ELEMENT) {
 								//RenderHelper::getInstance()->text("No enemy selected", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 								std::cout << "No enemy selected\n";
 							}
@@ -289,7 +289,7 @@ namespace {
 
 
 
-		if (currentState == ACTION_BTNS::ATTACK && CombatManager::getInstance()->attackElement != Element::NO_ELEMENT && CombatManager::getInstance()->selectedEnemy == nullptr) {
+		if (currentState == ACTION_BTNS::ATTACK && CombatManager::getInstance().attackElement != Element::NO_ELEMENT && CombatManager::getInstance().selectedEnemy == nullptr) {
 			RenderHelper::getInstance()->text("No enemy selected", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 			return;
 		}
@@ -444,13 +444,13 @@ void CombatScene::Init()
 	btnWordPadding = 20.f;
 	btnDecreaseY = 0.f;
 
-	CombatManager::getInstance()->start();
+	CombatManager::getInstance().start();
 }
 
 void CombatScene::Update(double dt)
 {
 
-	if (!CombatManager::getInstance()->isInCombat) {
+	if (!CombatManager::getInstance().isInCombat) {
 		return;
 	}
 
@@ -497,7 +497,7 @@ void CombatScene::Update(double dt)
 
 	//	groups.enemies.clear();
 	//	
-	//	CombatManager::getInstance()->end();
+	//	CombatManager::getInstance().end();
 	//	delete player;
 	//	player = nullptr;
 	//	return;
@@ -552,13 +552,13 @@ void CombatScene::Update(double dt)
 	//}
 
 	// select enemy
-	if (!CombatManager::getInstance()->isPlayingEvent) {
+	if (!CombatManager::getInstance().isPlayingEvent) {
 		for (Enemy* e : groups.enemies) {
 			e->update(dt);
 
 			if (e->isSelected) {
 				// deselect all other enemies
-				CombatManager::getInstance()->selectedEnemy = e;
+				CombatManager::getInstance().selectedEnemy = e;
 
 				for (Enemy* e2 : groups.enemies) {
 					if (e != e2) {
@@ -567,9 +567,9 @@ void CombatScene::Update(double dt)
 				}
 			}
 			else {
-				if (CombatManager::getInstance()->selectedEnemy == e) {
+				if (CombatManager::getInstance().selectedEnemy == e) {
 					// enemy deselected
-					CombatManager::getInstance()->selectedEnemy = nullptr;
+					CombatManager::getInstance().selectedEnemy = nullptr;
 				}
 			}
 		}
@@ -577,57 +577,57 @@ void CombatScene::Update(double dt)
 
 
 	Point p = stow(100, 100);
-	Event::getInstance()->update(CombatManager::getInstance()->qtEventResult, dt);
+	Event::getInstance()->update(CombatManager::getInstance().qtEventResult, dt);
 
 
 
 	// if player has finished quicktime event
-	if (CombatManager::getInstance()->qtEventResult != NONE_EVENT_RESULTS) {
+	if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
 
 		// end player's turn
-		CombatManager::getInstance()->next();
+		CombatManager::getInstance().next();
 		dialogueState = DIALOGUE::PLAYER_ATTACK;
 
-		std::cout << "Enemy next turn in " << CombatManager::getInstance()->enemyNextTurnMs << "ms\n";
-		CombatManager::getInstance()->isPlayingEvent = false;
+		std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
+		CombatManager::getInstance().isPlayingEvent = false;
 
 		/*check if success or failure and modify damage accordingly*/
-		switch (CombatManager::getInstance()->qtEventResult) {
+		switch (CombatManager::getInstance().qtEventResult) {
 		case EVENT_RESULTS::SUCCESS:
 			std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-			player->attack(*CombatManager::getInstance()->selectedEnemy, CombatManager::getInstance()->attackElement, Event::getInstance()->maxMultiplier);
+			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
 
 			break;
 		case EVENT_RESULTS::FAILURE:
 			std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-			player->attack(*CombatManager::getInstance()->selectedEnemy, CombatManager::getInstance()->attackElement, Event::getInstance()->minMultiplier);
+			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
 
 			break;
 		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
 			std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-			player->attack(*CombatManager::getInstance()->selectedEnemy, CombatManager::getInstance()->attackElement, Event::getInstance()->eventMultiplier);
+			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
 
 			break;
 		}
-		CombatManager::getInstance()->qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+		CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 
 		// reset states
-		CombatManager::getInstance()->selectedEnemy = nullptr;
+		CombatManager::getInstance().selectedEnemy = nullptr;
 		for (Enemy* e : groups.enemies) {
 			e->isSelected = false;
 		}
-		CombatManager::getInstance()->attackElement = Element::NO_ELEMENT;
+		CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
 		currentState = ACTION_BTNS::MAIN;
 	}
 
 	// when is player turn and player is not playing a quicktime event
-	if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
+	if (CombatManager::getInstance().turn == TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 		updateBtns(btns[currentState]);  // render player action buttons
 	}
-	else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
-		CombatManager::getInstance()->enemyNextTurnMs -= static_cast<int>(dt * 1000);
+	else if (CombatManager::getInstance().turn == TURN::ENEMY) {
+		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
 
-		if (CombatManager::getInstance()->enemyNextTurnMs <= 0) {
+		if (CombatManager::getInstance().enemyNextTurnMs <= 0) {
 			SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
 			//Util_Camera_Shake(0.5, 100);
 
@@ -654,14 +654,14 @@ void CombatScene::Update(double dt)
 				int randEnemyIndex = rand() % groups.enemies.size();
 				std::cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
 				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
-				CombatManager::getInstance()->next();
+				CombatManager::getInstance().next();
 			}
 			else {
 				std::cout << "Transition to next level\n";
 				// all enemies shldve been deleted
 				delete player;
 				player = nullptr;
-				CombatManager::getInstance()->end();
+				CombatManager::getInstance().end();
 				return;
 			}
 		}
@@ -673,7 +673,7 @@ void CombatScene::Update(double dt)
 void CombatScene::Render()
 {
 	// dont render if no longer in combat
-	if (!CombatManager::getInstance()->isInCombat) {
+	if (!CombatManager::getInstance().isInCombat) {
 		return;
 	}
 	//if (!playerAlive) {
@@ -704,13 +704,13 @@ void CombatScene::Render()
 			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
 			//}
 
-			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
+			if (CombatManager::getInstance().turn == TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
-			else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
+			else if (CombatManager::getInstance().turn == TURN::ENEMY) {
 				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
-			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance()->isPlayingEvent) {
+			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent) {
 				if (dialogueState == DIALOGUE::ITEM) {
 					std::string fulloutput = "You have consumed " + itemUsed + "!";
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
@@ -776,7 +776,7 @@ void CombatScene::Exit()
 		delete enemy;
 	}
 	groups.enemies.clear();
-	delete CombatManager::getInstance();
+	//delete CombatManager::getInstance();
 	// Clear the vector after deleting the enemies
 	delete player;
 }

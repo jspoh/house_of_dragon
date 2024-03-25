@@ -799,7 +799,7 @@ void SceneLevelBuilder::Update(double dt)
 	if (Combat)
 	{
 		// check if combat is over and update accordingly
-		Combat = CombatManager::getInstance()->isInCombat;
+		Combat = CombatManager::getInstance().isInCombat;
 
 		////////////////////////////////////////////////////////////////
 		//Slow Down

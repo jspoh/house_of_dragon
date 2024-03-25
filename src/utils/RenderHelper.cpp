@@ -189,6 +189,13 @@ void RenderHelper::rect(std::string meshRef, f32 transX, f32 transY, f32 scaleX,
 
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	std::cout << "Loading texture " << path << " with reference " << reference << "\n";
+
+	if (_textureRef.find(reference) != _textureRef.end()) {
+		std::cerr << "Texture ref already in use!\n";
+		//throw std::exception();
+		return false;
+	}
+
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
 		std::cerr << "Texture failed to load\n";
@@ -208,7 +215,7 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 	}
 	if (_textureIdRefs[reference] != nullptr) {
 		std::cerr << "int reference already used\n";
-		throw std::exception();
+		//throw std::exception();
 		return false;
 	}
 
