@@ -51,7 +51,7 @@ void Player::_drawHealth(float screenX, float screenY) {
 	//panel rendering
 	f32 truex, truey;
 	AEGfxGetCamPosition(&truex, &truey);
-	RenderHelper::getInstance()->texture("panel", panelPos.x + truex , panelPos.y   + truey + paddingY, 270, 100);
+	RenderHelper::getInstance()->texture("panel", panelPos.x + truex  , panelPos.y   + truey + paddingY, 270, 100);
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 	if (this->health > 66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20  , 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
