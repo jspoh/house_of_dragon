@@ -22,6 +22,7 @@ Technology is prohibited.
 
 Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
+	float StartHealth = health;
 	// set shield properties
 	AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
 	AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
@@ -42,6 +43,18 @@ Player::~Player() {
 	RenderHelper::getInstance()->removeTextureByRef("shield");
 }
 
+
+
+void Player::healthGain(float healthIncrease) {
+	float newhealth = this->health + healthIncrease;
+	if (newhealth < 100.f ) {
+		this->health = newhealth;
+	}
+	else {
+		this->health = 100.f;
+	}
+
+}
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Jackie";
 		std::string level = "  Lv:1";

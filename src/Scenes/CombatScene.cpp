@@ -116,7 +116,7 @@ namespace {
 	std::vector<std::vector<std::string>> btns = {
 		{"ATTACK", "ITEMS", "FLEE"},  // main buttons. the rest are submenu
 		{"FIRE", "WATER", "METAL", "WOOD", "EARTH", "BACK"},  // attack elements
-		{"BACON", "BEEF", "CHICKEN", "CAT(jk pls)", "BACK"},  // items
+		{"BACON", "BEEF", "CHICKEN", "CAT", "BACK"},  // items
 		{"YES", "NO"},  // confirmation. only used for flee option
 	};
 	float padding = 50.f;
@@ -189,6 +189,21 @@ namespace {
 						else if (bv == "YES") {
 							std::cout << "Fleeing fight\n";
 						}
+						else if (currentState == ACTION_BTNS::ITEMS) {
+							if (bv == "BACON") {
+								std::cout << "Bacon eaten\n";
+								player->healthGain(10);
+							}
+							else if (bv == "BEEF") {
+								std::cout << "BEEF eaten\n";
+								player->healthGain(-20);
+							}
+							else if (bv == "CAT") {
+								std::cout << "CAT eaten\n";
+								player->healthGain(20);
+							}
+							currentState = ACTION_BTNS::MAIN;
+						}
 					}
 
 				}
@@ -203,12 +218,12 @@ namespace {
 		//main menu
 		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				std::cout << "does it work";
+				SceneManager::GetInstance()->SetActiveScene("SceneMenu");
 			}
 		}
 		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd -5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				std::cout << "does it work";
+				std::cout << "does it work" << std::endl;
 			}
 		}
 	}
@@ -221,9 +236,9 @@ namespace {
 
 		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + truex, trueCoordinatesMenu.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
 		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + truex, trueCoordinatesRespawn.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
-		//RenderHelper::getInstance()->text("No enemy selected", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
-	
-			//RenderHelper::getInstance()->text("Respawn", deathBtnMenuPoint.x,deathBtnMenuPoint.y);
+		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + truex, trueCoordinatesMenu.y + truey, deathBtnWidthEnd/2, deathbtnHeightEnd/2);
+		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + truex, trueCoordinatesRespawn.y + truey, deathBtnWidthEnd/2, deathbtnHeightEnd/2);
+
 		
 
 
@@ -341,6 +356,10 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.jpg");
 	RenderHelper::getInstance()->registerTexture("playerdead", "./Assets/Combat_UI/playerdeadscreen.png");
 	RenderHelper::getInstance()->registerTexture("button", "./Assets/Combat_UI/Button.png");
+	RenderHelper::getInstance()->registerTexture("respawn", "./Assets/Combat_UI/respawn.png");
+	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
+
+
 
 
 
@@ -664,12 +683,11 @@ for (const int index : deadEnemies) {
 		groups.enemies.erase(groups.enemies.begin() + index);
 	}
 	Event::getInstance()->render();
-	if (playerAlive) {
-		for (i = 0; i < groups.enemies.size(); i++) {
 
+		for (i = 0; i < groups.enemies.size(); i++) {
 			groups.enemies[i]->render(); // render all, draw all enemys
 		}
-	}
+	
 	//for (i = 0; i < groups.enemies.size(); i++) {
 
 	//	groups.enemies[i]->render(); // render all, draw all enemys

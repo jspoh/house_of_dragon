@@ -44,7 +44,6 @@ private:
 	// !TODO: jspoh json difficulty settinng
 	static constexpr int shieldUpTimeMs = 500;
 	static constexpr int timeBeforeNextBlockMs = 1000;
-
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
 	AEVec2 camOffset{ 0,0 };
@@ -70,6 +69,8 @@ public:
 	 * \param qtMultiplier quicktime event multiplier
 	 * \return damage dealt
 	 */
+	void healthGain(float healthIncrease);
+
 	float attack(Mob& target, Element attackEl, float qtMultiplier);
 
 	void update(double dt);
