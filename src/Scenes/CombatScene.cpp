@@ -39,6 +39,8 @@ namespace {
 	bool extraflagtest;
 	bool deadfinalflag;
 	const float slideAnimationDuration = 1.f;
+	float dialogueMaxTime = 0.8f;
+	float dialougeTime;
 
 	//camera coordinates;
 	f32 camX, camY;
@@ -80,12 +82,17 @@ namespace {
 
 	enemiesGroup groups;
 
+
+	std::string itemUsed;
+	
 	enum DIALOGUE {
 		BLOCKING,
 		PLAYER_ATTACK,
 		ENEMYDEATH,
-		ITEM
+		ITEM,
+		NONE
 	};
+	DIALOGUE dialogueState;
 
 	EVENT_RESULTS combatEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 	enum ACTION_BTNS {
@@ -125,6 +132,16 @@ namespace {
 
 	float btnY = 550.f;
 	float maxBtnHeight = 100.f;
+
+
+
+	void resetDialogue() {
+		dialougeTime = 0;
+		dialogueState = DIALOGUE::NONE;
+	}
+
+
+
 
 	/*im so sorry this code very spaghet but time crunch!!*/
 	void updateBtns(std::vector<std::string> bvalues) {
@@ -192,15 +209,24 @@ namespace {
 						else if (currentState == ACTION_BTNS::ITEMS) {
 							if (bv == "BACON") {
 								std::cout << "Bacon eaten\n";
+								itemUsed = "BACON";
 								player->healthGain(10);
+								dialogueState = DIALOGUE::ITEM;
+								
 							}
 							else if (bv == "BEEF") {
 								std::cout << "BEEF eaten\n";
+								itemUsed = "BEEF";
 								player->healthGain(-20);
+								dialogueState = DIALOGUE::ITEM;
+
 							}
 							else if (bv == "CAT") {
 								std::cout << "CAT eaten\n";
+								itemUsed = "CAT";
 								player->healthGain(20);
+								dialogueState = DIALOGUE::ITEM;
+
 							}
 							currentState = ACTION_BTNS::MAIN;
 						}
@@ -372,6 +398,7 @@ void CombatScene::Init()
 {
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
+	dialogueState = DIALOGUE::NONE;
 	 wpos = stow(  static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>( AEGfxGetWindowHeight()) / 2);
 	player = new Player(100, 1000);
 	playerAlive = true;
@@ -388,6 +415,8 @@ void CombatScene::Init()
 	FinalScaleDead.x = 500;
 	initalScaleDead.y = 50;
 	FinalScaleDead.y = 100;
+
+	dialougeTime = 0.f;
 	
 
 	deathBtnWidthEnd = 300.f;
@@ -414,6 +443,16 @@ void CombatScene::Update(double dt)
 		return;
 	}
 
+	if (dialogueState != DIALOGUE::NONE) {
+		if (dialougeTime < dialogueMaxTime) {
+			dialougeTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		}
+		else {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				resetDialogue();
+			}
+		}
+	}
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 		if (enemy->isDead()) {
@@ -566,7 +605,7 @@ void CombatScene::Update(double dt)
 	}
 
 	// when is player turn and player is not playing a quicktime event
-	if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
+	if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 		updateBtns(btns[currentState]);  // render player action buttons
 	}
 	else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
@@ -646,8 +685,14 @@ void CombatScene::Render()
 			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
 			//}
 
-			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false) {
+			if (CombatManager::getInstance()->turn == TURN::PLAYER && !CombatManager::getInstance()->isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 				renderBtns(btns[currentState]);  // render player action buttons
+			}
+			else if (dialogueState != DIALOGUE::NONE) {
+				if (dialogueState == DIALOGUE::ITEM) {
+					std::string fulloutput = "You have consumed " + itemUsed + "!";
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+				}
 			}
 			else if (CombatManager::getInstance()->turn == TURN::ENEMY) {
 				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
