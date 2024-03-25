@@ -628,7 +628,7 @@ void CombatScene::Update(double dt)
 		CombatManager::getInstance()->enemyNextTurnMs -= static_cast<int>(dt * 1000);
 
 		if (CombatManager::getInstance()->enemyNextTurnMs <= 0) {
-			SceneStages::sInstance->Util_Camera_Shake(0.5, 100);
+			SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
 			//Util_Camera_Shake(0.5, 100);
 
 			float multiplier = 1.f;

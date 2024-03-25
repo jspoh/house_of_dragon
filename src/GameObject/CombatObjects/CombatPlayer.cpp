@@ -22,7 +22,7 @@ Technology is prohibited.
 
 Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
-	float StartHealth = health;
+	//float StartHealth = health;		// what is this for?
 	// set shield properties
 	AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
 	AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
