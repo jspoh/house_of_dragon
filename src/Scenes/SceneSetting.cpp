@@ -47,10 +47,16 @@ void SceneSetting::Load()
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
 	mySetting.mesh = AEGfxMeshEnd();
 
-	//RenderHelper::getInstance()->registerTexture("settingbg","./Assets/Menu/setting.png");
+	RenderHelper::getInstance()->registerTexture("settingbg","./Assets/Menu/setting.png");
 	mySetting.bg = AEGfxTextureLoad("Assets/Menu/setting.png");
-	mySetting.bar[0] = AEGfxTextureLoad("Assets/Menu/bar.png");
-	mySetting.bar[1] = AEGfxTextureLoad("Assets/Menu/bar.png");
+	//mySetting.bar[0] = AEGfxTextureLoad("Assets/Menu/bar.png");
+	//mySetting.bar[1] = AEGfxTextureLoad("Assets/Menu/bar.png");
+	RenderHelper::getInstance()->registerTexture("soundBar", "./Assets/Menu/bar.png");
+	RenderHelper::getInstance()->registerTexture("msuicnote", "./Assets/Menu/musicnote.png");
+
+
+	//mySetting.bar[0] = AEGfxTextureLoad("./Assets/Menu/bar.png");
+	//mySetting.bar[1] = AEGfxTextureLoad("./Assets/Menu/bar.png");
 
 }
 
@@ -78,20 +84,21 @@ void SceneSetting::Update(double dt)
 	ParticleManager::GetInstance()->update(dt);
 
 
+
 }
 
 void SceneSetting::Render()
 {
 	texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
 	//RenderHelper::getInstance()->texture("settingbg", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, mySetting.mesh, 1.0f);
-	RenderHelper::getInstance()->text("FULL SCREEN	:", AEGfxGetWindowWidth()/3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	RenderHelper::getInstance()->text("SOUND ON	:", AEGfxGetWindowWidth()/3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("SOUND	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 2.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("MUISC	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 1.6f, 1.0f, 1.0f, 1.0f, 1.0f);
 
-	
-
-
-
+	RenderHelper::getInstance()->texture("soundBar", 35.0f, 5.0f, 900, 1000);
+	RenderHelper::getInstance()->texture("soundBar", 35.0f, -50.0f, 900, 1000);	
+	RenderHelper::getInstance()->texture("msuicnote", 25.0f, -20.0f, 20, 30);
+	RenderHelper::getInstance()->texture("msuicnote", 25.0f, -80.0f, 20, 30);
 
 
 
@@ -126,7 +133,7 @@ void SceneSetting::texture1(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 r
 
 
 	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 1200, 650);
+	AEMtx33Scale(&scale, 1200, 750);
 
 	AEMtx33 transform;
 	AEMtx33Trans(&transform, 0, 0);

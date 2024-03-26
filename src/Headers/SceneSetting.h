@@ -22,6 +22,10 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
+	struct bar {
+		AEVec2 pos;
+		AEVec2 size;
+	};
 
 	typedef struct {
 		AEGfxTexture* bg;
@@ -54,6 +58,8 @@ public:
 private:
 
 	Setting mySetting{ 0 };
+
+	bar barsound;
 
 	//SceneMenu(SceneManager* _sceneMgr); // This is used to register to SceneManager
 

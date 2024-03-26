@@ -50,7 +50,7 @@ void SceneMenu::Init()
 {
 
 	myMenu.buttonWidth = 400.0f; // Example initialization
-	myMenu.buttonHeight = 120.0f; // Example initialization
+	myMenu.buttonHeight = 130.0f; // Example initialization
 	myMenu.transitionEnd = false; // Example initialization
 	myMenu.transitionTimer = 0.0f; // Example initialization
 	myMenu.transitionElapse = 0.0f; // Example initialization
@@ -58,7 +58,7 @@ void SceneMenu::Init()
 	for (int i = 0; i < 4; ++i)
 	{
 		myMenu.buttonX[i] = 0;
-		myMenu.buttonY[i] = -i * (myMenu.buttonHeight + 10) + 200;
+		myMenu.buttonY[i] = -i * (myMenu.buttonHeight ) + 200;
 	}
 
 	//SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
@@ -104,10 +104,10 @@ void SceneMenu::Update(double dt)
 		AEInputGetCursorPosition(&mxx, &myy);
 		float mx = static_cast<float>(mxx);
 		float my = static_cast<float>(myy);
-		mx -= 1200 / 2;
+		mx -= AEGfxGetWindowWidth() / 2;
 
 		my = -my;
-		my += 650.0f / 2.0f;
+		my += AEGfxGetWindowHeight() / 2.0f;
 
 		SoundManager::GetInstance()->playAudio("btnClickSound");
 
@@ -168,7 +168,7 @@ void SceneMenu::Render()
 
 
 	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 1200, 650);
+	AEMtx33Scale(&scale, AEGfxGetWindowWidth(), AEGfxGetWindowHeight());
 
 	AEMtx33 transform;
 	AEMtx33Trans(&transform, 0, 0);
