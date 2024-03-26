@@ -1275,11 +1275,28 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
+		//Border
+		f32 camX, camY;
+		AEGfxGetCamPosition(&camX, &camY);
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxSetTransparency(1.0);
+		AEMtx33 t_curr;
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
+		AEMtx33TransApply(&t_curr, &t_curr, camX, -AEGfxGetWindowHeight()/2 + camY);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
+		AEMtx33TransApply(&t_curr, &t_curr, camX, AEGfxGetWindowHeight() / 2 + camY);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
 		//Screen Transition
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 		AEGfxSetTransparency(m_currTransitionTransparency);
-		AEMtx33 t_curr;
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);

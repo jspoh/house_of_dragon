@@ -104,10 +104,10 @@ void SceneMenu::Update(double dt)
 		AEInputGetCursorPosition(&mxx, &myy);
 		float mx = static_cast<float>(mxx);
 		float my = static_cast<float>(myy);
-		mx -= 1200 / 2;
+		mx -= AEGfxGetWindowWidth() / 2;
 
 		my = -my;
-		my += 650.0f / 2.0f;
+		my += AEGfxGetWindowHeight() / 2.0f;
 
 		SoundManager::GetInstance()->playAudio("btnClickSound");
 
@@ -168,7 +168,7 @@ void SceneMenu::Render()
 
 
 	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 1200, 650);
+	AEMtx33Scale(&scale, AEGfxGetWindowWidth(), AEGfxGetWindowHeight());
 
 	AEMtx33 transform;
 	AEMtx33Trans(&transform, 0, 0);
