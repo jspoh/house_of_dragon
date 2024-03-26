@@ -123,8 +123,8 @@ void GameObject_AmeTest::SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB)
 }
 
 GameObject_AmeTest* Create::Ame(const std::string& _refName,
-	const Vector3& _position,
-	const Vector3& _scale)
+	const AEVec2& _position,
+	const AEVec2& _scale)
 {
 	GameObject_AmeTest* result = new GameObject_AmeTest();
 	result->m_LocalPos = _position;

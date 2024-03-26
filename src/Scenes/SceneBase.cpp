@@ -46,7 +46,7 @@ void SceneBase::Init()
     //Create::Ame("reference15", Vector3(-800.0f, 600.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
     //Create::Ame("reference16", Vector3(0.0f, 700.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
 
-    Create::test("gg", Vector3(0.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
+    //Create::test("gg", Vector3(0.0f, 0.0f, 0.0f), Vector3(300.0f, 300.0f, 0.0f));
 
 
     //GameObjectManager::GetInstance()->FindObjectByReference("")

@@ -19,6 +19,7 @@
 
 
 #include "GameObject_AmeTest.h"
+#include "GameObject_Misc_Enemy.h"
 
 #include <iostream>
 using namespace std; //Remvoe in future

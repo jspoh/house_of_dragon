@@ -39,6 +39,7 @@ namespace {
 	bool playerAlive;
 	bool extraflagtest;
 	bool deadfinalflag;
+	bool winFlag;
 	const float slideAnimationDuration = 1.f;
 	float dialogueMaxTime = 0.8f;
 	float dialougeTime;
@@ -87,6 +88,8 @@ namespace {
 	enum DIALOGUE {
 		BLOCKING,
 		PLAYER_ATTACK,
+		PLAYER_DEATH,
+		WIN,
 		ENEMYDEATH,
 		ITEM,
 		NONE
@@ -129,7 +132,7 @@ namespace {
 	float spacing = 50.f;
 
 
-	float btnY = 550.f;
+	float btnY = 550;
 	float maxBtnHeight = 100.f;
 
 
@@ -261,6 +264,7 @@ namespace {
 		}
 		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				//needs to reset combat scene
 				std::cout << "does it work" << std::endl;
 			}
 		}
@@ -307,12 +311,12 @@ namespace {
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag) {
-				RenderHelper::getInstance()->texture("button", btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight + btnWordPadding * 2);
+			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag ) {
+				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey, btnWidth, btnHeight + btnWordPadding * 2);
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
-				RenderHelper::getInstance()->texture("button", btnPos.x + truex, btnPos.y + truey - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding);
+				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding );
 
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
@@ -410,9 +414,10 @@ void CombatScene::Init()
 {
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
+	winFlag = false;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 1000);
+	player = new Player(100, 100);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -502,10 +507,6 @@ void CombatScene::Update(double dt)
 	//	player = nullptr;
 	//	return;
 	//}
-	if (AEInputCheckTriggered(AEVK_G)) {
-		// kill player
-		playerAlive = false;
-	}
 	//updating panel 
 
 	AEGfxGetCamPosition(&camX, &camY);
@@ -658,11 +659,21 @@ void CombatScene::Update(double dt)
 			}
 			else {
 				std::cout << "Transition to next level\n";
+				if (!winFlag) {
+					dialogueState = DIALOGUE::WIN;
+
+				}
+				else if (dialogueState != DIALOGUE::WIN) {
+					delete player;
+					player = nullptr;
+					CombatManager::getInstance().end();
+					return;
+				}
 				// all enemies shldve been deleted
-				delete player;
-				player = nullptr;
-				CombatManager::getInstance().end();
-				return;
+				//delete player;
+				//player = nullptr;
+				//CombatManager::getInstance().end();
+				//return;
 			}
 		}
 
@@ -686,6 +697,7 @@ void CombatScene::Render()
 	AEGfxGetCamPosition(&truex, &truey);
 
 	//rendering enemies
+	
 
 
 	std::vector<int> deadEnemies;

@@ -1,9 +1,9 @@
 #include "Pch.h"
 #include "GameObject.h"
 GameObject::GameObject() 
-	:m_Scale(1, 1, 1), 
-	m_LocalPos(0.0, 0.0, 0.0), 
-	m_WorldPos(0.0, 0.0, 0.0),
+	:m_Scale{ 1.0f, 1.0f },
+	m_LocalPos{ 0.0f, 0.0f },
+	m_WorldPos{ 0.0f, 0.0f },
 	m_Lifetime(0.0),
 	m_Active(true),
 	m_RefName("NIL")
