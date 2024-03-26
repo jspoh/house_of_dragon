@@ -39,6 +39,7 @@ namespace {
 	bool playerAlive;
 	bool extraflagtest;
 	bool deadfinalflag;
+	bool winFlag;
 	const float slideAnimationDuration = 1.f;
 	float dialogueMaxTime = 0.8f;
 	float dialougeTime;
@@ -87,6 +88,8 @@ namespace {
 	enum DIALOGUE {
 		BLOCKING,
 		PLAYER_ATTACK,
+		PLAYER_DEATH,
+		WIN,
 		ENEMYDEATH,
 		ITEM,
 		NONE
@@ -261,6 +264,7 @@ namespace {
 		}
 		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				//needs to reset combat scene
 				std::cout << "does it work" << std::endl;
 			}
 		}
@@ -410,9 +414,10 @@ void CombatScene::Init()
 {
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
+	winFlag = false;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 1000);
+	player = new Player(100, 100);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -502,10 +507,6 @@ void CombatScene::Update(double dt)
 	//	player = nullptr;
 	//	return;
 	//}
-	if (AEInputCheckTriggered(AEVK_G)) {
-		// kill player
-		playerAlive = false;
-	}
 	//updating panel 
 
 	AEGfxGetCamPosition(&camX, &camY);
@@ -658,11 +659,21 @@ void CombatScene::Update(double dt)
 			}
 			else {
 				std::cout << "Transition to next level\n";
+				if (!winFlag) {
+					dialogueState = DIALOGUE::WIN;
+
+				}
+				else if (dialogueState != DIALOGUE::WIN) {
+					delete player;
+					player = nullptr;
+					CombatManager::getInstance().end();
+					return;
+				}
 				// all enemies shldve been deleted
-				delete player;
-				player = nullptr;
-				CombatManager::getInstance().end();
-				return;
+				//delete player;
+				//player = nullptr;
+				//CombatManager::getInstance().end();
+				//return;
 			}
 		}
 
@@ -686,6 +697,7 @@ void CombatScene::Render()
 	AEGfxGetCamPosition(&truex, &truey);
 
 	//rendering enemies
+	
 
 
 	std::vector<int> deadEnemies;
