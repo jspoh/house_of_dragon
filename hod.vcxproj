@@ -190,7 +190,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClCompile Include="src\Scenes\SceneLevelBuilder.cpp" />
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
     <ClCompile Include="src\Scenes\SceneMenu.cpp" />
-    <ClCompile Include="src\Scenes\ScenePractical.cpp" />
+    <ClCompile Include="src\Scenes\SceneSetting.cpp" />
     <ClCompile Include="src\Scenes\SceneSplashScreen.cpp" />
     <ClCompile Include="src\Scenes\SceneStages.cpp" />
     <ClCompile Include="src\Scenes\TestScene.cpp" />
@@ -226,7 +226,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClInclude Include="src\Headers\SceneLevelBuilder.h" />
     <ClInclude Include="src\Headers\SceneManager.h" />
     <ClInclude Include="src\Headers\SceneMenu.h" />
-    <ClInclude Include="src\Headers\ScenePractical.h" />
+    <ClInclude Include="src\Headers\SceneSetting.h" />
     <ClInclude Include="src\Headers\SceneSplashScreen.h" />
     <ClInclude Include="src\Headers\SceneStages.h" />
     <ClInclude Include="src\Headers\SingletonTemplate.h" />

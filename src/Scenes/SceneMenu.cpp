@@ -131,7 +131,7 @@ void SceneMenu::Update(double dt)
 					SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 					break;
 				case 2:
-					SceneManager::GetInstance()->SetActiveScene("");
+					SceneManager::GetInstance()->SetActiveScene("SceneSetting");
 					break;
 				case 3:
 					SceneManager::GetInstance()->Exit();
