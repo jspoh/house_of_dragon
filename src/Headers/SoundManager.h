@@ -31,6 +31,8 @@ public:
 
 	bool registerAudio(std::string ref, std::string path, bool isMusic=false);
 
+	bool removeAudio(std::string ref, bool isMusic = false);
+
 	/**
 	 * .
 	 * 

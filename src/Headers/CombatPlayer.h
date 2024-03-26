@@ -38,12 +38,10 @@ private:
 	AEVec2 shieldInitialPos{ 0,0 };		// set in constructor
 	AEVec2 shieldBlockingPos{ 0, 0 };
 	AEVec2 shieldInitialToShieldBlocking_vector;		// vector from shield initial pos to final blocking pos
-	static constexpr int shieldTransitionTimeMs = 100;
-	float transitionSpeed;
+	float transitionUpSpeed;
+	float transitionDownSpeed;
 	int elapsedTimeMs = 0;
 	// !TODO: jspoh json difficulty settinng
-	static constexpr int shieldUpTimeMs = 500;
-	static constexpr int timeBeforeNextBlockMs = 1000;
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
 	AEVec2 camOffset{ 0,0 };
@@ -53,6 +51,10 @@ private:
 	void _drawHealth(float screenX, float screenY);
 
 public:
+	static constexpr int shieldUpTransitionTimeMs = 100;
+	static constexpr int shieldDownTransitionTimeMs = 300;
+	static constexpr int shieldUpTimeMs = 1000;
+	static constexpr int timeBeforeNextBlockMs = 1000;
 	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
 	~Player();
 

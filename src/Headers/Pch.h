@@ -31,6 +31,7 @@ Technology is prohibited.
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include <array>
 #include "utils.h"
 #include "db.h"
 #include "json.hpp"

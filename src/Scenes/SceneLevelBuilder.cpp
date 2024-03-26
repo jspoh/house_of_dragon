@@ -16,6 +16,8 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "SceneLevelBuilder.h"
+#include "CombatPlayer.h"
+#include "Pause.h"
 
 //Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
 //First data is left, second data is right
@@ -48,36 +50,36 @@ void UpdateHands(float t_dt)
 	static float x = 0, y = 0;
 	if (AEInputCheckCurr(AEVK_W))
 	{
-		y += 5.5;
+		y += 5.5f;
 	}
 	if (AEInputCheckCurr(AEVK_S))
 	{
-		y -= 5.5;
+		y -= 5.5f;
 	}
 	if (AEInputCheckCurr(AEVK_A))
 	{
-		x -= 5.55;
+		x -= 5.55f;
 	}
 	if (AEInputCheckCurr(AEVK_D))
 	{
-		x += 5.55;
+		x += 5.55f;
 	}
 	static float mx = 0, my = 0;
 	if (AEInputCheckCurr(AEVK_UP))
 	{
-		my += 0.55;
+		my += 0.55f;
 	}
 	if (AEInputCheckCurr(AEVK_DOWN))
 	{
-		my -= 0.55;
+		my -= 0.55f;
 	}
 	if (AEInputCheckCurr(AEVK_RIGHT))
 	{
-		mx += 0.55;
+		mx += 0.55f;
 	}
 	if (AEInputCheckCurr(AEVK_LEFT))
 	{
-		mx -= 0.55;
+		mx -= 0.55f;
 	}
 	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 
@@ -101,8 +103,8 @@ void UpdateHands(float t_dt)
 			case 1: //End Point
 				targetPos = { (float)mouseX - 166.0f + camX, (float)mouseY - 198.0f + camY };
 				LerpSpeed = 1.05;
-				Hand2PosData.first.m[0][2] += abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0;
-				Hand2PosData.first.m[1][2] += abs((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) : 0;
+				Hand2PosData.first.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0);
+				Hand2PosData.first.m[1][2] += static_cast<float>(abs((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) : 0);
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.25;
 				break;
 			}
@@ -123,8 +125,8 @@ void UpdateHands(float t_dt)
 			case 1: //End Point
 				targetPos = { (float)mouseX + 166.0f + camX, (float)mouseY - 198.0f + camY };
 				LerpSpeed = 1.05;
-				Hand2PosData.second.m[0][2] += abs((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) : 0;
-				Hand2PosData.second.m[1][2] += abs((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) : 0;
+				Hand2PosData.second.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) : 0);
+				Hand2PosData.second.m[1][2] += static_cast<float>(abs((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) : 0);
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.25;
 				break;
 			}
@@ -162,38 +164,42 @@ void UpdateHands(float t_dt)
 				//Start of block
 				targetPos = { -304.25f + camX, -384.f + camY };
 				LerpSpeed = 2;
-				Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
-				Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
 				targetPos = { -160.95f + camX, -266.4f + camY };
 				LerpSpeed = 2;
-				Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
-				Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
 
-				if (t_AnimationDuration > 999) t_AnimationDuration = 0.1;
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000.0;
 				break;
 			case 2:
 				//Hold
 				targetPos = { -304.25f + camX, -384.0f + camY };
 				LerpSpeed = 1.1;
-				Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
-				Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
 				targetPos = { 277.5f + camX, -94.35f + camY };
 				LerpSpeed = 15;
-				Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
-				Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4);
-				if (t_AnimationDuration > 999) t_AnimationDuration = 2.0; // Blocking Duration (Replace here)
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000.0; // Blocking Duration (Replace here)
 				break;
 			case 3:
 				//Exit
 				targetPos = { -425.35f + camX, -498.5f + camY };
 				LerpSpeed = 5;
-				Hand1PosData.first.m[0][2] += (targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed;
-				Hand1PosData.first.m[1][2] += (targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
 				targetPos = { 555.f + camX, -510.25f + camY };
 				LerpSpeed = 5;
-				Hand3PosData.second.m[0][2] += (targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed;
-				Hand3PosData.second.m[1][2] += (targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed;
-				if (t_AnimationDuration > 999) t_AnimationDuration = 0.3;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000.0;
+				break;
+			case 4:
+				// cooldown
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000.0;
 				break;
 			default:
 				cout << "ERROR IN BLOCKING ANIMATION" << endl;
@@ -217,38 +223,42 @@ void UpdateHands(float t_dt)
 				//Start of block
 				targetPos = { 160.95f + camX, -266.4f + camY };
 				LerpSpeed = 2;
-				Hand3PosData.first.m[0][2] += (targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed;
-				Hand3PosData.first.m[1][2] += (targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
 				targetPos = { 304.25f + camX, -384.f + camY };
 				LerpSpeed = 2;
-				Hand1PosData.second.m[0][2] += (targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed;
-				Hand1PosData.second.m[1][2] += (targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
 
-				if (t_AnimationDuration > 999) t_AnimationDuration = 0.1;
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000.0;
 				break;
 			case 2:
 				//Hold
 				targetPos = { -277.5f + camX, -94.35f + camY };
 				LerpSpeed = 15;
-				Hand3PosData.first.m[0][2] += (targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed;
-				Hand3PosData.first.m[1][2] += (targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4);;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
 				targetPos = { 304.25f + camX, -384.0f + camY };
 				LerpSpeed = 1.1;
-				Hand1PosData.second.m[0][2] += (targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed;
-				Hand1PosData.second.m[1][2] += (targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed;
-				if (t_AnimationDuration > 999) t_AnimationDuration = 2.0; // Blocking Duration (Replace here)
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000.0; // Blocking Duration (Replace here)
 				break;
 			case 3:
 				//Exit
 				targetPos = { -555.f + camX, -510.25f + camY };
 				LerpSpeed = 5;
-				Hand3PosData.first.m[0][2] += (targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed;
-				Hand3PosData.first.m[1][2] += (targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
 				targetPos = { 425.35f + camX, -498.5f + camY };
 				LerpSpeed = 5;
-				Hand1PosData.second.m[0][2] += (targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed;
-				Hand1PosData.second.m[1][2] += (targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed;
-				if (t_AnimationDuration > 999) t_AnimationDuration = 0.3;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000.0;
+				break;
+			case 4:
+				// cooldown
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000.0;
 				break;
 			default:
 				cout << "ERROR IN BLOCKING ANIMATION" << endl;
@@ -256,11 +266,11 @@ void UpdateHands(float t_dt)
 
 		if (t_AnimationDuration < 0.0)
 		{
-			t_AnimationFrame = t_AnimationFrame < 3 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			t_AnimationFrame = t_AnimationFrame < 4 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
 			t_AnimationDuration = 9999.0;
 			if (t_AnimationFrame == 0)
 			{
-				LeftSide = rand() % 2 - 1;
+				LeftSide = rand() % 2 - 1;		// huh why -1 here
 				Hand1PosData.first = Hand1PosData.second = {};
 				Hand2PosData.first = Hand2PosData.second = {};
 				Hand3PosData.first = Hand3PosData.second = {};
@@ -272,6 +282,9 @@ void UpdateHands(float t_dt)
 	case Ready: //For Getting ready in combat
 		switch (t_AnimationFrame)
 		{
+		case 4:		// blocking cooldown state, but does not exist for ready
+			t_AnimationFrame = 0;
+			[[fallthrough]];
 		case 0://Init
 			AEMtx33Identity(&Hand4PosData.second);
 			Hand2PosData.first = Hand4PosData.second;
@@ -286,24 +299,24 @@ void UpdateHands(float t_dt)
 		case 1://Ready Up
 			targetPos = { -39.0f + camX, -170.0f + camY };
 			LerpSpeed = 2;
-			Hand2PosData.first.m[0][2] += (targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed;
-			Hand2PosData.first.m[1][2] += (targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed;
+			Hand2PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed);
+			Hand2PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed);
 			targetPos = { 45.1f + camX, -76.5f + camY };
 			LerpSpeed = 2;
-			Hand4PosData.second.m[0][2] += (targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed;
-			Hand4PosData.second.m[1][2] += (targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed;
+			Hand4PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed);
+			Hand4PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed);
 			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
 			break;
 
 		case 2: //Ready Down
 			targetPos = { -39.0f + camX, -526.f + camY };
 			LerpSpeed = 15;
-			Hand2PosData.first.m[0][2] += (targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed;
-			Hand2PosData.first.m[1][2] += (targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed;
+			Hand2PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed);
+			Hand2PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed);
 			targetPos = { 45.1f + camX, -526.f + camY };
 			LerpSpeed = 15;
-			Hand4PosData.second.m[0][2] += (targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed;
-			Hand4PosData.second.m[1][2] += (targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed;
+			Hand4PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed);
+			Hand4PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed);
 			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
 			break;
 		default:
@@ -323,8 +336,8 @@ void UpdateHands(float t_dt)
 		}
 		break;
 	default:
-		t_AnimationFrame = 0;
-		t_AnimationDuration = 9999.0;
+		t_AnimationFrame = t_AnimationFrame != 0 ? 4 : 0;	// go to cooldown if not not blocking(blocking or transition state)
+		t_AnimationDuration = t_AnimationFrame == 4 ? t_AnimationDuration : 9999.0;	// dont reset timer until cooldown is over
 		Hand1PosData.first = Hand1PosData.second = {};
 		Hand2PosData.first = Hand2PosData.second = {};
 		Hand3PosData.first = Hand3PosData.second = {};
@@ -344,6 +357,7 @@ void UpdateHands(float t_dt)
 //Render all hands
 void RenderHands()
 {
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	AEGfxSetTransparency(1.0f);
 	AEGfxSetTransform(Hand4PosData.first.m);
 	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_04"), 0, 0);
@@ -776,10 +790,16 @@ void SceneLevelBuilder::Update(double dt)
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
 	}
+
+	Pause::getInstance().update(dt);
+	if (Pause::getInstance().isPaused) {
+		return;
+	}
+
 	if (Combat)
 	{
 		// check if combat is over and update accordingly
-		Combat = CombatManager::getInstance()->isInCombat;
+		Combat = CombatManager::getInstance().isInCombat;
 
 		////////////////////////////////////////////////////////////////
 		//Slow Down
@@ -837,11 +857,11 @@ void SceneLevelBuilder::Update(double dt)
 	else
 		HandStateAnimationType = None;
 
-	UpdateHands(dt);
+	UpdateHands(static_cast<float>(dt));
 
 	//Sun Overlay Update
-	UpdateLensFlare(dt);
-	UpdateClouds(dt);
+	UpdateLensFlare(static_cast<float>(dt));
+	UpdateClouds(static_cast<float>(dt));
 
 	if (!m_StopMovement)
 	{
@@ -1240,6 +1260,7 @@ void SceneLevelBuilder::Render()
 	{
 		RenderLvlName();
 
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
 		//Lens Flare
 		AEGfxSetTransparency(transparency[7]);
@@ -1303,7 +1324,7 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
-	
+	Pause::getInstance().render();
 }
 void SceneLevelBuilder::Exit()
 {
@@ -1551,14 +1572,14 @@ void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
 void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
-void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
+void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
 {
 	int mouseX, mouseY;
 	AEInputGetCursorPosition(&mouseX, &mouseY);
 	mouseX -= AEGfxGetWindowWidth() / 2;
-	mouseX *= 1.5;
+	mouseX = static_cast<int>(mouseX * 1.5);
 	static int y = -120;
-	mouseY = mouseY / 1.5 + y;
+	mouseY = static_cast<int>(mouseY / 1.5 + y);
 	mouseY *= -1;
 	
 	//Furthest from sun -> Closest to sun

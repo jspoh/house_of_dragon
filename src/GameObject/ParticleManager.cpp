@@ -6,19 +6,23 @@
 
 ParticleManager::ParticleManager() {
 	particles.reserve(PROJECTED_MAX_PARTICLES);
-}
 
-ParticleManager::~ParticleManager() {
-
-}
-
-void ParticleManager::init() {
 	/*********************************************
 	//PARTICLE TEXTURES REGISTRATION
 	**********************************************/
 	RenderHelper::getInstance()->registerTexture(REGULAR, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/flame_01.png");
 	RenderHelper::getInstance()->registerTexture(EXPLOSION, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/star_01.png");
 	RenderHelper::getInstance()->registerTexture(FIREWORK, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/trace_01.png");
+}
+
+ParticleManager::~ParticleManager() {
+	RenderHelper::getInstance()->removeTextureByRef(REGULAR);
+	RenderHelper::getInstance()->removeTextureByRef(EXPLOSION);
+	RenderHelper::getInstance()->removeTextureByRef(FIREWORK);
+}
+
+void ParticleManager::init() {
+
 }
 
 
@@ -126,7 +130,7 @@ void ParticleManager::render() {
 void ParticleManager::createExplosionParticle(float x, float y) {
 	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH * 10;
 	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
-	const float randDistance = rand() % maxPosOffset;
+	const float randDistance = static_cast<float>(rand() % maxPosOffset);
 
 	const ParticleManager::Particle newParticle = ParticleManager::Particle{
 		true,
@@ -146,7 +150,7 @@ void ParticleManager::createExplosionParticle(float x, float y) {
 void ParticleManager::createFireworkParticle(float x, float y, float explosionRadius) {
 	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH * 20;
 	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
-	const float randRadius = rand() % static_cast<int>(explosionRadius);
+	const float randRadius = static_cast<float>(rand() % static_cast<int>(explosionRadius));
 
 	// Generate random color
 	const float red = static_cast<float>(rand()) / RAND_MAX;

@@ -31,7 +31,6 @@ namespace {
 
 class CombatManager {
 private:
-	static CombatManager* _instance;
 
 
 
@@ -52,7 +51,7 @@ public:
 	static constexpr int maxAttackIntervalMs = 5000;
 	int enemyNextTurnMs = 0;
 
-	static CombatManager* getInstance();
+	static CombatManager& getInstance();
 
 	/**
 	 * for level scene to .
