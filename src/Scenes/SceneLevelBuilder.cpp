@@ -1024,9 +1024,6 @@ void SceneLevelBuilder::Render()
 
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
-	// (night) -1.0f, -1.0f, 0.33f
-	// (Dusk)  1.0f, 0.34f, 0.3f
-	// (Dawn)  1.0f, 0.73f, 1.0f
 	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
@@ -1323,6 +1320,61 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
+	{
+		static double x = 1, y = 1;
+		if (AEInputCheckCurr(AEVK_W))
+		{
+			y += 0.01;
+		}
+		if (AEInputCheckCurr(AEVK_S))
+		{
+			y -= 0.01;
+		}
+		if (AEInputCheckCurr(AEVK_A))
+		{
+			x -= 0.01;
+		}
+		if (AEInputCheckCurr(AEVK_D))
+		{
+			x += 0.01;
+		}
+		static double mx = 0, my = 0;
+		if (AEInputCheckCurr(AEVK_UP))
+		{
+			mx += 0.01;
+		}
+		if (AEInputCheckCurr(AEVK_DOWN))
+		{
+			mx -= 0.01;
+		}
+		if (AEInputCheckCurr(AEVK_RIGHT))
+		{
+			my += 12.55;
+		}
+		if (AEInputCheckCurr(AEVK_LEFT))
+		{
+			my -= 12.55;
+		}
+		cout << x << " " << y << " " << mx << endl;
+
+		//LIGHT FILTER
+		//-0.39 0.06 0.3 (NIGHTTIME)
+		//1.01 0.45 0.79 (DUSK/TWILIGHT)
+		// 0.92 1 0.19 (Dawn)
+		AEGfxSetTransparency(1.0f);
+		AEMtx33 t_curr;
+		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetColorToAdd(0.0f + x, 0.0f + y, 0.0f + mx, 1.0f);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	
 
 	Pause::getInstance().render();
 }
