@@ -132,7 +132,7 @@ namespace {
 	float spacing = 50.f;
 
 
-	float btnY = 550.f;
+	float btnY = 550;
 	float maxBtnHeight = 100.f;
 
 
@@ -311,12 +311,12 @@ namespace {
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag) {
-				RenderHelper::getInstance()->texture("button", btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight + btnWordPadding * 2);
+			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag ) {
+				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey, btnWidth, btnHeight + btnWordPadding * 2);
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
-				RenderHelper::getInstance()->texture("button", btnPos.x + truex, btnPos.y + truey - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding);
+				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding );
 
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
