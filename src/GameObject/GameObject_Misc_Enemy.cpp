@@ -1,0 +1,92 @@
+#include "Pch.h"
+#include "GameObject_Misc_Enemy.h"
+#include "GameObjectManager.h"
+
+
+GameObject_Misc_Enemy::GameObject_Misc_Enemy()
+{
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_STRONG", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_WEAK", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Weak.png");
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_UPPER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_UpperJaw.png");
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_LOWER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_LowerJaw.png");
+}
+
+GameObject_Misc_Enemy::~GameObject_Misc_Enemy()
+{
+}
+
+void GameObject_Misc_Enemy::Init()
+{
+}
+
+void GameObject_Misc_Enemy::Update(double _dt)
+{
+	UNREFERENCED_PARAMETER(_dt);
+
+	//Update Enemy Logic or anything basic
+	if (m_Active)
+	{
+		//Blah
+	}
+}
+
+void GameObject_Misc_Enemy::Render()
+{
+	// Your own rendering logic goes here
+	// Set the background to black.
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+
+	// Tell the engine to get ready to draw something with texture.
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+
+	// Set the the color to multiply to white, so that the sprite can 
+	// display the full range of colors (default is black).
+	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+
+	// Set blend mode to AE_GFX_BM_BLEND
+	// This will allow transparency.
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	AEGfxSetTransparency(1.0f);
+
+	// Set the texture to pTex
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMY_STRONG"), 0, 0);
+
+	AEMtx33 transform = { 0 };
+	AEMtx33 scale;
+	AEMtx33Scale(&scale, m_Scale.x, m_Scale.y);
+	AEMtx33 trans;
+	AEMtx33Trans(&trans, m_LocalPos.x, m_LocalPos.y);
+	AEMtx33 rotate;
+	AEMtx33Rot(&rotate, 0);
+
+	AEMtx33Concat(&transform, &rotate, &scale);
+	AEMtx33Concat(&transform, &trans, &transform);
+
+	// Choose the transform to use
+	AEGfxSetTransform(transform.m);
+	// Actually drawing the mesh 
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+}
+
+void GameObject_Misc_Enemy::Exit()
+{
+}
+
+// Set the maxAABB and minAABB
+void GameObject_Misc_Enemy::SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB)
+{
+	this->maxAABB = t_maxAABB;
+	this->minAABB = t_minAABB;
+}
+
+GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& _scale)
+{
+	GameObject_Misc_Enemy* result = new GameObject_Misc_Enemy();
+	result->m_LocalPos = _position;
+	result->m_Scale = _scale;
+	result->Init();
+	//result->bool m_bCollider(false);
+	GameObjectManager::GetInstance()->AddEntity(result);
+	return result;
+}

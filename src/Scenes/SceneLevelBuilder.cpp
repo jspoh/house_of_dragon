@@ -18,6 +18,7 @@ Technology is prohibited.
 #include "SceneLevelBuilder.h"
 #include "CombatPlayer.h"
 #include "Pause.h"
+#include "SceneStages.h"
 
 //Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
 //First data is left, second data is right
@@ -766,6 +767,12 @@ void SceneLevelBuilder::Init()
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+
+	
+	Create::Ame("reference", { 0.0f, 0.0f }, { 300.0f, 300.0f});
+
+	Create::MiscEnemy({ 300.0f, 0.0f }, { 300.0f, 300.0f });
+	Create::MiscEnemy({ -300.0f, 0.0f }, { 300.0f, 300.0f });
 }
 
 void SceneLevelBuilder::Update(double dt)
@@ -974,7 +981,7 @@ void SceneLevelBuilder::Update(double dt)
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE OBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
-		//GameObjectManager::GetInstance()->Update(dt);
+		GameObjectManager::GetInstance()->Update(dt);
 		v_SceneObject temp;
 		pair<int, int> t_TransScaleModifier = { 60, 48}; //For rand on tile pos
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
@@ -1244,7 +1251,7 @@ void SceneLevelBuilder::Render()
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//GAMEOBJ RENDER
-	//GameObjectManager::GetInstance()->Render();
+	GameObjectManager::GetInstance()->Render();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
@@ -1368,7 +1375,7 @@ void SceneLevelBuilder::Render()
 		AEMtx33 t_curr;
 		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(0.0f + x, 0.0f + y, 0.0f + mx, 1.0f);
+		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);
@@ -1394,8 +1401,6 @@ void SceneLevelBuilder::Exit()
 		delete[] m_tileSP[i];
 	}
 	delete[] m_tileSP;
-
-	//Clear Wall
 
 	//Clear Object in scene
 	GameObjectManager::GetInstance()->Exit();
