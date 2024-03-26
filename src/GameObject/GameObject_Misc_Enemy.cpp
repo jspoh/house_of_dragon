@@ -26,47 +26,60 @@ void GameObject_Misc_Enemy::Update(double _dt)
 	//Update Enemy Logic or anything basic
 	if (m_Active)
 	{
-		//Blah
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		AEVec2 camOffset;
+		AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
+		Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
+		//check Collision
+		if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY)))
+				cout << "Collision with misc enemy is working" << endl;
 	}
 }
 
 void GameObject_Misc_Enemy::Render()
 {
-	// Your own rendering logic goes here
-	// Set the background to black.
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+	if (m_Active)
+	{
 
-	// Tell the engine to get ready to draw something with texture.
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		// Your own rendering logic goes here
+		// Set the background to black.
+		AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 
-	// Set the the color to multiply to white, so that the sprite can 
-	// display the full range of colors (default is black).
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+		// Tell the engine to get ready to draw something with texture.
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 
-	// Set blend mode to AE_GFX_BM_BLEND
-	// This will allow transparency.
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1.0f);
+		// Set the the color to multiply to white, so that the sprite can 
+		// display the full range of colors (default is black).
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 
-	// Set the texture to pTex
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMY_STRONG"), 0, 0);
+		// Set blend mode to AE_GFX_BM_BLEND
+		// This will allow transparency.
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+		AEGfxSetTransparency(1.0f);
 
-	AEMtx33 transform = { 0 };
-	AEMtx33 scale;
-	AEMtx33Scale(&scale, m_Scale.x, m_Scale.y);
-	AEMtx33 trans;
-	AEMtx33Trans(&trans, m_LocalPos.x, m_LocalPos.y);
-	AEMtx33 rotate;
-	AEMtx33Rot(&rotate, 0);
+		// Set the texture to pTex
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMY_STRONG"), 0, 0);
 
-	AEMtx33Concat(&transform, &rotate, &scale);
-	AEMtx33Concat(&transform, &trans, &transform);
+		AEMtx33 transform = { 0 };
+		AEMtx33 scale;
+		AEMtx33Scale(&scale, m_Scale.x, m_Scale.y);
+		AEMtx33 trans;
+		AEMtx33Trans(&trans, m_LocalPos.x, m_LocalPos.y);
+		AEMtx33 rotate;
+		AEMtx33Rot(&rotate, 0);
 
-	// Choose the transform to use
-	AEGfxSetTransform(transform.m);
-	// Actually drawing the mesh 
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33Concat(&transform, &rotate, &scale);
+		AEMtx33Concat(&transform, &trans, &transform);
+
+		// Choose the transform to use
+		AEGfxSetTransform(transform.m);
+		// Actually drawing the mesh 
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+	}
 }
 
 void GameObject_Misc_Enemy::Exit()
@@ -85,6 +98,7 @@ GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& 
 	GameObject_Misc_Enemy* result = new GameObject_Misc_Enemy();
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
+	result->m_Active = true;
 	result->Init();
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
