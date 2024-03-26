@@ -17,17 +17,13 @@ Technology is prohibited.
 #include "Pch.h"
 #include "CombatManager.h"
 
-CombatManager* CombatManager::_instance = nullptr;
-
 CombatManager::~CombatManager() {
     std::cout << "Destroying CombatManager\n";
 }
 
-CombatManager* CombatManager::getInstance() {
-    if (!_instance) {
-        _instance = new CombatManager();
-    }
-    return _instance;
+CombatManager& CombatManager::getInstance() {
+    static CombatManager instance;
+    return instance;
 }
 
 void CombatManager::start() {

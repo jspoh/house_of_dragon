@@ -195,6 +195,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClCompile Include="src\Scenes\SceneStages.cpp" />
     <ClCompile Include="src\Scenes\TestScene.cpp" />
     <ClCompile Include="src\utils\CollisionChecker.cpp" />
+    <ClCompile Include="src\utils\Pause.cpp" />
     <ClCompile Include="src\utils\RenderHelper.cpp" />
     <ClCompile Include="src\utils\utils.cpp" />
   </ItemGroup>
@@ -203,6 +204,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClInclude Include="src\Headers\Application.h" />
     <ClInclude Include="src\Headers\CombatPlayer.h" />
     <ClInclude Include="src\Headers\CombatScene.h" />
+    <ClInclude Include="src\Headers\Pause.h" />
     <ClInclude Include="src\Headers\SceneCredit.h" />
     <ClInclude Include="src\Headers\db.h" />
     <ClInclude Include="src\Headers\Elements.hpp" />

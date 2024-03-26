@@ -16,6 +16,376 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "SceneLevelBuilder.h"
+#include "CombatPlayer.h"
+#include "Pause.h"
+
+//Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
+//First data is left, second data is right
+std::pair<AEMtx33, AEMtx33> Hand1PosData{};
+std::pair<AEMtx33, AEMtx33> Hand2PosData{};
+std::pair<AEMtx33, AEMtx33> Hand3PosData{};
+std::pair<AEMtx33, AEMtx33> Hand4PosData{};
+enum HandAnimationType
+{
+	None,
+	Punch,
+	Block,
+	Ready,
+};
+HandAnimationType HandStateAnimationType = None; //Can use enum
+void UpdateHands(float t_dt)
+{
+	static int t_AnimationFrame = 0;
+	static double t_AnimationDuration = 0.0;
+	static bool LeftSide = false;
+	double LerpSpeed = 10.0;
+	AEVec2 targetPos{};
+	f32 camX, camY;
+	AEGfxGetCamPosition(&camX, &camY);
+	static int mouseX{}, mouseY{};
+
+	//camX += AEGfxGetWindowWidth() / 2;
+	//camY -= AEGfxGetWindowHeight() / 2;
+	//Placement Tool (Remove once done)
+	static float x = 0, y = 0;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 5.5f;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 5.5f;
+	}
+	if (AEInputCheckCurr(AEVK_A))
+	{
+		x -= 5.55f;
+	}
+	if (AEInputCheckCurr(AEVK_D))
+	{
+		x += 5.55f;
+	}
+	static float mx = 0, my = 0;
+	if (AEInputCheckCurr(AEVK_UP))
+	{
+		my += 0.55f;
+	}
+	if (AEInputCheckCurr(AEVK_DOWN))
+	{
+		my -= 0.55f;
+	}
+	if (AEInputCheckCurr(AEVK_RIGHT))
+	{
+		mx += 0.55f;
+	}
+	if (AEInputCheckCurr(AEVK_LEFT))
+	{
+		mx -= 0.55f;
+	}
+	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
+
+	switch (HandStateAnimationType)
+	{
+	case Punch:
+		if (!LeftSide) //Left Hand Punch
+			switch (t_AnimationFrame)
+			{
+			case 0://Init
+				AEMtx33Identity(&Hand2PosData.first);
+				AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
+				targetPos = { -804.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
+				AEInputGetCursorPosition(&mouseX, &mouseY);
+				mouseX -= AEGfxGetWindowWidth() / 2;
+				mouseY -= AEGfxGetWindowHeight() / 2;
+				mouseY *= -1;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1: //End Point
+				targetPos = { (float)mouseX - 166.0f + camX, (float)mouseY - 198.0f + camY };
+				LerpSpeed = 1.05;
+				Hand2PosData.first.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0);
+				Hand2PosData.first.m[1][2] += static_cast<float>(abs((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) : 0);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.25;
+				break;
+			}
+		else
+			switch (t_AnimationFrame)
+			{
+			case 0://Init
+				AEMtx33Identity(&Hand2PosData.second);
+				AEMtx33ScaleApply(&Hand2PosData.second, &Hand2PosData.second, 191.5, 307);
+				targetPos = { 804.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand2PosData.second, &Hand2PosData.second, targetPos.x, targetPos.y);
+				AEInputGetCursorPosition(&mouseX, &mouseY);
+				mouseX -= AEGfxGetWindowWidth() / 2;
+				mouseY -= AEGfxGetWindowHeight() / 2;
+				mouseY *= -1;
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1: //End Point
+				targetPos = { (float)mouseX + 166.0f + camX, (float)mouseY - 198.0f + camY };
+				LerpSpeed = 1.05;
+				Hand2PosData.second.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) : 0);
+				Hand2PosData.second.m[1][2] += static_cast<float>(abs((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) : 0);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.25;
+				break;
+			}
+		if (t_AnimationDuration < 0.0)
+		{
+			t_AnimationFrame = t_AnimationFrame < 1 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			t_AnimationDuration = 9999.0;
+			if (t_AnimationFrame == 0)
+			{
+				LeftSide = rand() % 2 - 1;
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+			}
+		}
+		break;
+	case Block:
+		if (!LeftSide) //Right Hand Blocking
+			switch (t_AnimationFrame)
+			{
+			case 0:
+				//Init
+				AEMtx33Identity(&Hand3PosData.second);
+				Hand1PosData.first = Hand3PosData.second;
+				AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+				targetPos = { -304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+				targetPos = { -160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1:
+				//Start of block
+				targetPos = { -304.25f + camX, -384.f + camY };
+				LerpSpeed = 2;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { -160.95f + camX, -266.4f + camY };
+				LerpSpeed = 2;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000.0;
+				break;
+			case 2:
+				//Hold
+				targetPos = { -304.25f + camX, -384.0f + camY };
+				LerpSpeed = 1.1;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 277.5f + camX, -94.35f + camY };
+				LerpSpeed = 15;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000.0; // Blocking Duration (Replace here)
+				break;
+			case 3:
+				//Exit
+				targetPos = { -425.35f + camX, -498.5f + camY };
+				LerpSpeed = 5;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 555.f + camX, -510.25f + camY };
+				LerpSpeed = 5;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000.0;
+				break;
+			case 4:
+				// cooldown
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000.0;
+				break;
+			default:
+				cout << "ERROR IN BLOCKING ANIMATION" << endl;
+			}
+		else //Left Hand Blocking
+			switch (t_AnimationFrame)
+			{
+			case 0:
+				//Init
+				AEMtx33Identity(&Hand3PosData.first);
+				Hand1PosData.second = Hand3PosData.first;
+				AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+				targetPos = { 160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+				targetPos = { 304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+				break;
+			case 1:
+				//Start of block
+				targetPos = { 160.95f + camX, -266.4f + camY };
+				LerpSpeed = 2;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 304.25f + camX, -384.f + camY };
+				LerpSpeed = 2;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000.0;
+				break;
+			case 2:
+				//Hold
+				targetPos = { -277.5f + camX, -94.35f + camY };
+				LerpSpeed = 15;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
+				targetPos = { 304.25f + camX, -384.0f + camY };
+				LerpSpeed = 1.1;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000.0; // Blocking Duration (Replace here)
+				break;
+			case 3:
+				//Exit
+				targetPos = { -555.f + camX, -510.25f + camY };
+				LerpSpeed = 5;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 425.35f + camX, -498.5f + camY };
+				LerpSpeed = 5;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000.0;
+				break;
+			case 4:
+				// cooldown
+				if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000.0;
+				break;
+			default:
+				cout << "ERROR IN BLOCKING ANIMATION" << endl;
+			}
+
+		if (t_AnimationDuration < 0.0)
+		{
+			t_AnimationFrame = t_AnimationFrame < 4 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			t_AnimationDuration = 9999.0;
+			if (t_AnimationFrame == 0)
+			{
+				LeftSide = rand() % 2 - 1;		// huh why -1 here
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+			}
+		}
+
+		break;
+	case Ready: //For Getting ready in combat
+		switch (t_AnimationFrame)
+		{
+		case 4:		// blocking cooldown state, but does not exist for ready
+			t_AnimationFrame = 0;
+			[[fallthrough]];
+		case 0://Init
+			AEMtx33Identity(&Hand4PosData.second);
+			Hand2PosData.first = Hand4PosData.second;
+			AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
+			targetPos = { -39.0f + camX, -170.0f + camY };
+			AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
+			AEMtx33ScaleApply(&Hand4PosData.second, &Hand4PosData.second, 252, 319);
+			targetPos = { 45.1f + camX, -76.5f + camY };
+			AEMtx33TransApply(&Hand4PosData.second, &Hand4PosData.second, targetPos.x, targetPos.y);
+			if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
+			break;
+		case 1://Ready Up
+			targetPos = { -39.0f + camX, -170.0f + camY };
+			LerpSpeed = 2;
+			Hand2PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed);
+			Hand2PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { 45.1f + camX, -76.5f + camY };
+			LerpSpeed = 2;
+			Hand4PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed);
+			Hand4PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed);
+			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
+			break;
+
+		case 2: //Ready Down
+			targetPos = { -39.0f + camX, -526.f + camY };
+			LerpSpeed = 15;
+			Hand2PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed);
+			Hand2PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { 45.1f + camX, -526.f + camY };
+			LerpSpeed = 15;
+			Hand4PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand4PosData.second.m[0][2]) / LerpSpeed);
+			Hand4PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand4PosData.second.m[1][2]) / LerpSpeed);
+			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
+			break;
+		default:
+			cout << "ERROR IN READYING ANIMATION" << endl;
+		}
+		if (t_AnimationDuration < 0.0)
+		{
+			t_AnimationFrame = t_AnimationFrame < 2 ? ++t_AnimationFrame : 1; //Loop Animation // Remove this if u want one off
+			t_AnimationDuration = 9999.0;
+			if (t_AnimationFrame == 0)
+			{
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+			}
+		}
+		break;
+	default:
+		t_AnimationFrame = t_AnimationFrame != 0 ? 4 : 0;	// go to cooldown if not not blocking(blocking or transition state)
+		t_AnimationDuration = t_AnimationFrame == 4 ? t_AnimationDuration : 9999.0;	// dont reset timer until cooldown is over
+		Hand1PosData.first = Hand1PosData.second = {};
+		Hand2PosData.first = Hand2PosData.second = {};
+		Hand3PosData.first = Hand3PosData.second = {};
+		Hand4PosData.first = Hand4PosData.second = {};
+		break;
+	}
+
+	t_AnimationDuration -= t_dt;
+
+	//AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+//AEMtx33ScaleApply(&Hand2PosData.second, &Hand2PosData.second, 191.5, 307);
+//AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+//AEMtx33ScaleApply(&Hand4PosData.second, &Hand4PosData.second, 252, 319);
+//AEMtx33TransApply(&Hand4PosData.second, &Hand4PosData.second, 200, 0);
+
+}
+//Render all hands
+void RenderHands()
+{
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetTransparency(1.0f);
+	AEGfxSetTransform(Hand4PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_04"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand4PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_04"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+	AEGfxSetTransform(Hand1PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_01"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand1PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_01"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand2PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_02"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand2PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_02"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand3PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_03"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand3PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_03"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+}
 
 SceneLevelBuilder::v_FloorData::v_FloorData():
 	m_currFloorNum{0},
@@ -89,10 +459,23 @@ SceneLevelBuilder::SceneLevelBuilder():
 	RenderHelper::getInstance()->registerTexture("SKY_TEST_4", "Assets/SceneObjects/SKY/4.png");
 	RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
 
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_1", "Assets/SceneObjects/SKY/lense_ghost_3.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_2", "Assets/SceneObjects/SKY/lense_ghost_1.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_3", "Assets/SceneObjects/SKY/lense_ghost_2.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_4", "Assets/SceneObjects/SKY/lense_chroma_ring.png");
+	RenderHelper::getInstance()->registerTexture("SUN_LENS_5", "Assets/SceneObjects/SKY/lense_bokeh.png");
+
 	/*********************************************
 	//Fog
 	**********************************************/
-	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_Color.png");
+	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_NEW_Color.png");
+
+	/*********************************************
+	//BackDrop
+	**********************************************/
+	RenderHelper::getInstance()->registerTexture("BACKDROP_1", "Assets/SceneObjects/BACKGROUND/BackDrop_01.png");
+	RenderHelper::getInstance()->registerTexture("BACKDROP_2", "Assets/SceneObjects/BACKGROUND/BackDrop_02.png");
+	RenderHelper::getInstance()->registerTexture("BACKDROP_3", "Assets/SceneObjects/BACKGROUND/BackDrop_03.png");
 
 	/*********************************************
 	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
@@ -244,6 +627,18 @@ SceneLevelBuilder::SceneLevelBuilder():
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Initialise 3D engine & relevant values
 	Init();
+
+	///////////////////////////////////////////////
+	// TO BE MOVED TO PLAYER COMBAT
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_01", "Assets/Combat_UI/MyFist_Left_1.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_02", "Assets/Combat_UI/MyFist_Left_2.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_03", "Assets/Combat_UI/MyFist_Left_3.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_04", "Assets/Combat_UI/MyFist_Left_4.png");
+
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_01", "Assets/Combat_UI/MyFist_Right_1.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_02", "Assets/Combat_UI/MyFist_Right_2.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_03", "Assets/Combat_UI/MyFist_Right_3.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_04", "Assets/Combat_UI/MyFist_Right_4.png");
 }
 SceneLevelBuilder::~SceneLevelBuilder()
 {                          
@@ -322,7 +717,7 @@ void SceneLevelBuilder::Init()
 	}
 	
 
-	AEMtx33 scale, trans;
+	AEMtx33 scale, trans, rotate;
 	//////////////////////////////////////////////////////////////////
 	//// Create Scene Objects
 	//// Use this to spawn objects into scene when starting
@@ -342,25 +737,35 @@ void SceneLevelBuilder::Init()
 
 	/////////////////////////////////////////////////////////////
 	// ETC Transformations
+	AEMtx33 m_temp;
+	AEMtx33Identity(&m_temp);
 	//DO SKY DATA
 	AEMtx33Scale(&scale, 1700.0f, 600.f);
-	AEMtx33Trans(&trans, 0, 200);
+	AEMtx33Trans(&trans, 0, 220);
 	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
+	for (int i = 0; i < 9; i++)
+	{
+		m_TransformCloudsData.push_back(m_temp);
+		AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
+		AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
+	}
 
 	//Do Sun Data
+	m_sunOverlayScale = { 120.f, 120.f };
+	m_sunPos = { 350, 350 };
 	AEMtx33Scale(&scale, 50.0f, 50.f);
-	AEMtx33Trans(&trans, 350, 350);
+	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
 	AEMtx33Concat(&m_TransformSunData, &trans, &scale);
-	AEMtx33Scale(&scale, 120.0f, 120.f);
-	AEMtx33Trans(&trans, 349, 350);
+	AEMtx33Scale(&scale, m_sunOverlayScale.x, m_sunOverlayScale.y);
+	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
 	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
-
+	for (int i = 0; i < 8; i++)
+		m_TransformSunLensData.push_back(m_temp);
+	
 	//DO FOG DATA
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-
-
 }
 
 void SceneLevelBuilder::Update(double dt)
@@ -371,7 +776,11 @@ void SceneLevelBuilder::Update(double dt)
 	static int t_PanSideWays = 80;
 	static int PanDown = 0;
 
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Setup
 	//TESTING
+	{
+
 	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat;
 	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
 	if (AEInputCheckTriggered(AEVK_Z))
@@ -381,10 +790,16 @@ void SceneLevelBuilder::Update(double dt)
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
 	}
+
+	Pause::getInstance().update(dt);
+	if (Pause::getInstance().isPaused) {
+		return;
+	}
+
 	if (Combat)
 	{
 		// check if combat is over and update accordingly
-		Combat = CombatManager::getInstance()->isInCombat;
+		Combat = CombatManager::getInstance().isInCombat;
 
 		////////////////////////////////////////////////////////////////
 		//Slow Down
@@ -416,16 +831,37 @@ void SceneLevelBuilder::Update(double dt)
 	AEGfxGetCamPosition(&t_x, &t_y);
 	AEGfxSetCamPosition(t_x, t_y - static_cast<f32>(PanDown));
 
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Game 3D Environment Update Cycle
+
+	//Level Name
 	UpdateLvlName(static_cast<f32>(dt));
-	//Change to next Level
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
 
+	//Screen Basic Transition
 	UpdateScreenTransition(static_cast<f32>(dt));
+	//Remove during final build
 	if (AEInputCheckTriggered(AEVK_V))
 		FadeINBlack();
 	else if(AEInputCheckTriggered(AEVK_B))
 		FadeOutBlack();
+	
+	if (AEInputCheckCurr(AEVK_SPACE))
+		HandStateAnimationType = Block;
+	else if (AEInputCheckCurr(AEVK_Q))
+		HandStateAnimationType = Punch;
+	else if (AEInputCheckCurr(AEVK_E))
+		HandStateAnimationType = Ready;
+	else
+		HandStateAnimationType = None;
+
+	UpdateHands(static_cast<float>(dt));
+
+	//Sun Overlay Update
+	UpdateLensFlare(static_cast<float>(dt));
+	UpdateClouds(static_cast<float>(dt));
 
 	if (!m_StopMovement)
 	{
@@ -588,6 +1024,9 @@ void SceneLevelBuilder::Render()
 
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
+	// (night) -1.0f, -1.0f, 0.33f
+	// (Dusk)  1.0f, 0.34f, 0.3f
+	// (Dawn)  1.0f, 0.73f, 1.0f
 	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
@@ -599,155 +1038,276 @@ void SceneLevelBuilder::Render()
 
 	////////////////////////////////////////////////////////////////////////
 	//SKY RENDER
-	AEGfxSetTransparency(1.0f);
-	//Sky
-	//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
-	//AEGfxSetTransform(m_TransformSkyData.m);
-	//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetTransform(m_TransformSkyData.m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//Sun
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetTransparency(1.0f);
-	AEGfxSetTransform(m_TransformSunData.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetTransparency(1.0f);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
-	AEGfxSetTransform(m_TransformSunOverlayData.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//Cloud
-	AEGfxSetTransform(m_TransformSkyData.m);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//// Floors
-	//// //////////////////////////////////////////////////////////////////////////////////
-	//// Tell the engine to get ready to draw something with texture.
-	//// Set the color to add to nothing, so that we don't alter the sprite's color
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-
-	std::string texRef = "Floor_Center_";// + LEVELNUM
-	//Main Floor
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
-	for (int i = NUM_OF_TILES - 1; i > -1; i--)
 	{
-		if (m_Floor[t_CenterFloorNum][i].m_IsRender)
+		AEGfxSetTransparency(1.0f);
+		//Sky
+		//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
+		//AEGfxSetTransform(m_TransformSkyData.m);
+		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformSkyData.m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		/////////////////////////////////////////////////////////////////////////////////
+		//Sun
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetTransparency(1.0f);
+		AEGfxSetTransform(m_TransformSunData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
+		AEGfxSetTransform(m_TransformSunOverlayData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		//Cloud
+		//First Layer
+		AEGfxSetTransform(m_TransformCloudsData[0].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[1].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[2].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//Second Layer
+		AEGfxSetTransform(m_TransformCloudsData[3].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[4].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[5].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//Third Layer
+		AEGfxSetTransform(m_TransformCloudsData[6].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[7].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[8].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// BACKDROP RENDER
+	{
+		int mouseX, mouseY;
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
+		for (int i = 0; i < 9; i++)
 		{
-			AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
+			AEMtx33 temp;
+			AEMtx33Identity(&temp);
+			AEMtx33ScaleApply(&temp, &temp, 240.0f, 360.f);
+			AEMtx33TransApply(&temp, &temp, (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
+				                                       205.f + static_cast<f32>(mouseY / 90.0f));
+
+			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
-	}
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
+		for (int i = 0; i < 5; i++)
+		{
+			AEMtx33 temp;
+			AEMtx33Identity(&temp);
+			AEMtx33ScaleApply(&temp, &temp, 640.0f, 360.0f);
+			AEMtx33TransApply(&temp, &temp, (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
+				                                               205.f + static_cast<f32>(mouseY / 70.0f));
 
-	////Left Floor
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
-	for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
+			AEGfxSetTransform(temp.m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
+		for (int i = 0; i < 5; i++)
+		{
+			AEMtx33 temp;
+			AEMtx33Identity(&temp);
+			AEMtx33ScaleApply(&temp, &temp, 480.0f, 360.f);
+			AEMtx33TransApply(&temp, &temp, (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
+				                                               205.f + static_cast<f32>(mouseY / 50.0f));
+
+			AEGfxSetTransform(temp.m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FLOOR RENDER
 	{
+		//// Tell the engine to get ready to draw something with texture.
+		//// Set the color to add to nothing, so that we don't alter the sprite's color
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+
+		std::string texRef = "Floor_Center_";// + LEVELNUM
+		//Main Floor
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
 		{
-			if (m_Floor[j][i].m_IsRender)
+			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 			{
-				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
-	}
-	//Right Floor
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
-	for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
-	{
-		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+
+		////Left Floor
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
+		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
 		{
-			if (m_Floor[j][i].m_IsRender)
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				if (m_Floor[j][i].m_IsRender)
+				{
+					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
 			}
 		}
+		//Right Floor
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
+		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				if (m_Floor[j][i].m_IsRender)
+				{
+					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//Fog
-	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
-	AEGfxSetTransform(m_TransformFogData.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
+	// FOG RENDER
+	{
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
+		AEGfxSetTransform(m_TransformFogData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//SceneObj
-	//Render Left Side
-	for (int j = 0; j < SIZE_OF_FLOOR/2; j++)
+	//SCENEOBJ RENDER
 	{
-		for (int i = 0; i < NUM_OF_TILES - 1; i++)
+		//Render Left Side
+		for (int j = 0; j < SIZE_OF_FLOOR / 2; j++)
 		{
-			////////////////////////////////////////////////
-			// CurrentTileNumFurthest = 4
-			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-			////////////////////////////////////////////////
-			int tempTileNum = CurrentTileNumFurthest - i;
-			if (tempTileNum < 0)
-				tempTileNum += NUM_OF_TILES - 1;
-
-			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-				it != m_FloorOBJs[j][tempTileNum].end();
-				it++)
+			for (int i = 0; i < NUM_OF_TILES - 1; i++)
 			{
-				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
-				AEGfxSetTransparency((*it).m_Transparency);
-				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				////////////////////////////////////////////////
+				// CurrentTileNumFurthest = 4
+				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+				////////////////////////////////////////////////
+				int tempTileNum = CurrentTileNumFurthest - i;
+				if (tempTileNum < 0)
+					tempTileNum += NUM_OF_TILES - 1;
+
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+					it != m_FloorOBJs[j][tempTileNum].end();
+					it++)
+				{
+					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxSetTransparency((*it).m_Transparency);
+					AEGfxSetTransform((*it).m_TransformData.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+		//Render Right Side
+		for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR / 2; j--)
+		{
+			for (int i = 0; i < NUM_OF_TILES - 1; i++)
+			{
+				////////////////////////////////////////////////
+				// CurrentTileNumFurthest = 4
+				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+				////////////////////////////////////////////////
+				int tempTileNum = CurrentTileNumFurthest - i;
+				if (tempTileNum < 0)
+					tempTileNum += NUM_OF_TILES - 1;
+
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+					it != m_FloorOBJs[j][tempTileNum].end();
+					it++)
+				{
+					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxSetTransparency((*it).m_Transparency);
+					AEGfxSetTransform((*it).m_TransformData.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
 			}
 		}
 	}
-	//Render Right Side
-	for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR/2; j--)
-	{
-		for (int i = 0; i < NUM_OF_TILES - 1; i++)
-		{
-			////////////////////////////////////////////////
-			// CurrentTileNumFurthest = 4
-			// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-			////////////////////////////////////////////////
-			int tempTileNum = CurrentTileNumFurthest - i;
-			if (tempTileNum < 0)
-				tempTileNum += NUM_OF_TILES - 1;
 
-			for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-				it != m_FloorOBJs[j][tempTileNum].end();
-				it++)
-			{
-				AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type),0,0);
-				AEGfxSetTransparency((*it).m_Transparency);
-				AEGfxSetTransform((*it).m_TransformData.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-			}
-		}
-	}
-	if (Combat)
-	CombatScene::sInstance->Render();
-
-	RenderLvlName();
-
-	//Screen Transition
-	AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-	AEGfxSetTransparency(m_currTransitionTransparency);
-	AEMtx33 t_curr;
-	AEMtx33Identity(&t_curr);
-	AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-	AEGfxSetTransform(t_curr.m);
-	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	//Enable later
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//GAMEOBJ RENDER
 	//GameObjectManager::GetInstance()->Render();
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Render
+	if (Combat)
+		CombatScene::sInstance->Render();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//UI / MISC RENDER
+	RenderHands();
+	{
+		RenderLvlName();
+
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
+		//Lens Flare
+		AEGfxSetTransparency(transparency[7]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[7].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[6]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[6].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[5]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[5].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[4]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[4].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[3]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[3].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[2]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[2].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[1]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[1].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[0]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[0].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//Screen Transition
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxSetTransparency(m_currTransitionTransparency);
+		AEMtx33 t_curr;
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+
+	Pause::getInstance().render();
 }
 void SceneLevelBuilder::Exit()
 {
@@ -995,7 +1555,66 @@ void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
 void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
+void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
+{
+	int mouseX, mouseY;
+	AEInputGetCursorPosition(&mouseX, &mouseY);
+	mouseX -= AEGfxGetWindowWidth() / 2;
+	mouseX = static_cast<int>(mouseX * 1.5);
+	static int y = -120;
+	mouseY = static_cast<int>(mouseY / 1.5 + y);
+	mouseY *= -1;
+	
+	//Furthest from sun -> Closest to sun
+	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
+	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
+	for (int i = 0; i < m_TransformSunLensData.size(); i++)
+	{
+		AEMtx33Identity(&m_TransformSunLensData[i]);
+		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x+ scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
+		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mouseX + (m_sunPos.x - mouseX) * (i+ varience[i] + 1) / 8, mouseY + (m_sunPos.y - mouseY) * (i + varience[i] + 1) / 8);
+	}
+}
+void SceneLevelBuilder::UpdateClouds(f32 t_dt)
+{
+	int mouseX, mouseY;
+	float t_CloudMaxSpeed = 10.0f;// - to go left, + to go right
+	AEInputGetCursorPosition(&mouseX, &mouseY);
+	for (int i = 0; i < m_TransformCloudsData.size(); i++)
+	{
+		if (i / 3 != 1)//Special case for this texture pack
+		{
+			AEMtx33Identity(&m_TransformCloudsData[i]);
+			AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
+			/***********************************************************************************************************************
+			The Clouds interpolation works by having three different tiles for each layer.
 
+			When the tiles reach or exceed their position by their size, they move to the back by teleporting
+			(300 move right ->)     Tile 1         (1700 value apart)            Tile 2             (1700 value apart)             Tile 3
+											  ||
+											  \/
+			Tile 3     (1700 value apart)       Tile 1         (1700 value apart)            Tile 2
+			and vice versa.
+
+			The second calculation is the parallax movement relative to the mouse position. The movement of the mouse creates slight movement
+			in the clouds, creating depth.
+			************************************************************************************************************************/
+			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
+			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
+				                                                                                    305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
+		}
+		else
+		{
+			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], t_CloudMaxSpeed * t_dt, 0.0f);;
+		}
+
+		//To do infinite Interpolation
+		if (m_TransformCloudsData[i].m[0][2] > m_TransformCloudsData[i].m[0][0])
+			m_TransformCloudsData[i].m[0][2] -= m_TransformCloudsData[i].m[0][0] * 2;
+		if (m_TransformCloudsData[i].m[0][2] < -m_TransformCloudsData[i].m[0][0])
+			m_TransformCloudsData[i].m[0][2] += m_TransformCloudsData[i].m[0][0] * 2;
+	}
+}
 ////////////////////////////////////////////////////////////////////////////
 /*
 //Placement Tool (Remove once done)

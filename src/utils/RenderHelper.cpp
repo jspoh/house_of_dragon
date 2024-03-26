@@ -62,6 +62,23 @@ RenderHelper::RenderHelper() {
 	);
 	_defaultMesh = AEGfxMeshEnd();
 
+	AEGfxMeshStart();
+	AEGfxTriAdd(
+		-0.5f, -0.5f, 0x00000000, 0.0f, 1.0f,  // bottom-left
+		0.5f, -0.5f, 0x00000000, 1.0f, 1.0f,   // bottom-right
+		-0.5f, 0.5f, 0x00000000, 0.0f, 0.0f	   // top-left
+	);
+
+	AEGfxTriAdd(
+		0.5f, -0.5f, 0x00000000, 1.0f, 1.0f,   // bottom-right
+		0.5f, 0.5f, 0x00000000, 1.0f, 0.0f,    // top-right
+		-0.5f, 0.5f, 0x00000000, 0.0f, 0.0f    // top-left
+	);
+	_invisibleMesh = AEGfxMeshEnd();
+
+	_meshRef["default"] = _defaultMesh;
+	_meshRef["invis"] = _invisibleMesh;
+
 	// font
 	_font = AEGfxCreateFont("./Assets/Fonts/liberation-mono.ttf", _fontSize);
 
@@ -95,7 +112,8 @@ bool RenderHelper::removeMeshByRef(std::string reference) {
 }
 
 RenderHelper::~RenderHelper() {
-	AEGfxMeshFree(_defaultMesh);
+	//AEGfxMeshFree(_defaultMesh);
+	//AEGfxMeshFree(_invisibleMesh);
 	
 	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
 		std::cout << "Automatically removing texture with ref " << map.first << "\n";
@@ -171,6 +189,13 @@ void RenderHelper::rect(std::string meshRef, f32 transX, f32 transY, f32 scaleX,
 
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	std::cout << "Loading texture " << path << " with reference " << reference << "\n";
+
+	if (_textureRef.find(reference) != _textureRef.end()) {
+		std::cerr << "Texture ref already in use!\n";
+		//throw std::exception();
+		return false;
+	}
+
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
 		std::cerr << "Texture failed to load\n";
@@ -190,7 +215,7 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 	}
 	if (_textureIdRefs[reference] != nullptr) {
 		std::cerr << "int reference already used\n";
-		throw std::exception();
+		//throw std::exception();
 		return false;
 	}
 

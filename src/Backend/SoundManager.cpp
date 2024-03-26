@@ -40,6 +40,24 @@ SoundManager::~SoundManager()
 	musicMap.clear();
 }
 
+bool SoundManager::removeAudio(std::string ref, bool isMusic) {
+	if (soundMap.find(ref) == soundMap.end() && !isMusic || musicMap.find(ref) == musicMap.end() && isMusic) {
+		std::cerr << "Audio reference " << ref << " does not exist!\n";
+		return false;
+	}
+
+	if (!isMusic) {
+		AEAudioUnloadAudio(soundMap.find(ref)->second);
+		soundMap.erase(ref);
+	}
+	else {
+		AEAudioUnloadAudio(musicMap.find(ref)->second);
+		musicMap.erase(ref);
+	}
+
+	return true;
+}
+
 bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic) {
 	// check if ref is already used
 	if (soundMap.find(ref) != soundMap.end() || musicMap.find(ref) != musicMap.end()) {

@@ -4,11 +4,25 @@
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
-SceneStages::SceneStages() : m_LevelBuilder(nullptr), m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME)
+SceneStages::SceneStages() : 
+	m_LevelBuilder(nullptr), 
+	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
+	mouseX(0),
+	mouseY(0),
+	m_ScreenShakeModifier(0),
+	m_ScreenShakeTimer(0),
+	pTextFont(0)
 {
 }	
 
-SceneStages::SceneStages(SceneManager* _sceneMgr) : m_LevelBuilder{nullptr}, m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME)
+SceneStages::SceneStages(SceneManager* _sceneMgr) :
+	m_LevelBuilder{ nullptr },
+	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
+	mouseX(0),
+	mouseY(0),
+	m_ScreenShakeModifier(0),
+	m_ScreenShakeTimer(0),
+	pTextFont(0)
 {
 	_sceneMgr->AddScene("SceneStages", this);
 }
@@ -48,6 +62,12 @@ void SceneStages::Init()
 	RenderHelper::getInstance()->registerTexture("LoadAnimationRoad", "Assets/LoadingAnimation.png");
 
 	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 100);
+
+	mouseX = AEGfxGetWindowWidth() / 2;
+	mouseY = AEGfxGetWindowHeight();
+
+	m_ScreenShakeTimer = 0.0f;
+	m_ScreenShakeModifier = 1.0f;
 }
 
 void SceneStages::Update(double dt)
@@ -63,16 +83,29 @@ void SceneStages::Update(double dt)
 	if (m_LevelBuilder != nullptr)
 	{
 		m_LevelBuilder->Update(dt);
-		//Start the camera movement when load screen is finished
-		if (m_LoadScreenTimer <= 0)
+
+		//Start the camera movement
+		AEInputGetCursorPosition(&mouseX, &mouseY);
+		//                                   |                Move Based On Mouse Pos                |  |                          Screen Shake                                     |
+		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier)),
+				            static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY) - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier));
+
+		//Shaking Camera additional logic
+		if (m_ScreenShakeTimer > 0.0f)
 		{
-			int mouseX, mouseY;
-			AEInputGetCursorPosition(&mouseX, &mouseY);
-			AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY),
-				static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY));
+			AESysSetWindowTitle("ooooooooowwwwww");
+			m_ScreenShakeTimer -= dt;
+		}
+		else
+		{
+			AESysSetWindowTitle("House_OF_Dragon v0.LETSFINISHTHIS");
+			m_ScreenShakeTimer = 0.f;
 		}
 	}
 
+	//Call this for screen shake
+	if (AEInputCheckTriggered(AEVK_M))
+		Util_Camera_Shake(0.5, 100);
 
 	// Update the animation timer.
    // animation_timer should go up to animation_duration_per_frame.
@@ -125,7 +158,7 @@ void SceneStages::Render()
 		char strBuffer[1024];
 		sprintf_s(strBuffer, "LOADING");
 		AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
-		AEGfxPrint(pTextFont, strBuffer, -TextWidth + 0.4f, 0.25f, 0.8f, 1.0f, 1.0f, 1.0f, transparency - 0.8f);
+		AEGfxPrint(pTextFont, strBuffer, static_cast<float>(-mouseX)/2750.f /*-TextWidth*/ - 0.2f, static_cast<float>(mouseY) / 2000.f - 0.2f, 0.8f, 1.0f, 1.0f, 1.0f, transparency - 0.8f);
 
 		//Load animation
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -136,9 +169,7 @@ void SceneStages::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 1000.0f, 800.0f);
-		f32 x{}, y{};
-		AEGfxGetCamPosition(&x, &y);
-		AEMtx33TransApply(&t_curr, &t_curr, x, y - 100.0f);
+		AEMtx33TransApply(&t_curr, &t_curr, 0.f, -100.0f);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
 	}
@@ -156,17 +187,23 @@ void SceneStages::Exit()
 	m_LevelBuilder = nullptr;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//Screen Shake
+void SceneStages::Util_Camera_Shake(float duration, float strength)
+{
+	m_ScreenShakeTimer = duration;
+	m_ScreenShakeModifier = strength;
+}
+
 /**********************************
 TODO:
 FIX LAG AAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 (SIMI LANJIAO NO LAG ON OTHER PEOPLE COM)
 Fix Floor 
 Adjust SceneObject Placement
-Add Lens Flare
 
 Add Backdrop (by today)
 Blocking (by today)
-Cloud Scrolling (by today)
 Commenting Code (by today)
 Integrate combat system (by today)
 Integrate camera panning with combat (NEED TO IMPROVE/OVERHAUL)

@@ -22,15 +22,18 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
+	void Util_Camera_Shake(float duration, float strength);
+	static SceneStages* sInstance; // The pointer to the object that gets registered
 private:
 	SceneStages(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
-	static SceneStages* sInstance; // The pointer to the object that gets registered
 
 	SceneLevelBuilder* m_LevelBuilder;
 
 	double m_LoadScreenTimer;
 
+	//////////////////////////////////////////////////////////////////////////
+	// Animation
 	const u32 spritesheet_rows = 7;
 	const u32 spritesheet_cols = 9;
 	const u32 spritesheet_max_sprites = 60;
@@ -48,6 +51,12 @@ private:
 	AEGfxVertexList* pMesh = 0;
 
 	s8 pTextFont;
+
+	int mouseX, mouseY; //For GetCursorPosition Function, s32
+
+	////////////////////////////////////////////////////////////////////////
+	//Screen shake
+	double m_ScreenShakeTimer, m_ScreenShakeModifier;
 
 };
 

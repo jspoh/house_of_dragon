@@ -64,8 +64,8 @@ void SceneSplashScreen::Init()
 	AEMtx33Trans(&trans, 0, 30);
 	AEMtx33Concat(&m_TransformDigipenLogoData, &trans, &scale);
 
-	AEMtx33Scale(&scale, 1000.0f, 600.0f);
-	AEMtx33Trans(&trans, 0, 30);
+	AEMtx33Scale(&scale, 800.0f, 800.0f);
+	AEMtx33Trans(&trans, 0, -30);
 	AEMtx33Concat(&m_TransformTeamLogoData, &trans, &scale);
 }
 

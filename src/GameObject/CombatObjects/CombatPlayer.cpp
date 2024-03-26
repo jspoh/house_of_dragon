@@ -22,6 +22,7 @@ Technology is prohibited.
 
 Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
+	//float StartHealth = health;		// what is this for?
 	// set shield properties
 	AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
 	AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
@@ -35,13 +36,26 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 
 	// get transition speed
 	float initialFinalDistance = AEVec2Distance(&shieldInitialPos, &shieldBlockingPos);
-	transitionSpeed = initialFinalDistance / (shieldTransitionTimeMs / 1000.f);
+	transitionUpSpeed = initialFinalDistance / (shieldUpTransitionTimeMs / 1000.f);
+	transitionDownSpeed = initialFinalDistance / (shieldDownTransitionTimeMs / 1000.f);
 }
 
 Player::~Player() {
-	RenderHelper::getInstance()->removeTextureByRef("shield");
+	//RenderHelper::getInstance()->removeTextureByRef("shield");	// let renderhelper manage
 }
 
+
+
+void Player::healthGain(float healthIncrease) {
+	float newhealth = this->health + healthIncrease;
+	if (newhealth < 100.f ) {
+		this->health = newhealth;
+	}
+	else {
+		this->health = 100.f;
+	}
+
+}
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Jackie";
 		std::string level = "  Lv:1";
@@ -51,7 +65,7 @@ void Player::_drawHealth(float screenX, float screenY) {
 	//panel rendering
 	f32 truex, truey;
 	AEGfxGetCamPosition(&truex, &truey);
-	RenderHelper::getInstance()->texture("panel", panelPos.x + truex , panelPos.y   + truey + paddingY, 270, 100);
+	RenderHelper::getInstance()->texture("panel", panelPos.x + truex  , panelPos.y   + truey + paddingY, 270, 100);
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 	if (this->health > 66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20  , 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
@@ -59,14 +73,14 @@ void Player::_drawHealth(float screenX, float screenY) {
 		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else if (this->health > 33) {
-		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x + truex - 50, panelPos.y + truey - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - 45 + (health / 100) * 50, panelPos.y + truey - paddingY, (health / 100) * 100, 10);
-		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + (health / 100) * 100 - 40, panelPos.y + truey - paddingY, 10, 10);
+		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else {
-		RenderHelper::getInstance()->texture("redbar1", panelPos.x + truex - 50, panelPos.y + truey - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - 45 + (health / 100) * 50, panelPos.y + truey - paddingY, (health / 100) * 100, 10);
-		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + (health / 100) * 100 - 40, panelPos.y + truey - paddingY, 10, 10);
+		RenderHelper::getInstance()->texture("redbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 
 	}
 }
@@ -90,7 +104,7 @@ void Player::update(double dt) {
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
 		//std::cout << "Player blocking state: ON_ENTER\n";
-		if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
+		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
 			elapsedTimeMs = 0;
 
@@ -100,8 +114,8 @@ void Player::update(double dt) {
 		}
 
 		// translate the shield up
-		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
-		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
+		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionUpSpeed * dt);
+		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionUpSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
 		//std::cout << "Player blocking state: ON_UPDATE\n";
@@ -112,7 +126,7 @@ void Player::update(double dt) {
 		break;
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
 		//std::cout << "Player blocking state: ON_EXIT\n";
-		if (elapsedTimeMs >= shieldTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
+		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 			elapsedTimeMs = 0;
 
@@ -121,8 +135,8 @@ void Player::update(double dt) {
 			break;
 		}
 
-		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionSpeed * dt);
-		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionSpeed * dt);
+		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionDownSpeed * dt);
+		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionDownSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 		//std::cout << "Player blocking state: ON_COOLDOWN\n";

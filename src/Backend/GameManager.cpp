@@ -75,8 +75,8 @@ void GameManager::Exit()
 
 	delete Event::getInstance();
 	//delete CombatManager::getInstance();
-	delete RenderHelper::getInstance();
 	delete Database::getInstance();
 
 	delete ParticleManager::GetInstance();
+	delete RenderHelper::getInstance();
 }
