@@ -104,11 +104,6 @@ void SceneMenu::Update(double dt)
 		my = -my;
 		my += AEGfxGetWindowHeight() / 2.0f;
 
-		SoundPlayer::GlobalAudio::getInstance().playSfxClick();
-
-		//SoundManager::GetInstance()->registerAudio("click_0.wav", "./Assets/Audio/SFX/ui/click_0.wav");
-		//SoundManager::GetInstance()->playAudio("click_0.wav");
-
 		Point cursorPos = { mx, my };
 
 

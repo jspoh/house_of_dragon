@@ -34,6 +34,8 @@ public:
 	 */
 	friend void __getPath(std::string subpath, std::string& sfxPath, std::string& musicPath);
 
+	friend void __loadAudio(const std::string& subpath);
+
 	/**
 	 * Used for stuff like button click sound.
 	 * 
@@ -55,86 +57,92 @@ public:
 	/**
 	 * All menu audio goes here.
 	 */
-	//class MenuAudio {
-	//private:
-	//	MenuAudio();
-	//	~MenuAudio();
+	class MenuAudio {
+	private:
+		MenuAudio();
+		~MenuAudio();
 
-	//	const std::string subpath = "menu/";
+		const std::string subpath = "menu/";
 
-	//public:
-	//	static MenuAudio instance;
+		std::vector<std::string> menuLoopRefs;
+		std::vector<std::string> levelSelectLoopRefs;
 
-	//	void playLoopMenu();
+	public:
+		static MenuAudio& getInstance();
 
-	//	void stopLoopMenu();
+		void playLoopMenu();
 
-	//	void playLoopLevelSelect();
-
-	//	void stopLoopLevelSelect();
-	//};
-
-
-	//class GameAudio {
-	//private:
-	//	GameAudio();
-	//	~GameAudio();
-
-	//	const std::string subpath = "gameplay/";
-
-	//public:
-	//	static GameAudio instance;
-
-	//	void playLoop();
-
-	//	void stopLoop();
-	//};
+		void playLoopLevelSelect();
+	};
 
 
-	//class CombatAudio {
-	//private:
-	//	CombatAudio();
-	//	~CombatAudio();
+	class GameAudio {
+	private:
+		GameAudio();
+		~GameAudio();
 
-	//	const std::string subpath = "combat/";
+		const std::string subpath = "gameplay/";
 
-	//public:
-	//	static CombatAudio instance;
+	public:
+		static GameAudio& getInstance();
 
-	//	void playLoop();
+		void playLoop();
+	};
 
-	//	void stopLoop();
 
-	//	void playSfxDeathSfx();
+	class CombatAudio {
+	private:
+		CombatAudio();
+		~CombatAudio();
 
-	//	void playSfxAngryDemonicScream();
+		const std::string subpath = "combat/";
 
-	//	void playSfxAnimal(std::string ref);
+		static constexpr int NUM_BATTLE_LOOPS = 3;
+		std::vector<std::string> battleLoopRefs{};
 
-	//	void playSfxGrowl();
+		static constexpr int NUM_HURT_SFX = 13;
+		std::vector<std::string> hurtSfxRefs{};
 
-	//	void playSfxHealth();
+		static constexpr int NUM_KNIFE_SFX = 2;
+		std::vector<std::string> knifeSfxRefs{};
 
-	//	void playSfxHeartbeat();
+		static constexpr int NUM_PUNCH_SFX = 4;
+		std::vector<std::string> punchSfxRefs{};
 
-	//	void playSfxHurt();
+		static constexpr int NUM_ANIMALS = 13;		// 12 zodiac animals + nian
+		std::unordered_map<std::string, std::string> animalSfxRef{};
 
-	//	void playSfxKnife();
+	public:
+		static CombatAudio& getInstance();
 
-	//	void playSfxPowerup();
+		void playLoop();
 
-	//	void playSfxPunch();
+		void playSfxVictory();
 
-	//	void playSfxInvalid();
+		void playSfxDeath();
 
-	//	void playSfxScifiGunshot();
+		void playSfxAnimal(const std::string& animal);
 
-	//	/**
-	//	 * !TODO: get more assets. currently only supports water.
-	//	 *
-	//	 * \param element
-	//	 */
-	//	void playSfxElement(Element element);
-	//};
+		void playSfxHealth();
+
+		void playSfxHeartbeat();
+
+		void playSfxHurt();
+
+		void playSfxKnife();
+
+		void playSfxPowerup();
+
+		void playSfxPunch();
+
+		void playSfxInvalid();
+
+		/**
+		 * !TODO: get more assets. currently only supports water.
+		 *
+		 * \param element
+		 */
+		void playSfxElement(Element element);
+	};
 };
 
