@@ -39,6 +39,11 @@ Technology is prohibited.
 #include "Vector3.h"
 #include "SingletonTemplate.h"
 #include "MyMath.h"
+#include "SoundManager.h"
+#include "SoundPlayer.h"
+#include <string>
+#include <unordered_map>
+#include <cctype>
 
 using namespace std;  // we shouldnt do this, crowds namespace
 
