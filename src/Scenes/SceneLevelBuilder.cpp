@@ -793,7 +793,7 @@ void SceneLevelBuilder::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_Z))
 	{
 		TestTimer = 2.5f;
-		std::vector<std::string> names = { "horse", "dragon","cat" };
+		std::vector<std::string> names = { "horse", "dragon","cat","cat"};
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
 	}

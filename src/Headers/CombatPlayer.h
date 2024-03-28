@@ -50,6 +50,13 @@ private:
 
 	void _drawHealth(float screenX, float screenY);
 
+
+	//attack multipler holder
+	float initialAttack{ 0 };
+	int attackMultiplerTurn{ 0 };
+	int attackMultiplerTurnStart{ 0 };
+
+
 public:
 	static constexpr int shieldUpTransitionTimeMs = 100;
 	static constexpr int shieldDownTransitionTimeMs = 300;
@@ -78,5 +85,7 @@ public:
 	void update(double dt);
 
 	void render();
+
+	void attackMultipler(int turn);
 };
 

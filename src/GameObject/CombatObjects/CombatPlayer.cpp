@@ -38,6 +38,9 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 	float initialFinalDistance = AEVec2Distance(&shieldInitialPos, &shieldBlockingPos);
 	transitionUpSpeed = initialFinalDistance / (shieldUpTransitionTimeMs / 1000.f);
 	transitionDownSpeed = initialFinalDistance / (shieldDownTransitionTimeMs / 1000.f);
+
+	initialAttack = this->dmg;
+
 }
 
 Player::~Player() {
@@ -96,6 +99,8 @@ void Player::update(double dt) {
 		elapsedTimeMs = 0;
 		blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
 	}
+
+
 
 	switch (blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
@@ -167,6 +172,24 @@ void Player::render() {
 }
 
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
+
+	if (this->attackMultiplerTurn > 0) {
+		if (attackMultiplerTurnStart >= this->attackMultiplerTurn) {
+			//item finished its usage
+			attackMultiplerTurn = 0;
+			attackMultiplerTurnStart = 0;
+			this->dmg = initialAttack;
+		}
+		else {
+			if (attackMultiplerTurnStart == 0) {
+				//increase by 25 percent
+				this->dmg = initialAttack * 105.25f;
+			}
+			attackMultiplerTurnStart++;
+		}
+	}
+
+
 	DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
 	float multiplier = 1;
 	std::cout << "attackEl enum: " << attackEl << "\n";
@@ -184,4 +207,9 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 	float damage = this->dmg * multiplier * qtMultiplier;
 	target.health -= damage;
 	return damage;
+}
+
+
+void Player::attackMultipler(int turn) {
+	this->attackMultiplerTurn = turn;
 }

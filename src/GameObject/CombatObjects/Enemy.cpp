@@ -31,7 +31,7 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     this->_spos.y = screenY;
     this->fullhealth = health;
     this->_textureRef = textureRef;
- 
+    initialAttack = this->dmg;
     _spos = Point{ screenX, screenY};
     this->_wpos = stow(_spos.x, _spos.y);
     this->healthpos.x = this->_wpos.x - 50;
