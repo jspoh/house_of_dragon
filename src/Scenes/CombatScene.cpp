@@ -214,6 +214,7 @@ namespace {
 						}
 						else if (bv == "YES") {
 							std::cout << "Fleeing fight\n";
+							currentState = ACTION_BTNS::MAIN;
 							CombatManager::getInstance().end();
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
@@ -555,7 +556,7 @@ void CombatScene::Update(double dt)
 	}
 
 
-
+	
 	if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
 		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
