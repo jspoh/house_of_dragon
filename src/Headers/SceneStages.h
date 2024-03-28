@@ -9,6 +9,11 @@
 
 #define MOUSE_SENSITIVITY 5
 #define MAX_LOAD_SCREEN_TIME 6.0
+
+namespace SceneStagesAudio {
+	extern bool loopIsPlaying;
+}
+
 class SceneManager;
 class SceneStages : public Scene
 {

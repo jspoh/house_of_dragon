@@ -47,11 +47,8 @@ Technology is prohibited.
 #include "Vector3.h"
 #include "SingletonTemplate.h"
 #include "MyMath.h"
-<<<<<<< Updated upstream
-=======
 #include "SoundManager.h"
 #include "SoundPlayer.h"
->>>>>>> Stashed changes
 
 using namespace std;  // we shouldnt do this, crowds namespace
 
