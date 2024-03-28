@@ -68,6 +68,8 @@ void SceneMenu::Init()
 		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
 		loopIsPlaying = true;
 	}
+
+	AEGfxSetCamPosition(0, 0);
 }
 
 void SceneMenu::Update(double dt)
@@ -127,6 +129,8 @@ void SceneMenu::Update(double dt)
 				{
 				case 0:
 					SceneManager::GetInstance()->SetActiveScene("SceneStages");
+					SoundPlayer::stopAll();
+					loopIsPlaying = false;
 					break;
 				case 1:
 					SceneManager::GetInstance()->SetActiveScene("SceneCredits");

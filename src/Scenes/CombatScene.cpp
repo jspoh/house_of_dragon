@@ -214,6 +214,7 @@ namespace {
 						}
 						else if (bv == "YES") {
 							std::cout << "Fleeing fight\n";
+							CombatManager::getInstance().end();
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
 							if (bv == "BACON") {

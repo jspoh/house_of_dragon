@@ -20,6 +20,9 @@ Technology is prohibited.
 #include "Pause.h"
 #include "SceneStages.h"
 
+bool GameScene::combatAudioLoopIsPlaying = false;
+bool GameScene::afterInit = false;
+
 //Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
 //First data is left, second data is right
 std::pair<AEMtx33, AEMtx33> Hand1PosData{};
@@ -822,6 +825,13 @@ void SceneLevelBuilder::Update(double dt)
 		PanDown -= PanDown > -100 ? 1 : 0;
 
 		CombatScene::sInstance->Update(dt);
+
+		if (!GameScene::combatAudioLoopIsPlaying) {
+			SoundPlayer::stopAll();
+			SoundPlayer::CombatAudio::getInstance().playLoop();
+			GameScene::combatAudioLoopIsPlaying = true;
+			SceneStagesAudio::loopIsPlaying = false;
+		}
 	}
 	else
 	{
@@ -833,6 +843,13 @@ void SceneLevelBuilder::Update(double dt)
 		m_PanCloseToGround = false;
 		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
 		PanDown += PanDown < 0 ? 4 : 0;
+
+		if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
+			SoundPlayer::stopAll();
+			SoundPlayer::GameAudio::getInstance().playLoop();
+			GameScene::combatAudioLoopIsPlaying = false;
+			SceneStagesAudio::loopIsPlaying = true;
+		}
 	}
 	f32 t_x, t_y;
 	AEGfxGetCamPosition(&t_x, &t_y);

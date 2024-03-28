@@ -2,6 +2,8 @@
 #include "SceneStages.h"
 #include <iostream>
 
+bool SceneStagesAudio::loopIsPlaying = false;
+
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
 SceneStages::SceneStages() : 
@@ -144,6 +146,12 @@ void SceneStages::Render()
 		if (m_LoadScreenTimer < 1.0)
 			transparency -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * 2.f;
 
+		if (transparency <= 0 && !SceneStagesAudio::loopIsPlaying) {
+			SoundPlayer::GameAudio::getInstance().playLoop();
+			SceneStagesAudio::loopIsPlaying = true;
+			GameScene::afterInit = true;
+		}
+
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 		AEGfxSetTransparency(transparency);
@@ -185,6 +193,10 @@ void SceneStages::Exit()
 
 	delete m_LevelBuilder;
 	m_LevelBuilder = nullptr;
+
+	GameScene::afterInit = false;
+	SceneStagesAudio::loopIsPlaying = false;
+	SoundPlayer::stopAll();
 }
 
 //////////////////////////////////////////////////////////////////////////////
