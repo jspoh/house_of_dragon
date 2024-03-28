@@ -161,7 +161,7 @@ namespace {
 				int mouseX, mouseY;
 				AEInputGetCursorPosition(&mouseX, &mouseY);
 				//std::cout << bPosX << " | " << btnY << "\n";
-				if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+				if (CollisionChecker::isMouseInRect(bPosX, panelfinalY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 					//std::cout << "mouse in rect" << bv << "\n";
 					// clicked wt
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
@@ -307,11 +307,12 @@ namespace {
 		float bPosX = lBtnX;
 
 		for (const std::string bv : bvalues) { // bruh wa this got got me too confused
-			Point btnPos = stow(bPosX, btnY);  // button rendering position
+			Point btnPos = stow(bPosX, panelfinalY);  // button rendering position
+			Point btnText = wtos(bPosX, panelfinalY);
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag ) {
+			if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag ) {
 				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey, btnWidth, btnHeight + btnWordPadding * 2);
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
@@ -320,8 +321,7 @@ namespace {
 
 				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
-
-			RenderHelper::getInstance()->text(bv, bPosX, btnY + btnDecreaseY - btnIncreaseY);
+			RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
 			bPosX += btnWidth + spacing;
 		}
 
