@@ -1,8 +1,7 @@
 #include "Pch.h"
 #include "SceneMenu.h"
-#include "SoundManager.h"
+#include "SoundPlayer.h"
 #include "ParticleManager.h"
-#include "SingletonTemplate.h"
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
@@ -41,8 +40,6 @@ void SceneMenu::Load()
 	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/aetting.png");
 	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/quit.png");
 
-	SoundManager::GetInstance()->registerAudio("btnClickSound", "./Assets/Audio/SFX/button_click.mp3");
-	//SoundManager::GetInstance()->registerAudio("titleMusic", "./Assets/Audio/Music/sample.mp3");
 
 }
 
@@ -60,8 +57,6 @@ void SceneMenu::Init()
 		myMenu.buttonX[i] = 0;
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight + 10) + 200;
 	}
-
-	//SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
 
 	ParticleManager::GetInstance()->init();
 
@@ -109,7 +104,10 @@ void SceneMenu::Update(double dt)
 		my = -my;
 		my += AEGfxGetWindowHeight() / 2.0f;
 
-		SoundManager::GetInstance()->playAudio("btnClickSound");
+		SoundPlayer::GlobalAudio::getInstance().playSfxClick();
+
+		//SoundManager::GetInstance()->registerAudio("click_0.wav", "./Assets/Audio/SFX/ui/click_0.wav");
+		//SoundManager::GetInstance()->playAudio("click_0.wav");
 
 		Point cursorPos = { mx, my };
 
@@ -247,5 +245,4 @@ void SceneMenu::Exit()
 	AEGfxTextureUnload(myMenu.pointer);
 	AEGfxTextureUnload(myMenu.bg);
 	
-	SoundManager::GetInstance()->removeAudio("btnClickSound");
 }

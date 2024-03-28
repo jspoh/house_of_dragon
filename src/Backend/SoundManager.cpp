@@ -62,6 +62,7 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 	// check if ref is already used
 	if (soundMap.find(ref) != soundMap.end() || musicMap.find(ref) != musicMap.end()) {
 		std::cerr << "Audio reference " << ref << " already exists!\n";
+		throw std::exception("Audio reference already exists");
 		return false;
 	}
 
@@ -69,6 +70,7 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 
 	if (!AEAudioIsValidAudio(audio)) {
 		std::cerr << "SoundManager failed to load " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
+		throw std::exception("Audio failed to load");
 		return false;
 	}
 
@@ -91,11 +93,12 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 	if (soundMap.find(ref) != soundMap.end()) {
 		audio = soundMap[ref];
 	}
-	else if (musicMap.find(ref) != soundMap.end()) {
+	else if (musicMap.find(ref) != musicMap.end()) {
 		audio = musicMap[ref];
 	}
 	else {
 		std::cerr << "Audio with ref " << ref << " does not exist!\n";
+		throw std::exception("Audio does not exist!");
 		return;
 	}
 
@@ -105,4 +108,9 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 
 void SoundManager::setVolume(float volume, bool setMusic) {
 	AEAudioSetGroupVolume(setMusic ? musicGroup : sfxGroup, volume);
+}
+
+void SoundManager::stopAll() {
+	AEAudioStopGroup(sfxGroup);
+	AEAudioStopGroup(musicGroup);
 }
