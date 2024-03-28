@@ -18,7 +18,7 @@ void Pause::init() {
 }
 
 
-void Pause::update(double dt) {
+void Pause::update([[maybe_unused]] double dt) {
 	if (AEInputCheckTriggered(PAUSE_KEY)) {
 		isPaused = !isPaused;
 	}
