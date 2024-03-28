@@ -17,9 +17,6 @@ Technology is prohibited.
 #pragma once
 
 #include "Mob.h"
-#include <string>
-#include "utils.h"
-#include <iostream>
 
 class Enemy : public Mob {
 private:

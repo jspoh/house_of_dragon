@@ -1,6 +1,5 @@
 #include "Pch.h"
 #include "SceneStages.h"
-#include <iostream>
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 

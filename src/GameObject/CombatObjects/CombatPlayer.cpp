@@ -15,9 +15,6 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "CombatPlayer.h"
-#include "RenderHelper.h"
-#include "MyMath.h"
-#include <iostream>
 
 
 Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {

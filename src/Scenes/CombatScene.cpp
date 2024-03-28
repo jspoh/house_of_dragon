@@ -23,9 +23,6 @@ Technology is prohibited.
 #include "CombatManager.h"
 #include "CombatPlayer.h"
 
-#include <vector>
-#include <string>
-#include <unordered_map>
 #include "SceneStages.h"
 
 

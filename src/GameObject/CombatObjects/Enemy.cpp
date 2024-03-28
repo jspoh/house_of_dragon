@@ -15,7 +15,6 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "Enemy.h"
-#include "utils.h"
 
 //Enemy::Enemy() {
 //

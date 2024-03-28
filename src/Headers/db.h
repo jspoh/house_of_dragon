@@ -16,10 +16,7 @@ Technology is prohibited.
 
 #pragma once
 
-#include "json.hpp"
-#include <fstream>
-#include <iostream>
-#include <string>
+#include "Pch.h"
 
 
 const std::string dbPath = "data.json";

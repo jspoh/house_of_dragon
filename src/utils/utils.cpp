@@ -16,8 +16,6 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "utils.h"
-#include <vector>
-#include "MyMath.h"
 
 
 /*utility functions*/
