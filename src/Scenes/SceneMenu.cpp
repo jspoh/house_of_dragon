@@ -3,6 +3,10 @@
 #include "SoundPlayer.h"
 #include "ParticleManager.h"
 
+namespace {
+	bool loopIsPlaying = false;
+}
+
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
 SceneMenu::SceneMenu()
@@ -60,6 +64,10 @@ void SceneMenu::Init()
 
 	ParticleManager::GetInstance()->init();
 
+	if (!loopIsPlaying) {
+		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
+		loopIsPlaying = true;
+	}
 }
 
 void SceneMenu::Update(double dt)

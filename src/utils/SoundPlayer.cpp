@@ -27,7 +27,7 @@ void __loadAudio(const std::string& subpath) {
 	if (fs::exists(musicPath)) {
 		for (const auto& item : fs::directory_iterator(musicPath)) {
 			std::string filename = item.path().filename().string();
-			SoundManager::GetInstance()->registerAudio(filename, sfxPath + filename, true);
+			SoundManager::GetInstance()->registerAudio(filename, musicPath + filename, true);
 		}
 	}
 }
@@ -69,14 +69,6 @@ void SoundPlayer::GlobalAudio::playSfxClick() {
 
 SoundPlayer::MenuAudio::MenuAudio() {
 	__loadAudio(subpath);
-
-	std::string sfxPath, musicPath;
-	__getPath(subpath, sfxPath, musicPath);
-
-	for (const auto& item : fs::directory_iterator(musicPath)) {
-		std::string filename = item.path().filename().string();
-
-	}
 }
 
 SoundPlayer::MenuAudio::~MenuAudio() {
