@@ -10,9 +10,9 @@ ParticleManager::ParticleManager() {
 	/*********************************************
 	//PARTICLE TEXTURES REGISTRATION
 	**********************************************/
-	RenderHelper::getInstance()->registerTexture(REGULAR, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/flame_01.png");
+	/*RenderHelper::getInstance()->registerTexture(REGULAR, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/flame_01.png");
 	RenderHelper::getInstance()->registerTexture(EXPLOSION, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/star_01.png");
-	RenderHelper::getInstance()->registerTexture(FIREWORK, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/trace_01.png");
+	RenderHelper::getInstance()->registerTexture(FIREWORK, "Assets/Particle_Effects/Single Particles/PNG (Transparent)/trace_01.png");*/
 }
 
 ParticleManager::~ParticleManager() {
