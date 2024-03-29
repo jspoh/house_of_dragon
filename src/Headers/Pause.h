@@ -21,8 +21,6 @@ private:
 	static constexpr int BTN_Y_GAP = 50;
 	static constexpr float HOVER_BTN_SCALE = 1.1f;
 
-	AEVec2 camOffset;
-
 public:
 	static Pause& getInstance();
 

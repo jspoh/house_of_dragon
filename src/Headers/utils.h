@@ -19,7 +19,11 @@ Technology is prohibited.
 
 #include "Pch.h"
 
-const int AEVK_OFFSET = 'a' - AEVK_A;
+extern int mouseX, mouseY;
+extern AEVec2 camOffset;
+
+
+constexpr int AEVK_OFFSET = 'a' - AEVK_A;
 
 // why doesnt it work using std::array w size 26??
 const std::vector<std::pair<int, const char>> keyMappings {

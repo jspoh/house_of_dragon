@@ -154,7 +154,6 @@ void Player::update(double dt) {
 }
 
 void Player::render() {
-	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 	this->_drawHealth(150, 150);
 
 	switch (blockingState) {

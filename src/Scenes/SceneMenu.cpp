@@ -36,7 +36,7 @@ void SceneMenu::Load()
 
 	myMenu.buttonSelect[0] = "chicken";
 	myMenu.buttonSelect[1] = "tiger";
-	myMenu.buttonSelect[2] = "dragon";
+	myMenu.buttonSelect[2] = "dragon_level_select";
 
 
 	RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
@@ -48,7 +48,7 @@ void SceneMenu::Load()
 
 	RenderHelper::getInstance()->registerTexture("chicken", "Assets/Menu/chicken.png");
 	RenderHelper::getInstance()->registerTexture("tiger", "Assets/Menu/tiger.png");
-	RenderHelper::getInstance()->registerTexture("dragon", "Assets/Menu/dragon.png");
+	RenderHelper::getInstance()->registerTexture("dragon_level_select", "Assets/Menu/dragon.png");
 
 }
 

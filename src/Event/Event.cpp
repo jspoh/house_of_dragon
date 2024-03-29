@@ -238,7 +238,6 @@ void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_K
 }
 
 void Event::render() {
-	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
 	switch (_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPE:
@@ -589,8 +588,6 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 
 	/*logic*/
 	if (AEInputCheckTriggered(AEVK_LBUTTON) && !_mcoIsTransitioningOut) {
-		int mouseX, mouseY;
-		AEInputGetCursorPosition(&mouseX, &mouseY);
 
 		// check if user clicked on any of the multi click objects
 		bool hit = false;

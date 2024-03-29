@@ -40,10 +40,6 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
 }
 
 void Enemy::update([[maybe_unused]] double dt) {
-    int mouseX, mouseY;
-    AEInputGetCursorPosition(&mouseX, &mouseY);
-    AEVec2 camOffset;
-    AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
     Point pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
 
