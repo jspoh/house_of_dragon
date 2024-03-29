@@ -286,9 +286,9 @@ void UpdateHands(float t_dt)
 	case Ready: //For Getting ready in combat
 		switch (t_AnimationFrame)
 		{
-		case 4:		// blocking cooldown state, but does not exist for ready
-			t_AnimationFrame = 0;
-			[[fallthrough]];
+		//case 4:		// blocking cooldown state, but does not exist for ready
+		//	t_AnimationFrame = 0;
+		//	[[fallthrough]];
 		case 0://Init
 			AEMtx33Identity(&Hand4PosData.second);
 			Hand2PosData.first = Hand4PosData.second;
@@ -1381,7 +1381,7 @@ void SceneLevelBuilder::Render()
 		{
 			my -= 12.55;
 		}
-		cout << x << " " << y << " " << mx << endl;
+		//cout << x << " " << y << " " << mx << endl;
 
 		//LIGHT FILTER
 		//-0.39 0.06 0.3 (NIGHTTIME)
