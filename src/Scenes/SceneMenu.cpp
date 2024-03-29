@@ -165,16 +165,24 @@ void SceneMenu::Update(double dt)
 					myMenu.hoveringSelect[i] = true;
 					switch (i)
 					{
-					case 0:
-					case 1:
-					case 2:
-						SceneManager::GetInstance()->SetActiveScene("SceneStages");
+					case 0:SceneManager::GetInstance()->SetActiveScene("SceneStages");
+						SoundPlayer::stopAll();
+						loopIsPlaying = false;
+						break;
+					case 1:SceneManager::GetInstance()->SetActiveScene("SceneStages");
+						SoundPlayer::stopAll();
+						loopIsPlaying = false;
+						break;	
+					case 2:SceneManager::GetInstance()->SetActiveScene("SceneStages");
+						SoundPlayer::stopAll();
+						loopIsPlaying = false;
 						break;
 					}
 				}
 				else
 				{
 					myMenu.hoveringSelect[i] = false;
+
 				}
 			}
 		}
