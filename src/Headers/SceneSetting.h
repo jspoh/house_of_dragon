@@ -75,8 +75,8 @@ private:
 	AEVec2 soundSliderPos{ 0, -2 };
 	AEVec2 musicSliderPos{ 0, -95 };
 
-	float sfxVolume;
-	float musicVolume;
+	float sfxVolume{};
+	float musicVolume{};
 };
 
 //#endif
