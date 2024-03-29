@@ -54,6 +54,10 @@ void GameManager::Run()
 	//scene->Exit();
 	//delete scene;
 
+	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+		SoundPlayer::GlobalAudio::getInstance().playSfxClick();
+	}
+
 	SceneManager::GetInstance()->Update((f32)AEFrameRateControllerGetFrameTime());
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 

@@ -26,19 +26,29 @@ Technology is prohibited.
 // ----------------------------------------------------------------------------
 // Add headers that you want to pre-compile here
 // ----------------------------------------------------------------------------
-#include "AEEngine.h"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <vector>
 #include <array>
+#include <string>
+#include <unordered_map>
+#include <cctype>
+#include <sstream>
+#include <time.h>
+#include <list>
+#include "AEEngine.h"
+#include "json.hpp"
+
 #include "utils.h"
 #include "db.h"
-#include "json.hpp"
+#include "Event.h"
 #include "CollisionChecker.h"
 #include "Vector3.h"
 #include "SingletonTemplate.h"
 #include "MyMath.h"
+#include "SoundManager.h"
+#include "SoundPlayer.h"
 
 using namespace std;  // we shouldnt do this, crowds namespace
 

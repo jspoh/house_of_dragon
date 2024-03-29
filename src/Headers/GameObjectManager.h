@@ -11,17 +11,14 @@
 #ifndef GAMEOBJECT_MANAGER_H
 #define GAMEOBJECT_MANAGER_H
 
-#include "SingletonTemplate.h"
 #include "Vector3.h"
 #include "GameObject.h"
 #include "2DCollider.h"
-#include <list>
 
 
 #include "GameObject_AmeTest.h"
 #include "GameObject_Misc_Enemy.h"
 
-#include <iostream>
 using namespace std; //Remvoe in future
 
 

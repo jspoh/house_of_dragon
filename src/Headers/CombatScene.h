@@ -16,13 +16,13 @@ Technology is prohibited.
 
 #pragma once
 
+#include "Pch.h"
+
 #include "Scene.h"
 #include "Elements.hpp"
-#include "utils.h"
 #include "CombatManager.h"
 #include "Enemy.h"
 
-#include <vector>
 //Testing SpriteAnimation
 class SceneManager;
 class CombatScene : public Scene

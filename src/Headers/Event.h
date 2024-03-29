@@ -18,18 +18,7 @@ Technology is prohibited.
 
 #pragma once
 
-#include "AEEngine.h"
-#include "utils.h"
-#include "db.h"
-#include <unordered_map>
-#include <string>
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <time.h>
-#include <array>
-#include <cctype>
-#include "MyMath.h"
+#include "Pch.h"
 
 /**
  * update `eKeyToStr` too and ensure that the image assets follow this format:

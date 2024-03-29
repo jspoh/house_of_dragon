@@ -17,9 +17,7 @@ Technology is prohibited.
 #pragma once
 
 
-#include "AEEngine.h"
-#include <vector>
-//#include "../Backend/SingletonTemplate.h"
+#include "Pch.h"
 
 const int AEVK_OFFSET = 'a' - AEVK_A;
 
@@ -95,6 +93,8 @@ float degToRad(float degrees);
 
 // mathematical technique used to find a value between two endpoints based on a linear progression.
 float lerp(float start, float end, float t);
+
+std::vector<std::string> split(const std::string& str, const char sep);
 
 /*for ease of inclusion*/
 #include "RenderHelper.h"

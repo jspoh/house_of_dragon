@@ -16,8 +16,6 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "utils.h"
-#include <vector>
-#include "MyMath.h"
 
 
 /*utility functions*/
@@ -59,6 +57,24 @@ float lerp(float start, float end, float t) {
 }
 
 
-void toast(std::string msg) {
+std::vector<std::string> split(const std::string& str, const char sep) {
+    std::vector<std::string> out;
+    std::string curr = "";
 
+    for (const char c : str) {
+        if (c == sep && curr.length() > 0) {
+            out.push_back(curr);
+            curr.clear();
+            continue;
+        }
+
+        if (c != sep) {
+            curr += c;
+        }
+    }
+    if (curr.length() > 0) {
+        out.push_back(curr);
+    }
+
+    return out;
 }

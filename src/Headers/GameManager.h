@@ -6,9 +6,6 @@
 #include "Pch.h"
 #include "SceneManager.h"
 ////#include "../GameObject/GameObjectManager.h"
-#include "SoundManager.h"
-#include "Event.h"
-#include "db.h"
 #include "CombatManager.h"
 #include "ParticleManager.h"
 

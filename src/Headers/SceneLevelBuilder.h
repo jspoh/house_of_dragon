@@ -27,6 +27,11 @@ Technology is prohibited.
 #define MAX_NUM_SCENEOBJS_TILE 8
 #define MAX_LVLNAMETIMER 4.0
 
+namespace GameScene {
+	extern bool combatAudioLoopIsPlaying;
+	extern bool afterInit;		// after loading screen
+}
+
 class SceneLevelBuilder
 {
 public:

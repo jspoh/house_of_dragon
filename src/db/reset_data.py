@@ -35,22 +35,21 @@ def constructData() -> dict:
                 "soundPath": "./Assets/sounds/cat.mp3",
                 "element": "fire",
                 "health": 100,
-                "damage": 10,
+                "damage": 10
             },
-            "dragon" : {
+            "dragon": {
                 "texturePath": "./Assets/Combat_Enemy/dragon.jpg",
                 "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "earth",
                 "health": 150,
-                "damage": 20,
-
+                "damage": 20
             },
-            "horse" : {
+            "horse": {
                 "texturePath": "./Assets/Combat_Enemy/horse.jpg",
                 "soundPath": "./Assets/sounds/horse.mp3",
                 "element": "water",
                 "health": 120,
-                "damage": 12,
+                "damage": 12
             }
         },
         "items": {
@@ -58,76 +57,76 @@ def constructData() -> dict:
                 "texturePath": "./Assets/food/bacon.jpg",
                 "healthEffect": 0,
                 "dmgMultiplier": 1.15,
-                "description": "Increases attack damage",
+                "description": "Increases attack damage"
             },
             "beef": {
                 "texturePath": "./Assets/food/beef.jpg",
                 "healthEffect": 20,
                 "dmgMultiplier": 1,
-                "description": "Recovers 20 health",
+                "description": "Recovers 20 health"
             },
             "chicken": {
                 "texturePath": "./Assets/food/chicken.jpg",
                 "healthEffect": 0,
                 "dmgMultiplier": 1.5,
-                "description": "Increases attack damage greatly",
+                "description": "Increases attack damage greatly"
             }
         },
-"levels": [
-    {
-      "levelName": "Level 1: Plains",
-      "unlocked": false,
-      "completed": false,
-      "maxEnemies": 1,
-      "maxSceneOBJperTile": 2,
-      "enemySpawnWeight": [
-     	 {
-      	  "cat": 2,
-      	 "dog": 1
-      	}
-       ],
-      "SceneOBJSpawnWeight":[ {
-        "Grass": 1,
-        "Tree": 1,
-        "Rock": 1
-      }],
-      "DayTime": true
-    },
-    {
-      "levelName": "Level 2: Forest",
-      "unlocked": false,
-      "completed": false,
-      "maxEnemies": 2,
-      "maxSceneOBJperTile": 5,
-      "enemySpawnWeight": [{
-        "cat": 1,
-        "dog": 1
-      }],
-      "SceneOBJSpawnWeight": [{
-        "Grass": 1,
-        "Tree": 1,
-        "Rock": 1
-      }],
-      "DayTime": true
-    },
-    {
-      "levelName": "Level 3: Forest - Night",
-      "unlocked": false,
-      "completed": false,
-      "maxEnemies": 3,
-      "maxSceneOBJperTile": 5,
-      "enemySpawnWeight": [{
-        "cat": 1,
-        "dog": 2
-      }],
-      "SceneOBJSpawnWeight": [{
-        "Grass": 1,
-        "Tree": 1,
-        "Rock": 1
-      }],
-      "DayTime": false
-    }
-  ]
+        "levels": [
+            {
+                "levelName": "Level 1: Plains",
+                "unlocked": False,
+                "completed": False,
+                "maxEnemies": 1,
+                "maxSceneOBJperTile": 2,
+                "enemySpawnWeight": [
+                    {
+                        "cat": 2,
+                        "dog": 1
+                    }
+                ],
+                "SceneOBJSpawnWeight": [{
+                    "Grass": 10,
+                    "Tree": 1,
+                    "Rock": 1
+                }],
+                "DayTime": True
+            },
+            {
+                "levelName": "Level 2: Forest",
+                "unlocked": False,
+                "completed": False,
+                "maxEnemies": 2,
+                "maxSceneOBJperTile": 5,
+                "enemySpawnWeight": [{
+                    "cat": 1,
+                    "dog": 1
+                }],
+                "SceneOBJSpawnWeight": [{
+                    "Grass": 1,
+                    "Tree": 1,
+                    "Rock": 1
+                }],
+                "DayTime": True
+            },
+            {
+                "levelName": "Level 3: Forest - Night",
+                "unlocked": False,
+                "completed": False,
+                "maxEnemies": 3,
+                "maxSceneOBJperTile": 5,
+                "enemySpawnWeight": [{
+                    "cat": 1,
+                    "dog": 2
+                }],
+                "SceneOBJSpawnWeight": [{
+                    "Grass": 1,
+                    "Tree": 1,
+                    "Rock": 1
+                }],
+                "DayTime": False
+            }
+        ]
     }
 
     return data

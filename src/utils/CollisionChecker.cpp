@@ -15,7 +15,6 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "CollisionChecker.h"
-#include "AEEngine.h"
 
 
 /*class collision checker*/

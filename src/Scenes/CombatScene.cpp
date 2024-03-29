@@ -23,9 +23,6 @@ Technology is prohibited.
 #include "CombatManager.h"
 #include "CombatPlayer.h"
 
-#include <vector>
-#include <string>
-#include <unordered_map>
 #include "SceneStages.h"
 
 
@@ -43,6 +40,7 @@ namespace {
 	const float slideAnimationDuration = 1.f;
 	float dialogueMaxTime = 0.8f;
 	float dialougeTime;
+	float winTime;
 
 	//camera coordinates;
 	f32 camX, camY;
@@ -152,8 +150,8 @@ namespace {
 		float btnHeight = btnWidth / 3.f;
 		btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
 		float lBtnX = padding + btnWidth / 2.f;
-
 		float bPosX = lBtnX;
+		Point btnText = wtos(bPosX, panelfinalY);
 		if (playerAlive) {
 			for (const std::string bv : bvalues) { // bruh wa this got got me too confused
 				Point btnPos = stow(bPosX, btnY);  // button rendering position
@@ -161,7 +159,7 @@ namespace {
 				int mouseX, mouseY;
 				AEInputGetCursorPosition(&mouseX, &mouseY);
 				//std::cout << bPosX << " | " << btnY << "\n";
-				if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+				if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 					//std::cout << "mouse in rect" << bv << "\n";
 					// clicked wt
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
@@ -213,12 +211,14 @@ namespace {
 						}
 						else if (bv == "YES") {
 							std::cout << "Fleeing fight\n";
+							currentState = ACTION_BTNS::MAIN;
+							CombatManager::getInstance().end();
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
 							if (bv == "BACON") {
 								std::cout << "Bacon eaten\n";
 								itemUsed = "BACON";
-								player->healthGain(10);
+								player->attackMultipler(3);
 								dialogueState = DIALOGUE::ITEM;
 
 							}
@@ -307,21 +307,21 @@ namespace {
 		float bPosX = lBtnX;
 
 		for (const std::string bv : bvalues) { // bruh wa this got got me too confused
-			Point btnPos = stow(bPosX, btnY);  // button rendering position
+			Point btnPos = stow(bPosX, panelfinalY);  // button rendering position
+			Point btnText = wtos(bPosX, panelfinalY);
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnY, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && panelflag ) {
+			if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag ) {
 				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey, btnWidth, btnHeight + btnWordPadding * 2);
-				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
+				RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
 				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding );
 
-				//RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
+				RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
-
-			RenderHelper::getInstance()->text(bv, bPosX, btnY + btnDecreaseY - btnIncreaseY);
+			RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
 			bPosX += btnWidth + spacing;
 		}
 
@@ -342,7 +342,13 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	for (int i = 0; i < sz; i++) {
 		groups.activeEnemy[i] = true;
 		// coordindates
-		groups.coordinates[i].x = Enemypadding + i * Enemyspacing;
+		float totalWidth = sz * texSize + (sz - 1) * Enemyspacing;
+
+		//float centerX = AEGfxGetWindowWidth() / 2.f;
+		float startX = (AEGfxGetWindowWidth() - totalWidth) / 2.f + Enemypadding;
+		groups.coordinates[i].x = startX + i * (texSize + Enemyspacing);
+
+		//groups.coordinates[i].x = Enemypadding + i * Enemyspacing;
 		groups.coordinates[i].y = AEGfxGetWindowHeight() / 2.f - 100.f;
 		// obtaining the infomation from json file
 		groups.enemies[i] = new Enemy(
@@ -355,7 +361,6 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 			groups.coordinates[i].y,
 			texSize
 		);
-		// error with json file input
 	}
 
 
@@ -400,6 +405,7 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("button", "./Assets/Combat_UI/Button.png");
 	RenderHelper::getInstance()->registerTexture("respawn", "./Assets/Combat_UI/respawn.png");
 	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
+	RenderHelper::getInstance()->registerTexture("victory", "./Assets/Combat_UI/victory.png");
 
 
 
@@ -417,7 +423,7 @@ void CombatScene::Init()
 	winFlag = false;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 100);
+	player = new Player(100, 20);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -433,6 +439,7 @@ void CombatScene::Init()
 	FinalScaleDead.y = 100;
 
 	dialougeTime = 0.f;
+	winTime = 0.0f;
 
 
 	deathBtnWidthEnd = 300.f;
@@ -454,7 +461,9 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
-
+	if (AEInputCheckTriggered(AEVK_RBUTTON)) {
+		winFlag = true;
+	}
 	if (!CombatManager::getInstance().isInCombat) {
 		return;
 	}
@@ -510,7 +519,7 @@ void CombatScene::Update(double dt)
 	//updating panel 
 
 	AEGfxGetCamPosition(&camX, &camY);
-	if (!playerAlive && currentTime < slideAnimationDuration) {
+	if ((!playerAlive && currentTime < slideAnimationDuration)) {
 		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
 		float t = percenttime;
@@ -529,8 +538,22 @@ void CombatScene::Update(double dt)
 	else {
 		deadfinalflag = false;
 	}
+	if ( (winFlag && winTime < slideAnimationDuration) ) {
+		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		float percenttime = static_cast<float>(winTime / slideAnimationDuration);
+		float t = percenttime;
+		if (t > slideAnimationDuration) {
+			t = slideAnimationDuration;
+		}
+		currScaleDead.x = lerp(initalScaleDead.x, FinalScaleDead.x, t);
+		currScaleDead.y = lerp(initalScaleDead.y, FinalScaleDead.y, t);
+		btnDecreaseY = lerp(0, btnFinalY, t);
+
+		panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
+	}
 
 
+	
 	if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
 		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
@@ -659,7 +682,7 @@ void CombatScene::Update(double dt)
 			}
 			else {
 				std::cout << "Transition to next level\n";
-				if (!winFlag) {
+				if (!winFlag && winTime != 1.0f) {
 					dialogueState = DIALOGUE::WIN;
 
 				}
@@ -703,7 +726,7 @@ void CombatScene::Render()
 	std::vector<int> deadEnemies;
 	int i{};
 	// rendering whether enemies is dead
-	if (playerAlive) {
+	if (playerAlive && !winFlag) {
 		player->render();
 		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
@@ -753,6 +776,15 @@ void CombatScene::Render()
 		if (deadfinalflag == true)
 			renderDeathBtns();
 		//}
+
+	}
+	else if (winFlag) {
+		//rendering out the objects
+		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
+		RenderHelper::getInstance()->texture("victory", wpos.x + truex, wpos.y + truey, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+		renderBtns(btns[currentState]);
+		// to do: new btns
+		// new panel
 
 	}
 
