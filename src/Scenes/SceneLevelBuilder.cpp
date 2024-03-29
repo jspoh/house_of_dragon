@@ -90,9 +90,9 @@ void UpdateHands(float t_dt)
 	}
 	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 
-	if (player != nullptr) {
-		std::cout << static_cast<int>(player->blockingState) << "\n";
-	}
+	//if (player != nullptr) {
+	//	std::cout << static_cast<int>(player->blockingState) << "\n";
+	//}
 
 	switch (HandStateAnimationType)
 	{
@@ -205,6 +205,12 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 5;
 				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+
+				LeftSide = rand() % 2 - 1;		// huh why -1 here
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
 				break;
 			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 				// cooldown
@@ -259,6 +265,12 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 5;
 				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+
+				LeftSide = rand() % 2 - 1;		// huh why -1 here
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
 				break;
 			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 				// cooldown
@@ -267,19 +279,19 @@ void UpdateHands(float t_dt)
 				cout << "ERROR IN BLOCKING ANIMATION" << endl;
 			}
 
-		if (t_AnimationDuration < 0.0)
-		{
-			t_AnimationFrame = t_AnimationFrame < 4 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
-			t_AnimationDuration = 9999.0;
-			if (t_AnimationFrame == 0)
-			{
-				LeftSide = rand() % 2 - 1;		// huh why -1 here
-				Hand1PosData.first = Hand1PosData.second = {};
-				Hand2PosData.first = Hand2PosData.second = {};
-				Hand3PosData.first = Hand3PosData.second = {};
-				Hand4PosData.first = Hand4PosData.second = {};
-			}
-		}
+		//if (t_AnimationDuration < 0.0)
+		//{
+		//	t_AnimationFrame = t_AnimationFrame < 4 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+		//	t_AnimationDuration = 9999.0;
+		//	if (t_AnimationFrame == 0)
+		//	{
+		//		LeftSide = rand() % 2 - 1;		// huh why -1 here
+		//		Hand1PosData.first = Hand1PosData.second = {};
+		//		Hand2PosData.first = Hand2PosData.second = {};
+		//		Hand3PosData.first = Hand3PosData.second = {};
+		//		Hand4PosData.first = Hand4PosData.second = {};
+		//	}
+		//}
 
 		break;
 	case Ready: //For Getting ready in combat
