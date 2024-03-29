@@ -37,6 +37,7 @@ public:
 	virtual void Render();
 	virtual void Exit();
 	void spawnEnemies(std::vector<std::string> enemyRefs);
+	void cleanup();
 
 	static CombatScene* sInstance; // The pointer to the object that gets registered
 private:

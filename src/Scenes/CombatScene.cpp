@@ -211,6 +211,7 @@ namespace {
 						}
 						else if (bv == "YES") {
 							std::cout << "Fleeing fight\n";
+							CombatScene::sInstance->cleanup();
 							currentState = ACTION_BTNS::MAIN;
 							CombatManager::getInstance().end();
 						}
@@ -407,7 +408,7 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
 	RenderHelper::getInstance()->registerTexture("victory", "./Assets/Combat_UI/victory.png");
 
-
+	//player = new Player(100, 20);
 
 
 
@@ -423,7 +424,7 @@ void CombatScene::Init()
 	winFlag = false;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 20);
+	player = new Player(100, 100);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -813,9 +814,7 @@ void CombatScene::Render()
 
 }
 
-void CombatScene::Exit()
-{
-	std::cout << "Exiting CombatScene\n";
+void CombatScene::cleanup() {
 	for (Enemy* enemy : groups.enemies) {
 		delete enemy;
 	}
@@ -823,6 +822,13 @@ void CombatScene::Exit()
 	//delete CombatManager::getInstance();
 	// Clear the vector after deleting the enemies
 	delete player;
+	player = nullptr;
+}
+
+void CombatScene::Exit()
+{
+	std::cout << "Exiting CombatScene\n";
+	cleanup();
 }
 
 

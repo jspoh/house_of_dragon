@@ -790,15 +790,14 @@ void SceneLevelBuilder::Update(double dt)
 	// Combat Setup
 	//TESTING
 	{
-
-	Combat = AEInputCheckTriggered(AEVK_Z) ? true: Combat;
 	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
-	if (AEInputCheckTriggered(AEVK_Z))
+	if (AEInputCheckTriggered(AEVK_Z) && !Combat)
 	{
 		TestTimer = 2.5f;
 		std::vector<std::string> names = { "horse", "dragon","cat","cat"};
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
+		Combat = true;
 	}
 
 	Pause::getInstance().update(dt);
