@@ -30,9 +30,10 @@ Technology is prohibited.
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
+Player* player = nullptr;
+
 namespace {
 	// game objects
-	Player* player;
 	bool playerAlive;
 	bool extraflagtest;
 	bool deadfinalflag;

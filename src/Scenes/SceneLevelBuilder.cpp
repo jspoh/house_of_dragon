@@ -24,6 +24,9 @@ bool GameScene::combatAudioLoopIsPlaying = false;
 bool GameScene::afterInit = false;
 
 //Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
+extern Player* player;
+//player->blockingState;		// player blocking state here
+
 //First data is left, second data is right
 std::pair<AEMtx33, AEMtx33> Hand1PosData{};
 std::pair<AEMtx33, AEMtx33> Hand2PosData{};
@@ -86,6 +89,10 @@ void UpdateHands(float t_dt)
 		mx -= 0.55f;
 	}
 	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
+
+	if (player != nullptr) {
+		std::cout << static_cast<int>(player->blockingState) << "\n";
+	}
 
 	switch (HandStateAnimationType)
 	{
