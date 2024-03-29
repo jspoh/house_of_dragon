@@ -17,9 +17,6 @@ Technology is prohibited.
 #pragma once
 
 #include "Mob.h"
-#include <string>
-#include "utils.h"
-#include <iostream>
 
 class Enemy : public Mob {
 private:
@@ -31,10 +28,16 @@ private:
 	float _size = 50;
 	Point healthpos{ 0 };
 	float fullhealth = 0;
+	//attack multipler holder
+	float initialAttack{ 0 };
+	int attackMultiplerTurn{ 0 };
+	int attackMultiplerTurnStart{ 0 };
+
+
 
 public:
 	bool isSelected = false;
-
+	
 	Enemy();
 	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
 	~Enemy();

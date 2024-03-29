@@ -15,7 +15,6 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "RenderHelper.h"
-#include <iostream>
 
 namespace {
 	/**

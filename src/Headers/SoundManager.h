@@ -46,5 +46,7 @@ public:
 	void playAudio(std::string ref, float volume=1.f, int loop=0, bool isMusic=false);
 
 	void setVolume(float volume, bool setMusic=false);
+
+	void stopAll();
 };
 

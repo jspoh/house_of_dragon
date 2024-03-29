@@ -3,8 +3,6 @@
 
 //#include "../../Backend/GameManager.h" //? Still thinking
 #include "SceneManager.h"
-#include "utils.h"
-#include "Event.h"
 
 TestScene* TestScene::sInstance = new TestScene(SceneManager::GetInstance());
 

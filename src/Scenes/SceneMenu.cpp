@@ -1,8 +1,11 @@
 #include "Pch.h"
 #include "SceneMenu.h"
-#include "SoundManager.h"
+#include "SoundPlayer.h"
 #include "ParticleManager.h"
-#include "SingletonTemplate.h"
+
+namespace {
+	bool loopIsPlaying = false;
+}
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
@@ -48,8 +51,13 @@ void SceneMenu::Load()
 
 
 
-	SoundManager::GetInstance()->registerAudio("btnClickSound", "./Assets/Audio/SFX/button_click.mp3");
-	//SoundManager::GetInstance()->registerAudio("titleMusic", "./Assets/Audio/Music/sample.mp3");
+
+	myMenu.buttonSelect[0] = AEGfxTextureLoad("Assets/Menu/chicken.png");
+	myMenu.buttonSelect[1] = AEGfxTextureLoad("Assets/Menu/tiger.png");
+	myMenu.buttonSelect[2] = AEGfxTextureLoad("Assets/Menu/dragon.png");
+
+
+
 
 }
 
@@ -68,8 +76,6 @@ void SceneMenu::Init()
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight ) + 200;
 	}
 
-	//SoundManager::GetInstance()->playAudio("titleMusic", 1, -1, true);
-
 	for (int i = 0; i < 3; ++i)
 	{
 		myMenu.buttonSelectX[i] = -300.0f + i * 300.0f; // Adjust the x-coordinate as needed
@@ -79,6 +85,12 @@ void SceneMenu::Init()
 
 	ParticleManager::GetInstance()->init();
 
+	if (!loopIsPlaying) {
+		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
+		loopIsPlaying = true;
+	}
+
+	AEGfxSetCamPosition(0, 0);
 }
 
 void SceneMenu::Update(double dt)
@@ -109,8 +121,6 @@ void SceneMenu::Update(double dt)
 		my = -my;
 		my += AEGfxGetWindowHeight() / 2.0f;
 
-		SoundManager::GetInstance()->playAudio("btnClickSound");
-
 		Point cursorPos = { mx, my };
 
 		if (!myMenu.levelSelecting)
@@ -127,7 +137,9 @@ void SceneMenu::Update(double dt)
 					{
 					case 0:
 						myMenu.levelSelecting = true;
-						break;
+						SoundPlayer::stopAll();
+					loopIsPlaying = false;
+					break;
 					case 1:
 						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 						break;
@@ -298,5 +310,4 @@ void SceneMenu::Exit()
 	AEGfxTextureUnload(myMenu.pointer);
 	AEGfxTextureUnload(myMenu.bg);
 	
-	SoundManager::GetInstance()->removeAudio("btnClickSound");
 }
