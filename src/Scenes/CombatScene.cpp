@@ -54,6 +54,10 @@ namespace {
 	float deathbtnHeightEnd;
 	Point deathBtncurrScale;
 
+	//blocking variables
+	float blockingRenderTime;
+	bool blockNow;
+
 
 	//timer for the lerp
 	//const float slideAnimationDuration = 1.0f;
@@ -404,6 +408,13 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("respawn", "./Assets/Combat_UI/respawn.png");
 	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
 	RenderHelper::getInstance()->registerTexture("victory", "./Assets/Combat_UI/victory.png");
+	RenderHelper::getInstance()->registerTexture("blockwait1", "./Assets/Combat_UI/waitingForBlock1.png");
+	RenderHelper::getInstance()->registerTexture("blockwait2", "./Assets/Combat_UI/waitingForBlock2.png");
+	RenderHelper::getInstance()->registerTexture("blockwait3", "./Assets/Combat_UI/waitingForBlock3.png");
+	RenderHelper::getInstance()->registerTexture("blockNow", "./Assets/Combat_UI/BlockHappens.png");
+	RenderHelper::getInstance()->registerTexture("nian", "./Assets/Combat_UI/nian.png");
+
+
 
 	//player = new Player(100, 20);
 
@@ -439,6 +450,8 @@ void CombatScene::Init()
 	dialougeTime = 0.f;
 	winTime = 0.0f;
 
+	blockingRenderTime = 0.f;
+	blockNow = false;
 
 	deathBtnWidthEnd = 300.f;
 	deathbtnHeightEnd = 150.f;
@@ -643,13 +656,20 @@ void CombatScene::Update(double dt)
 	// when is player turn and player is not playing a quicktime event
 	if (CombatManager::getInstance().turn == TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 		updateBtns(btns[currentState]);  // render player action buttons
+		blockNow = false;
 	}
 	else if (CombatManager::getInstance().turn == TURN::ENEMY) {
+		//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
 		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
-
-		if (CombatManager::getInstance().enemyNextTurnMs <= 0) {
+		if (CombatManager::getInstance().enemyNextTurnMs < 0.25f * 1000) {
+			blockNow = true;
+		}
+		if (CombatManager::getInstance().enemyNextTurnMs < 0) {
+			blockingRenderTime = 0.f; //reset the rendering time
 			SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
+			//blockNow = false;
 			//Util_Camera_Shake(0.5, 100);
+			//CombatManager::getInstance().selectedEnemy->EnemyAttackStop();
 
 			float multiplier = 1.f;
 			switch (player->blockingState) {
@@ -739,6 +759,31 @@ void CombatScene::Render()
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
 			else if (CombatManager::getInstance().turn == TURN::ENEMY) {
+				//if (blockingRenderTime < 0.5f) {
+				if (blockNow == false) {
+					RenderHelper::getInstance()->texture("blockwait1", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+
+				}
+				else {
+					RenderHelper::getInstance()->texture("blockNow", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+
+				}
+					//RenderHelper::getInstance()->texture("blockwait1", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+				//}
+				//else if(blockingRenderTime < 1.f){
+				//	RenderHelper::getInstance()->texture("blockwait2", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+
+				//}
+				//else {
+				//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+
+				//}
+				//blockingRenderTime += AEFrameRateControllerGetFrameTime();
+				//if (blockingRenderTime >= 1.5f) {
+				//	blockingRenderTime = 0.f;
+				//}
+
+				//panel text
 				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
 			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent) {
