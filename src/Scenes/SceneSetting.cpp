@@ -35,20 +35,7 @@ SceneSetting::~SceneSetting()
 void SceneSetting::Load()
 {
 
-	//credits.mesh = 0; 
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 1.0f,
-		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFF00FFFF, 0.0f, 0.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
-	mySetting.mesh = AEGfxMeshEnd();
-
 	RenderHelper::getInstance()->registerTexture("settingbg","./Assets/Menu/setting.png");
-	mySetting.bg = AEGfxTextureLoad("Assets/Menu/setting.png");
 	//mySetting.bar[0] = AEGfxTextureLoad("Assets/Menu/bar.png");
 	//mySetting.bar[1] = AEGfxTextureLoad("Assets/Menu/bar.png");
 	RenderHelper::getInstance()->registerTexture("soundBar", "./Assets/Menu/bar.png");
@@ -89,7 +76,8 @@ void SceneSetting::Update(double dt)
 
 void SceneSetting::Render()
 {
-	texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
+	//texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
+	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 	//RenderHelper::getInstance()->texture("settingbg", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, mySetting.mesh, 1.0f);
 	RenderHelper::getInstance()->text("SOUND ON	:", AEGfxGetWindowWidth()/3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("SOUND	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 2.0f, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -109,49 +97,49 @@ void SceneSetting::Render()
 
 void SceneSetting::Exit()
 {
-	AEGfxMeshFree(mySetting.mesh);
+	//AEGfxMeshFree(mySetting.mesh);
 
 }
 
 
 
-void SceneSetting::texture1(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
-{
-	UNREFERENCED_PARAMETER(transparency);
-	UNREFERENCED_PARAMETER(texture);
-	UNREFERENCED_PARAMETER(scaleY);
-	UNREFERENCED_PARAMETER(scaleX);
-	UNREFERENCED_PARAMETER(rotation);
-	UNREFERENCED_PARAMETER(positionX);
-	UNREFERENCED_PARAMETER(positionY);
-	UNREFERENCED_PARAMETER(mesh);
-	AEGfxSetBackgroundColor(0.0f, 0.2f, 1.0f);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-
-
-	AEMtx33 scale = { 0 };
-	AEMtx33Scale(&scale, 1200, 750);
-
-	AEMtx33 transform;
-	AEMtx33Trans(&transform, 0, 0);
-
-	AEMtx33 model = { 0 };
-	AEMtx33Concat(&model, &scale, &transform);
-
-	// prepare to draw
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(0, 0, 0, 1);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1);
-	AEGfxSetTransform(model.m);
-	AEGfxTextureSet(mySetting.bg, 0, 0);
-	AEGfxMeshDraw(mySetting.mesh, AE_GFX_MDM_TRIANGLES);
-
-
-
-
-}
+//void SceneSetting::texture1(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
+//{
+//	UNREFERENCED_PARAMETER(transparency);
+//	UNREFERENCED_PARAMETER(texture);
+//	UNREFERENCED_PARAMETER(scaleY);
+//	UNREFERENCED_PARAMETER(scaleX);
+//	UNREFERENCED_PARAMETER(rotation);
+//	UNREFERENCED_PARAMETER(positionX);
+//	UNREFERENCED_PARAMETER(positionY);
+//	UNREFERENCED_PARAMETER(mesh);
+//	AEGfxSetBackgroundColor(0.0f, 0.2f, 1.0f);
+//	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+//	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+//	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+//	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+//
+//
+//	AEMtx33 scale = { 0 };
+//	AEMtx33Scale(&scale, 1200, 750);
+//
+//	AEMtx33 transform;
+//	AEMtx33Trans(&transform, 0, 0);
+//
+//	AEMtx33 model = { 0 };
+//	AEMtx33Concat(&model, &scale, &transform);
+//
+//	 prepare to draw
+//	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+//	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+//	AEGfxSetColorToAdd(0, 0, 0, 1);
+//	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+//	AEGfxSetTransparency(1);
+//	AEGfxSetTransform(model.m);
+//	AEGfxTextureSet(mySetting.bg, 0, 0);
+//	AEGfxMeshDraw(mySetting.mesh, AE_GFX_MDM_TRIANGLES);
+//
+//
+//
+//
+//}
