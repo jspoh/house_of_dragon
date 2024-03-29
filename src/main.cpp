@@ -8,6 +8,8 @@
 // ---------------------------------------------------------------------------
 // main
 
+bool gGameRunning = true;
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
@@ -19,7 +21,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	int gGameRunning = 1;
 
 	// Using custom window procedure
 	AESysInit(hInstance, nCmdShow, 1200, 750, 1, 60, true, NULL);
@@ -52,8 +53,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     	AESysFrameEnd();
     
     	// check if forcing the application to quit
-    	if (AEInputCheckTriggered(AEVK_ESCAPE) || 0 == AESysDoesWindowExist())
-    		gGameRunning = 0; //Check with prof how to run game.exit when player forcebly closes the game
+    	if (0 == AESysDoesWindowExist())
+    		gGameRunning = false; //Check with prof how to run game.exit when player forcebly closes the game
     
     	if (AEInputCheckTriggered(AEVK_0))
     		AESysSetFullScreen(1);

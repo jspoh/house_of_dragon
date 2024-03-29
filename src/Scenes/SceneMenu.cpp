@@ -138,7 +138,7 @@ void SceneMenu::Update(double dt)
 						SceneManager::GetInstance()->SetActiveScene("SceneSetting");
 						break;
 					case 3:
-						SceneManager::GetInstance()->Exit();
+						gGameRunning = false;
 						break;
 					}
 				}

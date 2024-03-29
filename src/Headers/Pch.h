@@ -50,6 +50,6 @@ Technology is prohibited.
 #include "SoundManager.h"
 #include "SoundPlayer.h"
 
-using namespace std;  // we shouldnt do this, crowds namespace
+extern bool gGameRunning;
 
 #endif //PCH_H
