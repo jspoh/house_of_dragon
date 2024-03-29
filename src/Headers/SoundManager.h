@@ -20,6 +20,9 @@ private:
 	AEAudioGroup sfxGroup;
 	AEAudioGroup musicGroup;
 
+	float SFX_VOLUME;
+	float MUSIC_VOLUME;
+
 protected:
 	std::unordered_map<std::string, AEAudio> soundMap;
 	std::unordered_map<std::string, AEAudio> musicMap;
@@ -48,5 +51,7 @@ public:
 	void setVolume(float volume, bool setMusic=false);
 
 	void stopAll();
+
+	void getVolume(float& sfx, float& music);
 };
 

@@ -19,7 +19,7 @@ Technology is prohibited.
 
 #include "Pch.h"
 
-extern int mouseX, mouseY;
+extern int mouseX, mouseY, wMouseX, wMouseY;
 extern AEVec2 camOffset;
 
 

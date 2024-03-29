@@ -19,8 +19,8 @@ def constructData() -> dict:
     data = {
         "game": {
             "audio": {
-                "sfx": 100,
-                "music": 100
+                "sfx": 1,
+                "music": 1
             }
         },
         "player": {

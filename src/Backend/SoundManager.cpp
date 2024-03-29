@@ -19,6 +19,9 @@ SoundManager::SoundManager()
 	std::cout << "Initializing SoundManager..\n";
 	sfxGroup = AEAudioCreateGroup();
 	musicGroup = AEAudioCreateGroup();
+
+	SFX_VOLUME = Database::getInstance()->data["game"]["audio"]["sfx"];
+	MUSIC_VOLUME = Database::getInstance()->data["game"]["audio"]["music"];
 }
 
 // Destructor
@@ -37,6 +40,10 @@ SoundManager::~SoundManager()
 	// Clear out the maps
 	soundMap.clear();
 	musicMap.clear();
+
+	// save volume
+	Database::getInstance()->data["game"]["audio"]["sfx"] = SFX_VOLUME;
+	Database::getInstance()->data["game"]["audio"]["music"] = MUSIC_VOLUME;
 }
 
 bool SoundManager::removeAudio(std::string ref, bool isMusic) {
@@ -101,15 +108,29 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 		return;
 	}
 
+	volume *= isMusic ? MUSIC_VOLUME : SFX_VOLUME;
+
 	AEAudioPlay(audio, isMusic ? musicGroup : sfxGroup, volume, 1.f, loop);
 }
 
 
 void SoundManager::setVolume(float volume, bool setMusic) {
+	if (setMusic) {
+		MUSIC_VOLUME = volume;
+	}
+	else {
+		SFX_VOLUME = volume;
+	}
+
 	AEAudioSetGroupVolume(setMusic ? musicGroup : sfxGroup, volume);
 }
 
 void SoundManager::stopAll() {
 	AEAudioStopGroup(sfxGroup);
 	AEAudioStopGroup(musicGroup);
+}
+
+void SoundManager::getVolume(float& sfx, float& music) {
+	sfx = SFX_VOLUME;
+	music = MUSIC_VOLUME;
 }
