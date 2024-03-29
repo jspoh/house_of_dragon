@@ -156,10 +156,13 @@ void UpdateHands(float t_dt)
 		}
 		break;
 	case Block:
+		if (player == nullptr) {
+			break;
+		}
 		if (!LeftSide) //Right Hand Blocking
-			switch (t_AnimationFrame)
+			switch (player->blockingState)
 			{
-			case 0:
+			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 				//Init
 				AEMtx33Identity(&Hand3PosData.second);
 				Hand1PosData.first = Hand3PosData.second;
@@ -169,9 +172,8 @@ void UpdateHands(float t_dt)
 				AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
 				targetPos = { -160.95f + camX, -499.5f + camY };
 				AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
-				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
-			case 1:
+			case PLAYER_BLOCKING_STATES::ON_ENTER:
 				//Start of block
 				targetPos = { -304.25f + camX, -384.f + camY };
 				LerpSpeed = 2;
@@ -181,10 +183,8 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 2;
 				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
-
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000.0;
 				break;
-			case 2:
+			case PLAYER_BLOCKING_STATES::ON_UPDATE:
 				//Hold
 				targetPos = { -304.25f + camX, -384.0f + camY };
 				LerpSpeed = 1.1;
@@ -194,9 +194,8 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 15;
 				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000.0; // Blocking Duration (Replace here)
 				break;
-			case 3:
+			case PLAYER_BLOCKING_STATES::ON_EXIT:
 				//Exit
 				targetPos = { -425.35f + camX, -498.5f + camY };
 				LerpSpeed = 5;
@@ -206,19 +205,17 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 5;
 				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000.0;
 				break;
-			case 4:
+			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 				// cooldown
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000.0;
 				break;
 			default:
 				cout << "ERROR IN BLOCKING ANIMATION" << endl;
 			}
 		else //Left Hand Blocking
-			switch (t_AnimationFrame)
+			switch (player->blockingState)
 			{
-			case 0:
+			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 				//Init
 				AEMtx33Identity(&Hand3PosData.first);
 				Hand1PosData.second = Hand3PosData.first;
@@ -228,9 +225,8 @@ void UpdateHands(float t_dt)
 				AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
 				targetPos = { 304.25f + camX, -526.f + camY };
 				AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
-				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
-			case 1:
+			case PLAYER_BLOCKING_STATES::ON_ENTER:
 				//Start of block
 				targetPos = { 160.95f + camX, -266.4f + camY };
 				LerpSpeed = 2;
@@ -241,9 +237,8 @@ void UpdateHands(float t_dt)
 				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
 
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTransitionTimeMs / 1000.0;
 				break;
-			case 2:
+			case PLAYER_BLOCKING_STATES::ON_UPDATE:
 				//Hold
 				targetPos = { -277.5f + camX, -94.35f + camY };
 				LerpSpeed = 15;
@@ -253,9 +248,8 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 1.1;
 				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldUpTimeMs / 1000.0; // Blocking Duration (Replace here)
 				break;
-			case 3:
+			case PLAYER_BLOCKING_STATES::ON_EXIT:
 				//Exit
 				targetPos = { -555.f + camX, -510.25f + camY };
 				LerpSpeed = 5;
@@ -265,11 +259,9 @@ void UpdateHands(float t_dt)
 				LerpSpeed = 5;
 				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::shieldDownTransitionTimeMs / 1000.0;
 				break;
-			case 4:
+			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 				// cooldown
-				if (t_AnimationDuration > 999) t_AnimationDuration = Player::timeBeforeNextBlockMs / 1000.0;
 				break;
 			default:
 				cout << "ERROR IN BLOCKING ANIMATION" << endl;
