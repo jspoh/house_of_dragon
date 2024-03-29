@@ -40,6 +40,10 @@ SoundManager::~SoundManager()
 	// Clear out the maps
 	soundMap.clear();
 	musicMap.clear();
+
+	// save volume
+	Database::getInstance()->data["game"]["audio"]["sfx"] = SFX_VOLUME;
+	Database::getInstance()->data["game"]["audio"]["music"] = MUSIC_VOLUME;
 }
 
 bool SoundManager::removeAudio(std::string ref, bool isMusic) {

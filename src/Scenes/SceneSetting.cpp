@@ -12,7 +12,12 @@
 	//static float timef;
 //}
 
-
+enum class MOD_STATES {
+	NONE,
+	SFX_AUDIO_VOLUME,
+	MUSIC_AUDIO_VOLUME,
+	NUM_MOD_STATES
+};
 
 
 SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::GetInstance());
@@ -72,8 +77,35 @@ void SceneSetting::Update(double dt)
 	const float minX = soundBarPos.x - soundBarScale.x / 2.f;
 	const float maxX = soundBarPos.x + soundBarScale.x / 2.f;
 
+	static MOD_STATES modState = MOD_STATES::NONE;
+	if (AEInputCheckCurr(AEVK_LBUTTON)) {
+
+		Point sPos = wtos(soundSliderPos.x, soundSliderPos.y);
+		Point mPos = wtos(musicSliderPos.x, musicSliderPos.y);
+		if (modState == MOD_STATES::SFX_AUDIO_VOLUME || CollisionChecker::isMouseInCircle(sPos.x, sPos.y, sliderRadius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			modState = MOD_STATES::SFX_AUDIO_VOLUME;
+			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
+			sfxVolume = (sliderX - minX) / (maxX - minX);
+			//std::cout << "modifying sfx: " << sfxVolume << "\n";
+		}
+		else if (modState == MOD_STATES::MUSIC_AUDIO_VOLUME || CollisionChecker::isMouseInCircle(mPos.x, mPos.y, sliderRadius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			modState = MOD_STATES::MUSIC_AUDIO_VOLUME;
+			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
+			musicVolume = (sliderX - minX) / (maxX - minX);
+			//std::cout << "modifying music: " << musicVolume << "\n";
+		}
+	}
+	else {
+		modState = MOD_STATES::NONE;
+	}
+
 	soundSliderPos.x = minX + sfxVolume * soundBarScale.x;
 	musicSliderPos.x = minX + musicVolume * soundBarScale.x;
+
+	SoundManager::GetInstance()->setVolume(sfxVolume, false);
+	SoundManager::GetInstance()->setVolume(musicVolume, true);
+
+	soundSliderPos.x = AEClamp(soundSliderPos.x, minX, maxX);
 }
 
 void SceneSetting::Render()

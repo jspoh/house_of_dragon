@@ -59,6 +59,9 @@ void GameManager::Run()
 	}
 
 	AEInputGetCursorPosition(&mouseX, &mouseY);
+	Point wMouse = stow(mouseX, mouseY);
+	wMouseX = static_cast<int>(wMouse.x);
+	wMouseY = static_cast<int>(wMouse.y);
 	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
 	SceneManager::GetInstance()->Update((f32)AEFrameRateControllerGetFrameTime());
