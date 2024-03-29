@@ -69,7 +69,7 @@ namespace {
 			}
 		}
 
-		std::cout << static_cast<int>(player->blockingState) << "\n";
+		//std::cout << static_cast<int>(player->blockingState) << "\n";
 		//LeftSide = false;
 
 		if (!LeftSide) //Right Hand Blocking
@@ -1812,11 +1812,14 @@ void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
 void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
 {
-	mouseX -= AEGfxGetWindowWidth() / 2;
-	mouseX = static_cast<int>(mouseX * 1.5);
+	int mX, mY;
+	AEInputGetCursorPosition(&mX, &mY);
+
+	mX -= AEGfxGetWindowWidth() / 2;
+	mX = static_cast<int>(mX * 1.5);
 	static int y = -120;
-	mouseY = static_cast<int>(mouseY / 1.5 + y);
-	mouseY *= -1;
+	mY = static_cast<int>(mY / 1.5 + y);
+	mY *= -1;
 	
 	//Furthest from sun -> Closest to sun
 	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
@@ -1825,7 +1828,7 @@ void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
 	{
 		AEMtx33Identity(&m_TransformSunLensData[i]);
 		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x+ scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
-		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mouseX + (m_sunPos.x - mouseX) * (i+ varience[i] + 1) / 8, mouseY + (m_sunPos.y - mouseY) * (i + varience[i] + 1) / 8);
+		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mX + (m_sunPos.x - mX) * (i+ varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
 	}
 }
 void SceneLevelBuilder::UpdateClouds(f32 t_dt)

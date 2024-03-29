@@ -621,8 +621,8 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	// ensure that there are always mcoCount objects on screen
 	while (_multiClickObjects.size() < _mcoCount && !_mcoIsTransitioningOut) {
 		_multiClickObjects.push_back(MultiClickObject{
-			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowWidth())),
-			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowHeight())),
+			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowWidth() - spawnOffsetX * 2) + spawnOffsetX),
+			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowHeight() - spawnOffsetY * 2) + spawnOffsetY),
 			_mcoRadius,
 			true,
 			0.f

@@ -683,16 +683,16 @@ void CombatScene::Update(double dt)
 
 				}
 				else if (dialogueState != DIALOGUE::WIN) {
-					delete player;
-					player = nullptr;
-					CombatManager::getInstance().end();
-					return;
+					//delete player;
+					//player = nullptr;
+					//CombatManager::getInstance().end();
+					//return;
 				}
 				// all enemies shldve been deleted
-				//delete player;
-				//player = nullptr;
-				//CombatManager::getInstance().end();
-				//return;
+				delete player;
+				player = nullptr;
+				CombatManager::getInstance().end();
+				return;
 			}
 		}
 

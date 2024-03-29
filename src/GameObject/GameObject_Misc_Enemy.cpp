@@ -9,6 +9,8 @@ GameObject_Misc_Enemy::GameObject_Misc_Enemy()
 	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_WEAK", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Weak.png");
 	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_UPPER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_UpperJaw.png");
 	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_LOWER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_LowerJaw.png");
+
+	m_Active = false;
 }
 
 GameObject_Misc_Enemy::~GameObject_Misc_Enemy()
@@ -29,6 +31,7 @@ void GameObject_Misc_Enemy::Update(double _dt)
 
 		Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
 		//check Collision
+		//std::cout << mouseX << ", " << mouseY << " | " << pos.x << ", " << pos.y << "\n";
 		if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY)))
 				cout << "Collision with misc enemy is working" << endl;
 	}

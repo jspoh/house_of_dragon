@@ -136,6 +136,8 @@ private:
 	int _mcoMisses = 0;
 	int _mcoDisplayHits = 0;
 	int _maxMcoHits = 10;
+	static constexpr int spawnOffsetX = 200;		// dont spawn within 200 pixels of border
+	static constexpr int spawnOffsetY = 200;
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
 	const int _mcoCount = 3;
