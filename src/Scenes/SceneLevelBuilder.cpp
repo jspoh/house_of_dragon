@@ -507,8 +507,8 @@ void UpdateHands(float t_dt)
 		}
 		break;
 	default:
-		t_AnimationFrame = t_AnimationFrame != 0 ? 4 : 0;	// go to cooldown if not not blocking(blocking or transition state)
-		t_AnimationDuration = t_AnimationFrame == 4 ? t_AnimationDuration : 9999.0;	// dont reset timer until cooldown is over
+		t_AnimationFrame = 0;	// go to cooldown if not not blocking(blocking or transition state)
+		t_AnimationDuration = 9999.0;	// dont reset timer until cooldown is over
 		Hand1PosData.first = Hand1PosData.second = {};
 		Hand2PosData.first = Hand2PosData.second = {};
 		Hand3PosData.first = Hand3PosData.second = {};
