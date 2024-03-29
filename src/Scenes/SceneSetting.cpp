@@ -19,17 +19,20 @@ SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::GetInstan
 
 SceneSetting::SceneSetting()
 {
-
+	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
 }
 
 SceneSetting::SceneSetting(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneSetting", this);
+	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
+
 
 }
 
 SceneSetting::~SceneSetting()
 {
+
 }
 
 
@@ -38,14 +41,7 @@ void SceneSetting::Load()
 {
 
 	RenderHelper::getInstance()->registerTexture("settingbg", "./Assets/Menu/setting.png");
-	//mySetting.bar[0] = AEGfxTextureLoad("Assets/Menu/bar.png");
-	//mySetting.bar[1] = AEGfxTextureLoad("Assets/Menu/bar.png");
-	RenderHelper::getInstance()->registerTexture("soundBar", "./Assets/Menu/bar.png");
-	RenderHelper::getInstance()->registerTexture("msuicnote", "./Assets/Menu/musicnote.png");
-
-
-	//mySetting.bar[0] = AEGfxTextureLoad("./Assets/Menu/bar.png");
-	//mySetting.bar[1] = AEGfxTextureLoad("./Assets/Menu/bar.png");
+	RenderHelper::getInstance()->registerTexture("musicnote", "./Assets/Menu/musicnote.png");
 
 }
 
@@ -61,7 +57,6 @@ void SceneSetting::Init()
 
 void SceneSetting::Update(double dt)
 {
-	UNREFERENCED_PARAMETER(dt);
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
@@ -72,6 +67,12 @@ void SceneSetting::Update(double dt)
 	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
 	ParticleManager::GetInstance()->update(dt);
 
+	/* update slider position */
+
+	// get updated volume values
+	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
+
+	const float sliderRadius = max(sliderScale.x, sliderScale.y);
 
 
 }
@@ -81,16 +82,14 @@ void SceneSetting::Render()
 	//texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
 	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 	//RenderHelper::getInstance()->texture("settingbg", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, mySetting.mesh, 1.0f);
-	RenderHelper::getInstance()->text("SOUND ON	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	RenderHelper::getInstance()->text("DIFFICULTY	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("SOUND	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 2.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-	RenderHelper::getInstance()->text("MUISC	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 1.6f, 1.0f, 1.0f, 1.0f, 1.0f);
+	RenderHelper::getInstance()->text("MUSIC	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 1.6f, 1.0f, 1.0f, 1.0f, 1.0f);
 
-	RenderHelper::getInstance()->texture("soundBar", 35.0f, 5.0f, 900, 1000);
-	RenderHelper::getInstance()->texture("soundBar", 35.0f, -50.0f, 900, 1000);
-	RenderHelper::getInstance()->texture("msuicnote", 25.0f, -20.0f, 20, 30);
-	RenderHelper::getInstance()->texture("msuicnote", 25.0f, -80.0f, 20, 30);
-
-
+	RenderHelper::getInstance()->rect(soundBarPos.x, soundBarPos.y, soundBarScale.x, soundBarScale.y, 0, soundBarColor);
+	RenderHelper::getInstance()->rect(musicBarPos.x, musicBarPos.y, soundBarScale.x, soundBarScale.y, 0, soundBarColor);
+	RenderHelper::getInstance()->texture("musicnote", soundSliderPos.x, soundSliderPos.y, sliderScale.x, sliderScale.y);
+	RenderHelper::getInstance()->texture("musicnote", musicSliderPos.x, musicSliderPos.y, sliderScale.x, sliderScale.y);
 
 
 	ParticleManager::GetInstance()->render();
