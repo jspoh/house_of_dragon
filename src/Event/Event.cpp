@@ -800,7 +800,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			const float demonSpeed = rand() % static_cast<int>(_demonMaxSpeed - _demonMinSpeed) + _demonMinSpeed;
 
 			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - _demonRadius * 2) + _demonRadius;
-			d.y = AEGfxGetWindowHeight() * 0.2f;
+			d.y = AEGfxGetWindowHeight() * 0.15f;
 			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);
 			d.radius = _demonRadius;
 			d.isActive = true;

@@ -38,6 +38,8 @@ private:
 public:
 	~CombatManager();
 
+	static constexpr int PLAYER_BLOCKING_REACTION_ALLOWANCE_MS = 750;
+
 	TURN turn = TURN::PLAYER;
 	EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
 	double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
