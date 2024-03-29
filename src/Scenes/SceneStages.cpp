@@ -8,8 +8,6 @@ SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance(
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
 	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
-	mouseX(0),
-	mouseY(0),
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
 	pTextFont(0)
@@ -19,8 +17,6 @@ SceneStages::SceneStages() :
 SceneStages::SceneStages(SceneManager* _sceneMgr) :
 	m_LevelBuilder{ nullptr },
 	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
-	mouseX(0),
-	mouseY(0),
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
 	pTextFont(0)

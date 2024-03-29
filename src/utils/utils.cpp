@@ -17,6 +17,9 @@ Technology is prohibited.
 #include "Pch.h"
 #include "utils.h"
 
+int mouseX, mouseY;
+AEVec2 camOffset;
+
 
 /*utility functions*/
 

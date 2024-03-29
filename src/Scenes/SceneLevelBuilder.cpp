@@ -204,7 +204,6 @@ void UpdateHands(float t_dt)
 {
 	LerpSpeed = 10.0;
 	AEGfxGetCamPosition(&camX, &camY);
-	static int mouseX{}, mouseY{};
 
 	//camX += AEGfxGetWindowWidth() / 2;
 	//camY -= AEGfxGetWindowHeight() / 2;
@@ -1285,8 +1284,6 @@ void SceneLevelBuilder::Render()
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// BACKDROP RENDER
 	{
-		int mouseX, mouseY;
-		AEInputGetCursorPosition(&mouseX, &mouseY);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
 		for (int i = 0; i < 9; i++)
 		{
@@ -1815,8 +1812,6 @@ void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
 void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
 {
-	int mouseX, mouseY;
-	AEInputGetCursorPosition(&mouseX, &mouseY);
 	mouseX -= AEGfxGetWindowWidth() / 2;
 	mouseX = static_cast<int>(mouseX * 1.5);
 	static int y = -120;
@@ -1835,9 +1830,7 @@ void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
 }
 void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 {
-	int mouseX, mouseY;
 	float t_CloudMaxSpeed = 10.0f;// - to go left, + to go right
-	AEInputGetCursorPosition(&mouseX, &mouseY);
 	for (int i = 0; i < m_TransformCloudsData.size(); i++)
 	{
 		if (i / 3 != 1)//Special case for this texture pack

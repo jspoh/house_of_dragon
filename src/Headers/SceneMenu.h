@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef SCENE_MENU_H
 #define SCENE_MENU_H
 
@@ -22,16 +24,15 @@ public:
     virtual void Exit();
 
     typedef struct {
-        AEGfxTexture* bg;
-        AEGfxTexture* pointer;
-        AEGfxTexture* title;
-        AEGfxTexture* transitionBG;
-        AEGfxVertexList* mesh;
         s8 fontID;
+        std::string bg;
+        std::string pointer;
+        std::string title;
+        std::string transitionBG;
         float buttonX[4];
         float buttonY[4];
-        AEGfxTexture* button[4];
-        AEGfxTexture* buttonSelect[3];
+        std::string button[4];
+        std::string buttonSelect[3];
         s32 mouseX, mouseY;
         float buttonWidth, buttonHeight;
         bool hovering[4];

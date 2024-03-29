@@ -72,8 +72,6 @@ private:
 	bool _isRenderingEventResult = false;  // is render success/failure animation
 	double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
 
-	Point camOffset{ 0 };
-
 	int _elapsedTimeMs = 0;
 	int _totalElapsedMs = 0;
 	bool _useOutline = true;

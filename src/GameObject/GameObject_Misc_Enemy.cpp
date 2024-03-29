@@ -26,10 +26,6 @@ void GameObject_Misc_Enemy::Update(double _dt)
 	//Update Enemy Logic or anything basic
 	if (m_Active)
 	{
-		int mouseX, mouseY;
-		AEInputGetCursorPosition(&mouseX, &mouseY);
-		AEVec2 camOffset;
-		AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
 		Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
 		//check Collision

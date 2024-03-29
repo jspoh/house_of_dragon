@@ -157,8 +157,6 @@ namespace {
 			for (const std::string bv : bvalues) { // bruh wa this got got me too confused
 				Point btnPos = stow(bPosX, btnY);  // button rendering position
 
-				int mouseX, mouseY;
-				AEInputGetCursorPosition(&mouseX, &mouseY);
 				//std::cout << bPosX << " | " << btnY << "\n";
 				if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 					//std::cout << "mouse in rect" << bv << "\n";
@@ -256,8 +254,6 @@ namespace {
 	}
 
 	void updateDeathBtns() {
-		int mouseX, mouseY;
-		AEInputGetCursorPosition(&mouseX, &mouseY);
 		//main menu
 		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {

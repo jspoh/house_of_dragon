@@ -3,12 +3,14 @@
 #include "ParticleManager.h"
 
 // should put in namespace to avoid cluttering
-static char strBuffer[1024];
-static char strBuffer1[1024];
-static float speed = 8;
-static Point text;
-static float scrolling;
-static float timef;
+//namespace {
+	//static char strBuffer[1024];
+	//static char strBuffer1[1024];
+	//static float speed = 8;
+	//static Point text;
+	//static float scrolling;
+	//static float timef;
+//}
 
 
 
@@ -35,7 +37,7 @@ SceneSetting::~SceneSetting()
 void SceneSetting::Load()
 {
 
-	RenderHelper::getInstance()->registerTexture("settingbg","./Assets/Menu/setting.png");
+	RenderHelper::getInstance()->registerTexture("settingbg", "./Assets/Menu/setting.png");
 	//mySetting.bar[0] = AEGfxTextureLoad("Assets/Menu/bar.png");
 	//mySetting.bar[1] = AEGfxTextureLoad("Assets/Menu/bar.png");
 	RenderHelper::getInstance()->registerTexture("soundBar", "./Assets/Menu/bar.png");
@@ -79,12 +81,12 @@ void SceneSetting::Render()
 	//texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
 	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 	//RenderHelper::getInstance()->texture("settingbg", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, mySetting.mesh, 1.0f);
-	RenderHelper::getInstance()->text("SOUND ON	:", AEGfxGetWindowWidth()/3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	RenderHelper::getInstance()->text("SOUND ON	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("SOUND	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 2.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("MUISC	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 1.6f, 1.0f, 1.0f, 1.0f, 1.0f);
 
 	RenderHelper::getInstance()->texture("soundBar", 35.0f, 5.0f, 900, 1000);
-	RenderHelper::getInstance()->texture("soundBar", 35.0f, -50.0f, 900, 1000);	
+	RenderHelper::getInstance()->texture("soundBar", 35.0f, -50.0f, 900, 1000);
 	RenderHelper::getInstance()->texture("msuicnote", 25.0f, -20.0f, 20, 30);
 	RenderHelper::getInstance()->texture("msuicnote", 25.0f, -80.0f, 20, 30);
 

@@ -57,7 +57,6 @@ private:
 
 	s8 pTextFont;
 
-	int mouseX, mouseY; //For GetCursorPosition Function, s32
 
 	////////////////////////////////////////////////////////////////////////
 	//Screen shake

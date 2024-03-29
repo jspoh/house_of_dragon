@@ -44,8 +44,6 @@ private:
 	// !TODO: jspoh json difficulty settinng
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
-	AEVec2 camOffset{ 0,0 };
-
 	Shield shield;
 
 	void _drawHealth(float screenX, float screenY);

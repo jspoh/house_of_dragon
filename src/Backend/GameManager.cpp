@@ -58,6 +58,9 @@ void GameManager::Run()
 		SoundPlayer::GlobalAudio::getInstance().playSfxClick();
 	}
 
+	AEInputGetCursorPosition(&mouseX, &mouseY);
+	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
 	SceneManager::GetInstance()->Update((f32)AEFrameRateControllerGetFrameTime());
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 

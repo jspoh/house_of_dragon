@@ -25,39 +25,30 @@ SceneMenu::~SceneMenu()
 
 void SceneMenu::Load()
 {
-	AEGfxMeshStart();
-	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 1.0f,
-		0.5f, -0.5f, 0xFFFFFF00, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0xFF00FFFF, 0.0f, 0.0f);
-	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
-		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
 
-	myMenu.mesh = AEGfxMeshEnd();
-
-	myMenu.bg = AEGfxTextureLoad("Assets/Menu/bg.png");
-	myMenu.pointer = AEGfxTextureLoad("Assets/Menu/buttons/dagger.png");
-	myMenu.button[0] = AEGfxTextureLoad("Assets/Menu/buttons/olay.png");
-	myMenu.button[1] = AEGfxTextureLoad("Assets/Menu/buttons/xredit.png");
-	myMenu.button[2] = AEGfxTextureLoad("Assets/Menu/buttons/aetting.png");
-	myMenu.button[3] = AEGfxTextureLoad("Assets/Menu/buttons/quit.png");
+	myMenu.bg = "menuBg";
+	myMenu.pointer = "dagger";
+	myMenu.button[0] = "olay";
+	myMenu.button[1] = "xredit";
+	myMenu.button[2] = "aetting";
+	myMenu.button[3] = "quit";
 
 
-	myMenu.buttonSelect[0] = AEGfxTextureLoad("Assets/Menu/chicken.png");
-	myMenu.buttonSelect[1] = AEGfxTextureLoad("Assets/Menu/tiger.png");
-	myMenu.buttonSelect[2] = AEGfxTextureLoad("Assets/Menu/dragon.png");
+	myMenu.buttonSelect[0] = "chicken";
+	myMenu.buttonSelect[1] = "tiger";
+	myMenu.buttonSelect[2] = "dragon_level_select";
 
 
+	RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
+	RenderHelper::getInstance()->registerTexture("dagger", "Assets/Menu/buttons/dagger.png");
+	RenderHelper::getInstance()->registerTexture("olay", "Assets/Menu/buttons/olay.png");
+	RenderHelper::getInstance()->registerTexture("xredit", "Assets/Menu/buttons/xredit.png");
+	RenderHelper::getInstance()->registerTexture("aetting", "Assets/Menu/buttons/aetting.png");
+	RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/quit.png");
 
-
-	myMenu.buttonSelect[0] = AEGfxTextureLoad("Assets/Menu/chicken.png");
-	myMenu.buttonSelect[1] = AEGfxTextureLoad("Assets/Menu/tiger.png");
-	myMenu.buttonSelect[2] = AEGfxTextureLoad("Assets/Menu/dragon.png");
-
-
-
+	RenderHelper::getInstance()->registerTexture("chicken", "Assets/Menu/chicken.png");
+	RenderHelper::getInstance()->registerTexture("tiger", "Assets/Menu/tiger.png");
+	RenderHelper::getInstance()->registerTexture("dragon_level_select", "Assets/Menu/dragon.png");
 
 }
 
@@ -73,7 +64,7 @@ void SceneMenu::Init()
 	for (int i = 0; i < 4; ++i)
 	{
 		myMenu.buttonX[i] = 0;
-		myMenu.buttonY[i] = -i * (myMenu.buttonHeight ) + 200;
+		myMenu.buttonY[i] = -i * (myMenu.buttonHeight) + 200;
 	}
 
 	for (int i = 0; i < 3; ++i)
@@ -138,8 +129,8 @@ void SceneMenu::Update(double dt)
 					case 0:
 						myMenu.levelSelecting = true;
 						SoundPlayer::stopAll();
-					loopIsPlaying = false;
-					break;
+						loopIsPlaying = false;
+						break;
 					case 1:
 						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 						break;
@@ -172,7 +163,7 @@ void SceneMenu::Update(double dt)
 					case 1:SceneManager::GetInstance()->SetActiveScene("SceneStages");
 						SoundPlayer::stopAll();
 						loopIsPlaying = false;
-						break;	
+						break;
 					case 2:SceneManager::GetInstance()->SetActiveScene("SceneStages");
 						SoundPlayer::stopAll();
 						loopIsPlaying = false;
@@ -201,106 +192,28 @@ void SceneMenu::Update(double dt)
 
 void SceneMenu::Render()
 {
-	AEGfxSetBackgroundColor(0.0f, 0.2f, 1.0f);
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-
-	// Render the background image to fit the whole window
-	AEMtx33 bgScale = { 0 };
-	AEMtx33Scale(&bgScale, (float)AEGfxGetWindowWidth(), (float)AEGfxGetWindowHeight());
-
-	AEMtx33 bgTransform = { 0 };
-	AEMtx33Trans(&bgTransform, 0.0f, 0.0f);
-
-	AEMtx33 bgModel = { 0 };
-	AEMtx33Concat(&bgModel, &bgScale, &bgTransform);
-
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(0, 0, 0, 1);
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	AEGfxSetTransparency(1);
-	AEGfxSetTransform(bgModel.m);
-	AEGfxTextureSet(myMenu.bg, 0, 0);
-	AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+	RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
 	// Render the menu buttons
 	for (int i = 3; i >= 0; --i)
 	{
-		AEMtx33 scale = { 0 };
-		AEMtx33Scale(&scale, myMenu.buttonWidth, myMenu.buttonHeight);
-
-		AEMtx33 transform = { 0 };
-		AEMtx33Trans(&transform, myMenu.buttonX[i], myMenu.buttonY[i]);
-
-		AEMtx33 model = { 0 };
-		AEMtx33Concat(&model, &transform, &scale);
-
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(0, 0, 0, 1);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1);
-		AEGfxSetTransform(model.m);
-		AEGfxTextureSet(myMenu.button[i], 0, 0);
-		AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+		RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth, myMenu.buttonHeight);
 
 		if (myMenu.hovering[i])
 		{
-			AEMtx33 daggerScale = { 0 };
-			AEMtx33Scale(&daggerScale, 40.0f, 40.0f);
-
-			AEMtx33 daggerTranslate = { 0 };
-			AEMtx33Trans(&daggerTranslate, myMenu.buttonX[i] - myMenu.buttonWidth / 2.0f - 30.0f, myMenu.buttonY[i]);
-
-			AEMtx33 daggerTransform = { 0 };
-			AEMtx33Concat(&daggerTransform, &daggerScale, &daggerTranslate);
-
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-			AEGfxSetColorToAdd(0, 0, 0, 1);
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			AEGfxSetTransparency(1);
-			AEGfxSetTransform(daggerTransform.m);
-			AEGfxTextureSet(myMenu.pointer, 0, 0);
-			AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+			RenderHelper::getInstance()->texture(myMenu.pointer, myMenu.buttonX[i] - myMenu.buttonWidth / 2.0f - 30.0f, myMenu.buttonY[i], 40, 40);
 		}
 	}
 
-	// Render the background image again before rendering buttonSelect
+	// Render the background image again before rendering buttonSelect - hmm why render again?
 	if (myMenu.levelSelecting)
 	{
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(0, 0, 0, 1);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1);
-		AEGfxSetTransform(bgModel.m);
-		AEGfxTextureSet(myMenu.bg, 0, 0);
-		AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+		RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
 		// Render the buttonSelect buttons
 		for (int i = 0; i < 3; ++i)
 		{
-			AEMtx33 selectScale = { 0 };
-			AEMtx33Scale(&selectScale, myMenu.buttonWidth, myMenu.buttonHeight);
-
-			AEMtx33 selectTransform = { 0 };
-			AEMtx33Trans(&selectTransform, myMenu.buttonSelectX[i], myMenu.buttonSelectY[i]);
-
-			AEMtx33 selectModel = { 0 };
-			AEMtx33Concat(&selectModel, &selectTransform, &selectScale);
-
-			AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-			AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-			AEGfxSetColorToAdd(0, 0, 0, 1);
-			AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-			AEGfxSetTransparency(1);
-			AEGfxSetTransform(selectModel.m);
-			AEGfxTextureSet(myMenu.buttonSelect[i], 0, 0);
-			AEGfxMeshDraw(myMenu.mesh, AE_GFX_MDM_TRIANGLES);
+			RenderHelper::getInstance()->texture(myMenu.buttonSelect[i], myMenu.buttonSelectX[i], myMenu.buttonSelectY[i], myMenu.buttonWidth, myMenu.buttonHeight);
 		}
 	}
 
@@ -310,12 +223,5 @@ void SceneMenu::Render()
 void SceneMenu::Exit()
 {
 	std::cout << "Exiting Scene Menu" << std::endl;
-	for (int i = 0; i < 4; i++)
-	{
-		AEGfxTextureUnload(myMenu.button[i]);
-	}
-	AEGfxMeshFree(myMenu.mesh);
-	AEGfxTextureUnload(myMenu.pointer);
-	AEGfxTextureUnload(myMenu.bg);
-	
+
 }
