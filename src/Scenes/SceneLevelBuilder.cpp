@@ -42,11 +42,11 @@ namespace {
 		if (player == nullptr) {
 			return;
 		}
-		if (!LeftSide) //Right Hand Blocking
-			switch (player->blockingState)
-			{
-			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-				//Init
+
+		static PLAYER_BLOCKING_STATES prevState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
+
+		if (player->blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+			if (!LeftSide) {
 				AEMtx33Identity(&Hand3PosData.second);
 				Hand1PosData.first = Hand3PosData.second;
 				AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
@@ -55,6 +55,28 @@ namespace {
 				AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
 				targetPos = { -160.95f + camX, -499.5f + camY };
 				AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+			}
+
+			else {
+				AEMtx33Identity(&Hand3PosData.first);
+				Hand1PosData.second = Hand3PosData.first;
+				AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+				targetPos = { 160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+				targetPos = { 304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+			}
+		}
+
+		std::cout << static_cast<int>(player->blockingState) << "\n";
+		//LeftSide = false;
+
+		if (!LeftSide) //Right Hand Blocking
+			switch (player->blockingState)
+			{
+			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+				//Init
 				break;
 			case PLAYER_BLOCKING_STATES::ON_ENTER:
 				//Start of block
@@ -161,7 +183,9 @@ namespace {
 			default:
 				cout << "ERROR IN BLOCKING ANIMATION" << endl;
 			}
-	}
+	
+			prevState = player->blockingState;
+}
 }
 
 bool GameScene::combatAudioLoopIsPlaying = false;
@@ -221,9 +245,9 @@ void UpdateHands(float t_dt)
 	}
 	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 
-	if (player != nullptr) {
-		std::cout << static_cast<int>(player->blockingState) << "\n";
-	}
+	//if (player != nullptr) {
+	//	std::cout << static_cast<int>(player->blockingState) << "\n";
+	//}
 
 	handleBlockingAnimation();
 
