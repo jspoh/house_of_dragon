@@ -64,6 +64,8 @@ public:
 	 */
 	bool removeMeshByRef(std::string reference);
 
+	AEGfxVertexList* getMeshByRef(std::string reference);
+
 	//RenderHelper* getInstance();
 
 	/**

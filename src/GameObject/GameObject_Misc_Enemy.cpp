@@ -97,7 +97,7 @@ GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& 
 	GameObject_Misc_Enemy* result = new GameObject_Misc_Enemy();
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
-	result->m_Active = true;
+	result->m_Active = false;
 	result->Init();
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);

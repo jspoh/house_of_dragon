@@ -31,7 +31,9 @@ void GameObject_AmeTest::Init()
 
 
 	// Saving the mesh (list of triangles) in pMesh
-	pMesh = AEGfxMeshEnd();
+	//pMesh = AEGfxMeshEnd();
+	RenderHelper::getInstance()->registerMeshByRef("ameMesh", AEGfxMeshEnd());
+	RenderHelper::getInstance()->registerTexture("ameTex", "Assets/ame.png");
 
 	current_sprite_index = rand() % 8;
 }
@@ -84,7 +86,7 @@ void GameObject_AmeTest::Render()
 	AEGfxSetTransparency(1.0f);
 
 	// Set the texture to pTex
-	AEGfxTextureSet(pTex, current_sprite_uv_offset_x, current_sprite_uv_offset_y);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("ameTex"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
 
 	AEMtx33 transform = { 0 };
 	AEMtx33 scale;
@@ -106,13 +108,12 @@ void GameObject_AmeTest::Render()
 	// Choose the transform to use
 	AEGfxSetTransform(transform.m);
 	// Actually drawing the mesh 
-	AEGfxMeshDraw(pMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(RenderHelper::getInstance()->getMeshByRef("ameMesh"), AE_GFX_MDM_TRIANGLES);
 }
 
 void GameObject_AmeTest::Exit()
 {
-	AEGfxMeshFree(pMesh);
-	AEGfxTextureUnload(pTex);
+
 }
 
 // Set the maxAABB and minAABB
@@ -131,6 +132,7 @@ GameObject_AmeTest* Create::Ame(const std::string& _refName,
 	result->m_Scale = _scale;
 	result->m_RefName = _refName;
 	result->Init();
+	result->m_Active = false;
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
 	return result;

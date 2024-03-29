@@ -97,6 +97,15 @@ bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mes
 	}
 }
 
+AEGfxVertexList* RenderHelper::getMeshByRef(std::string reference) {
+	auto it = _meshRef.find(reference);
+	if (it != _meshRef.end()) {
+		return it->second;
+	}
+	std::cerr << "Mesh with ref " << reference << " does not exist!\n";
+	throw std::exception();
+}
+
 bool RenderHelper::removeMeshByRef(std::string reference) {
 	try {
 		AEGfxMeshFree(_meshRef[reference]);
