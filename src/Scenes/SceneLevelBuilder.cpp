@@ -20,18 +20,154 @@ Technology is prohibited.
 #include "Pause.h"
 #include "SceneStages.h"
 
-bool GameScene::combatAudioLoopIsPlaying = false;
-bool GameScene::afterInit = false;
-
-//Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
 extern Player* player;
 //player->blockingState;		// player blocking state here
 
-//First data is left, second data is right
-std::pair<AEMtx33, AEMtx33> Hand1PosData{};
-std::pair<AEMtx33, AEMtx33> Hand2PosData{};
-std::pair<AEMtx33, AEMtx33> Hand3PosData{};
-std::pair<AEMtx33, AEMtx33> Hand4PosData{};
+namespace {
+	//First data is left, second data is right
+	std::pair<AEMtx33, AEMtx33> Hand1PosData{};
+	std::pair<AEMtx33, AEMtx33> Hand2PosData{};
+	std::pair<AEMtx33, AEMtx33> Hand3PosData{};
+	std::pair<AEMtx33, AEMtx33> Hand4PosData{};
+
+	static int t_AnimationFrame = 0;
+	static double t_AnimationDuration = 0.0;
+	static bool LeftSide = false;
+	double LerpSpeed = 10.0;
+	AEVec2 targetPos{};
+	f32 camX, camY;
+
+	//Move to player, I WILL CALL WITH SPACEBAR, have a way for me to get if the player is blocking
+	void handleBlockingAnimation() {
+		if (player == nullptr) {
+			return;
+		}
+		if (!LeftSide) //Right Hand Blocking
+			switch (player->blockingState)
+			{
+			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+				//Init
+				AEMtx33Identity(&Hand3PosData.second);
+				Hand1PosData.first = Hand3PosData.second;
+				AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+				targetPos = { -304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+				targetPos = { -160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+				break;
+			case PLAYER_BLOCKING_STATES::ON_ENTER:
+				//Start of block
+   				targetPos = { -304.25f + camX, -384.f + camY };
+				LerpSpeed = 2;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { -160.95f + camX, -266.4f + camY };
+				LerpSpeed = 2;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+				break;
+			case PLAYER_BLOCKING_STATES::ON_UPDATE:
+				//Hold
+				targetPos = { -304.25f + camX, -384.0f + camY };
+				LerpSpeed = 1.1;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 277.5f + camX, -94.35f + camY };
+				LerpSpeed = 15;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
+				break;
+			case PLAYER_BLOCKING_STATES::ON_EXIT:
+				//Exit
+				targetPos = { -425.35f + camX, -498.5f + camY };
+				LerpSpeed = 5;
+				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 555.f + camX, -510.25f + camY };
+				LerpSpeed = 5;
+				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+
+				break;
+			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+				// cooldown
+				LeftSide = rand() % 2 - 1;		// huh why -1 here
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+				break;
+			default:
+				cout << "ERROR IN BLOCKING ANIMATION" << endl;
+			}
+		else //Left Hand Blocking
+			switch (player->blockingState)
+			{
+			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+				//Init
+				AEMtx33Identity(&Hand3PosData.first);
+				Hand1PosData.second = Hand3PosData.first;
+				AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+				targetPos = { 160.95f + camX, -499.5f + camY };
+				AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+				AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+				targetPos = { 304.25f + camX, -526.f + camY };
+				AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+				break;
+			case PLAYER_BLOCKING_STATES::ON_ENTER:
+				//Start of block
+				targetPos = { 160.95f + camX, -266.4f + camY };
+				LerpSpeed = 2;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 304.25f + camX, -384.f + camY };
+				LerpSpeed = 2;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+
+				break;
+			case PLAYER_BLOCKING_STATES::ON_UPDATE:
+				//Hold
+				targetPos = { -277.5f + camX, -94.35f + camY };
+				LerpSpeed = 15;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
+				targetPos = { 304.25f + camX, -384.0f + camY };
+				LerpSpeed = 1.1;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+				break;
+			case PLAYER_BLOCKING_STATES::ON_EXIT:
+				//Exit
+				targetPos = { -555.f + camX, -510.25f + camY };
+				LerpSpeed = 5;
+				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+				targetPos = { 425.35f + camX, -498.5f + camY };
+				LerpSpeed = 5;
+				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+
+				break;
+			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+				// cooldown
+				LeftSide = rand() % 2 - 1;		// huh why -1 here
+				Hand1PosData.first = Hand1PosData.second = {};
+				Hand2PosData.first = Hand2PosData.second = {};
+				Hand3PosData.first = Hand3PosData.second = {};
+				Hand4PosData.first = Hand4PosData.second = {};
+				break;
+			default:
+				cout << "ERROR IN BLOCKING ANIMATION" << endl;
+			}
+	}
+}
+
+bool GameScene::combatAudioLoopIsPlaying = false;
+bool GameScene::afterInit = false;
+
+
 enum HandAnimationType
 {
 	None,
@@ -42,12 +178,7 @@ enum HandAnimationType
 HandAnimationType HandStateAnimationType = None; //Can use enum
 void UpdateHands(float t_dt)
 {
-	static int t_AnimationFrame = 0;
-	static double t_AnimationDuration = 0.0;
-	static bool LeftSide = false;
-	double LerpSpeed = 10.0;
-	AEVec2 targetPos{};
-	f32 camX, camY;
+	LerpSpeed = 10.0;
 	AEGfxGetCamPosition(&camX, &camY);
 	static int mouseX{}, mouseY{};
 
@@ -90,9 +221,11 @@ void UpdateHands(float t_dt)
 	}
 	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 
-	//if (player != nullptr) {
-	//	std::cout << static_cast<int>(player->blockingState) << "\n";
-	//}
+	if (player != nullptr) {
+		std::cout << static_cast<int>(player->blockingState) << "\n";
+	}
+
+	handleBlockingAnimation();
 
 	switch (HandStateAnimationType)
 	{
@@ -156,128 +289,128 @@ void UpdateHands(float t_dt)
 		}
 		break;
 	case Block:
-		if (player == nullptr) {
-			break;
-		}
-		if (!LeftSide) //Right Hand Blocking
-			switch (player->blockingState)
-			{
-			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-				//Init
-				AEMtx33Identity(&Hand3PosData.second);
-				Hand1PosData.first = Hand3PosData.second;
-				AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
-				targetPos = { -304.25f + camX, -526.f + camY };
-				AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
-				AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
-				targetPos = { -160.95f + camX, -499.5f + camY };
-				AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
-				break;
-			case PLAYER_BLOCKING_STATES::ON_ENTER:
-				//Start of block
-				targetPos = { -304.25f + camX, -384.f + camY };
-				LerpSpeed = 2;
-				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
-				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
-				targetPos = { -160.95f + camX, -266.4f + camY };
-				LerpSpeed = 2;
-				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
-				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
-				break;
-			case PLAYER_BLOCKING_STATES::ON_UPDATE:
-				//Hold
-				targetPos = { -304.25f + camX, -384.0f + camY };
-				LerpSpeed = 1.1;
-				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
-				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
-				targetPos = { 277.5f + camX, -94.35f + camY };
-				LerpSpeed = 15;
-				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
-				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
-				break;
-			case PLAYER_BLOCKING_STATES::ON_EXIT:
-				//Exit
-				targetPos = { -425.35f + camX, -498.5f + camY };
-				LerpSpeed = 5;
-				Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
-				Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
-				targetPos = { 555.f + camX, -510.25f + camY };
-				LerpSpeed = 5;
-				Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
-				Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+		//if (player == nullptr) {
+		//	break;
+		//}
+		//if (!LeftSide) //Right Hand Blocking
+		//	switch (player->blockingState)
+		//	{
+		//	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+		//		//Init
+		//		AEMtx33Identity(&Hand3PosData.second);
+		//		Hand1PosData.first = Hand3PosData.second;
+		//		AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+		//		targetPos = { -304.25f + camX, -526.f + camY };
+		//		AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
+		//		AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+		//		targetPos = { -160.95f + camX, -499.5f + camY };
+		//		AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_ENTER:
+		//		//Start of block
+		//		targetPos = { -304.25f + camX, -384.f + camY };
+		//		LerpSpeed = 2;
+		//		Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+		//		Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+		//		targetPos = { -160.95f + camX, -266.4f + camY };
+		//		LerpSpeed = 2;
+		//		Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+		//		Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_UPDATE:
+		//		//Hold
+		//		targetPos = { -304.25f + camX, -384.0f + camY };
+		//		LerpSpeed = 1.1;
+		//		Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+		//		Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+		//		targetPos = { 277.5f + camX, -94.35f + camY };
+		//		LerpSpeed = 15;
+		//		Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+		//		Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_EXIT:
+		//		//Exit
+		//		targetPos = { -425.35f + camX, -498.5f + camY };
+		//		LerpSpeed = 5;
+		//		Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+		//		Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+		//		targetPos = { 555.f + camX, -510.25f + camY };
+		//		LerpSpeed = 5;
+		//		Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+		//		Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
 
-				LeftSide = rand() % 2 - 1;		// huh why -1 here
-				Hand1PosData.first = Hand1PosData.second = {};
-				Hand2PosData.first = Hand2PosData.second = {};
-				Hand3PosData.first = Hand3PosData.second = {};
-				Hand4PosData.first = Hand4PosData.second = {};
-				break;
-			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-				// cooldown
-				break;
-			default:
-				cout << "ERROR IN BLOCKING ANIMATION" << endl;
-			}
-		else //Left Hand Blocking
-			switch (player->blockingState)
-			{
-			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-				//Init
-				AEMtx33Identity(&Hand3PosData.first);
-				Hand1PosData.second = Hand3PosData.first;
-				AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
-				targetPos = { 160.95f + camX, -499.5f + camY };
-				AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
-				AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
-				targetPos = { 304.25f + camX, -526.f + camY };
-				AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
-				break;
-			case PLAYER_BLOCKING_STATES::ON_ENTER:
-				//Start of block
-				targetPos = { 160.95f + camX, -266.4f + camY };
-				LerpSpeed = 2;
-				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
-				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
-				targetPos = { 304.25f + camX, -384.f + camY };
-				LerpSpeed = 2;
-				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
-				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+		//		LeftSide = rand() % 2 - 1;		// huh why -1 here
+		//		Hand1PosData.first = Hand1PosData.second = {};
+		//		Hand2PosData.first = Hand2PosData.second = {};
+		//		Hand3PosData.first = Hand3PosData.second = {};
+		//		Hand4PosData.first = Hand4PosData.second = {};
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+		//		// cooldown
+		//		break;
+		//	default:
+		//		cout << "ERROR IN BLOCKING ANIMATION" << endl;
+		//	}
+		//else //Left Hand Blocking
+		//	switch (player->blockingState)
+		//	{
+		//	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+		//		//Init
+		//		AEMtx33Identity(&Hand3PosData.first);
+		//		Hand1PosData.second = Hand3PosData.first;
+		//		AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+		//		targetPos = { 160.95f + camX, -499.5f + camY };
+		//		AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+		//		AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+		//		targetPos = { 304.25f + camX, -526.f + camY };
+		//		AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_ENTER:
+		//		//Start of block
+		//		targetPos = { 160.95f + camX, -266.4f + camY };
+		//		LerpSpeed = 2;
+		//		Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+		//		Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+		//		targetPos = { 304.25f + camX, -384.f + camY };
+		//		LerpSpeed = 2;
+		//		Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+		//		Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
 
-				break;
-			case PLAYER_BLOCKING_STATES::ON_UPDATE:
-				//Hold
-				targetPos = { -277.5f + camX, -94.35f + camY };
-				LerpSpeed = 15;
-				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
-				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
-				targetPos = { 304.25f + camX, -384.0f + camY };
-				LerpSpeed = 1.1;
-				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
-				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
-				break;
-			case PLAYER_BLOCKING_STATES::ON_EXIT:
-				//Exit
-				targetPos = { -555.f + camX, -510.25f + camY };
-				LerpSpeed = 5;
-				Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
-				Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
-				targetPos = { 425.35f + camX, -498.5f + camY };
-				LerpSpeed = 5;
-				Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
-				Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_UPDATE:
+		//		//Hold
+		//		targetPos = { -277.5f + camX, -94.35f + camY };
+		//		LerpSpeed = 15;
+		//		Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+		//		Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
+		//		targetPos = { 304.25f + camX, -384.0f + camY };
+		//		LerpSpeed = 1.1;
+		//		Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+		//		Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_EXIT:
+		//		//Exit
+		//		targetPos = { -555.f + camX, -510.25f + camY };
+		//		LerpSpeed = 5;
+		//		Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+		//		Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+		//		targetPos = { 425.35f + camX, -498.5f + camY };
+		//		LerpSpeed = 5;
+		//		Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+		//		Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
 
-				LeftSide = rand() % 2 - 1;		// huh why -1 here
-				Hand1PosData.first = Hand1PosData.second = {};
-				Hand2PosData.first = Hand2PosData.second = {};
-				Hand3PosData.first = Hand3PosData.second = {};
-				Hand4PosData.first = Hand4PosData.second = {};
-				break;
-			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-				// cooldown
-				break;
-			default:
-				cout << "ERROR IN BLOCKING ANIMATION" << endl;
-			}
+		//		LeftSide = rand() % 2 - 1;		// huh why -1 here
+		//		Hand1PosData.first = Hand1PosData.second = {};
+		//		Hand2PosData.first = Hand2PosData.second = {};
+		//		Hand3PosData.first = Hand3PosData.second = {};
+		//		Hand4PosData.first = Hand4PosData.second = {};
+		//		break;
+		//	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+		//		// cooldown
+		//		break;
+		//	default:
+		//		cout << "ERROR IN BLOCKING ANIMATION" << endl;
+		//	}
 
 		//if (t_AnimationDuration < 0.0)
 		//{
