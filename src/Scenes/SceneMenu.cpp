@@ -93,12 +93,12 @@ void SceneMenu::Update(double dt)
 	ParticleManager::GetInstance()->update(dt);
 
 
-	if (AEInputCheckTriggered(AEVK_1)) {
-		SceneManager::GetInstance()->SetActiveScene("TestScene");
-	}
-	else if (AEInputCheckTriggered(AEVK_2)) {
-		SceneManager::GetInstance()->SetActiveScene("CombatScene");
-	}
+	//if (AEInputCheckTriggered(AEVK_1)) {
+	//	SceneManager::GetInstance()->SetActiveScene("TestScene");
+	//}
+	//else if (AEInputCheckTriggered(AEVK_2)) {
+	//	SceneManager::GetInstance()->SetActiveScene("CombatScene");
+	//}
 
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON))
@@ -129,6 +129,7 @@ void SceneMenu::Update(double dt)
 					case 0:
 						myMenu.levelSelecting = true;
 						SoundPlayer::stopAll();
+						SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
 						loopIsPlaying = false;
 						break;
 					case 1:
@@ -146,6 +147,7 @@ void SceneMenu::Update(double dt)
 		}
 		else
 		{
+
 			for (int i = 0; i < 3; ++i)
 			{
 				AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 2.f };
@@ -187,6 +189,14 @@ void SceneMenu::Update(double dt)
 			myMenu.hovering[i] = false;
 		}
 	}
+
+	// !TODO: implement back button too
+	if (AEInputCheckTriggered(AEVK_Q) && myMenu.levelSelecting) {
+		SoundPlayer::stopAll();
+		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
+		myMenu.levelSelecting = false;
+		return;
+	}
 }
 
 
@@ -205,7 +215,7 @@ void SceneMenu::Render()
 		}
 	}
 
-	// Render the background image again before rendering buttonSelect - hmm why render again?
+	// Render the background image again before rendering buttonSelect - should not do it like this, implement inner states in this scene
 	if (myMenu.levelSelecting)
 	{
 		RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
