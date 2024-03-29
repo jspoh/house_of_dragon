@@ -12,7 +12,6 @@
 class SceneManager;
 class SceneSetting : public Scene {
 public:
-	SceneSetting();
 	SceneSetting(SceneManager* _sceneMgr);
 	~SceneSetting();
 
@@ -69,12 +68,12 @@ private:
 
 	AEVec2 soundBarPos{ 170, -2 };
 	const AEVec2 soundBarScale{ 600, 15 };
-	AEVec2 musicBarPos{ 170, -100 };
+	AEVec2 musicBarPos{ 170, -95 };
 	const Color soundBarColor{ 1, 0.82f, 0.62f, 1.f };
 
 	const AEVec2 sliderScale{ 20, 30 };
-	AEVec2 soundSliderPos{ 0, -20 };
-	AEVec2 musicSliderPos{ 0, -75 };
+	AEVec2 soundSliderPos{ 0, -2 };
+	AEVec2 musicSliderPos{ 0, -95 };
 
 	float sfxVolume;
 	float musicVolume;

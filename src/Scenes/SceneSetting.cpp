@@ -17,15 +17,10 @@
 
 SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::GetInstance());
 
-SceneSetting::SceneSetting()
-{
-	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
-}
-
 SceneSetting::SceneSetting(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneSetting", this);
-	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
+	//SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);		// tf?? calling this stops sound from working
 
 
 }
@@ -74,7 +69,11 @@ void SceneSetting::Update(double dt)
 
 	const float sliderRadius = max(sliderScale.x, sliderScale.y);
 
+	const float minX = soundBarPos.x - soundBarScale.x / 2.f;
+	const float maxX = soundBarPos.x + soundBarScale.x / 2.f;
 
+	soundSliderPos.x = minX + sfxVolume * soundBarScale.x;
+	musicSliderPos.x = minX + musicVolume * soundBarScale.x;
 }
 
 void SceneSetting::Render()
