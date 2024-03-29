@@ -177,6 +177,7 @@ private:
 	static constexpr float _xResistance = 1.f;		// how much of speed lost per second
 	static constexpr float _speedLimit = 20.f;
 	static constexpr float _energyKeptBouncing = 0.7f;
+	static constexpr float _orangeBorderPadding = 50.f;
 
 	static constexpr float _demonMinSpeed = 25.f;
 	static constexpr float _demonMaxSpeed = 200.f;

@@ -62,21 +62,21 @@ bool CollisionChecker::areRectsIntersecting(float screenX1, float screenY1, floa
 	return false;
 }
 
-bool CollisionChecker::isRectTouchingScreenXBorder([[maybe_unused]] float rectScreenX, [[maybe_unused]] float rectScreenY, float w, [[maybe_unused]] float h) {
-	if (rectScreenX - w / 2 <= 0) {
+bool CollisionChecker::isRectTouchingScreenXBorder([[maybe_unused]] float rectScreenX, [[maybe_unused]] float rectScreenY, float w, [[maybe_unused]] float h, float padding) {
+	if (rectScreenX - w / 2 - padding <= 0) {
 		return true;		// left
 	}
-	if (rectScreenX + w / 2 >= AEGfxGetWindowWidth()) {
+	if (rectScreenX + w / 2 + padding >= AEGfxGetWindowWidth()) {
 		return true;		// right
 	}
 	return false;
 }
 
-bool CollisionChecker::isRectTouchingScreenYBorder([[maybe_unused]] float rectScreenX, float rectScreenY, [[maybe_unused]] float w, float h) {
-	if (rectScreenY - h / 2 <= 0) {
+bool CollisionChecker::isRectTouchingScreenYBorder([[maybe_unused]] float rectScreenX, float rectScreenY, [[maybe_unused]] float w, float h, float padding) {
+	if (rectScreenY - h / 2 - padding <= 0) {
 		return true;		// top
 	}
-	if (rectScreenY + h / 2 >= AEGfxGetWindowHeight()) {
+	if (rectScreenY + h / 2 + padding >= AEGfxGetWindowHeight()) {
 		return true;		// bottom
 	}
 	return false;

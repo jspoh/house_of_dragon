@@ -57,9 +57,9 @@ public:
 
 	static bool isMouseInCircle(float cX, float cY, float radius, float mouseX, float mouseY);
 
-	static bool isRectTouchingScreenXBorder(float rectScreenX, float rectScreenY, float w, float h);
+	static bool isRectTouchingScreenXBorder(float rectScreenX, float rectScreenY, float w, float h, float padding = 0);
 
-	static bool isRectTouchingScreenYBorder(float rectScreenX, float rectScreenY, float w, float h);
+	static bool isRectTouchingScreenYBorder(float rectScreenX, float rectScreenY, float w, float h, float padding = 0);
 
 	static bool isRectTouchingScreenBorder(float rectScreenX, float rectScreenY, float w, float h);
 

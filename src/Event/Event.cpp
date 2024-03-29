@@ -800,7 +800,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			const float demonSpeed = rand() % static_cast<int>(_demonMaxSpeed - _demonMinSpeed) + _demonMinSpeed;
 
 			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - _demonRadius * 2) + _demonRadius;
-			d.y = AEGfxGetWindowHeight() * 0.1f;
+			d.y = AEGfxGetWindowHeight() * 0.2f;
 			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);
 			d.radius = _demonRadius;
 			d.isActive = true;
@@ -864,7 +864,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		// obj not held, apply normal physics to object
 		if (!_orangeObj.isHeld) {
 			// gravity
-			if (_orangeObj.y + _orangeObj.radius < AEGfxGetWindowHeight()) {
+			if (_orangeObj.y + _orangeObj.radius + _orangeBorderPadding < AEGfxGetWindowHeight()) {
 				_orangeObj.vel.y += static_cast<f32>(_orangeGravity * dt);
 			}
 
@@ -913,10 +913,10 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			_orangeObj.vel.y = AEClamp(_orangeObj.vel.y, -_speedLimit, _speedLimit);
 
 			// invert x/y vector when collide w wall to provide illusion of bouncing
-			if (CollisionChecker::isRectTouchingScreenXBorder(_orangeObj.x, _orangeObj.y, _orangeObj.radius * 2, _orangeObj.radius * 2)) {
+			if (CollisionChecker::isRectTouchingScreenXBorder(_orangeObj.x, _orangeObj.y, _orangeObj.radius * 2, _orangeObj.radius * 2, _orangeBorderPadding)) {
 				_orangeObj.vel.x = -_orangeObj.vel.x * _energyKeptBouncing;
 			}
-			if (CollisionChecker::isRectTouchingScreenYBorder(_orangeObj.x, _orangeObj.y, _orangeObj.radius * 2, _orangeObj.radius * 2)) {
+			if (CollisionChecker::isRectTouchingScreenYBorder(_orangeObj.x, _orangeObj.y, _orangeObj.radius * 2, _orangeObj.radius * 2, _orangeBorderPadding)) {
 				_orangeObj.vel.y = -_orangeObj.vel.y * _energyKeptBouncing;
 			}
 
