@@ -7,7 +7,7 @@ class Pause {
 private:
 	Pause();
 
-	static constexpr u8 PAUSE_KEY = AEVK_P;
+	static constexpr u8 PAUSE_KEY = AEVK_ESCAPE;
 
 	static constexpr int NUM_BTNS = 3;
 	std::array<std::pair<std::string, float>, NUM_BTNS> btns{
