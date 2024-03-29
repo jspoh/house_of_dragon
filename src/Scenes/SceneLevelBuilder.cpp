@@ -250,6 +250,7 @@ void UpdateHands(float t_dt)
 
 	handleBlockingAnimation();
 
+	int mX{}, mY{};
 	switch (HandStateAnimationType)
 	{
 	case Punch:
@@ -261,14 +262,15 @@ void UpdateHands(float t_dt)
 				AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
 				targetPos = { -804.25f + camX, -526.f + camY };
 				AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
-				AEInputGetCursorPosition(&mouseX, &mouseY);
-				mouseX -= AEGfxGetWindowWidth() / 2;
-				mouseY -= AEGfxGetWindowHeight() / 2;
-				mouseY *= -1;
+				mX = mouseX;
+				mY = mouseY;
+				mX -= AEGfxGetWindowWidth() / 2;
+				mY -= AEGfxGetWindowHeight() / 2;
+				mY *= -1;
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
 			case 1: //End Point
-				targetPos = { (float)mouseX - 166.0f + camX, (float)mouseY - 198.0f + camY };
+				targetPos = { (float)mX - 166.0f + camX, (float)mY - 198.0f + camY };
 				LerpSpeed = 1.05;
 				Hand2PosData.first.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0);
 				Hand2PosData.first.m[1][2] += static_cast<float>(abs((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.first.m[1][2]) / LerpSpeed) : 0);
@@ -283,14 +285,15 @@ void UpdateHands(float t_dt)
 				AEMtx33ScaleApply(&Hand2PosData.second, &Hand2PosData.second, 191.5, 307);
 				targetPos = { 804.25f + camX, -526.f + camY };
 				AEMtx33TransApply(&Hand2PosData.second, &Hand2PosData.second, targetPos.x, targetPos.y);
-				AEInputGetCursorPosition(&mouseX, &mouseY);
-				mouseX -= AEGfxGetWindowWidth() / 2;
-				mouseY -= AEGfxGetWindowHeight() / 2;
-				mouseY *= -1;
+				mX = mouseX;
+				mY = mouseY;
+				mX -= AEGfxGetWindowWidth() / 2;
+				mY -= AEGfxGetWindowHeight() / 2;
+				mY *= -1;
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
 			case 1: //End Point
-				targetPos = { (float)mouseX + 166.0f + camX, (float)mouseY - 198.0f + camY };
+				targetPos = { (float)mX + 166.0f + camX, (float)mY - 198.0f + camY };
 				LerpSpeed = 1.05;
 				Hand2PosData.second.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.second.m[0][2]) / LerpSpeed) : 0);
 				Hand2PosData.second.m[1][2] += static_cast<float>(abs((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) > 0.5 ? ((targetPos.y - Hand2PosData.second.m[1][2]) / LerpSpeed) : 0);
@@ -952,6 +955,9 @@ void SceneLevelBuilder::Update(double dt)
 	static int t_PanCloseToGroundValue = 80;
 	static int t_PanSideWays = 80;
 	static int PanDown = 0;
+
+	camX = camOffset.x;
+	camY = camOffset.y;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Setup
