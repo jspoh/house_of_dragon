@@ -34,6 +34,11 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     this->_wpos = stow(_spos.x, _spos.y);
     this->healthpos.x = this->_wpos.x - 50;
     this->healthpos.y = this->_wpos.y + 50;
+    this->attackPoint.x = _wpos.x;
+    this->attackPoint.y = _wpos.y;
+    this->AttackEnd.y = -AEGfxGetWindowHeight() / 2.9f;
+    this->AttackEnd.x = 0;
+    this->attacking = false;
 
     //RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }
@@ -68,14 +73,17 @@ void Enemy::render() {
         }
 
     }
-
     else {
         RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size, this->_size);
     }
     if (isSelected) {
         RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
     }
-    
+    if (this->attacking == true) {
+        RenderHelper::getInstance()->texture("nian", this->attackPoint.x, this->attackPoint.y, 10, 10);
+
+    }
+
     //RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
     //RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);
     //RenderHelper::getInstance()->texture("bar2", this->_wpos.x + (fullhealth / 100) * 100 - 40, this->healthpos.y, 10, 10);
@@ -116,3 +124,29 @@ Enemy::~Enemy() {
 void Enemy::enemyAttacked() {
     this->attacked = true;
 }
+
+void Enemy::enemyAttacking(float timeleft) {
+    //this->attacking = true;
+    // udpating the coordinates
+
+    float timeStart = 0.25f;
+    if ((timeleft < timeStart * 1000) && attacktime  < timeStart ) {
+        attacktime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+        float percenttime = static_cast<float>(attacktime / timeStart);
+        float t = percenttime;
+        if (t > timeStart) {
+            t = timeStart;
+        }
+        attackPoint.x = lerp(_wpos.x, AttackEnd.x, t);
+        attackPoint.y = lerp(_wpos.y, AttackEnd.y, t);
+
+    }
+}
+void Enemy::EnemyAttackStop() {
+    //this->attacking = false;
+    //this->attacktime = 0.f;
+    //this->attackPoint.x = (_wpos.x);
+    //this->attackPoint.y = (_wpos.y);
+    return;
+}
+
