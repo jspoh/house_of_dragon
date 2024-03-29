@@ -661,7 +661,7 @@ void CombatScene::Update(double dt)
 	else if (CombatManager::getInstance().turn == TURN::ENEMY) {
 		//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
 		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
-		if (CombatManager::getInstance().enemyNextTurnMs < 0.25f * 1000) {
+		if (CombatManager::getInstance().enemyNextTurnMs < 0.75f * 1000) {
 			blockNow = true;
 		}
 		if (CombatManager::getInstance().enemyNextTurnMs < 0) {
