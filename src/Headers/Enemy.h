@@ -29,9 +29,19 @@ private:
 	Point healthpos{ 0 };
 	float fullhealth = 0;
 	//attack multipler holder
-	float initialAttack{ 0 };
-	int attackMultiplerTurn{ 0 };
-	int attackMultiplerTurnStart{ 0 };
+	
+	//float initialAttack{ 0 };
+	//int attackMultiplerTurn{ 0 };
+	//int attackMultiplerTurnStart{ 0 };
+
+	// a flag to help render the shaking
+	bool attacked;
+
+	//shaking variables
+	float shakeDuration = 1.f; // Duration of the shake effect in seconds
+	float shakeAmplitude = 20.0f; // Maximum displacement during shake
+	float shakeFrequency = 25.0f;
+	
 
 
 
@@ -44,6 +54,7 @@ public:
 
 	void update([[maybe_unused]] double dt);
 	void render();
+	void enemyAttacked();
 };
 
 

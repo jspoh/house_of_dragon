@@ -30,7 +30,6 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     this->_spos.y = screenY;
     this->fullhealth = health;
     this->_textureRef = textureRef;
-    initialAttack = this->dmg;
     _spos = Point{ screenX, screenY};
     this->_wpos = stow(_spos.x, _spos.y);
     this->healthpos.x = this->_wpos.x - 50;
@@ -60,8 +59,23 @@ void Enemy::render() {
     //AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
     //std::cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
-    RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size  , this->_size  );
+    if(this->attacked == true){
+        if (this->shakeDuration > 0) {
+            // Apply shake effect only when attacked
+            float shakeOffset = sin(this->shakeFrequency * this->shakeDuration) * this->shakeAmplitude * this->shakeDuration;
+            RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x + shakeOffset, this->_wpos.y , this->_size, this->_size);
+            this->shakeDuration -= AEFrameRateControllerGetFrameTime();
+        }
+        else {
+            this->attacked = false;
+            this->shakeDuration = 1.f;
+        }
 
+    }
+
+    else {
+        RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size, this->_size);
+    }
     if (isSelected) {
         RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
     }
@@ -101,4 +115,8 @@ Enemy::~Enemy() {
     //RenderHelper::getInstance()->removeTextureByRef("healthbar1");
     //RenderHelper::getInstance()->removeTextureByRef("healthbar2");
     //RenderHelper::getInstance()->removeTextureByRef("healthbar3");
+}
+
+void Enemy::enemyAttacked() {
+    this->attacked = true;
 }

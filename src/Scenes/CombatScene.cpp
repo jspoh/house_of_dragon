@@ -474,10 +474,8 @@ void CombatScene::Update(double dt)
 		if (dialougeTime < dialogueMaxTime) {
 			dialougeTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		}
-		else {
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				resetDialogue();
-			}
+		else if(dialougeTime >= dialogueMaxTime) {
+			resetDialogue();
 		}
 	}
 
@@ -616,7 +614,7 @@ void CombatScene::Update(double dt)
 
 		std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
 		CombatManager::getInstance().isPlayingEvent = false;
-
+		CombatManager::getInstance().selectedEnemy->enemyAttacked();
 		/*check if success or failure and modify damage accordingly*/
 		switch (CombatManager::getInstance().qtEventResult) {
 		case EVENT_RESULTS::SUCCESS:
