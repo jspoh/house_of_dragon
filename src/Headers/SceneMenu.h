@@ -33,21 +33,22 @@ public:
         float buttonX[5];
         float buttonY[5];
         std::string button[5];
-        std::string buttonSelect[3];
+        std::string buttonSelect[5];
         s32 mouseX, mouseY;
         float buttonWidth, buttonHeight;
         bool hovering[5];
         bool levelSelecting;
-        int levelActived[4];
+        int levelActived[5];
         bool transitionEnd;
         float transitionTimer;
         float transitionElapse;
         int nextLevel;
 
         // Stage selection button variables
-        float buttonSelectX[3];
-        float buttonSelectY[3];
-        bool hoveringSelect[3];
+        float buttonSelectWidth, buttonSelectHeight;
+        float buttonSelectX[5];
+        float buttonSelectY[5];
+        bool hoveringSelect[5];
     } Menu;
 
 private:

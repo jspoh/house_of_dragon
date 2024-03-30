@@ -27,7 +27,7 @@ void SceneMenu::Load()
 {
 
 	myMenu.bg = "menuBg";
-	myMenu.bg1 ="menuBg1";
+	myMenu.bg1 = "menuBg1";
 	myMenu.pointer = "dagger";
 	myMenu.button[0] = "olay";
 	myMenu.button[1] = "xredit";
@@ -37,9 +37,11 @@ void SceneMenu::Load()
 
 
 
-	myMenu.buttonSelect[0] = "chicken";
-	myMenu.buttonSelect[1] = "tiger";
-	myMenu.buttonSelect[2] = "dragon_level_select";
+	myMenu.buttonSelect[0] = "level1";
+	myMenu.buttonSelect[1] = "level2";
+	myMenu.buttonSelect[2] = "level3";
+	myMenu.buttonSelect[3] = "level4";
+	myMenu.buttonSelect[4] = "level5";
 
 
 	RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
@@ -51,9 +53,11 @@ void SceneMenu::Load()
 	RenderHelper::getInstance()->registerTexture("howtoplay", "Assets/Menu/buttons/howtoplay.png");
 	RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/exits.png");
 
-	RenderHelper::getInstance()->registerTexture("chicken", "Assets/Menu/chicken.png");
-	RenderHelper::getInstance()->registerTexture("tiger", "Assets/Menu/tiger.png");
-	RenderHelper::getInstance()->registerTexture("dragon_level_select", "Assets/Menu/dragon.png");
+	RenderHelper::getInstance()->registerTexture("level1", "Assets/Menu/level1.png");
+	RenderHelper::getInstance()->registerTexture("level2", "Assets/Menu/level2.png");
+	RenderHelper::getInstance()->registerTexture("level3", "Assets/Menu/level3.png");
+	RenderHelper::getInstance()->registerTexture("level4", "Assets/Menu/level4.png");
+	RenderHelper::getInstance()->registerTexture("level5", "Assets/Menu/level5.png");
 
 }
 
@@ -73,14 +77,16 @@ void SceneMenu::Init()
 		myMenu.buttonY[i] = -i * (myMenu.buttonHeight - buttonGap) + 250;
 	}
 
+	myMenu.buttonSelectWidth = 250.0f; // Example initialization
+	myMenu.buttonSelectHeight = 400.0f; // Example initialization
 
-	for (int i = 0; i < 3; ++i)
+	const float buttonSelectGap = 15.0f; // Adjust the value as needed
+	for (int i = 0; i < 5; ++i)
 	{
-		myMenu.buttonSelectX[i] = -300.0f + i * 300.0f; // Adjust the x-coordinate as needed
+		myMenu.buttonSelectX[i] = -500.0f + i * (myMenu.buttonSelectWidth + buttonSelectGap); // Adjust the x-coordinate calculation
 		myMenu.buttonSelectY[i] = 0.0f; // Adjust the y-coordinate as needed
 		myMenu.hoveringSelect[i] = false;
 	}
-
 	ParticleManager::GetInstance()->init();
 
 	if (!loopIsPlaying) {
@@ -158,7 +164,7 @@ void SceneMenu::Update(double dt)
 		else
 		{
 
-			for (int i = 0; i < 3; ++i)
+			for (int i = 0; i < 5; ++i)
 			{
 				AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 2.f };
 				AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 2.f };
@@ -177,6 +183,14 @@ void SceneMenu::Update(double dt)
 						loopIsPlaying = false;
 						break;
 					case 2:SceneManager::GetInstance()->SetActiveScene("SceneStages");
+						SoundPlayer::stopAll();
+						loopIsPlaying = false;
+						break;
+					case 3:SceneManager::GetInstance()->SetActiveScene("SceneStages");
+						SoundPlayer::stopAll();
+						loopIsPlaying = false;
+						break;
+					case 4:SceneManager::GetInstance()->SetActiveScene("SceneStages");
 						SoundPlayer::stopAll();
 						loopIsPlaying = false;
 						break;
@@ -231,7 +245,7 @@ void SceneMenu::Render()
 		RenderHelper::getInstance()->texture("menuBg1", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
 		// Render the buttonSelect buttons
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			RenderHelper::getInstance()->texture(myMenu.buttonSelect[i], myMenu.buttonSelectX[i], myMenu.buttonSelectY[i], myMenu.buttonWidth, myMenu.buttonHeight);
 		}
