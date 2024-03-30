@@ -28,6 +28,7 @@ private:
 	float _size = 50;
 	Point healthpos{ 0 };
 	float fullhealth = 0;
+	float startingHealth{ 0 };
 	//attack multipler holder
 
 	Point attackPoint{ 0 };
@@ -40,7 +41,11 @@ private:
 	float shakeDuration = 1.f; // Duration of the shake effect in seconds
 	float shakeAmplitude = 20.0f; // Maximum displacement during shake
 	float shakeFrequency = 25.0f;
-	
+
+	float AttackedRenderX{ 0 };
+	float AttackedRenderXprev{ 0 };
+	const float healthRenderTimeMax = 1.f;
+	float healthRenderTime{ 0 };
 
 
 

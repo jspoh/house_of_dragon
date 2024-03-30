@@ -430,9 +430,10 @@ void CombatScene::Init()
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
 	winFlag = false;
+	winTime = 0.f;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 100);
+	player = new Player(100, 20);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -616,7 +617,7 @@ void CombatScene::Update(double dt)
 
 	// if player has finished quicktime event
 	if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
-
+		CombatManager::getInstance().selectedEnemy->enemyAttacked();
 		// end player's turn
 		CombatManager::getInstance().next();
 		dialogueState = DIALOGUE::PLAYER_ATTACK;
@@ -697,9 +698,11 @@ void CombatScene::Update(double dt)
 				CombatManager::getInstance().next();
 			}
 			else {
+				winTime += AEFrameRateControllerGetFrameTime();
 				std::cout << "Transition to next level\n";
 				if (!winFlag && winTime != 1.0f) {
 					dialogueState = DIALOGUE::WIN;
+					//winFlag = true;
 
 				}
 				else if (dialogueState != DIALOGUE::WIN) {
@@ -819,7 +822,7 @@ void CombatScene::Render()
 		//}
 
 	}
-	else if (winFlag) {
+	if (dialogueState == DIALOGUE::WIN) {
 		//rendering out the objects
 		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 		RenderHelper::getInstance()->texture("victory", wpos.x + truex, wpos.y + truey, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
