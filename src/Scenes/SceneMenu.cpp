@@ -76,7 +76,7 @@ void SceneMenu::Init()
 
 	for (int i = 0; i < 3; ++i)
 	{
-		myMenu.buttonSelectX[i] = -300.0f + i * 100.0f; // Adjust the x-coordinate as needed
+		myMenu.buttonSelectX[i] = -300.0f + i * 300.0f; // Adjust the x-coordinate as needed
 		myMenu.buttonSelectY[i] = 0.0f; // Adjust the y-coordinate as needed
 		myMenu.hoveringSelect[i] = false;
 	}
@@ -123,7 +123,7 @@ void SceneMenu::Update(double dt)
 
 		if (!myMenu.levelSelecting)
 		{
-			for (int i = 0; i < 4; ++i)
+			for (int i = 0; i < 5; ++i)
 			{
 				AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
 				AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
@@ -135,6 +135,9 @@ void SceneMenu::Update(double dt)
 					{
 					case 0:
 						myMenu.levelSelecting = true;
+						SoundPlayer::stopAll();
+						SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
+						loopIsPlaying = false;
 						break;
 					case 1:
 						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
@@ -191,7 +194,7 @@ void SceneMenu::Update(double dt)
 	}
 	else
 	{
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			myMenu.hovering[i] = false;
 		}
@@ -199,6 +202,8 @@ void SceneMenu::Update(double dt)
 
 	// !TODO: implement back button too
 	if (AEInputCheckTriggered(AEVK_Q) && myMenu.levelSelecting) {
+		SoundPlayer::stopAll();
+		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
 		myMenu.levelSelecting = false;
 		return;
 	}
