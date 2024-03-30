@@ -142,19 +142,6 @@ void SceneSetting::Update(double dt)
 		lerpElapsedTime = 0;
 	}
 
-	//if (selectionPos.x > selectionTargetPos.x) {
-	//	selectionPos.x -= SELECTOR_SPEED * static_cast<float>(dt);
-	//}
-	//else if (selectionPos.x < selectionTargetPos.x) {
-	//	selectionPos.x += SELECTOR_SPEED * static_cast<float>(dt);
-	//}
-
-	//// snap selector to target pos if close enough
-	//std::cout << CollisionChecker::getDistance(selectionPos.x, selectionPos.y, selectionTargetPos.x, selectionTargetPos.y) << "\n";
-	//if (CollisionChecker::getDistance(selectionPos.x, selectionPos.y, selectionTargetPos.x, selectionTargetPos.y) < SELECTOR_SPEED / 10) {
-	//	selectionPos.x = selectionTargetPos.x;
-	//}
-
 	//std::cout << static_cast<int>(difficulty) << "\n";
 }
 
