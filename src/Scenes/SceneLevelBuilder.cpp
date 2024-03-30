@@ -819,7 +819,8 @@ void SceneLevelBuilder::Update(double dt)
 	{
 		TestTimer = 2.5f;
 		std::vector<std::string> names = { "horse", "dragon","cat","cat"};
-		CombatScene::sInstance->spawnEnemies(names);
+		std::vector<std::string> names2 = { "horse" };
+		CombatScene::sInstance->spawnEnemies(names2);
 		CombatScene::sInstance->Init();
 		Combat = true;
 	}
