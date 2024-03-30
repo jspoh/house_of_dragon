@@ -30,7 +30,14 @@ Technology is prohibited.
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
-Player* player = nullptr;
+namespace {
+	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
+	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
+}
+
+// DONT MANUALLY FREE THIS POINTER
+std::unique_ptr<Player> player = nullptr;
+//Player* player = nullptr;
 
 namespace {
 	// game objects
@@ -418,6 +425,8 @@ void CombatScene::Load()
 
 
 	std::cout << "CombatScene loaded\n";
+
+	player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
 }
 
 
@@ -429,7 +438,6 @@ void CombatScene::Init()
 	winTime = 0.f;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 20);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -712,8 +720,8 @@ void CombatScene::Update(double dt)
 					//return;
 				}
 				// all enemies shldve been deleted
-				delete player;
-				player = nullptr;
+				//delete player;
+				//player = nullptr;
 				CombatManager::getInstance().end();
 				return;
 			}
@@ -866,8 +874,8 @@ void CombatScene::cleanup() {
 	groups.enemies.clear();
 	//delete CombatManager::getInstance();
 	// Clear the vector after deleting the enemies
-	delete player;
-	player = nullptr;
+	//delete player;
+	//player = nullptr;
 }
 
 void CombatScene::Exit()
