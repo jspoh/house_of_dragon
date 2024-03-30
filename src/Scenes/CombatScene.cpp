@@ -698,7 +698,7 @@ void CombatScene::Update(double dt)
 				CombatManager::getInstance().next();
 			}
 			else {
-				winTime += AEFrameRateControllerGetFrameTime();
+				winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 				std::cout << "Transition to next level\n";
 				if (!winFlag && winTime != 1.0f) {
 					dialogueState = DIALOGUE::WIN;

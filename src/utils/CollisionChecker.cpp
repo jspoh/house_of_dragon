@@ -46,12 +46,12 @@ bool CollisionChecker::_rectAABB(float screenX1, float screenY1, float w1, float
 	return false;
 }
 
-bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, float mouseX, float mouseY) {
-	return _rectAABB(rectScreenX, rectScreenY, rectW, rectH, mouseX, mouseY, 1, 1);
+bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, float mX, float mY) {
+	return _rectAABB(rectScreenX, rectScreenY, rectW, rectH, mX, mY, 1, 1);
 }
 
-bool CollisionChecker::isMouseInCircle(float cX, float cY, float radius, float mouseX, float mouseY) {
-	float distanceSq = (mouseX - cX) * (mouseX - cX) + (mouseY - cY) * (mouseY - cY);
+bool CollisionChecker::isMouseInCircle(float cX, float cY, float radius, float mX, float mY) {
+	float distanceSq = (mX - cX) * (mX - cX) + (mY - cY) * (mY - cY);
 	return distanceSq <= radius * radius;
 }
 
@@ -96,5 +96,5 @@ bool CollisionChecker::areCirclesIntersecting(float cx1, float cy1, float cr1, f
 }
 
 float CollisionChecker::getDistance(float x1, float y1, float x2, float y2) {
-	return sqrtf(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+	return sqrtf(powf(x2 - x1, 2) + powf(y2 - y1, 2));
 }
