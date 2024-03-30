@@ -344,7 +344,7 @@ void UpdateHands(float t_dt)
 			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
 			break;
 		default:
-			cout << "ERROR IN READYING ANIMATION" << endl;
+			std::cout << "ERROR IN READYING ANIMATION" << std::endl;
 		}
 		if (t_AnimationDuration < 0.0)
 		{
@@ -410,6 +410,7 @@ void UpdateHands(float t_dt)
 //	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 //
 //}
+
 
 SceneLevelBuilder::v_FloorData::v_FloorData():
 	m_currFloorNum{0},
@@ -578,6 +579,17 @@ SceneLevelBuilder::SceneLevelBuilder():
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
 	
+	/*********************************************
+	//GameObjects
+	**********************************************/
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_STRONG", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_WEAK", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Weak.png");
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_UPPER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_UpperJaw.png");
+	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_LOWER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_LowerJaw.png");
+
+	RenderHelper::getInstance()->registerTexture("FIREBALL", "Assets/Combat_Enemy/Projectiles/FireBall.png");
+	RenderHelper::getInstance()->registerTexture("ENERGYBALL", "Assets/Combat_Enemy/Projectiles/EnergyBall.png");
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Allocate relevant memory depending on defined values (Check #define in .hpp)
@@ -791,15 +803,18 @@ void SceneLevelBuilder::Init()
 	AEMtx33Trans(&trans, 0, 80);
 	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 
-	
-	Create::Ame("reference", { 0.0f, 0.0f }, { 300.0f, 300.0f});
-
-	Create::MiscEnemy({ 300.0f, 0.0f }, { 300.0f, 300.0f });
-	Create::MiscEnemy({ -300.0f, 0.0f }, { 300.0f, 300.0f });
+	//Creating GameObjects
+	Create::MiscEnemy();
+	for (int i = 0; i < 100; i++)
+	{
+		Create::Projectiles();
+	}
 }
 
 void SceneLevelBuilder::Update(double dt)
 {
+	updateGlobals();
+
 	static double TestTimer = 2.0f;
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
@@ -809,6 +824,26 @@ void SceneLevelBuilder::Update(double dt)
 	camX = camOffset.x;
 	camY = camOffset.y;
 
+	////////////////////////////////////////////////////////////////////////////////
+	// GameObject Logic
+	//GameObject* temp = GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy");
+	//std::cout << temp->m_RefName << std::endl;
+	static double x = 1, y = 1;
+	if (AEInputCheckCurr(AEVK_W))
+	{
+		y += 0.05;
+	}
+	if (AEInputCheckCurr(AEVK_S))
+	{
+		y -= 0.05;
+	}
+	std::cout << y << std::endl;
+	if (AEInputCheckTriggered(AEVK_LBUTTON))
+	{
+		GameObject_Projectiles* temp = dynamic_cast<GameObject_Projectiles*>(GameObjectManager::GetInstance()->FindInactiveObjectByReference("Projectiles"));
+		if (temp != nullptr)
+			temp->FireAtPlayer({static_cast<float>(mouseX - AEGfxGetWindowWidth() / 2),static_cast<float>(AEGfxGetWindowHeight() / 2 - mouseY)}, { 100.0f, 100.0f}, 5.0f + y);
+	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Setup
 	//TESTING
@@ -817,7 +852,7 @@ void SceneLevelBuilder::Update(double dt)
 	if (AEInputCheckTriggered(AEVK_Z) && !Combat)
 	{
 		TestTimer = 2.5f;
-		std::vector<std::string> names = { "horse", "dragon","cat","cat"};
+		std::vector<std::string> names = { "horse", "dragon", "cat", "cat"};
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
 		Combat = true;
@@ -1022,7 +1057,7 @@ void SceneLevelBuilder::Update(double dt)
 		//////////////////////////////////////////////////////////////////////////
 		GameObjectManager::GetInstance()->Update(dt);
 		v_SceneObject temp;
-		pair<int, int> t_TransScaleModifier = { 60, 48}; //For rand on tile pos
+		std::pair<int, int> t_TransScaleModifier = { 60, 48}; //For rand on tile pos
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -1286,15 +1321,6 @@ void SceneLevelBuilder::Render()
 		}
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//GAMEOBJ RENDER
-	GameObjectManager::GetInstance()->Render();
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	// Combat Render
-	if (Combat)
-		CombatScene::sInstance->Render();
-
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//UI / MISC RENDER
 	//RenderHands();
@@ -1364,6 +1390,15 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Render
+	if (Combat)
+		CombatScene::sInstance->Render();
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//GAMEOBJ RENDER
+	GameObjectManager::GetInstance()->Render();
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
@@ -1476,7 +1511,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			{
 				TotalProb += curr;
 			}
-			string Ref = "";
+			std::string Ref = "";
 			int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
 			int temp = 0;//Disregard this: for loop below
 			for(int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)

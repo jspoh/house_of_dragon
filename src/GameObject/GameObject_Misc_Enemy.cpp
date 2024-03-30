@@ -5,11 +5,6 @@
 
 GameObject_Misc_Enemy::GameObject_Misc_Enemy()
 {
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_STRONG", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_WEAK", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Weak.png");
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_UPPER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_UpperJaw.png");
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_LOWER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_LowerJaw.png");
-
 	m_Active = false;
 }
 
@@ -33,7 +28,7 @@ void GameObject_Misc_Enemy::Update(double _dt)
 		//check Collision
 		//std::cout << mouseX << ", " << mouseY << " | " << pos.x << ", " << pos.y << "\n";
 		if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY)))
-				cout << "Collision with misc enemy is working" << endl;
+				std::cout << "Collision with misc enemy is working" << std::endl;
 	}
 }
 
@@ -98,6 +93,7 @@ GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& 
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
 	result->m_Active = false;
+	result->m_RefName = "MiscEnemy";
 	result->Init();
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
