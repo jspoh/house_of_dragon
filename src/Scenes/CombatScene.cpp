@@ -275,13 +275,11 @@ namespace {
 		Point trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
 		Point trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
 
-		f32 truex, truey;
-		AEGfxGetCamPosition(&truex, &truey);
 
-		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + truex, trueCoordinatesMenu.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + truex, trueCoordinatesRespawn.y + truey, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + truex, trueCoordinatesMenu.y + truey, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
-		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + truex, trueCoordinatesRespawn.y + truey, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
 
 
 
@@ -290,8 +288,6 @@ namespace {
 
 
 	void renderBtns(std::vector<std::string> bvalues) {
-		f32 truex, truey;
-		AEGfxGetCamPosition(&truex, &truey);
 
 
 
@@ -314,14 +310,14 @@ namespace {
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag ) {
-				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey, btnWidth, btnHeight + btnWordPadding * 2);
-				RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
+			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag ) {
+				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
+				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
-				RenderHelper::getInstance()->texture("button", btnPos.x + truex, panelfinalY + truey - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding );
+				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding );
 
-				RenderHelper::getInstance()->rect(btnPos.x + truex, btnPos.y + truey, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
+				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
 			RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
 			bPosX += btnWidth + spacing;
@@ -430,9 +426,10 @@ void CombatScene::Init()
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
 	winFlag = false;
+	winTime = 0.f;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 100);
+	player = new Player(100, 20);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -472,6 +469,8 @@ void CombatScene::Init()
 
 void CombatScene::Update(double dt)
 {
+	updateGlobals();
+
 	if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 		winFlag = true;
 	}
@@ -616,7 +615,7 @@ void CombatScene::Update(double dt)
 
 	// if player has finished quicktime event
 	if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
-
+		CombatManager::getInstance().selectedEnemy->enemyAttacked();
 		// end player's turn
 		CombatManager::getInstance().next();
 		dialogueState = DIALOGUE::PLAYER_ATTACK;
@@ -697,9 +696,11 @@ void CombatScene::Update(double dt)
 				CombatManager::getInstance().next();
 			}
 			else {
+				winTime += AEFrameRateControllerGetFrameTime();
 				std::cout << "Transition to next level\n";
 				if (!winFlag && winTime != 1.0f) {
 					dialogueState = DIALOGUE::WIN;
+					//winFlag = true;
 
 				}
 				else if (dialogueState != DIALOGUE::WIN) {
@@ -726,14 +727,15 @@ void CombatScene::Render()
 	if (!CombatManager::getInstance().isInCombat) {
 		return;
 	}
+
+	updateGlobals();
+
 	//if (!playerAlive) {
 	//	RenderHelper::getInstance()->text("you have died", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
 
 	//}
 
 	//panel rendering
-	f32 truex, truey;
-	AEGfxGetCamPosition(&truex, &truey);
 
 	//rendering enemies
 	
@@ -743,8 +745,7 @@ void CombatScene::Render()
 	int i{};
 	// rendering whether enemies is dead
 	if (playerAlive && !winFlag) {
-		player->render();
-		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
+		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 			if (enemy->isDead()) {
@@ -761,21 +762,21 @@ void CombatScene::Render()
 			else if (CombatManager::getInstance().turn == TURN::ENEMY) {
 				//if (blockingRenderTime < 0.5f) {
 				if (blockNow == false) {
-					RenderHelper::getInstance()->texture("blockwait1", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+					RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				}
 				else {
-					RenderHelper::getInstance()->texture("blockNow", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+					RenderHelper::getInstance()->texture("blockNow", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				}
-					//RenderHelper::getInstance()->texture("blockwait1", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+					//RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 				//}
 				//else if(blockingRenderTime < 1.f){
-				//	RenderHelper::getInstance()->texture("blockwait2", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+				//	RenderHelper::getInstance()->texture("blockwait2", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				//}
 				//else {
-				//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + truex, wpos.y + truey, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+				//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				//}
 				//blockingRenderTime += AEFrameRateControllerGetFrameTime();
@@ -806,12 +807,12 @@ void CombatScene::Render()
 
 	else if (!playerAlive) {
 		//rendering out the objects
-		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
+		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 		/*for (Enemy* enemy : groups.enemies) {
 			enemy->render();
 		}*/
 
-		RenderHelper::getInstance()->texture("playerdead", wpos.x + truex, wpos.y + truey, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("playerdead", wpos.x + camOffset.x, wpos.y + camOffset.y, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 		renderBtns(btns[currentState]);
 		//
 		if (deadfinalflag == true)
@@ -819,10 +820,10 @@ void CombatScene::Render()
 		//}
 
 	}
-	else if (winFlag) {
+	if (dialogueState == DIALOGUE::WIN) {
 		//rendering out the objects
-		RenderHelper::getInstance()->texture("panel", panelpos.x + truex, panelpos.y + truey, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
-		RenderHelper::getInstance()->texture("victory", wpos.x + truex, wpos.y + truey, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
+		RenderHelper::getInstance()->texture("victory", wpos.x + camOffset.x, wpos.y + camOffset.y, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 		renderBtns(btns[currentState]);
 		// to do: new btns
 		// new panel
@@ -838,6 +839,8 @@ void CombatScene::Render()
 		groups.enemies.erase(groups.enemies.begin() + index);
 	}
 	Event::getInstance()->render();
+
+	player->render();
 
 	//for (i = 0; i < groups.enemies.size(); i++) {
 	//	groups.enemies[i]->render(); // render all, draw all enemys

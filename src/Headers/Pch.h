@@ -49,6 +49,7 @@ Technology is prohibited.
 #include "MyMath.h"
 #include "SoundManager.h"
 #include "SoundPlayer.h"
+#include "Pause.h"
 
 extern bool gGameRunning;
 
