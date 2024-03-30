@@ -22,22 +22,23 @@ void GameObjectManager::Update(double _dt)
 		(*it)->Update(_dt);
 	}
 
-	// Clean up entities that are done
-	it = entityList.begin();
-	while (it != end)
-	{
-		if (!(*it)->m_Active)
-		{
-			// Delete if done
-			delete* it;
-			it = entityList.erase(it);
-		}
-		else
-		{
-			// Move on otherwise
-			++it;
-		}
-	}
+	//Dont clean up during update 
+	//// Clean up entities that are done
+	//it = entityList.begin();
+	//while (it != end)
+	//{
+	//	if (!(*it)->m_Active)
+	//	{
+	//		// Delete if done
+	//		delete* it;
+	//		it = entityList.erase(it);
+	//	}
+	//	else
+	//	{
+	//		// Move on otherwise
+	//		++it;
+	//	}
+	//}
 }
 
 // Render all entities
@@ -52,23 +53,12 @@ void GameObjectManager::Render()
 	}
 }
 
-// Render the UI entities
-//void GameObjectManager::RenderUI()
-//{
-//	//// Render all entities UI
-//	//std::list<GameObject*>::iterator it, end;
-//	//end = entityList.end();
-//	//for (it = entityList.begin(); it != end; ++it)
-//	//{
-//	//	(*it)->RenderUI();
-//	//}
-//}
 
 // Add an entity to this GameObjectManager
 void GameObjectManager::AddEntity(GameObject* _newEntity)
 {
 	entityList.push_back(_newEntity);
-	cout << "GameObject Add" << endl;
+	std::cout << "GameObject Add" << std::endl;
 }
 
 // Remove an entity from this GameObjectManager
@@ -106,31 +96,18 @@ void GameObjectManager::Exit()
 	entityList.clear();
 }
 
-//// Check for overlap
-//bool GameObjectManager::CheckOverlap(Vector3 thisMinAABB, Vector3 thisMaxAABB, Vector3 thatMinAABB, Vector3 thatMaxAABB)
-//{
-//	return false;
-//}
-//
-//// Check if this entity's bounding sphere collided with that entity's bounding sphere 
-//bool GameObjectManager::CheckSphereCollision(GameObject* ThisEntity, GameObject* ThatEntity)
-//{
-//	//Ignore Warnings
-//	return false;
-//}
-//
-//// Check if this entity collided with another entity, but both must have collider
-//bool GameObjectManager::CheckAABBCollision(GameObject* ThisEntity, GameObject* ThatEntity)
-//{
-//	//Ignore Warnings
-//	return false;
-//}
-//
-//// Check if any Collider is colliding with another Collider
-//bool GameObjectManager::CheckForCollision(void)
-//{
-//	return false;
-//}
+GameObject* GameObjectManager::FindInactiveObjectByReference(const std::string& _RefName)
+{
+	for (std::list<GameObject*>::iterator it = entityList.begin();
+		it != entityList.end();
+		it++)
+	{
+		if(_RefName == (*it)->m_RefName && !(*it)->m_Active)
+			return *it;
+	}
+
+	return nullptr;
+}
 
 GameObject* GameObjectManager::FindObjectByReference(const std::string& _RefName)
 {
@@ -138,7 +115,7 @@ GameObject* GameObjectManager::FindObjectByReference(const std::string& _RefName
 		it != entityList.end();
 		it++)
 	{
-		if(_RefName == (*it)->m_RefName)
+		if (_RefName == (*it)->m_RefName)
 			return *it;
 	}
 
