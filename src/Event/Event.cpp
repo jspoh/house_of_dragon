@@ -147,9 +147,9 @@ void Event::startRandomEvent() {
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
 	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
-	e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
-	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
+	e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -203,6 +203,12 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 }
 
 void Event::init() {
+
+	_spamkeyX = AEGfxGetWindowWidth() / 2.f;
+	_spamkeyY = AEGfxGetWindowHeight() / 2.f;
+
+	/* difficulty settings */
+
 	const float timerMultiplier = DIFFICULTY_TIME_MULTIPLIER.at(difficulty);
 	const float sizeMultiplier = DIFFICULTY_SIZE_MULTIPLIER.at(difficulty);
 
@@ -288,8 +294,8 @@ void Event::render() {
 
 /*private*/
 void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
-	float x = AEGfxGetWindowWidth() * 0.925f;
-	float y = AEGfxGetWindowHeight() * 0.11125f;
+	float x = AEGfxGetWindowWidth() * 0.95f;
+	float y = AEGfxGetWindowHeight() * 0.8f;
 	Point world = stow(x, y);
 
 	std::array<int, 5> thresholds = { 100,75,50,25,0 };
@@ -298,7 +304,7 @@ void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 
 	for (const int t : thresholds) {
 		if (timeLeftPctg >= t) {
-			RenderHelper::getInstance()->texture("timer_" + std::to_string(100 - t), world.x, world.y);
+			RenderHelper::getInstance()->texture("timer_" + std::to_string(100 - t), world.x + camOffset.x, world.y + camOffset.y);
 			break;
 		}
 	}

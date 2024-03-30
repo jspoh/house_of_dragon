@@ -86,8 +86,8 @@ private:
 	static constexpr float _minSize = 100;
 	static constexpr float _targetSize = 200;
 	float _size = _minSize;
-	float _spamkeyX = 100.f;
-	float _spamkeyY = 100.f;
+	float _spamkeyX;
+	float _spamkeyY;
 	// positive rate of change per click
 	float _proc = 10;
 	// negative rate of change per second
