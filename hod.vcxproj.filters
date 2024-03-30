@@ -24,6 +24,9 @@
     <ClCompile Include="src\Scenes\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scenes\ScenePractical.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\GameObject\GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -117,12 +120,6 @@
     <ClCompile Include="src\utils\SoundPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\SceneSetting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameObject\GameObject_Projectiles.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Headers\Elements.hpp">
@@ -203,6 +200,9 @@
     <ClInclude Include="src\Headers\SceneMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Headers\ScenePractical.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\Headers\SceneSplashScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -243,12 +243,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\SoundPlayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Headers\SceneSetting.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Headers\GameObject_Projectiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

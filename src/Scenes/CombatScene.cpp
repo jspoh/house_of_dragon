@@ -49,7 +49,7 @@ namespace {
 	float dialogueMaxTime = 0.8f;
 	float dialougeTime;
 	float winTime;
-
+	bool continueFlag;
 	//camera coordinates;
 	f32 camX, camY;
 
@@ -82,6 +82,14 @@ namespace {
 	Point FinalScaleDead;
 	Point currScaleDead;
 
+
+
+	Point currCoorsWin;
+	float WinYstart;
+	float WinYfinal;
+	float victoryTextTime;
+
+
 	//padding for the btns
 	float btnWordPadding;
 	float btnDecreaseY;
@@ -89,7 +97,7 @@ namespace {
 	float btnDecreaseStart = -170.f;
 	float btnFinalY = 170.f;
 
-
+	int enemiesLeft;
 	enemiesGroup groups;
 
 
@@ -154,7 +162,34 @@ namespace {
 	}
 
 
+	void updateWinBtns() {
+		//main menu
+		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+			}
+		}
+		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				//needs to reset combat scene
+				continueFlag = true;
+			}
+		}
+	}
+	void renderWinBtns() {
+		Point trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
+		Point trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
 
+
+		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+		RenderHelper::getInstance()->texture("Okay", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+
+
+
+
+	}
 
 	/*im so sorry this code very spaghet but time crunch!!*/
 	void updateBtns(std::vector<std::string> bvalues) {
@@ -439,6 +474,7 @@ void CombatScene::Init()
 	winTime = 0.f;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
+	currCoorsWin = wpos;
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -453,8 +489,14 @@ void CombatScene::Init()
 	initalScaleDead.y = 50;
 	FinalScaleDead.y = 100;
 
+	WinYstart = wpos.y;
+	WinYfinal = WinYstart + 150.f;
+	victoryTextTime = 0.f;
+
+
 	dialougeTime = 0.f;
 	winTime = 0.0f;
+	enemiesLeft = groups.enemies.size();
 
 
 	blockingRenderTime = 0.f;
@@ -483,6 +525,7 @@ void CombatScene::Init()
 void CombatScene::Update(double dt)
 {
 	updateGlobals();
+      
 
 	if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 		winFlag = true;
@@ -559,7 +602,7 @@ void CombatScene::Update(double dt)
 	else {
 		deadfinalflag = false;
 	}
-	if ( (winFlag && winTime < slideAnimationDuration) ) {
+	if ( (enemiesLeft <= 0 && winTime < slideAnimationDuration) ) {
 		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(winTime / slideAnimationDuration);
 		float t = percenttime;
@@ -571,6 +614,20 @@ void CombatScene::Update(double dt)
 		btnDecreaseY = lerp(0, btnFinalY, t);
 
 		panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
+	}
+	else if(enemiesLeft <= 0 && winTime > 1.5f && victoryTextTime < slideAnimationDuration){
+		victoryTextTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		float percenttime = static_cast<float>(victoryTextTime / (slideAnimationDuration ));
+		float t = percenttime;
+		if (t > (slideAnimationDuration )) {
+			t = (slideAnimationDuration );
+		}
+		currCoorsWin.y = lerp(WinYstart,WinYfinal,t);
+
+		
+	
+	
+	
 	}
 
 
@@ -665,6 +722,9 @@ void CombatScene::Update(double dt)
 				break;
 			}
 			CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+			if (CombatManager::getInstance().selectedEnemy->health <= 0) {
+				enemiesLeft--;
+			}
 
 			// reset states
 			CombatManager::getInstance().selectedEnemy = nullptr;
@@ -675,7 +735,32 @@ void CombatScene::Update(double dt)
 			currentState = ACTION_BTNS::MAIN;
 		//}
 	}
+	if (enemiesLeft <= 0) {
+		if (!winFlag) {
+			winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			if (winTime > 0.5f) {
+				dialogueState = DIALOGUE::WIN;
+				if ((AEInputCheckTriggered(AEVK_RBUTTON))) {
+					winFlag = true;
 
+				}
+			}
+
+		}
+		else {
+			//delete player;
+			//player = nullptr;
+			//CombatManager::getInstance().end();
+			//return;
+			winTime = 0.f;
+			CombatManager::getInstance().end();
+		}
+		// all enemies shldve been deleted
+		//delete player;
+		//player = nullptr;
+		//CombatManager::getInstance().end();
+		return;
+	}
 	// when is player turn and player is not playing a quicktime event
 	if (CombatManager::getInstance().turn == TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 		updateBtns(btns[currentState]);  // render player action buttons
@@ -720,23 +805,26 @@ void CombatScene::Update(double dt)
 				CombatManager::getInstance().next();
 			}
 			else {
-				winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 				std::cout << "Transition to next level\n";
-				if (!winFlag && winTime != 1.0f) {
+				if (winTime < slideAnimationDuration) {
+					winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+
 					dialogueState = DIALOGUE::WIN;
-					//winFlag = true;
+					winFlag = true;
 
 				}
-				else if (dialogueState != DIALOGUE::WIN) {
+				else {
 					//delete player;
 					//player = nullptr;
 					//CombatManager::getInstance().end();
 					//return;
+					winTime = 0.f;
+					CombatManager::getInstance().end();
 				}
 				// all enemies shldve been deleted
 				//delete player;
 				//player = nullptr;
-				CombatManager::getInstance().end();
+				//CombatManager::getInstance().end();
 				return;
 			}
 		}
@@ -768,7 +856,7 @@ void CombatScene::Render()
 	std::vector<int> deadEnemies;
 	int i{};
 	// rendering whether enemies is dead
-	if (playerAlive && !winFlag) {
+	if (playerAlive && enemiesLeft >0) {
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
@@ -786,7 +874,7 @@ void CombatScene::Render()
 			else if (CombatManager::getInstance().turn == TURN::ENEMY) {
 				//if (blockingRenderTime < 0.5f) {
 				if (blockNow == false) {
-					RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+					RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				}
 				else {
@@ -819,18 +907,27 @@ void CombatScene::Render()
 				else if (dialogueState == DIALOGUE::PLAYER_ATTACK) {
 					std::string fulloutput = "You used " + attackUsed + "!";
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
-
-				}
-				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
-					std::string fulloutput = "You used " + attackUsed + "!\n";
-					if (EVENT_RESULTS::SUCCESS) {
+					if (CombatManager::getInstance().qtEventResult == EVENT_RESULTS::SUCCESS) {
 						fulloutput += "CRITICAL ATTACK!!!";
 					}
-					else if ( EVENT_RESULTS::FAILURE) {
+					else if (CombatManager::getInstance().qtEventResult == EVENT_RESULTS::FAILURE) {
 						fulloutput += "ATTACK NOT EFFECTIVE!!!";
 
 					}
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+
+
+				}
+				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
+					//std::string fulloutput = "You used " + attackUsed + "!\n";
+					//if (CombatManager::getInstance().qtEventResult == EVENT_RESULTS::SUCCESS) {
+					//	fulloutput += "CRITICAL ATTACK!!!";
+					//}
+					//else if (CombatManager::getInstance().qtEventResult ==  EVENT_RESULTS::FAILURE) {
+					//	fulloutput += "ATTACK NOT EFFECTIVE!!!";
+
+					//}
+					//RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
 					
 				}
@@ -860,8 +957,13 @@ void CombatScene::Render()
 	if (dialogueState == DIALOGUE::WIN) {
 		//rendering out the objects
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
-		RenderHelper::getInstance()->texture("victory", wpos.x + camOffset.x, wpos.y + camOffset.y, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-		renderBtns(btns[currentState]);
+		RenderHelper::getInstance()->texture("victory", wpos.x + camOffset.x, currCoorsWin.y + camOffset.y, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+		if (victoryTextTime > slideAnimationDuration) {
+			RenderHelper::getInstance()->texture("panel", wpos.x + camOffset.x, wpos.y + camOffset.y - 75.f , static_cast<float>(AEGfxGetWindowWidth()) /2 , 300.f);
+
+		}
+
+		//renderBtns(btns[currentState]);
 		// to do: new btns
 		// new panel
 
@@ -871,13 +973,15 @@ void CombatScene::Render()
 	std::sort(deadEnemies.rbegin(), deadEnemies.rend());		// sort in reverse order. else removing multiple might cause indexoutofrange
 	for (const int index : deadEnemies) {
 		// !TODO: add death animation (perhaps smoke particles to signify death)
-
+		 
 		delete groups.enemies[index];
 		groups.enemies.erase(groups.enemies.begin() + index);
 	}
 	Event::getInstance()->render();
 
-	player->render();
+	if (CombatManager::getInstance().isPlayingEvent == false) 
+	{ player->render(); 
+	}
 
 	//for (i = 0; i < groups.enemies.size(); i++) {
 	//	groups.enemies[i]->render(); // render all, draw all enemys
