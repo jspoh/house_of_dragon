@@ -202,6 +202,28 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	_prevMouseY = _mouseY;
 }
 
+void Event::init() {
+	const float timerMultiplier = DIFFICULTY_TIME_MULTIPLIER.at(difficulty);
+	const float sizeMultiplier = DIFFICULTY_SIZE_MULTIPLIER.at(difficulty);
+
+	// spamkey
+	_spamkeyTimeoutMs = static_cast<int>(_spamkeyTimeoutMs * timerMultiplier);
+	_proc *= sizeMultiplier;
+
+	// otimer
+	_oTimerTimeoutMs = static_cast<int>(_oTimerTimeoutMs * timerMultiplier);
+
+	// mco
+	_multiClickTimeoutMs = static_cast<int>(_multiClickTimeoutMs * timerMultiplier);
+	_mcoRadius *= sizeMultiplier;
+
+	// typing  
+	_typingTimeoutMs = static_cast<int>(_typingTimeoutMs * timerMultiplier);
+
+	// orange/demon throwing
+	_orangeEventTimeoutMs = static_cast<int>(_orangeEventTimeoutMs * timerMultiplier);
+	_orangeRadius *= sizeMultiplier;
+}
 
 void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
 	AEInputGetCursorPosition(&_mouseX, &_mouseY);
@@ -390,9 +412,9 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 	}
 
 	if (AEInputCheckTriggered(aevk)) {
-		_size += proc;
+		_size += _proc;
 	}
-	_size -= static_cast<f32>(nroc * dt);
+	_size -= static_cast<f32>(_nroc * dt);
 	_size = _size < _minSize ? _minSize : _size;
 
 	/*rendering*/
@@ -813,7 +835,16 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 	}
 
 	case INNER_STATES::ON_UPDATE: {
-		if (_elapsedTimeMs >= _orangeEventTimeoutMs) {
+		int activeDemons{};
+		for (const Demon& d : demons) {
+			if (!d.isActive) {
+				continue;
+			}
+			activeDemons++;
+		}
+
+
+		if (_elapsedTimeMs >= _orangeEventTimeoutMs || activeDemons == 0) {
 			int hits{};
 			for (const Demon& d : demons) {
 				if (!d.isActive) {
@@ -860,7 +891,6 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 
 		//std::cout << "obj vel: " << _orangeObj.vel.x << ", " << _orangeObj.vel.y << "\n";
 
-		// !TODO: jspoh dont allow user to bring ball past 75% of screen from bottom
 		// obj not held, apply normal physics to object
 		if (!_orangeObj.isHeld) {
 			// gravity

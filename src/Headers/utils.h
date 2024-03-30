@@ -38,6 +38,13 @@ const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_TIME_MULTIPLIER{
 	{DIFFICULTY_SETTINGS::HARD, 1}
 };
 
+// event size multiplier for different difficulty settings
+const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_SIZE_MULTIPLIER{
+	{DIFFICULTY_SETTINGS::EASY, 1.5f},
+	{DIFFICULTY_SETTINGS::MEDIUM, 1.2f},
+	{DIFFICULTY_SETTINGS::HARD, 1}
+};
+
 // player damage multiplier for different difficulty settings
 const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER{
 	{DIFFICULTY_SETTINGS::EASY, 2},
