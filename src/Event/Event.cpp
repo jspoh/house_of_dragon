@@ -149,7 +149,7 @@ void Event::startRandomEvent() {
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
-	e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
+	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -875,7 +875,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			_orangeObj.isHeld = true;
 		}
 		// check to ensure that the user cannot hold the ball past 75% of the screen
-		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f || _orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()))) {
+		static constexpr float DEADZONE = 0.25f;
+		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE || _orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()))) {
 			_orangeObj.isHeld = false;	// force user to let go
 			AEVec2Set(&_orangeObj.vel, 0, 0);			// reset velocity to 0
 		}
@@ -893,14 +894,14 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 
-		//std::cout << (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f) << "\n";
+		//std::cout << (_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE) << "\n";
 
 		//std::cout << "obj vel: " << _orangeObj.vel.x << ", " << _orangeObj.vel.y << "\n";
 
 		// obj not held, apply normal physics to object
 		if (!_orangeObj.isHeld) {
 			// gravity
-			if (_orangeObj.y + _orangeObj.radius + _orangeBorderPadding < AEGfxGetWindowHeight()) {
+			if (_orangeObj.y + _orangeObj.radius + _orangeBorderPadding <= AEGfxGetWindowHeight()) {
 				_orangeObj.vel.y += static_cast<f32>(_orangeGravity * dt);
 			}
 
@@ -960,8 +961,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			_orangeObj.y += static_cast<f32>(_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
 			// clamp positions
-			_orangeObj.x = AEClamp(_orangeObj.x, _orangeObj.radius, AEGfxGetWindowWidth() - _orangeObj.radius);
-			_orangeObj.y = AEClamp(_orangeObj.y, _orangeObj.radius, AEGfxGetWindowHeight() - _orangeObj.radius);
+			_orangeObj.x = AEClamp(_orangeObj.x, _orangeObj.radius + _orangeBorderPadding, AEGfxGetWindowWidth() - _orangeObj.radius - _orangeBorderPadding);
+			_orangeObj.y = AEClamp(_orangeObj.y, _orangeObj.radius + _orangeBorderPadding, AEGfxGetWindowHeight() - _orangeObj.radius - _orangeBorderPadding);
 		}
 
 		// update demon
