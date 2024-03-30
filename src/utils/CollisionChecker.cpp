@@ -94,3 +94,7 @@ bool CollisionChecker::areCirclesIntersecting(float cx1, float cy1, float cr1, f
 	float distanceSq = (cx1 - cx2) * (cx1 - cx2) + (cy1 - cy2) * (cy1 - cy2);
 	return (cr1 + cr2) * (cr1 + cr2) >= distanceSq;
 }
+
+float CollisionChecker::getDistance(float x1, float y1, float x2, float y2) {
+	return sqrtf(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}

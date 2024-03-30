@@ -54,6 +54,7 @@ void SceneSetting::Init()
 	const int btnIndex = static_cast<int>(difficulty);
 
 	selectionPos.x = btnStartPos.x + btnIndex * (DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP);
+	selectionTargetPos.y = selectionPos.y;
 }
 
 
@@ -123,6 +124,7 @@ void SceneSetting::Update(double dt)
 			}
 			else {
 				difficulty = static_cast<DIFFICULTY_SETTINGS>(i);
+				lerpElapsedTime = 0;
 			}
 		}
 
@@ -131,6 +133,27 @@ void SceneSetting::Update(double dt)
 	}
 
 	selectionTargetPos.x = btnStartPos.x + static_cast<int>(difficulty) * (DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP);
+
+	if (selectionPos.x != selectionTargetPos.x) {
+		lerpElapsedTime += static_cast<float>(dt);
+		AEVec2Lerp(&selectionPos, &selectionPos, &selectionTargetPos, lerpElapsedTime/DIFFICULTY_LERP_TIME);
+	}
+	else {
+		lerpElapsedTime = 0;
+	}
+
+	//if (selectionPos.x > selectionTargetPos.x) {
+	//	selectionPos.x -= SELECTOR_SPEED * static_cast<float>(dt);
+	//}
+	//else if (selectionPos.x < selectionTargetPos.x) {
+	//	selectionPos.x += SELECTOR_SPEED * static_cast<float>(dt);
+	//}
+
+	//// snap selector to target pos if close enough
+	//std::cout << CollisionChecker::getDistance(selectionPos.x, selectionPos.y, selectionTargetPos.x, selectionTargetPos.y) << "\n";
+	//if (CollisionChecker::getDistance(selectionPos.x, selectionPos.y, selectionTargetPos.x, selectionTargetPos.y) < SELECTOR_SPEED / 10) {
+	//	selectionPos.x = selectionTargetPos.x;
+	//}
 
 	//std::cout << static_cast<int>(difficulty) << "\n";
 }
