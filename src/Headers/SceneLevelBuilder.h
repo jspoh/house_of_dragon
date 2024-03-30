@@ -176,7 +176,7 @@ private:
 		int m_RenderOrder;
 		float m_Transparency;
 		v_SceneObjectTypes m_Type;
-		std::string m_TexRef; //Used with draw
+		string m_TexRef; //Used with draw
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,12 +190,12 @@ private:
 	struct v_SceneLevelData
 	{
 		v_SceneLevelData();
-		std::string m_LevelName;
+		string m_LevelName;
 		bool m_Completed;
 		int m_MaxEnemies;
-		std::vector<std::string> m_EnemyTypes;
+		std::vector<string> m_EnemyTypes;
 		std::vector<int> m_EnemySpawnWeight;
-		std::vector<std::string> m_SceneObjTypes;
+		std::vector<string> m_SceneObjTypes;
 		std::vector<int> m_SceneObjSpawnWeight;
 
 		bool m_DayTime;
@@ -225,10 +225,10 @@ private:
 	///////////////////////////////////////////////////////
 	//TRANSFORM DATA
 	AEMtx33 m_TransformSkyData;
-	std::vector<AEMtx33> m_TransformCloudsData;
+	vector<AEMtx33> m_TransformCloudsData;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
-	std::vector<AEMtx33> m_TransformSunLensData;
+	vector<AEMtx33> m_TransformSunLensData;
 	AEVec2 m_sunPos, m_sunOverlayScale;
 	AEMtx33 m_TransformFogData;
 
