@@ -46,12 +46,12 @@ bool CollisionChecker::_rectAABB(float screenX1, float screenY1, float w1, float
 	return false;
 }
 
-bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, float mouseX, float mouseY) {
-	return _rectAABB(rectScreenX, rectScreenY, rectW, rectH, mouseX, mouseY, 1, 1);
+bool CollisionChecker::isMouseInRect(float rectScreenX, float rectScreenY, float rectW, float rectH, float mX, float mY) {
+	return _rectAABB(rectScreenX, rectScreenY, rectW, rectH, mX, mY, 1, 1);
 }
 
-bool CollisionChecker::isMouseInCircle(float cX, float cY, float radius, float mouseX, float mouseY) {
-	float distanceSq = (mouseX - cX) * (mouseX - cX) + (mouseY - cY) * (mouseY - cY);
+bool CollisionChecker::isMouseInCircle(float cX, float cY, float radius, float mX, float mY) {
+	float distanceSq = (mX - cX) * (mX - cX) + (mY - cY) * (mY - cY);
 	return distanceSq <= radius * radius;
 }
 
@@ -63,20 +63,20 @@ bool CollisionChecker::areRectsIntersecting(float screenX1, float screenY1, floa
 }
 
 bool CollisionChecker::isRectTouchingScreenXBorder([[maybe_unused]] float rectScreenX, [[maybe_unused]] float rectScreenY, float w, [[maybe_unused]] float h, float padding) {
-	if (rectScreenX - w / 2 - padding <= 0) {
+	if (rectScreenX - w / 2 <= 0 + padding) {
 		return true;		// left
 	}
-	if (rectScreenX + w / 2 + padding >= AEGfxGetWindowWidth()) {
+	if (rectScreenX + w / 2 >= AEGfxGetWindowWidth() - padding) {
 		return true;		// right
 	}
 	return false;
 }
 
 bool CollisionChecker::isRectTouchingScreenYBorder([[maybe_unused]] float rectScreenX, float rectScreenY, [[maybe_unused]] float w, float h, float padding) {
-	if (rectScreenY - h / 2 - padding <= 0) {
+	if (rectScreenY - h / 2 <= 0 + padding) {
 		return true;		// top
 	}
-	if (rectScreenY + h / 2 + padding >= AEGfxGetWindowHeight()) {
+	if (rectScreenY + h / 2 >= AEGfxGetWindowHeight() - padding) {
 		return true;		// bottom
 	}
 	return false;
@@ -93,4 +93,8 @@ bool CollisionChecker::isRectTouchingScreenBorder(float rectScreenX, float rectS
 bool CollisionChecker::areCirclesIntersecting(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2) {
 	float distanceSq = (cx1 - cx2) * (cx1 - cx2) + (cy1 - cy2) * (cy1 - cy2);
 	return (cr1 + cr2) * (cr1 + cr2) >= distanceSq;
+}
+
+float CollisionChecker::getDistance(float x1, float y1, float x2, float y2) {
+	return sqrtf(powf(x2 - x1, 2) + powf(y2 - y1, 2));
 }

@@ -51,9 +51,10 @@ private:
 
 public:
 	bool isSelected = false;
+
+	const int projectileTravelTimeMs;
 	
-	Enemy();
-	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50, int _projectileTravelTimeMs = 1000);
 	~Enemy();
 
 	void update([[maybe_unused]] double dt);

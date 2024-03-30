@@ -37,6 +37,7 @@ Technology is prohibited.
 #include <sstream>
 #include <time.h>
 #include <list>
+#include <memory>
 #include "AEEngine.h"
 #include "json.hpp"
 

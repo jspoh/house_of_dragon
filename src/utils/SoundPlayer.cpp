@@ -105,7 +105,7 @@ SoundPlayer::GameAudio& SoundPlayer::GameAudio::getInstance() {
 }
 
 void SoundPlayer::GameAudio::playLoop() {
-	SoundManager::GetInstance()->playAudio("footsteps_fast_0.wav", 1, -1, true);
+	SoundManager::GetInstance()->playAudio("footsteps_fast_0.wav", 1, -1, false);
 	SoundManager::GetInstance()->playAudio("movement_0.wav", 0.1f, -1, true);
 }
 

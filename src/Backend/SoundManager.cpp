@@ -137,3 +137,21 @@ void SoundManager::getVolume(float& sfx, float& music) {
 	sfx = SFX_VOLUME;
 	music = MUSIC_VOLUME;
 }
+
+void SoundManager::pauseGroup(bool isMusic) {
+	if (isMusic) {
+		AEAudioPauseGroup(musicGroup);
+	}
+	else {
+		AEAudioPauseGroup(sfxGroup);
+	}
+}
+
+void SoundManager::resumeGroup(bool isMusic) {
+	if (isMusic) {
+		AEAudioResumeGroup(musicGroup);
+	}
+	else {
+		AEAudioResumeGroup(sfxGroup);
+	}
+}

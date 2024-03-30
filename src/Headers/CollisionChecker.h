@@ -76,5 +76,7 @@ public:
 	 * @return false 
 	 */
 	static bool areCirclesIntersecting(float cx1, float cy1, float cr1, float cx2, float cy2, float cr2);
+
+	static float getDistance(float x1, float y1, float x2, float y2);
 };
 

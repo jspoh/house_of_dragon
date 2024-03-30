@@ -51,7 +51,10 @@ void SceneSetting::Init()
 	ParticleManager::GetInstance()->init();
 
 
+	const int btnIndex = static_cast<int>(difficulty);
 
+	selectionPos.x = btnStartPos.x + btnIndex * (DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP);
+	selectionTargetPos.y = selectionPos.y;
 }
 
 
@@ -106,6 +109,40 @@ void SceneSetting::Update(double dt)
 	SoundManager::GetInstance()->setVolume(musicVolume, true);
 
 	soundSliderPos.x = AEClamp(soundSliderPos.x, minX, maxX);
+
+	/* difficulty */
+
+	AEVec2 btnPos = btnStartPos;
+	int i{};
+	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
+		Point rectScreenPos = wtos(btnPos.x, btnPos.y);
+		//std::cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
+		if (CollisionChecker::isMouseInRect(rectScreenPos.x, rectScreenPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			// hover state
+			if (!AEInputCheckTriggered(AEVK_LBUTTON)) {
+				continue;
+			}
+			else {
+				difficulty = static_cast<DIFFICULTY_SETTINGS>(i);
+				lerpElapsedTime = 0;
+			}
+		}
+
+		btnPos.x += DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP;
+		i++;
+	}
+
+	selectionTargetPos.x = btnStartPos.x + static_cast<int>(difficulty) * (DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP);
+
+	if (selectionPos.x != selectionTargetPos.x) {
+		lerpElapsedTime += static_cast<float>(dt);
+		AEVec2Lerp(&selectionPos, &selectionPos, &selectionTargetPos, lerpElapsedTime/DIFFICULTY_LERP_TIME);
+	}
+	else {
+		lerpElapsedTime = 0;
+	}
+
+	//std::cout << static_cast<int>(difficulty) << "\n";
 }
 
 void SceneSetting::Render()
@@ -113,7 +150,26 @@ void SceneSetting::Render()
 	//texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
 	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 	//RenderHelper::getInstance()->texture("settingbg", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, mySetting.mesh, 1.0f);
+
+	/* difficulty */
 	RenderHelper::getInstance()->text("DIFFICULTY	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+	
+	AEVec2 btnPos = btnStartPos;
+	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
+		RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, 0, Color{ 0.1f, 0.1f, 0.5f, 1 }, 1.f);
+		Point screenPos = wtos(btnPos.x, btnPos.y);
+		RenderHelper::getInstance()->text(str, screenPos.x, screenPos.y, 1, 1, 1, 1);
+
+		btnPos.x += DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP;
+	}
+
+	// draw selected
+	RenderHelper::getInstance()->rect("invis", selectionPos.x, selectionPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, 0.f, Color{ 0.7f, 0.7f, 1, 0.5f }, 0.5f);
+
+
+
+
+	/* audio */
 	RenderHelper::getInstance()->text("SOUND	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 2.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	RenderHelper::getInstance()->text("MUSIC	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 1.6f, 1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -130,7 +186,9 @@ void SceneSetting::Render()
 void SceneSetting::Exit()
 {
 	//AEGfxMeshFree(mySetting.mesh);
+	Database::getInstance()->data["game"]["difficulty"] = static_cast<int>(difficulty);
 
+	// volume saving done in SoundManager
 }
 
 

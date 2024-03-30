@@ -20,7 +20,7 @@ Technology is prohibited.
 #include "Pause.h"
 #include "SceneStages.h"
 
-extern Player* player;
+extern std::unique_ptr<Player> player;
 //player->blockingState;		// player blocking state here
 
 namespace {
@@ -814,6 +814,7 @@ void SceneLevelBuilder::Update(double dt)
 	//TESTING
 	{
 	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
+
 	if (AEInputCheckTriggered(AEVK_Z) && !Combat)
 	{
 		TestTimer = 2.5f;
