@@ -26,16 +26,17 @@ public:
     typedef struct {
         s8 fontID;
         std::string bg;
+        std::string bg1;
         std::string pointer;
         std::string title;
         std::string transitionBG;
-        float buttonX[4];
-        float buttonY[4];
-        std::string button[4];
+        float buttonX[5];
+        float buttonY[5];
+        std::string button[5];
         std::string buttonSelect[3];
         s32 mouseX, mouseY;
         float buttonWidth, buttonHeight;
-        bool hovering[4];
+        bool hovering[5];
         bool levelSelecting;
         int levelActived[4];
         bool transitionEnd;

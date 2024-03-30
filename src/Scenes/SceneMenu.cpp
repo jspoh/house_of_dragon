@@ -27,11 +27,14 @@ void SceneMenu::Load()
 {
 
 	myMenu.bg = "menuBg";
+	myMenu.bg1 ="menuBg1";
 	myMenu.pointer = "dagger";
 	myMenu.button[0] = "olay";
 	myMenu.button[1] = "xredit";
 	myMenu.button[2] = "aetting";
-	myMenu.button[3] = "quit";
+	myMenu.button[3] = "howtoplay";
+	myMenu.button[4] = "quit";
+
 
 
 	myMenu.buttonSelect[0] = "chicken";
@@ -40,11 +43,13 @@ void SceneMenu::Load()
 
 
 	RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
+	RenderHelper::getInstance()->registerTexture("menuBg1", "Assets/Menu/levelselector.png");
 	RenderHelper::getInstance()->registerTexture("dagger", "Assets/Menu/buttons/dagger.png");
-	RenderHelper::getInstance()->registerTexture("olay", "Assets/Menu/buttons/olay.png");
-	RenderHelper::getInstance()->registerTexture("xredit", "Assets/Menu/buttons/xredit.png");
-	RenderHelper::getInstance()->registerTexture("aetting", "Assets/Menu/buttons/aetting.png");
-	RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/quit.png");
+	RenderHelper::getInstance()->registerTexture("olay", "Assets/Menu/buttons/playy.png");
+	RenderHelper::getInstance()->registerTexture("xredit", "Assets/Menu/buttons/credits.png");
+	RenderHelper::getInstance()->registerTexture("aetting", "Assets/Menu/buttons/settings.png");
+	RenderHelper::getInstance()->registerTexture("howtoplay", "Assets/Menu/buttons/howtoplay.png");
+	RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/exits.png");
 
 	RenderHelper::getInstance()->registerTexture("chicken", "Assets/Menu/chicken.png");
 	RenderHelper::getInstance()->registerTexture("tiger", "Assets/Menu/tiger.png");
@@ -55,21 +60,23 @@ void SceneMenu::Load()
 void SceneMenu::Init()
 {
 
-	myMenu.buttonWidth = 400.0f; // Example initialization
-	myMenu.buttonHeight = 130.0f; // Example initialization
+	myMenu.buttonWidth = 300.0f; // Example initialization
+	myMenu.buttonHeight = 230.0f; // Example initialization
 	myMenu.transitionEnd = false; // Example initialization
 	myMenu.transitionTimer = 0.0f; // Example initialization
 	myMenu.transitionElapse = 0.0f; // Example initialization
 	myMenu.nextLevel = 0; // Example initialization
-	for (int i = 0; i < 4; ++i)
+	const float buttonGap = 100.0f; // Adjust the value as needed
+	for (int i = 0; i < 5; ++i)
 	{
 		myMenu.buttonX[i] = 0;
-		myMenu.buttonY[i] = -i * (myMenu.buttonHeight) + 200;
+		myMenu.buttonY[i] = -i * (myMenu.buttonHeight - buttonGap) + 250;
 	}
+
 
 	for (int i = 0; i < 3; ++i)
 	{
-		myMenu.buttonSelectX[i] = -300.0f + i * 300.0f; // Adjust the x-coordinate as needed
+		myMenu.buttonSelectX[i] = -300.0f + i * 100.0f; // Adjust the x-coordinate as needed
 		myMenu.buttonSelectY[i] = 0.0f; // Adjust the y-coordinate as needed
 		myMenu.hoveringSelect[i] = false;
 	}
@@ -139,6 +146,9 @@ void SceneMenu::Update(double dt)
 						SceneManager::GetInstance()->SetActiveScene("SceneSetting");
 						break;
 					case 3:
+						SceneManager::GetInstance()->SetActiveScene("HowToPlay");
+
+					case 4:
 						gGameRunning = false;
 						break;
 					}
@@ -205,7 +215,7 @@ void SceneMenu::Render()
 	RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
 	// Render the menu buttons
-	for (int i = 3; i >= 0; --i)
+	for (int i = 5; i >= 0; --i)
 	{
 		RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth, myMenu.buttonHeight);
 
@@ -218,7 +228,7 @@ void SceneMenu::Render()
 	// Render the background image again before rendering buttonSelect - should not do it like this, implement inner states in this scene
 	if (myMenu.levelSelecting)
 	{
-		RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
+		RenderHelper::getInstance()->texture("menuBg1", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
 		// Render the buttonSelect buttons
 		for (int i = 0; i < 3; ++i)
