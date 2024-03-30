@@ -31,10 +31,10 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
-	void FireAtPlayer(const AEVec2& _startpos = { 0.0f, 0.0f }, const AEVec2& _startscale = { 0.0f, 0.0f }, double _MovTimer = 5.0f, ProjectileType _type = ProjectileType::P_FireBall_Red);
+	void FireAtPlayer(const AEVec2& _startpos = { 0.0f, 0.0f }, const AEVec2& _startscale = { 0.0f, 0.0f }, double _speed = 0.2f, double _MovTimer = 1.0f, ProjectileType _type = ProjectileType::P_FireBall_Red);
 
 	ProjectileType m_type;
-	double m_InitialLifeTime, m_LifeTime;
+	double m_Speed, m_LifeTime;
 private:
 	//////////////////////////////////////////////////////////////////////////
 	// Animation

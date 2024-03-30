@@ -42,27 +42,27 @@ void GameObject_Projectiles::Init()
 
 void GameObject_Projectiles::Update(double _dt)
 {
-
+	UNREFERENCED_PARAMETER(_dt);
 	if (m_Active)
 	{
 		//Movement Logic
-		m_LifeTime -= _dt;
-		float lerpMultiplier = _dt / (m_InitialLifeTime * 1000);
+		m_LifeTime -= _dt + m_Speed/10;
+		std::cout << m_LifeTime << std::endl;
 		if (m_LifeTime >= 0.0)
 		{
-			m_LocalPos.x = lerp(m_LocalPos.x, PLAYERSCREENPOSX, lerpMultiplier * (m_InitialLifeTime * 1000));
-			m_LocalPos.y = lerp(m_LocalPos.y, PLAYERSCREENPOSY, lerpMultiplier * (m_InitialLifeTime * 1000));
+			m_LocalPos.x = lerp(m_LocalPos.x, PLAYERSCREENPOSX, _dt / (m_LifeTime * 1000));
+			m_LocalPos.y = lerp(m_LocalPos.y, PLAYERSCREENPOSY, _dt / (m_LifeTime * 1000));
 
 			// Move in the positive direction if the current position is less than the target position
 			if (m_LocalPos.x > PLAYERSCREENPOSX)
-				m_LocalPos.x += (_dt / lerpMultiplier * (m_InitialLifeTime * 1000));
+				m_LocalPos.x += (_dt / (m_LifeTime * 1000));
 
 			// Move in the negative direction if the current position is greater than the target position
 			if (m_LocalPos.y > PLAYERSCREENPOSY)
-				m_LocalPos.y -= (_dt / lerpMultiplier * (m_InitialLifeTime * 1000));
+				m_LocalPos.y -= (_dt / (m_LifeTime * 1000));
 
-			m_Scale.x += lerp(m_Scale.x, 300, _dt / lerpMultiplier);
-			m_Scale.y += lerp(m_Scale.y, 300, _dt / lerpMultiplier);
+			m_Scale.x += lerp(m_Scale.x, 400, _dt / (m_LifeTime * 1000)) * m_Speed;
+			m_Scale.y += lerp(m_Scale.y, 400, _dt / (m_LifeTime * 1000)) * m_Speed;
 		}
 		else
 		{
@@ -170,12 +170,14 @@ void GameObject_Projectiles::Exit()
 
 void GameObject_Projectiles::FireAtPlayer(const AEVec2& _startpos, 
 	const AEVec2& _startscale, 
+	double _speed,
 	double _MovTimer,
 	GameObject_Projectiles::ProjectileType _type)
 {
 	m_LocalPos = _startpos;
 	m_Scale = _startscale;
-	m_InitialLifeTime = m_LifeTime = _MovTimer;
+	m_LifeTime = _MovTimer;
+	m_Speed = _speed;
 	m_type = _type;
 	m_Active = true;
 }

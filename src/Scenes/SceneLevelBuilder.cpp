@@ -828,7 +828,7 @@ void SceneLevelBuilder::Update(double dt)
 	// GameObject Logic
 	//GameObject* temp = GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy");
 	//std::cout << temp->m_RefName << std::endl;
-	static double x = 1, y = 1;
+	static double x = 1, y = 0;
 	if (AEInputCheckCurr(AEVK_W))
 	{
 		y += 0.05;
@@ -842,7 +842,7 @@ void SceneLevelBuilder::Update(double dt)
 	{
 		GameObject_Projectiles* temp = dynamic_cast<GameObject_Projectiles*>(GameObjectManager::GetInstance()->FindInactiveObjectByReference("Projectiles"));
 		if (temp != nullptr)
-			temp->FireAtPlayer({static_cast<float>(mouseX - AEGfxGetWindowWidth() / 2),static_cast<float>(AEGfxGetWindowHeight() / 2 - mouseY)}, { 100.0f, 100.0f}, 5.0f + y);
+			temp->FireAtPlayer({static_cast<float>(mouseX - AEGfxGetWindowWidth() / 2),static_cast<float>(AEGfxGetWindowHeight() / 2 - mouseY)}, { 100.0f, 100.0f});
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Setup
