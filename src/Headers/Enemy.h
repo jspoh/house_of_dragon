@@ -44,16 +44,17 @@ private:
 
 	float AttackedRenderX{ 0 };
 	float AttackedRenderXprev{ 0 };
-	const float healthRenderTimeMax = 1.f;
+	const float healthRenderTimeMax = 0.75f;
 	float healthRenderTime{ 0 };
 
 
 
 public:
 	bool isSelected = false;
+
+	const int projectileTravelTimeMs;
 	
-	Enemy();
-	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50, int _projectileTravelTimeMs = 1000);
 	~Enemy();
 
 	void update([[maybe_unused]] double dt);
