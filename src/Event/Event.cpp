@@ -147,7 +147,7 @@ void Event::startRandomEvent() {
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
 	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
-	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
+	e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	std::cout << "Random event: " << e << "\n";
@@ -588,8 +588,8 @@ void Event::_oscillatingTimerEventRender() {
 void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
-	// multiclick is based on duration only
-	if (_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) {
+	// multiclick is based on duration and if event is completed
+	if ((_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) || (_mcoHits - _mcoMisses == _maxMcoHits && !_mcoIsTransitioningOut)) {
 		std::cout << "multiclick event over\n";
 		_elapsedTimeMs = 0;
 		_mcoIsTransitioningOut = true;
