@@ -2,7 +2,9 @@
 /*!
 \file CombatPlayer.h
 \author Poh Jing Seng, jingseng.poh, 2301363
+\author Soh Wei Jie, weijie.soh, 
 \par jingseng.poh\@digipen.edu
+\par weijie.soh\@digipen.edu
 \date 28 feb 2024
 \brief handles player in combat
 /*
@@ -63,10 +65,21 @@ private:
 	void _renderShield();
 
 public:
+	enum class HandAnimationType {
+		None,
+		Punch,
+		Block,
+		Ready,
+	};
+
 	static constexpr int shieldUpTransitionTimeMs = 100;
 	static constexpr int shieldDownTransitionTimeMs = 300;
 	static constexpr int shieldUpTimeMs = 1000;
 	static constexpr int timeBeforeNextBlockMs = 1000;
+
+	void setHandStateAnimationType(HandAnimationType t);
+
+	void updateHands(float t_dt);
 
 	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
 	~Player();
@@ -93,5 +106,8 @@ public:
 	void render();
 
 	void attackMultipler(int turn);
+
+private:
+	HandAnimationType HandStateAnimationType = HandAnimationType::None; //Can use enum
 };
 
