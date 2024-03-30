@@ -979,7 +979,9 @@ void CombatScene::Render()
 	}
 	Event::getInstance()->render();
 
-	player->render();
+	if (CombatManager::getInstance().isPlayingEvent == false) 
+	{ player->render(); 
+	}
 
 	//for (i = 0; i < groups.enemies.size(); i++) {
 	//	groups.enemies[i]->render(); // render all, draw all enemys
