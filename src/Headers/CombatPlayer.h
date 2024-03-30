@@ -54,6 +54,13 @@ private:
 	int attackMultiplerTurn{ 0 };
 	int attackMultiplerTurnStart{ 0 };
 
+	void _updateBlockingHands();
+
+	void _renderHands();
+
+	// discarded in favour of hands
+	void _updateShield(double dt);
+	void _renderShield();
 
 public:
 	static constexpr int shieldUpTransitionTimeMs = 100;

@@ -84,6 +84,9 @@ void SceneStages::Update(double dt)
 		//Start the camera movement
 		AEInputGetCursorPosition(&mouseX, &mouseY);
 		//                                   |                Move Based On Mouse Pos                |  |                          Screen Shake                                     |
+		if (Pause::getInstance().isPaused) {
+			return;
+		}
 		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier)),
 				            static_cast<f32>(-(mouseY - AEGfxGetWindowHeight()) / MOUSE_SENSITIVITY) - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier));
 

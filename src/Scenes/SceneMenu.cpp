@@ -128,9 +128,6 @@ void SceneMenu::Update(double dt)
 					{
 					case 0:
 						myMenu.levelSelecting = true;
-						SoundPlayer::stopAll();
-						SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
-						loopIsPlaying = false;
 						break;
 					case 1:
 						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
@@ -192,8 +189,6 @@ void SceneMenu::Update(double dt)
 
 	// !TODO: implement back button too
 	if (AEInputCheckTriggered(AEVK_Q) && myMenu.levelSelecting) {
-		SoundPlayer::stopAll();
-		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
 		myMenu.levelSelecting = false;
 		return;
 	}

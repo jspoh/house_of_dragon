@@ -22,6 +22,9 @@ SoundManager::SoundManager()
 
 	SFX_VOLUME = Database::getInstance()->data["game"]["audio"]["sfx"];
 	MUSIC_VOLUME = Database::getInstance()->data["game"]["audio"]["music"];
+
+	setVolume(SFX_VOLUME, false);
+	setVolume(MUSIC_VOLUME, true);
 }
 
 // Destructor
@@ -108,7 +111,7 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 		return;
 	}
 
-	volume *= isMusic ? MUSIC_VOLUME : SFX_VOLUME;
+	//volume *= isMusic ? MUSIC_VOLUME : SFX_VOLUME;
 
 	AEAudioPlay(audio, isMusic ? musicGroup : sfxGroup, volume, 1.f, loop);
 }
