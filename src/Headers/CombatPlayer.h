@@ -67,6 +67,7 @@ public:
 	static constexpr int shieldDownTransitionTimeMs = 300;
 	static constexpr int shieldUpTimeMs = 1000;
 	static constexpr int timeBeforeNextBlockMs = 1000;
+
 	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
 	~Player();
 

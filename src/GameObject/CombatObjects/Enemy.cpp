@@ -24,8 +24,8 @@ Technology is prohibited.
 //local variables
 float paddingY = 90;
 
-Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
-    : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
+Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size, int _projectileTravelTimeMs)
+    : Mob(element, health, dmg), _textureRef(textureRef), _size(size), projectileTravelTimeMs(_projectileTravelTimeMs) {
     this->_spos.x = screenX;
     this->_spos.y = screenY;
     this->fullhealth = health;

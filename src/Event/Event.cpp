@@ -709,7 +709,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 
 	case INNER_STATES::ON_UPDATE:
 		// on update state
-		if (_elapsedTimeMs >= _typingTimeoutMs) {
+		if (_elapsedTimeMs >= _typingTimeoutMs || _wordsCompleted >= _typingMaxScore) {
 			_elapsedTimeMs = 0;
 			eventMultiplier = static_cast<f32>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
 			_typingState = INNER_STATES::ON_EXIT;
@@ -783,7 +783,7 @@ void Event::_typingEventRender() {
 				col = { 0, 1, 0, 1 };	// green
 			}
 			else {
-				col = { 0.9f, 0.9f, 0.9f, 1 };	// grey
+				col = {1,1,1, 1 };	// white
 			}
 
 			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currXOffset, currYOffset, col.r, col.g, col.b, col.a);
