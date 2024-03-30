@@ -129,6 +129,8 @@ float lerp(float start, float end, float t);
 
 std::vector<std::string> split(const std::string& str, const char sep);
 
+// init/update global variables declared in this file.
+void initGlobals();
 void updateGlobals();
 
 /*for ease of inclusion*/

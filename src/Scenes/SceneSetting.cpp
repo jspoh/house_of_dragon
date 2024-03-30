@@ -108,6 +108,31 @@ void SceneSetting::Update(double dt)
 	SoundManager::GetInstance()->setVolume(musicVolume, true);
 
 	soundSliderPos.x = AEClamp(soundSliderPos.x, minX, maxX);
+
+	/* difficulty */
+
+	AEVec2 btnPos = btnStartPos;
+	int i{};
+	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
+		Point rectScreenPos = wtos(btnPos.x, btnPos.y);
+		//std::cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
+		if (CollisionChecker::isMouseInRect(rectScreenPos.x, rectScreenPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			// hover state
+			if (!AEInputCheckTriggered(AEVK_LBUTTON)) {
+				continue;
+			}
+			else {
+				difficulty = static_cast<DIFFICULTY_SETTINGS>(i);
+			}
+		}
+
+		btnPos.x += DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP;
+		i++;
+	}
+
+	selectionTargetPos.x = btnStartPos.x + static_cast<int>(difficulty) * (DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP);
+
+	//std::cout << static_cast<int>(difficulty) << "\n";
 }
 
 void SceneSetting::Render()
@@ -151,7 +176,9 @@ void SceneSetting::Render()
 void SceneSetting::Exit()
 {
 	//AEGfxMeshFree(mySetting.mesh);
+	Database::getInstance()->data["game"]["difficulty"] = static_cast<int>(difficulty);
 
+	// volume saving done in SoundManager
 }
 
 

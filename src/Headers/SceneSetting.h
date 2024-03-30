@@ -93,6 +93,8 @@ private:
 	static constexpr int DIFFICULTY_BUTTON_HEIGHT = 40;
 	const AEVec2 btnStartPos{ 0, 125 };
 	AEVec2 selectionPos{0, btnStartPos.y};	// update x in init
+	AEVec2 selectionTargetPos{};			// on changing difficulty, the pos for the selection highlight to go to
+	static constexpr int SELECTOR_SPEED = 10.f;
 };
 
 //#endif
