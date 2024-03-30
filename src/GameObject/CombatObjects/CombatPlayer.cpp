@@ -16,6 +16,21 @@ Technology is prohibited.
 #include "Pch.h"
 #include "CombatPlayer.h"
 
+namespace {
+	//First data is left, second data is right
+	std::pair<AEMtx33, AEMtx33> Hand1PosData{};
+	std::pair<AEMtx33, AEMtx33> Hand2PosData{};
+	std::pair<AEMtx33, AEMtx33> Hand3PosData{};
+	std::pair<AEMtx33, AEMtx33> Hand4PosData{};
+
+	static int t_AnimationFrame = 0;
+	static double t_AnimationDuration = 0.0;
+	static bool LeftSide = false;
+	double LerpSpeed = 10.0;
+	AEVec2 targetPos{};
+	f32 camX, camY;
+}
+
 
 Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
@@ -109,15 +124,8 @@ void Player::update(double dt) {
 		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
 			elapsedTimeMs = 0;
-
-			// force shield to go to final pos
-			AEVec2Set(&shield.pos, shieldBlockingPos.x, shieldBlockingPos.y);
 			break;
 		}
-
-		// translate the shield up
-		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionUpSpeed * dt);
-		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionUpSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
 		//std::cout << "Player blocking state: ON_UPDATE\n";
@@ -131,14 +139,7 @@ void Player::update(double dt) {
 		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 			elapsedTimeMs = 0;
-
-			// force shield to go to initial pos
-			AEVec2Set(&shield.pos, shieldInitialPos.x, shieldInitialPos.y);
-			break;
 		}
-
-		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionDownSpeed * dt);
-		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionDownSpeed * dt);
 		break;
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 		//std::cout << "Player blocking state: ON_COOLDOWN\n";
@@ -149,6 +150,8 @@ void Player::update(double dt) {
 		break;
 	}
 
+	//_updateShield(dt);
+	_updateBlockingHands();
 	//std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
 	//std::cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
@@ -156,15 +159,8 @@ void Player::update(double dt) {
 void Player::render() {
 	this->_drawHealth(150, 150);
 
-	switch (blockingState) {
-	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-	case PLAYER_BLOCKING_STATES::ON_ENTER:
-	case PLAYER_BLOCKING_STATES::ON_UPDATE:
-	case PLAYER_BLOCKING_STATES::ON_EXIT:
-	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-		RenderHelper::getInstance()->texture("shield", shield.pos.x + camOffset.x, shield.pos.y + camOffset.y, shield.size.x, shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
-		break;
-	}
+	//_renderShield();
+	_renderHands();
 }
 
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
@@ -209,3 +205,233 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 void Player::attackMultipler(int turn) {
 	this->attackMultiplerTurn = turn;
 }
+
+
+void Player::_updateBlockingHands() {
+
+	static PLAYER_BLOCKING_STATES prevState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
+
+	if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+		if (!LeftSide) {
+			AEMtx33Identity(&Hand3PosData.second);
+			Hand1PosData.first = Hand3PosData.second;
+			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
+			targetPos = { -304.25f + camX, -526.f + camY };
+			AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
+			AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
+			targetPos = { -160.95f + camX, -499.5f + camY };
+			AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
+		}
+
+		else {
+			AEMtx33Identity(&Hand3PosData.first);
+			Hand1PosData.second = Hand3PosData.first;
+			AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+			targetPos = { 160.95f + camX, -499.5f + camY };
+			AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+			AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+			targetPos = { 304.25f + camX, -526.f + camY };
+			AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+		}
+	}
+
+	//std::cout << static_cast<int>(blockingState) << "\n";
+	//LeftSide = false;
+
+	if (!LeftSide) //Right Hand Blocking
+		switch (blockingState)
+		{
+		case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+			//Init
+			break;
+		case PLAYER_BLOCKING_STATES::ON_ENTER:
+			//Start of block
+			targetPos = { -304.25f + camX, -384.f + camY };
+			LerpSpeed = 2;
+			Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+			Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { -160.95f + camX, -266.4f + camY };
+			LerpSpeed = 2;
+			Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+			Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+			break;
+		case PLAYER_BLOCKING_STATES::ON_UPDATE:
+			//Hold
+			targetPos = { -304.25f + camX, -384.0f + camY };
+			LerpSpeed = 1.1;
+			Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+			Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { 277.5f + camX, -94.35f + camY };
+			LerpSpeed = 15;
+			Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+			Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
+			break;
+		case PLAYER_BLOCKING_STATES::ON_EXIT:
+			//Exit
+			targetPos = { -425.35f + camX, -498.5f + camY };
+			LerpSpeed = 5;
+			Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
+			Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { 555.f + camX, -510.25f + camY };
+			LerpSpeed = 5;
+			Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
+			Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
+
+			break;
+		case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+			// cooldown
+			LeftSide = rand() % 2 - 1;		// huh why -1 here
+			Hand1PosData.first = Hand1PosData.second = {};
+			Hand2PosData.first = Hand2PosData.second = {};
+			Hand3PosData.first = Hand3PosData.second = {};
+			Hand4PosData.first = Hand4PosData.second = {};
+			break;
+		default:
+			std::cout << "ERROR IN BLOCKING ANIMATION\n";
+		}
+	else //Left Hand Blocking
+		switch (blockingState)
+		{
+		case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+			//Init
+			AEMtx33Identity(&Hand3PosData.first);
+			Hand1PosData.second = Hand3PosData.first;
+			AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+			targetPos = { 160.95f + camX, -499.5f + camY };
+			AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+			AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+			targetPos = { 304.25f + camX, -526.f + camY };
+			AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+			break;
+		case PLAYER_BLOCKING_STATES::ON_ENTER:
+			//Start of block
+			targetPos = { 160.95f + camX, -266.4f + camY };
+			LerpSpeed = 2;
+			Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+			Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { 304.25f + camX, -384.f + camY };
+			LerpSpeed = 2;
+			Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+			Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+
+			break;
+		case PLAYER_BLOCKING_STATES::ON_UPDATE:
+			//Hold
+			targetPos = { -277.5f + camX, -94.35f + camY };
+			LerpSpeed = 15;
+			Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+			Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
+			targetPos = { 304.25f + camX, -384.0f + camY };
+			LerpSpeed = 1.1;
+			Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+			Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+			break;
+		case PLAYER_BLOCKING_STATES::ON_EXIT:
+			//Exit
+			targetPos = { -555.f + camX, -510.25f + camY };
+			LerpSpeed = 5;
+			Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
+			Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
+			targetPos = { 425.35f + camX, -498.5f + camY };
+			LerpSpeed = 5;
+			Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
+			Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
+
+			break;
+		case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+			// cooldown
+			LeftSide = rand() % 2 - 1;		// huh why -1 here
+			Hand1PosData.first = Hand1PosData.second = {};
+			Hand2PosData.first = Hand2PosData.second = {};
+			Hand3PosData.first = Hand3PosData.second = {};
+			Hand4PosData.first = Hand4PosData.second = {};
+			break;
+		default:
+			std::cout << "ERROR IN BLOCKING ANIMATION\n";
+		}
+
+	prevState = blockingState;
+}
+
+void Player::_renderHands()
+{
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	AEGfxSetTransparency(1.0f);
+	AEGfxSetTransform(Hand4PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_04"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand4PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_04"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+	AEGfxSetTransform(Hand1PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_01"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand1PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_01"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand2PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_02"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand2PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_02"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand3PosData.first.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Left_03"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	AEGfxSetTransform(Hand3PosData.second.m);
+	AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("Player_Fist_Right_03"), 0, 0);
+	AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+}
+
+void Player::_updateShield(double dt) {
+	switch (blockingState) {
+	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+		break;
+
+	case PLAYER_BLOCKING_STATES::ON_ENTER:
+		//std::cout << "Player blocking state: ON_ENTER\n";
+		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
+			// force shield to go to final pos
+			AEVec2Set(&shield.pos, shieldBlockingPos.x, shieldBlockingPos.y);
+			break;
+		}
+
+		// translate the shield up
+		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionUpSpeed * dt);
+		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionUpSpeed * dt);
+		break;
+
+	case PLAYER_BLOCKING_STATES::ON_UPDATE:
+		break;
+
+	case PLAYER_BLOCKING_STATES::ON_EXIT:
+		//std::cout << "Player blocking state: ON_EXIT\n";
+		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
+			// force shield to go to initial pos
+			AEVec2Set(&shield.pos, shieldInitialPos.x, shieldInitialPos.y);
+			break;
+		}
+
+		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionDownSpeed * dt);
+		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionDownSpeed * dt);
+		break;
+
+	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+		break;
+	}
+}
+
+void Player::_renderShield() {
+	switch (blockingState) {
+	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+	case PLAYER_BLOCKING_STATES::ON_ENTER:
+	case PLAYER_BLOCKING_STATES::ON_UPDATE:
+	case PLAYER_BLOCKING_STATES::ON_EXIT:
+	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+		RenderHelper::getInstance()->texture("shield", shield.pos.x + camOffset.x, shield.pos.y + camOffset.y, shield.size.x, shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
+		break;
+	}
+}
+

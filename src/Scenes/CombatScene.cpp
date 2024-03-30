@@ -742,7 +742,6 @@ void CombatScene::Render()
 	int i{};
 	// rendering whether enemies is dead
 	if (playerAlive && !winFlag) {
-		player->render();
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
@@ -837,6 +836,8 @@ void CombatScene::Render()
 		groups.enemies.erase(groups.enemies.begin() + index);
 	}
 	Event::getInstance()->render();
+
+	player->render();
 
 	//for (i = 0; i < groups.enemies.size(); i++) {
 	//	groups.enemies[i]->render(); // render all, draw all enemys
