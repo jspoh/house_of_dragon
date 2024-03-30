@@ -21,7 +21,8 @@ def constructData() -> dict:
             "audio": {
                 "sfx": 1,
                 "music": 1
-            }
+            },
+            "difficulty": 0
         },
         "player": {
             "completedTutorial": False,

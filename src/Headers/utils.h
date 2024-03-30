@@ -22,6 +22,35 @@ Technology is prohibited.
 extern int mouseX, mouseY, wMouseX, wMouseY;
 extern AEVec2 camOffset;
 
+enum class DIFFICULTY_SETTINGS {
+	EASY,
+	MEDIUM,
+	HARD,
+	NUM_DIFFICULTY_SETTINGS
+};
+
+extern DIFFICULTY_SETTINGS difficulty;
+
+// time multiplier for different difficulty settings
+const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_TIME_MULTIPLIER{
+	{DIFFICULTY_SETTINGS::EASY, 2},
+	{DIFFICULTY_SETTINGS::MEDIUM, 1.5f},
+	{DIFFICULTY_SETTINGS::HARD, 1}
+};
+
+// player damage multiplier for different difficulty settings
+const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER{
+	{DIFFICULTY_SETTINGS::EASY, 2},
+	{DIFFICULTY_SETTINGS::MEDIUM, 1.5f},
+	{DIFFICULTY_SETTINGS::HARD, 1}
+};
+
+// enemy damage multiplier for different difficulty settings
+const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_ENEMY_DAMAGE_MULTIPLIER{
+	{DIFFICULTY_SETTINGS::EASY, 0.5f},
+	{DIFFICULTY_SETTINGS::MEDIUM, 1.f},
+	{DIFFICULTY_SETTINGS::HARD, 1.5f}
+};
 
 constexpr int AEVK_OFFSET = 'a' - AEVK_A;
 

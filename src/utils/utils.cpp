@@ -19,7 +19,7 @@ Technology is prohibited.
 
 int mouseX, mouseY, wMouseX, wMouseY;
 AEVec2 camOffset;
-
+DIFFICULTY_SETTINGS difficulty;
 
 /*utility functions*/
 
@@ -88,4 +88,6 @@ void updateGlobals() {
     wMouseX = static_cast<int>(wMouse.x);
     wMouseY = static_cast<int>(wMouse.y);
     AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+
+    difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance()->data["game"]["difficulty"]);
 }
