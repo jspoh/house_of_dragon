@@ -465,6 +465,8 @@ void CombatScene::Init()
 	btnDecreaseY = 0.f;
 
 	CombatManager::getInstance().start();
+
+	Event::getInstance()->init();
 }
 
 void CombatScene::Update(double dt)
