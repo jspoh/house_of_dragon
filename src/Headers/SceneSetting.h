@@ -66,6 +66,8 @@ private:
 
 	static SceneSetting* sInstance; // The pointer to the object that gets registered
 
+	/* audio */
+
 	AEVec2 soundBarPos{ 170, -2 };
 	const AEVec2 soundBarScale{ 600, 15 };
 	AEVec2 musicBarPos{ 170, -95 };
@@ -77,6 +79,23 @@ private:
 
 	float sfxVolume{};
 	float musicVolume{};
+
+	/* difficulty */
+
+	const std::array<std::pair<DIFFICULTY_SETTINGS, std::string>, 3> DIFFICULTY_OPTIONS{
+		std::pair{DIFFICULTY_SETTINGS::EASY, "EASY"},
+		{DIFFICULTY_SETTINGS::EASY, "MEDIUM"},
+		{DIFFICULTY_SETTINGS::EASY, "HARD"}
+	};
+
+	static constexpr int DIFFICULTY_BUTTON_GAP = 1;
+	static constexpr int DIFFICULTY_BUTTON_WIDTH = 185;
+	static constexpr int DIFFICULTY_BUTTON_HEIGHT = 40;
+	const AEVec2 btnStartPos{ 0, 125 };
+	AEVec2 selectionPos{0, btnStartPos.y};	// update x in init
+	AEVec2 selectionTargetPos{};			// on changing difficulty, the pos for the selection highlight to go to
+	static constexpr float DIFFICULTY_LERP_TIME = 1;
+	float lerpElapsedTime = 0;
 };
 
 //#endif
