@@ -165,6 +165,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameObject\GameObject_Projectiles.cpp" />
     <ClCompile Include="src\utils\SoundPlayer.cpp" />
     <ClCompile Include="src\Backend\2DCollider.cpp" />
     <ClCompile Include="src\Backend\MouseController.cpp" />
@@ -202,6 +203,7 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClCompile Include="src\utils\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Headers\GameObject_Projectiles.h" />
     <ClInclude Include="src\Headers\SoundPlayer.h" />
     <ClInclude Include="src\Headers\2DCollider.h" />
     <ClInclude Include="src\Headers\Application.h" />
