@@ -202,6 +202,34 @@ void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamke
 	_prevMouseY = _mouseY;
 }
 
+void Event::init() {
+
+	_spamkeyX = AEGfxGetWindowWidth() / 2.f;
+	_spamkeyY = AEGfxGetWindowHeight() / 2.f;
+
+	/* difficulty settings */
+
+	const float timerMultiplier = DIFFICULTY_TIME_MULTIPLIER.at(difficulty);
+	const float sizeMultiplier = DIFFICULTY_SIZE_MULTIPLIER.at(difficulty);
+
+	// spamkey
+	_spamkeyTimeoutMs = static_cast<int>(_spamkeyTimeoutMs * timerMultiplier);
+	_proc *= sizeMultiplier;
+
+	// otimer
+	_oTimerTimeoutMs = static_cast<int>(_oTimerTimeoutMs * timerMultiplier);
+
+	// mco
+	_multiClickTimeoutMs = static_cast<int>(_multiClickTimeoutMs * timerMultiplier);
+	_mcoRadius *= sizeMultiplier;
+
+	// typing  
+	_typingTimeoutMs = static_cast<int>(_typingTimeoutMs * timerMultiplier);
+
+	// orange/demon throwing
+	_orangeEventTimeoutMs = static_cast<int>(_orangeEventTimeoutMs * timerMultiplier);
+	_orangeRadius *= sizeMultiplier;
+}
 
 void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
 	AEInputGetCursorPosition(&_mouseX, &_mouseY);
@@ -266,8 +294,8 @@ void Event::render() {
 
 /*private*/
 void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
-	float x = AEGfxGetWindowWidth() * 0.925f;
-	float y = AEGfxGetWindowHeight() * 0.11125f;
+	float x = AEGfxGetWindowWidth() * 0.95f;
+	float y = AEGfxGetWindowHeight() * 0.8f;
 	Point world = stow(x, y);
 
 	std::array<int, 5> thresholds = { 100,75,50,25,0 };
@@ -276,7 +304,7 @@ void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 
 	for (const int t : thresholds) {
 		if (timeLeftPctg >= t) {
-			RenderHelper::getInstance()->texture("timer_" + std::to_string(100 - t), world.x, world.y);
+			RenderHelper::getInstance()->texture("timer_" + std::to_string(100 - t), world.x + camOffset.x, world.y + camOffset.y);
 			break;
 		}
 	}
@@ -390,9 +418,9 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 	}
 
 	if (AEInputCheckTriggered(aevk)) {
-		_size += proc;
+		_size += _proc;
 	}
-	_size -= static_cast<f32>(nroc * dt);
+	_size -= static_cast<f32>(_nroc * dt);
 	_size = _size < _minSize ? _minSize : _size;
 
 	/*rendering*/
@@ -566,8 +594,8 @@ void Event::_oscillatingTimerEventRender() {
 void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
-	// multiclick is based on duration only
-	if (_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) {
+	// multiclick is based on duration and if event is completed
+	if ((_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) || (_mcoHits - _mcoMisses == _maxMcoHits && !_mcoIsTransitioningOut)) {
 		std::cout << "multiclick event over\n";
 		_elapsedTimeMs = 0;
 		_mcoIsTransitioningOut = true;
@@ -681,7 +709,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 
 	case INNER_STATES::ON_UPDATE:
 		// on update state
-		if (_elapsedTimeMs >= _typingTimeoutMs) {
+		if (_elapsedTimeMs >= _typingTimeoutMs || _wordsCompleted >= _typingMaxScore) {
 			_elapsedTimeMs = 0;
 			eventMultiplier = static_cast<f32>(_wordsCompleted) / _typingMaxScore * maxMultiplier;
 			_typingState = INNER_STATES::ON_EXIT;
@@ -755,7 +783,7 @@ void Event::_typingEventRender() {
 				col = { 0, 1, 0, 1 };	// green
 			}
 			else {
-				col = { 0.9f, 0.9f, 0.9f, 1 };	// grey
+				col = {1,1,1, 1 };	// white
 			}
 
 			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currXOffset, currYOffset, col.r, col.g, col.b, col.a);
@@ -813,7 +841,16 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 	}
 
 	case INNER_STATES::ON_UPDATE: {
-		if (_elapsedTimeMs >= _orangeEventTimeoutMs) {
+		int activeDemons{};
+		for (const Demon& d : demons) {
+			if (!d.isActive) {
+				continue;
+			}
+			activeDemons++;
+		}
+
+
+		if (_elapsedTimeMs >= _orangeEventTimeoutMs || activeDemons == 0) {
 			int hits{};
 			for (const Demon& d : demons) {
 				if (!d.isActive) {
@@ -838,7 +875,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			_orangeObj.isHeld = true;
 		}
 		// check to ensure that the user cannot hold the ball past 75% of the screen
-		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f || _orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()))) {
+		static constexpr float DEADZONE = 0.25f;
+		if (_orangeObj.isHeld && (_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE || _orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()))) {
 			_orangeObj.isHeld = false;	// force user to let go
 			AEVec2Set(&_orangeObj.vel, 0, 0);			// reset velocity to 0
 		}
@@ -856,15 +894,14 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 
-		//std::cout << (_orangeObj.y <= AEGfxGetWindowHeight() * 0.25f) << "\n";
+		//std::cout << (_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE) << "\n";
 
 		//std::cout << "obj vel: " << _orangeObj.vel.x << ", " << _orangeObj.vel.y << "\n";
 
-		// !TODO: jspoh dont allow user to bring ball past 75% of screen from bottom
 		// obj not held, apply normal physics to object
 		if (!_orangeObj.isHeld) {
 			// gravity
-			if (_orangeObj.y + _orangeObj.radius + _orangeBorderPadding < AEGfxGetWindowHeight()) {
+			if (_orangeObj.y + _orangeObj.radius + _orangeBorderPadding <= AEGfxGetWindowHeight()) {
 				_orangeObj.vel.y += static_cast<f32>(_orangeGravity * dt);
 			}
 
@@ -924,8 +961,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			_orangeObj.y += static_cast<f32>(_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
 			// clamp positions
-			_orangeObj.x = AEClamp(_orangeObj.x, _orangeObj.radius, AEGfxGetWindowWidth() - _orangeObj.radius);
-			_orangeObj.y = AEClamp(_orangeObj.y, _orangeObj.radius, AEGfxGetWindowHeight() - _orangeObj.radius);
+			_orangeObj.x = AEClamp(_orangeObj.x, _orangeObj.radius + _orangeBorderPadding, AEGfxGetWindowWidth() - _orangeObj.radius - _orangeBorderPadding);
+			_orangeObj.y = AEClamp(_orangeObj.y, _orangeObj.radius + _orangeBorderPadding, AEGfxGetWindowHeight() - _orangeObj.radius - _orangeBorderPadding);
 		}
 
 		// update demon

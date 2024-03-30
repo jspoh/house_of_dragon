@@ -53,5 +53,9 @@ public:
 	void stopAll();
 
 	void getVolume(float& sfx, float& music);
+
+	void pauseGroup(bool isMusic = false);
+
+	void resumeGroup(bool isMusic = false);
 };
 

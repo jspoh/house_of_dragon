@@ -17,9 +17,9 @@ Technology is prohibited.
 #include "Pch.h"
 #include "utils.h"
 
-int mouseX, mouseY, wMouseX, wMouseY;
-AEVec2 camOffset;
-
+int mouseX{}, mouseY{}, wMouseX{}, wMouseY{};
+AEVec2 camOffset{};
+DIFFICULTY_SETTINGS difficulty{};
 
 /*utility functions*/
 
@@ -80,6 +80,11 @@ std::vector<std::string> split(const std::string& str, const char sep) {
     }
 
     return out;
+}
+
+void initGlobals() {
+    updateGlobals();
+    difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance()->data["game"]["difficulty"]);
 }
 
 void updateGlobals() {

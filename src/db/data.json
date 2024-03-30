@@ -3,13 +3,16 @@
     "audio": {
       "sfx": 1,
       "music": 1
-    }
+    },
+    "difficulty":  0
   },
   "player": {
     "completedTutorial": false,
     "xpToNextLevel": 0,
     "level": 1,
-    "inventory": []
+    "inventory": [],
+    "baseHealth": 100,
+    "baseDamage": 100
   },
   "enemyAttributes": {
     "cat": {

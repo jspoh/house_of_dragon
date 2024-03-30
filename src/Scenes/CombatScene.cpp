@@ -30,7 +30,14 @@ Technology is prohibited.
 
 CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
-Player* player = nullptr;
+namespace {
+	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
+	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
+}
+
+// DONT MANUALLY FREE THIS POINTER
+std::unique_ptr<Player> player = nullptr;
+//Player* player = nullptr;
 
 namespace {
 	// game objects
@@ -57,7 +64,7 @@ namespace {
 	//blocking variables
 	float blockingRenderTime;
 	bool blockNow;
-
+	float enemyattackedRenderTime;
 
 	//timer for the lerp
 	//const float slideAnimationDuration = 1.0f;
@@ -95,6 +102,7 @@ namespace {
 		WIN,
 		ENEMYDEATH,
 		ITEM,
+		ENEMY_ATTACK,
 		NONE
 	};
 	DIALOGUE dialogueState;
@@ -418,6 +426,8 @@ void CombatScene::Load()
 
 
 	std::cout << "CombatScene loaded\n";
+
+	player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
 }
 
 
@@ -426,9 +436,9 @@ void CombatScene::Init()
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
 	winFlag = false;
+	winTime = 0.f;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
-	player = new Player(100, 100);
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
@@ -446,8 +456,10 @@ void CombatScene::Init()
 	dialougeTime = 0.f;
 	winTime = 0.0f;
 
+
 	blockingRenderTime = 0.f;
 	blockNow = false;
+	enemyattackedRenderTime = 0.f;
 
 	deathBtnWidthEnd = 300.f;
 	deathbtnHeightEnd = 150.f;
@@ -464,6 +476,8 @@ void CombatScene::Init()
 	btnDecreaseY = 0.f;
 
 	CombatManager::getInstance().start();
+
+	Event::getInstance()->init();
 }
 
 void CombatScene::Update(double dt)
@@ -614,41 +628,52 @@ void CombatScene::Update(double dt)
 
 	// if player has finished quicktime event
 	if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
-
 		// end player's turn
-		CombatManager::getInstance().next();
-		dialogueState = DIALOGUE::PLAYER_ATTACK;
-
-		std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
-		CombatManager::getInstance().isPlayingEvent = false;
 		CombatManager::getInstance().selectedEnemy->enemyAttacked();
-		/*check if success or failure and modify damage accordingly*/
-		switch (CombatManager::getInstance().qtEventResult) {
-		case EVENT_RESULTS::SUCCESS:
-			std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
 
-			break;
-		case EVENT_RESULTS::FAILURE:
-			std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
-
-			break;
-		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-			std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
-
-			break;
+		// before ending, should have a second to display dialogue;
+	/*	if (enemyattackedRenderTime < slideAnimationDuration) {
+			CombatManager::getInstance().selectedEnemy->enemyAttacked();
+			dialogueState = DIALOGUE::ENEMY_ATTACK;
+			enemyattackedRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		}
-		CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+		else {*/
+			CombatManager::getInstance().next();
+			enemyattackedRenderTime = 0.f;
 
-		// reset states
-		CombatManager::getInstance().selectedEnemy = nullptr;
-		for (Enemy* e : groups.enemies) {
-			e->isSelected = false;
-		}
-		CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
-		currentState = ACTION_BTNS::MAIN;
+			dialogueState = DIALOGUE::PLAYER_ATTACK;
+
+			std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
+			CombatManager::getInstance().isPlayingEvent = false;
+			CombatManager::getInstance().selectedEnemy->enemyAttacked();
+			/*check if success or failure and modify damage accordingly*/
+			switch (CombatManager::getInstance().qtEventResult) {
+			case EVENT_RESULTS::SUCCESS:
+				std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
+
+				break;
+			case EVENT_RESULTS::FAILURE:
+				std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
+
+				break;
+			case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+				std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
+
+				break;
+			}
+			CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+
+			// reset states
+			CombatManager::getInstance().selectedEnemy = nullptr;
+			for (Enemy* e : groups.enemies) {
+				e->isSelected = false;
+			}
+			CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
+			currentState = ACTION_BTNS::MAIN;
+		//}
 	}
 
 	// when is player turn and player is not playing a quicktime event
@@ -695,9 +720,11 @@ void CombatScene::Update(double dt)
 				CombatManager::getInstance().next();
 			}
 			else {
+				winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 				std::cout << "Transition to next level\n";
 				if (!winFlag && winTime != 1.0f) {
 					dialogueState = DIALOGUE::WIN;
+					//winFlag = true;
 
 				}
 				else if (dialogueState != DIALOGUE::WIN) {
@@ -707,8 +734,8 @@ void CombatScene::Update(double dt)
 					//return;
 				}
 				// all enemies shldve been deleted
-				delete player;
-				player = nullptr;
+				//delete player;
+				//player = nullptr;
 				CombatManager::getInstance().end();
 				return;
 			}
@@ -794,6 +821,19 @@ void CombatScene::Render()
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
 				}
+				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
+					std::string fulloutput = "You used " + attackUsed + "!\n";
+					if (EVENT_RESULTS::SUCCESS) {
+						fulloutput += "CRITICAL ATTACK!!!";
+					}
+					else if ( EVENT_RESULTS::FAILURE) {
+						fulloutput += "ATTACK NOT EFFECTIVE!!!";
+
+					}
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+
+					
+				}
 			}
 
 			i++;
@@ -817,7 +857,7 @@ void CombatScene::Render()
 		//}
 
 	}
-	else if (winFlag) {
+	if (dialogueState == DIALOGUE::WIN) {
 		//rendering out the objects
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 		RenderHelper::getInstance()->texture("victory", wpos.x + camOffset.x, wpos.y + camOffset.y, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
@@ -861,8 +901,8 @@ void CombatScene::cleanup() {
 	groups.enemies.clear();
 	//delete CombatManager::getInstance();
 	// Clear the vector after deleting the enemies
-	delete player;
-	player = nullptr;
+	//delete player;
+	//player = nullptr;
 }
 
 void CombatScene::Exit()

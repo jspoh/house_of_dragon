@@ -28,6 +28,7 @@ private:
 	float _size = 50;
 	Point healthpos{ 0 };
 	float fullhealth = 0;
+	float startingHealth{ 0 };
 	//attack multipler holder
 
 	Point attackPoint{ 0 };
@@ -40,15 +41,20 @@ private:
 	float shakeDuration = 1.f; // Duration of the shake effect in seconds
 	float shakeAmplitude = 20.0f; // Maximum displacement during shake
 	float shakeFrequency = 25.0f;
-	
+
+	float AttackedRenderX{ 0 };
+	float AttackedRenderXprev{ 0 };
+	const float healthRenderTimeMax = 0.75f;
+	float healthRenderTime{ 0 };
 
 
 
 public:
 	bool isSelected = false;
+
+	const int projectileTravelTimeMs;
 	
-	Enemy();
-	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50, int _projectileTravelTimeMs = 1000);
 	~Enemy();
 
 	void update([[maybe_unused]] double dt);

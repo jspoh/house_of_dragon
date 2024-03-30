@@ -70,32 +70,32 @@ private:
 	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
 	EVENT_RESULTS _eventResult = NONE_EVENT_RESULTS;
 	bool _isRenderingEventResult = false;  // is render success/failure animation
-	double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
+	static constexpr double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
 
 	int _elapsedTimeMs = 0;
 	int _totalElapsedMs = 0;
 	bool _useOutline = true;
 	/*how many milliseconds before key type changes*/
-	const int _changeMs = 100;
+	static constexpr int _changeMs = 100;
 
 	int _mouseX = 0, _mouseY = 0, _prevMouseX = 0, _prevMouseY = 0;
 
 	/*spam key vars*/
 	EVENT_KEYS _spamKeyChoice = EVENT_KEYS::E;
-	const int _spamkeyTimeoutMs = 5000;
-	const float _minSize = 100;
-	const float _targetSize = 200;
+	int _spamkeyTimeoutMs = 5000;
+	static constexpr float _minSize = 100;
+	static constexpr float _targetSize = 200;
 	float _size = _minSize;
-	float _spamkeyX = 100.f;
-	float _spamkeyY = 100.f;
+	float _spamkeyX;
+	float _spamkeyY;
 	// positive rate of change per click
-	const float proc = 10;
+	float _proc = 10;
 	// negative rate of change per second
-	const float nroc = 50;
+	const float _nroc = 50;
 
 	/*oTimer vars*/
 	INNER_STATES oTimerEventState = INNER_STATES::ON_ENTER;
-	const int _oTimerTimeoutMs = 5000;
+	int _oTimerTimeoutMs = 5000;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
 	float _oTimerFadeOutDuration = 0.5f;	// seconds
@@ -131,7 +131,7 @@ private:
 		bool blink;
 	};
 
-	const int _multiClickTimeoutMs = 5000;
+	int _multiClickTimeoutMs = 5000;
 	int _mcoHits = 0;
 	int _mcoMisses = 0;
 	int _mcoDisplayHits = 0;
@@ -140,11 +140,11 @@ private:
 	static constexpr int spawnOffsetY = 200;
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
-	const int _mcoCount = 3;
-	const float _mcoRadius = 25.f;
+	static constexpr int _mcoCount = 3;
+	float _mcoRadius = 25.f;
 	// how long before transitioning to another display state (light vs dark) for blinking effect
-	const float _mcoBlinkDuration = 0.25f;
-	const float _mcoTransitionTime = 1.f;
+	static constexpr float _mcoBlinkDuration = 0.25f;
+	static constexpr float _mcoTransitionTime = 1.f;
 	bool _mcoIsTransitioningOut = false;
 
 	/*typing event vars*/
@@ -158,20 +158,20 @@ private:
 	// determines whether to get a new word.
 	// when user is done typing current word, then set this to true
 	std::string _currentWord;	// current word used
-	const float _charGap = 10.f;		// gap between characters, in screen pos
+	static constexpr float _charGap = 10.f;		// gap between characters, in screen pos
 	std::vector<std::pair<char, bool>> _typed;
-	const float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
+	static constexpr float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
 	INNER_STATES _typingState = INNER_STATES::ON_ENTER;
-	const int _typingTimeoutMs = 5000;			// time before typing event ends
+	int _typingTimeoutMs = 5000;			// time before typing event ends
 	int _wordsCompleted = 0;			// words player managed to type before timeends
-	const int _typingMaxScore = 5;
+	static constexpr int _typingMaxScore = 5;
 
 	/*demon event vars*/
-	static constexpr int _orangeEventTimeoutMs = 5000;
+	int _orangeEventTimeoutMs = 5000;
 	static constexpr int _afterEventDisplayTimeoutMs = 1000;
 	INNER_STATES _orangeState = INNER_STATES::ON_ENTER;
 	static constexpr int spawnIntervalMs = 1000;
-	static constexpr float _orangeRadius = 30.f;
+	float _orangeRadius = 30.f;
 	static constexpr float _orangeSpeed = 500.f;
 	static constexpr float _orangeGravity = 15.f;
 	static constexpr float _xResistance = 1.f;		// how much of speed lost per second
@@ -307,6 +307,8 @@ public:
 	 *
 	 */
 	void updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
+
+	void init();
 
 	void update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
 

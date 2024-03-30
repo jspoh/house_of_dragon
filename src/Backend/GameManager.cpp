@@ -30,6 +30,8 @@ void GameManager::Init()
 
 	//Init Sound Manager
 	//SoundManager::GetInstance()->Init();
+
+	initGlobals();
 }
 
 void GameManager::Run()

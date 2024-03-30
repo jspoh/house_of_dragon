@@ -24,8 +24,8 @@ Technology is prohibited.
 //local variables
 float paddingY = 90;
 
-Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
-    : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
+Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size, int _projectileTravelTimeMs)
+    : Mob(element, health, dmg), _textureRef(textureRef), _size(size), projectileTravelTimeMs(_projectileTravelTimeMs) {
     this->_spos.x = screenX;
     this->_spos.y = screenY;
     this->fullhealth = health;
@@ -39,7 +39,9 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     this->AttackEnd.y = -AEGfxGetWindowHeight() / 2.9f;
     this->AttackEnd.x = 0;
     this->attacking = false;
-
+    this->attacked = false;
+    this->startingHealth = health;
+    this->AttackedRenderX = health / startingHealth;
     //RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }
 
@@ -52,6 +54,18 @@ void Enemy::update([[maybe_unused]] double dt) {
         isSelected = !isSelected;
     }
     //std::cout << camOffset.x << ", " << camOffset.y << "\n";
+    if (this->attacked == true && this->healthRenderTime < this->healthRenderTimeMax) {
+        healthRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+        float percenttime = static_cast<float>(healthRenderTime / healthRenderTimeMax);
+        float t = percenttime;
+        if (t > healthRenderTimeMax) {
+            t = healthRenderTimeMax;
+        }
+        this->AttackedRenderX = lerp(this->AttackedRenderXprev, health / startingHealth,t);
+    }
+    else {
+        this->attacked = false;
+    }
 }
 
 
@@ -65,7 +79,7 @@ void Enemy::render() {
             // Apply shake effect only when attacked
             float shakeOffset = sin(this->shakeFrequency * this->shakeDuration) * this->shakeAmplitude * this->shakeDuration;
             RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x + shakeOffset, this->_wpos.y , this->_size, this->_size);
-            this->shakeDuration -= AEFrameRateControllerGetFrameTime();
+            this->shakeDuration -= static_cast<float>(AEFrameRateControllerGetFrameTime());
         }
         else {
             this->attacked = false;
@@ -90,18 +104,18 @@ void Enemy::render() {
     //healthbar; currently hardcoded so its not as usable
     if (this->health > 66) {
         RenderHelper::getInstance()->texture("greenbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-        RenderHelper::getInstance()->texture("greenbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y - paddingY, (health / 100) * 100, 10);
-        RenderHelper::getInstance()->texture("greenbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y - paddingY, 10, 10);
+        RenderHelper::getInstance()->texture("greenbar3", this->_wpos.x - 45 + AttackedRenderX * 50 , this->healthpos.y - paddingY, AttackedRenderX * 100, 10);
+        RenderHelper::getInstance()->texture("greenbar2", this->_wpos.x + AttackedRenderX * 100 - 40, this->healthpos.y - paddingY, 10, 10);
     }
     else if (this->health > 33) {
         RenderHelper::getInstance()->texture("yellowbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-        RenderHelper::getInstance()->texture("yellowbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y - paddingY, (health / 100) * 100, 10);
-        RenderHelper::getInstance()->texture("yellowbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y - paddingY, 10, 10);
+        RenderHelper::getInstance()->texture("yellowbar3", this->_wpos.x - 45 + AttackedRenderX * 50, this->healthpos.y - paddingY, AttackedRenderX * 100, 10);
+        RenderHelper::getInstance()->texture("yellowbar2", this->_wpos.x + AttackedRenderX * 100 - 40, this->healthpos.y - paddingY, 10, 10);
     }
     else {
         RenderHelper::getInstance()->texture("redbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-        RenderHelper::getInstance()->texture("redbar3", this->_wpos.x - 45 + (health / 100) * 50, this->healthpos.y - paddingY, (health / 100) * 100, 10);
-        RenderHelper::getInstance()->texture("redbar2", this->_wpos.x + (health / 100) * 100 - 40, this->healthpos.y - paddingY, 10, 10);
+        RenderHelper::getInstance()->texture("redbar3", this->_wpos.x - 45 + AttackedRenderX * 50, this->healthpos.y - paddingY, AttackedRenderX * 100, 10);
+        RenderHelper::getInstance()->texture("redbar2", this->_wpos.x + AttackedRenderX * 100 - 40, this->healthpos.y - paddingY, 10, 10);
 
     }
 
@@ -123,6 +137,9 @@ Enemy::~Enemy() {
 
 void Enemy::enemyAttacked() {
     this->attacked = true;
+    this->AttackedRenderXprev = AttackedRenderX;
+    healthRenderTime = 0.f;
+
 }
 
 void Enemy::enemyAttacking(float timeleft) {

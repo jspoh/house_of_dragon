@@ -20,6 +20,13 @@ void Pause::init() {
 void Pause::update([[maybe_unused]] double dt) {
 	if (AEInputCheckTriggered(PAUSE_KEY)) {
 		isPaused = !isPaused;
+
+		if (isPaused) {
+			SoundManager::GetInstance()->pauseGroup(false);
+		}
+		else {
+			SoundManager::GetInstance()->resumeGroup(false);
+		}
 	}
 
 	if (!isPaused) {
