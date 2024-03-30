@@ -79,7 +79,7 @@ void Enemy::render() {
             // Apply shake effect only when attacked
             float shakeOffset = sin(this->shakeFrequency * this->shakeDuration) * this->shakeAmplitude * this->shakeDuration;
             RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x + shakeOffset, this->_wpos.y , this->_size, this->_size);
-            this->shakeDuration -= AEFrameRateControllerGetFrameTime();
+            this->shakeDuration -= static_cast<float>(AEFrameRateControllerGetFrameTime());
         }
         else {
             this->attacked = false;

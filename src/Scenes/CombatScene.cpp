@@ -57,7 +57,7 @@ namespace {
 	//blocking variables
 	float blockingRenderTime;
 	bool blockNow;
-
+	float enemyattackedRenderTime;
 
 	//timer for the lerp
 	//const float slideAnimationDuration = 1.0f;
@@ -95,6 +95,7 @@ namespace {
 		WIN,
 		ENEMYDEATH,
 		ITEM,
+		ENEMY_ATTACK,
 		NONE
 	};
 	DIALOGUE dialogueState;
@@ -447,8 +448,10 @@ void CombatScene::Init()
 	dialougeTime = 0.f;
 	winTime = 0.0f;
 
+
 	blockingRenderTime = 0.f;
 	blockNow = false;
+	enemyattackedRenderTime = 0.f;
 
 	deathBtnWidthEnd = 300.f;
 	deathbtnHeightEnd = 150.f;
@@ -615,41 +618,52 @@ void CombatScene::Update(double dt)
 
 	// if player has finished quicktime event
 	if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
-		CombatManager::getInstance().selectedEnemy->enemyAttacked();
 		// end player's turn
-		CombatManager::getInstance().next();
-		dialogueState = DIALOGUE::PLAYER_ATTACK;
-
-		std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
-		CombatManager::getInstance().isPlayingEvent = false;
 		CombatManager::getInstance().selectedEnemy->enemyAttacked();
-		/*check if success or failure and modify damage accordingly*/
-		switch (CombatManager::getInstance().qtEventResult) {
-		case EVENT_RESULTS::SUCCESS:
-			std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
 
-			break;
-		case EVENT_RESULTS::FAILURE:
-			std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
-
-			break;
-		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-			std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
-
-			break;
+		// before ending, should have a second to display dialogue;
+	/*	if (enemyattackedRenderTime < slideAnimationDuration) {
+			CombatManager::getInstance().selectedEnemy->enemyAttacked();
+			dialogueState = DIALOGUE::ENEMY_ATTACK;
+			enemyattackedRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		}
-		CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+		else {*/
+			CombatManager::getInstance().next();
+			enemyattackedRenderTime = 0.f;
 
-		// reset states
-		CombatManager::getInstance().selectedEnemy = nullptr;
-		for (Enemy* e : groups.enemies) {
-			e->isSelected = false;
-		}
-		CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
-		currentState = ACTION_BTNS::MAIN;
+			dialogueState = DIALOGUE::PLAYER_ATTACK;
+
+			std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
+			CombatManager::getInstance().isPlayingEvent = false;
+			CombatManager::getInstance().selectedEnemy->enemyAttacked();
+			/*check if success or failure and modify damage accordingly*/
+			switch (CombatManager::getInstance().qtEventResult) {
+			case EVENT_RESULTS::SUCCESS:
+				std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
+
+				break;
+			case EVENT_RESULTS::FAILURE:
+				std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
+
+				break;
+			case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+				std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
+
+				break;
+			}
+			CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+
+			// reset states
+			CombatManager::getInstance().selectedEnemy = nullptr;
+			for (Enemy* e : groups.enemies) {
+				e->isSelected = false;
+			}
+			CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
+			currentState = ACTION_BTNS::MAIN;
+		//}
 	}
 
 	// when is player turn and player is not playing a quicktime event
@@ -796,6 +810,19 @@ void CombatScene::Render()
 					std::string fulloutput = "You used " + attackUsed + "!";
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
+				}
+				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
+					std::string fulloutput = "You used " + attackUsed + "!\n";
+					if (EVENT_RESULTS::SUCCESS) {
+						fulloutput += "CRITICAL ATTACK!!!";
+					}
+					else if ( EVENT_RESULTS::FAILURE) {
+						fulloutput += "ATTACK NOT EFFECTIVE!!!";
+
+					}
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+
+					
 				}
 			}
 

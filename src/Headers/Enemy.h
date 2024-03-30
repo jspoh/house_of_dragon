@@ -44,7 +44,7 @@ private:
 
 	float AttackedRenderX{ 0 };
 	float AttackedRenderXprev{ 0 };
-	const float healthRenderTimeMax = 1.f;
+	const float healthRenderTimeMax = 0.75f;
 	float healthRenderTime{ 0 };
 
 
