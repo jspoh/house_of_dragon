@@ -62,12 +62,7 @@ void GameManager::Run()
 		SoundPlayer::GlobalAudio::getInstance().playSfxClick();
 	}
 
-	AEInputGetCursorPosition(&mouseX, &mouseY);
-	//std::cout << mouseX << " | " << mouseY << "\n";
-	Point wMouse = stow(static_cast<float>(mouseX), static_cast<float>(mouseY));
-	wMouseX = static_cast<int>(wMouse.x);
-	wMouseY = static_cast<int>(wMouse.y);
-	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+	updateGlobals();
 
 	SceneManager::GetInstance()->Update((f32)AEFrameRateControllerGetFrameTime());
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));

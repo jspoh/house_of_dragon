@@ -100,6 +100,8 @@ float lerp(float start, float end, float t);
 
 std::vector<std::string> split(const std::string& str, const char sep);
 
+void updateGlobals();
+
 /*for ease of inclusion*/
 #include "RenderHelper.h"
 #include "CollisionChecker.h"
