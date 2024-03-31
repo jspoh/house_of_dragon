@@ -132,7 +132,7 @@ GameObject_AmeTest* Create::Ame(const std::string& _refName,
 	result->m_Scale = _scale;
 	result->m_RefName = _refName;
 	result->Init();
-	result->m_Active = false;
+	result->m_Active = true;
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
 	return result;

@@ -26,5 +26,5 @@ private:
 
 namespace Create
 {
-	GameObject_Misc_Enemy* MiscEnemy( const AEVec2& _position, const AEVec2& _scale= { 1.0f, 1.0f});
+	GameObject_Misc_Enemy* MiscEnemy( const AEVec2& _position = { 0.0f,0.0f }, const AEVec2& _scale = {200.0f, 200.0f});
 };
