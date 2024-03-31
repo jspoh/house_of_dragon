@@ -394,9 +394,9 @@ void SceneMenu::Update(double dt)
                     {
                     case 0:
                         myMenu.levelSelecting = true;
-                        SoundPlayer::stopAll();
-                        SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
-                        loopIsPlaying = false;
+                        //SoundPlayer::stopAll();
+                        //SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
+                        //loopIsPlaying = false;
                         break;
                     case 1:
                         SceneManager::GetInstance()->SetActiveScene("SceneCredits");
@@ -457,9 +457,6 @@ void SceneMenu::Update(double dt)
             if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
             {
                 myMenu.levelSelecting = false;
-                SoundPlayer::stopAll();
-                SoundPlayer::MenuAudio::getInstance().playLoopMenu();
-                loopIsPlaying = false;
             }
         }
 
