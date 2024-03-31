@@ -167,7 +167,6 @@ void Player::update(double dt) {
 	}
 
 	//_updateShield(dt);
-	updateHands(static_cast<float>(dt));
 	_updateBlockingHands();
 	//cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
 	//cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
