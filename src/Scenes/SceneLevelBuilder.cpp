@@ -876,7 +876,10 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
-				if (AEInputCheckTriggered(AEVK_SPACE))
+				else if (AEInputCheckCurr(AEVK_RBUTTON)) {
+					player->setHandStateAnimationType(Player::HandAnimationType::Ready);
+				}
+				else if (AEInputCheckTriggered(AEVK_SPACE))
 				{
 					player->setHandStateAnimationType(Player::HandAnimationType::Block);
 				}
