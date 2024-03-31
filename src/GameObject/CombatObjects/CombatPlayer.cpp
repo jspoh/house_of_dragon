@@ -34,7 +34,7 @@ namespace {
 }
 
 
-Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
+Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg * DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
 	//float StartHealth = health;		// what is this for?
 	// set shield properties
@@ -55,6 +55,7 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 
 	initialAttack = this->dmg;
 
+	std::cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
 }
 
 Player::~Player() {
