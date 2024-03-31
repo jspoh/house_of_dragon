@@ -855,8 +855,8 @@ void SceneLevelBuilder::Update(double dt)
 				m_SceneEnemy = nullptr;
 				TestTimer = 2.5f;
 				names = { "horse", "dragon", "cat", "cat" };
-				CombatScene::sInstance->spawnEnemies(names);
-				CombatScene::sInstance->Init();
+				CombatScene::getInstance().spawnEnemies(names);
+				CombatScene::getInstance().Init();
 				Combat = true;
 				break;
 			case 2:
@@ -866,8 +866,8 @@ void SceneLevelBuilder::Update(double dt)
 				FadeOutBlack();
 				TestTimer = 2.5f;
 				names = { "horse", "dragon", "cat", "cat" };
-				CombatScene::sInstance->spawnEnemies(names);
-				CombatScene::sInstance->Init();
+				CombatScene::getInstance().spawnEnemies(names);
+				CombatScene::getInstance().Init();
 				Combat = true;
 				break;
 			}
@@ -1381,7 +1381,7 @@ void SceneLevelBuilder::Render()
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
 	if (Combat)
-		CombatScene::sInstance->Render();
+		CombatScene::getInstance().Render();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//UI / MISC RENDER
