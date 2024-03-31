@@ -117,12 +117,9 @@ void Player::update(double dt) {
 
 
 	if (
-		HandStateAnimationType == HandAnimationType::Block 
-		|| (
-			AEInputCheckTriggered(AEVK_SPACE) 
-			&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING 
-			//&& CombatManager::getInstance().turn == CombatManager::TURN::ENEMY
-			)
+		AEInputCheckTriggered(AEVK_SPACE) 
+		&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING 
+		&& CombatManager::getInstance().turn == CombatManager::TURN::ENEMY
 		) {
 		HandStateAnimationType = HandAnimationType::Block;
 		elapsedTimeMs = 0;
@@ -138,6 +135,10 @@ void Player::update(double dt) {
 	switch (blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 		//cout << "Player blocking state: NOT_BLOCKING\n";
+		if (HandStateAnimationType == HandAnimationType::Block) {
+			HandStateAnimationType = HandAnimationType::None;
+			blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+		}
 		elapsedTimeMs = 0;
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
