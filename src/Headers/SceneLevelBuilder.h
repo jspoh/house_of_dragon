@@ -238,4 +238,5 @@ private:
 	int CurrentTileNumFurthest;
 
 	bool Combat = false;
+	GameObject_Misc_Enemy* m_SceneEnemy; // Just as a reference to easily start the combat
 };

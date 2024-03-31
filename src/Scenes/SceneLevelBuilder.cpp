@@ -454,7 +454,8 @@ SceneLevelBuilder::SceneLevelBuilder():
 	m_LvlNameTimer{ 0.0 },
     m_LvlNameTransparency{ 0.0 },
 	m_currTransitionTransparency {1.0},
-	m_setTransitionTransparency {-1.0}
+	m_setTransitionTransparency {-1.0},
+	m_SceneEnemy{ nullptr }
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -805,7 +806,7 @@ void SceneLevelBuilder::Init()
 
 	//Creating GameObjects
 	Create::MiscEnemy();
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		Create::Projectiles();
 	}
@@ -813,11 +814,11 @@ void SceneLevelBuilder::Init()
 
 void SceneLevelBuilder::Update(double dt)
 {
+	/////////////////////////////////////////////////////////////////////////////////
+	// Generic Update calls can be placed here
 	updateGlobals();
-
-	////////////////////////////////////////////////////////////////////////////////
-	//Pause
-	Pause::getInstance().update(dt);
+	UpdateScreenTransition(static_cast<f32>(dt)); // Screen Basic Transition
+	Pause::getInstance().update(dt); //Pause
 	if (Pause::getInstance().isPaused) {
 		return;
 	}
@@ -833,38 +834,53 @@ void SceneLevelBuilder::Update(double dt)
 
 	////////////////////////////////////////////////////////////////////////////////
 	// GameObject Logic
-	//GameObject* temp = GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy");
-	//std::cout << temp->m_RefName << std::endl;
-	static double x = 1, y = 0;
-	if (AEInputCheckCurr(AEVK_W))
+	//if (AEInputCheckTriggered(AEVK_LBUTTON) && !Combat)
+	//{
+	//	GameObject_Projectiles* temp = dynamic_cast<GameObject_Projectiles*>(GameObjectManager::GetInstance()->FindInactiveObjectByReference("Projectiles"));
+	//	if (temp != nullptr)
+	//		temp->FireAtPlayer({static_cast<float>(mouseX - AEGfxGetWindowWidth() / 2),static_cast<float>(AEGfxGetWindowHeight() / 2 - mouseY)}, { 100.0f, 100.0f});
+	//}
+	if (AEInputCheckTriggered(AEVK_RBUTTON) && !Combat)
 	{
-		y += 0.05;
+		m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
+		m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][CurrentTileNumFurthest].m_TransformFloorCurr);
 	}
-	if (AEInputCheckCurr(AEVK_S))
+
+	if (m_SceneEnemy != nullptr)
 	{
-		y -= 0.05;
-	}
-	std::cout << y << std::endl;
-	if (AEInputCheckTriggered(AEVK_LBUTTON) && !Combat)
-	{
-		GameObject_Projectiles* temp = dynamic_cast<GameObject_Projectiles*>(GameObjectManager::GetInstance()->FindInactiveObjectByReference("Projectiles"));
-		if (temp != nullptr)
-			temp->FireAtPlayer({static_cast<float>(mouseX - AEGfxGetWindowWidth() / 2),static_cast<float>(AEGfxGetWindowHeight() / 2 - mouseY)}, { 100.0f, 100.0f});
+		if (m_SceneEnemy->m_StartCombat)
+		{
+			switch (m_SceneEnemy->m_StartCombat)
+			{
+			case 1:
+			case 2:
+				m_SceneEnemy->m_Active = false;
+				m_SceneEnemy = nullptr;
+				m_currTransitionTransparency = 1.0f;
+				FadeOutBlack();
+				TestTimer = 2.5f;
+				std::vector<std::string> names = { "horse", "dragon", "cat", "cat" };
+				CombatScene::sInstance->spawnEnemies(names);
+				CombatScene::sInstance->Init();
+				Combat = true;
+				break;
+			}
+		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Setup
 	//TESTING
 	{
-	Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
+	//Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
 
-	if (AEInputCheckTriggered(AEVK_Z) && !Combat)
-	{
-		TestTimer = 2.5f;
-		std::vector<std::string> names = { "horse", "dragon", "cat", "cat"};
-		CombatScene::sInstance->spawnEnemies(names);
-		CombatScene::sInstance->Init();
-		Combat = true;
-	}
+	//if (AEInputCheckTriggered(AEVK_Z) && !Combat)
+	//{
+	//	TestTimer = 2.5f;
+	//	std::vector<std::string> names = { "horse", "dragon", "cat", "cat"};
+	//	CombatScene::sInstance->spawnEnemies(names);
+	//	CombatScene::sInstance->Init();
+	//	Combat = true;
+	//}
 
 	if (Combat)
 	{
@@ -923,14 +939,6 @@ void SceneLevelBuilder::Update(double dt)
 	UpdateLvlName(static_cast<f32>(dt));
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
-
-	//Screen Basic Transition
-	UpdateScreenTransition(static_cast<f32>(dt));
-	//Remove during final build
-	if (AEInputCheckTriggered(AEVK_V))
-		FadeINBlack();
-	else if(AEInputCheckTriggered(AEVK_B))
-		FadeOutBlack();
 	
 	if (AEInputCheckCurr(AEVK_SPACE))
 		player->setHandStateAnimationType(Player::HandAnimationType::Block);
@@ -1406,42 +1414,6 @@ void SceneLevelBuilder::Render()
 	////////////////////////////////////////////////////////////////////////////////////////////
 	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
 	{
-		static double x = 1, y = 1;
-		if (AEInputCheckCurr(AEVK_W))
-		{
-			y += 0.01;
-		}
-		if (AEInputCheckCurr(AEVK_S))
-		{
-			y -= 0.01;
-		}
-		if (AEInputCheckCurr(AEVK_A))
-		{
-			x -= 0.01;
-		}
-		if (AEInputCheckCurr(AEVK_D))
-		{
-			x += 0.01;
-		}
-		static double mx = 0, my = 0;
-		if (AEInputCheckCurr(AEVK_UP))
-		{
-			mx += 0.01;
-		}
-		if (AEInputCheckCurr(AEVK_DOWN))
-		{
-			mx -= 0.01;
-		}
-		if (AEInputCheckCurr(AEVK_RIGHT))
-		{
-			my += 12.55;
-		}
-		if (AEInputCheckCurr(AEVK_LEFT))
-		{
-			my -= 12.55;
-		}
-		//cout << x << " " << y << " " << mx << endl;
-
 		//LIGHT FILTER
 		//-0.39 0.06 0.3 (NIGHTTIME)
 		//1.01 0.45 0.79 (DUSK/TWILIGHT)
