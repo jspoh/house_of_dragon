@@ -207,5 +207,5 @@ void SceneStages::Util_Camera_Shake(float duration, float strength)
 
 /**********************************
 TODO:
-MERGE EVERYTHING
+MERGE EVERYTHING AND FIXING BUGS
 ***/

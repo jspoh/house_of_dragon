@@ -833,46 +833,50 @@ void SceneLevelBuilder::Update(double dt)
 
 	////////////////////////////////////////////////////////////////////////////////
 	// GameObject Logic
-	if (AEInputCheckTriggered(AEVK_LBUTTON) && !Combat)
+	if (!Combat)
 	{
-		player->setHandStateAnimationType(Player::HandAnimationType::Punch);
-	}
-	if (AEInputCheckTriggered(AEVK_RBUTTON) && !Combat)
-	{
-		m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
-		m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][CurrentTileNumFurthest].m_TransformFloorCurr);
-	}
-
-	if (m_SceneEnemy != nullptr)
-	{
-		if (m_SceneEnemy->m_StartCombat)
+		if (AEInputCheckTriggered(AEVK_LBUTTON))
 		{
-			std::vector<std::string> names;
-			switch (m_SceneEnemy->m_StartCombat)
+			//player->setHandStateAnimationType(Player::HandAnimationType::Punch);
+		}
+		if (AEInputCheckTriggered(AEVK_RBUTTON))
+		{
+			m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
+			m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][CurrentTileNumFurthest].m_TransformFloorCurr);
+		}
+
+		if (m_SceneEnemy != nullptr)
+		{
+			if (m_SceneEnemy->m_StartCombat)
 			{
-			case 1:
-				m_SceneEnemy->m_Active = false;
-				m_SceneEnemy = nullptr;
-				TestTimer = 2.5f;
-				names = { "horse", "dragon", "cat", "cat" };
-				CombatScene::getInstance().spawnEnemies(names);
-				CombatScene::getInstance().Init();
-				Combat = true;
-				break;
-			case 2:
-				m_SceneEnemy->m_Active = false;
-				m_SceneEnemy = nullptr;
-				m_currTransitionTransparency = 1.0f;
-				FadeOutBlack();
-				TestTimer = 2.5f;
-				names = { "horse", "dragon", "cat", "cat" };
-				CombatScene::getInstance().spawnEnemies(names);
-				CombatScene::getInstance().Init();
-				Combat = true;
-				break;
+				std::vector<std::string> names;
+				switch (m_SceneEnemy->m_StartCombat)
+				{
+				case 1:
+					m_SceneEnemy->m_Active = false;
+					m_SceneEnemy = nullptr;
+					TestTimer = 2.5f;
+					names = { "horse", "dragon", "cat", "cat" };
+					CombatScene::getInstance().spawnEnemies(names);
+					CombatScene::getInstance().Init();
+					Combat = true;
+					break;
+				case 2:
+					m_SceneEnemy->m_Active = false;
+					m_SceneEnemy = nullptr;
+					m_currTransitionTransparency = 1.0f;
+					FadeOutBlack();
+					TestTimer = 2.5f;
+					names = { "horse", "dragon", "cat", "cat" };
+					CombatScene::getInstance().spawnEnemies(names);
+					CombatScene::getInstance().Init();
+					Combat = true;
+					break;
+				}
 			}
 		}
 	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Setup
 	//TESTING
@@ -955,7 +959,7 @@ void SceneLevelBuilder::Update(double dt)
 	//else
 	//	player->setHandStateAnimationType(Player::HandAnimationType::None);
 
-	player->updateHands(static_cast<float>(dt));
+	//player->updateHands(static_cast<float>(dt));
 
 	//Sun Overlay Update
 	UpdateLensFlare(static_cast<float>(dt));
@@ -1389,7 +1393,7 @@ void SceneLevelBuilder::Render()
 		//Lvl Name
 		RenderLvlName();
 		//Hands
-		player->_renderHands();
+		//player->_renderHands();
 
 		//Border
 		f32 camX, camY;
