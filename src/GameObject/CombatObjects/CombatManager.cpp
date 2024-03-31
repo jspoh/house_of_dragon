@@ -18,7 +18,7 @@ Technology is prohibited.
 #include "CombatManager.h"
 
 CombatManager::~CombatManager() {
-    std::cout << "Destroying CombatManager\n";
+    cout << "Destroying CombatManager\n";
 }
 
 CombatManager& CombatManager::getInstance() {

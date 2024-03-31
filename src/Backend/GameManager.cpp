@@ -58,7 +58,7 @@ void GameManager::Run()
 
 	//float sfx, music;
 	//SoundManager::GetInstance()->getVolume(sfx, music);
-	//std::cout << sfx << " | " << music << "\n";
+	//cout << sfx << " | " << music << "\n";
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 		SoundPlayer::GlobalAudio::getInstance().playSfxClick();

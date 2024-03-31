@@ -26,14 +26,7 @@ Technology is prohibited.
 #include "SceneStages.h"
 
 
-
-namespace {
-	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
-	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
-}
-
-// DONT MANUALLY FREE THIS POINTER
-std::unique_ptr<Player> player = nullptr;
+extern std::unique_ptr<Player> player;
 //Player* player = nullptr;
 
 namespace {
@@ -166,9 +159,9 @@ namespace {
 			for (const std::string bv : bvalues) { // bruh wa this got got me too confused
 				Point btnPos = stow(bPosX, btnY);  // button rendering position
 
-				//std::cout << bPosX << " | " << btnY << "\n";
+				//cout << bPosX << " | " << btnY << "\n";
 				if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-					//std::cout << "mouse in rect" << bv << "\n";
+					//cout << "mouse in rect" << bv << "\n";
 					// clicked wt
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 						/*click while on main menu*/
@@ -180,27 +173,27 @@ namespace {
 						}
 						else if (currentState == ACTION_BTNS::ATTACK) {
 							if (bv == "FIRE") {
-								std::cout << "fire pressed\n";
+								cout << "fire pressed\n";
 								attackUsed = "FIRE";
 								CombatManager::getInstance().attackElement = Fire;
 							}
 							else if (bv == "WATER") {
-								std::cout << "water pressed\n";
+								cout << "water pressed\n";
 								attackUsed = "WATER";
 								CombatManager::getInstance().attackElement = Water;
 							}
 							else if (bv == "METAL") {
-								std::cout << "metal pressed\n";
+								cout << "metal pressed\n";
 								attackUsed = "METAL";
 								CombatManager::getInstance().attackElement = Metal;
 							}
 							else if (bv == "WOOD") {
-								std::cout << "wood pressed\n";
+								cout << "wood pressed\n";
 								attackUsed = "WOOD";
 								CombatManager::getInstance().attackElement = Wood;
 							}
 							else if (bv == "EARTH") {
-								std::cout << "earth pressed\n";
+								cout << "earth pressed\n";
 								attackUsed = "EARTH";
 								CombatManager::getInstance().attackElement = Earth;
 							}
@@ -214,39 +207,39 @@ namespace {
 							}
 							else if (CombatManager::getInstance().selectedEnemy == nullptr && CombatManager::getInstance().attackElement != Element::NO_ELEMENT) {
 								//RenderHelper::getInstance()->text("No enemy selected", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
-								std::cout << "No enemy selected\n";
+								cout << "No enemy selected\n";
 							}
 						}
 						else if (bv == "YES") {
-							std::cout << "Fleeing fight\n";
+							cout << "Fleeing fight\n";
 							CombatScene::getInstance().cleanup();
 							currentState = ACTION_BTNS::MAIN;
 							CombatManager::getInstance().end();
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
 							if (bv == "BACON") {
-								std::cout << "Bacon eaten\n";
+								cout << "Bacon eaten\n";
 								itemUsed = "BACON";
 								player->attackMultipler(3);
 								dialogueState = DIALOGUE::ITEM;
 
 							}
 							else if (bv == "CHICKEN") {
-								std::cout << "CHICKEN eaten\n";
+								cout << "CHICKEN eaten\n";
 								itemUsed = "CHICKEN";
 								player->healthGain(-10);
 								dialogueState = DIALOGUE::ITEM;
 
 							}
 							else if (bv == "BEEF") {
-								std::cout << "BEEF eaten\n";
+								cout << "BEEF eaten\n";
 								itemUsed = "BEEF";
 								player->healthGain(-20);
 								dialogueState = DIALOGUE::ITEM;
 
 							}
 							else if (bv == "CAT") {
-								std::cout << "CAT eaten\n";
+								cout << "CAT eaten\n";
 								itemUsed = "CAT";
 								player->healthGain(20);
 								dialogueState = DIALOGUE::ITEM;
@@ -272,7 +265,7 @@ namespace {
 		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 				//needs to reset combat scene
-				std::cout << "does it work" << std::endl;
+				cout << "does it work" << "\n";
 			}
 		}
 	}
@@ -422,9 +415,7 @@ void CombatScene::Load()
 
 
 
-	std::cout << "CombatScene loaded\n";
-
-	player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
+	cout << "CombatScene loaded\n";
 }
 
 
@@ -480,6 +471,7 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 void CombatScene::Update(double dt)
 {
 	updateGlobals();
+	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 
 	if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 		winFlag = true;
@@ -586,7 +578,7 @@ void CombatScene::Update(double dt)
 		panelflag = false;
 	}
 
-	player->update(dt);
+	//player->update(dt);		// moved to level builder
 
 	//if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 	//	selectflag = true;
@@ -595,6 +587,7 @@ void CombatScene::Update(double dt)
 
 	// select enemy
 	if (!CombatManager::getInstance().isPlayingEvent) {
+		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 		for (Enemy* e : groups.enemies) {
 			e->update(dt);
 
@@ -640,23 +633,23 @@ void CombatScene::Update(double dt)
 
 		dialogueState = DIALOGUE::PLAYER_ATTACK;
 
-		std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
+		cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
 		CombatManager::getInstance().isPlayingEvent = false;
 		CombatManager::getInstance().selectedEnemy->enemyAttacked();
 		/*check if success or failure and modify damage accordingly*/
 		switch (CombatManager::getInstance().qtEventResult) {
 		case EVENT_RESULTS::SUCCESS:
-			std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
+			cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
 			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
 
 			break;
 		case EVENT_RESULTS::FAILURE:
-			std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
+			cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
 			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
 
 			break;
 		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-			std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
+			cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
 			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
 
 			break;
@@ -696,23 +689,23 @@ void CombatScene::Update(double dt)
 			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 				multiplier = 1.f;
-				std::cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
+				cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
 				break;
 			case PLAYER_BLOCKING_STATES::ON_ENTER:
 			case PLAYER_BLOCKING_STATES::ON_EXIT:
 				multiplier = 0.5f;
-				std::cout << "Attack not fully blocked by player, receiving " << multiplier << " damage multiplier against player\n";
+				cout << "Attack not fully blocked by player, receiving " << multiplier << " damage multiplier against player\n";
 				break;
 			case PLAYER_BLOCKING_STATES::ON_UPDATE:
 				multiplier = 0.3f;
-				std::cout << "Attack blocked by player, receiving " << multiplier << " damage multiplier against player\n";
+				cout << "Attack blocked by player, receiving " << multiplier << " damage multiplier against player\n";
 				break;
 			}
 
 			// enemy to attack player if there are still enemies left
 			if (groups.enemies.size()) {
 				int randEnemyIndex = rand() % groups.enemies.size();
-				std::cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
+				cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
 				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
 				CombatManager::getInstance().next();
 			}
@@ -721,7 +714,7 @@ void CombatScene::Update(double dt)
 	}
 	else if (groups.enemies.size() == 0) {
 		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		std::cout << "Transition to next level\n";
+		cout << "Transition to next level\n";
 		if (!winFlag && winTime != 1.0f) {
 			dialogueState = DIALOGUE::WIN;
 			//winFlag = true;
@@ -750,6 +743,7 @@ void CombatScene::Render()
 	}
 
 	updateGlobals();
+	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 
 	//if (!playerAlive) {
 	//	RenderHelper::getInstance()->text("you have died", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
@@ -806,7 +800,7 @@ void CombatScene::Render()
 			//}
 
 			//panel text
-				RenderHelper::getInstance()->text("Time your block with [SPACE] (hold)!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
 			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent) {
 				if (dialogueState == DIALOGUE::ITEM) {
@@ -874,7 +868,7 @@ void CombatScene::Render()
 	}
 	Event::getInstance()->render();
 
-	player->render();
+	player->render();		// rendering for combat scene. level builder will render while not in combat, else will default to this.
 
 	//for (i = 0; i < groups.enemies.size(); i++) {
 	//	groups.enemies[i]->render(); // render all, draw all enemys
@@ -904,7 +898,7 @@ void CombatScene::cleanup() {
 
 void CombatScene::Exit()
 {
-	std::cout << "Exiting CombatScene\n";
+	cout << "Exiting CombatScene\n";
 	cleanup();
 }
 

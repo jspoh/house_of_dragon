@@ -20,7 +20,8 @@ Technology is prohibited.
 #include "Pause.h"
 #include "SceneStages.h"
 
-extern std::unique_ptr<Player> player;
+// DONT MANUALLY FREE THIS POINTER
+std::unique_ptr<Player> player = nullptr;
 //player->blockingState;		// player blocking state here
 
 namespace {
@@ -36,6 +37,9 @@ namespace {
 	double LerpSpeed = 10.0;
 	AEVec2 targetPos{};
 	f32 camX, camY;
+
+	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
+	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
 }
 
 bool GameScene::combatAudioLoopIsPlaying = false;
@@ -95,7 +99,7 @@ bool GameScene::afterInit = false;
 //	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 //
 //	//if (player != nullptr) {
-//	//	std::cout << static_cast<int>(player->blockingState) << "\n";
+//	//	cout << static_cast<int>(player->blockingState) << "\n";
 //	//}
 //
 //	//handleBlockingAnimation();
@@ -411,12 +415,12 @@ bool GameScene::afterInit = false;
 //
 //}
 
-SceneLevelBuilder::v_FloorData::v_FloorData():
-	m_currFloorNum{0},
-	m_FloorNum{0},
-	m_currFloorTimer{0.0},
-	m_FloorSpeedTimer {0.5},
-	m_IsRender{true}
+SceneLevelBuilder::v_FloorData::v_FloorData() :
+	m_currFloorNum{ 0 },
+	m_FloorNum{ 0 },
+	m_currFloorTimer{ 0.0 },
+	m_FloorSpeedTimer{ 0.5 },
+	m_IsRender{ true }
 {
 	AEMtx33Identity(&m_TransformFloorData);
 	AEMtx33Identity(&m_TransformFloorCurr);
@@ -426,38 +430,38 @@ SceneLevelBuilder::v_FloorData::v_FloorData():
 	AEMtx33Identity(&m_OriginalTrans);
 }
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
-	:m_TexRef{""}, 
-	m_RenderOrder{0}, 
-	m_Transparency{-1.5f}, 
-	m_Type{v_SceneObjectTypes::LAST_TYPE}
+	:m_TexRef{ "" },
+	m_RenderOrder{ 0 },
+	m_Transparency{ -1.5f },
+	m_Type{ v_SceneObjectTypes::LAST_TYPE }
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
 	AEMtx33Identity(&m_Trans);
 }
 SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
-	:m_LevelName{""},
-	m_Completed{false},
-	m_MaxEnemies{0},
-	m_DayTime{0},
+	:m_LevelName{ "" },
+	m_Completed{ false },
+	m_MaxEnemies{ 0 },
+	m_DayTime{ 0 },
 	m_EnemyTypes{},
 	m_EnemySpawnWeight{},
 	m_SceneObjTypes{},
 	m_SceneObjSpawnWeight{} {}
 
-SceneLevelBuilder::SceneLevelBuilder():
-	m_StopMovement{false},
-	m_PanCloseToGround{false},
-	m_CompletionStatus{0},
-	m_currLevel{0},
+SceneLevelBuilder::SceneLevelBuilder() :
+	m_StopMovement{ false },
+	m_PanCloseToGround{ false },
+	m_CompletionStatus{ 0 },
+	m_currLevel{ 0 },
 	m_LvlNameTimer{ 0.0 },
-    m_LvlNameTransparency{ 0.0 },
-	m_currTransitionTransparency {1.0},
-	m_setTransitionTransparency {-1.0},
+	m_LvlNameTransparency{ 0.0 },
+	m_currTransitionTransparency{ 1.0 },
+	m_setTransitionTransparency{ -1.0 },
 	m_SceneEnemy{ nullptr },
-	m_CombatPhase {false},
-	m_CombatAnimationComp {false},
-	m_CombatBufferingTime {0.0}
+	m_CombatPhase{ false },
+	m_CombatAnimationComp{ false },
+	m_CombatBufferingTime{ 0.0 }
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -581,7 +585,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
 	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
-	
+
 	/*********************************************
 	//GameObjects
 	**********************************************/
@@ -597,7 +601,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Allocate relevant memory depending on defined values (Check #define in .hpp)
 	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
-	m_FloorOBJs = new std::list<v_SceneObject>* [SIZE_OF_FLOOR];
+	m_FloorOBJs = new std::list<v_SceneObject>*[SIZE_OF_FLOOR];
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
 		m_Floor[i] = new v_FloorData[NUM_OF_TILES];
@@ -686,6 +690,8 @@ SceneLevelBuilder::~SceneLevelBuilder()
 
 void SceneLevelBuilder::Init()
 {
+	player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
+
 	/*******************************************************************************/
 	//MAIN FLOOR
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
@@ -743,7 +749,7 @@ void SceneLevelBuilder::Init()
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * static_cast<f32>(j - t_CenterFloorNum), 80.0f);
 				break;
 			default:
-				std::cout << "Error pls check floor" << std::endl;
+				cout << "Error pls check floor" << "\n";
 				break;
 			}
 			m_Floor[j][i].m_FloorNum = i;
@@ -828,6 +834,7 @@ void SceneLevelBuilder::Update(double dt)
 	// Generic Update calls can be placed here
 	{
 		updateGlobals();
+		player->update(dt);
 		UpdateScreenTransition(static_cast<f32>(dt)); // Screen Basic Transition
 		Pause::getInstance().update(dt); //Pause
 		if (Pause::getInstance().isPaused) {
@@ -841,7 +848,18 @@ void SceneLevelBuilder::Update(double dt)
 	////////////////////////////////////////////////////////////////////////
 	//Adjustments to camera if necessary
 	{
-		AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
+		/**
+		 * this set cam positioning is messing up the camera positioning
+		 * for everything used after this. uncomment the code to see the print logs
+		 * - JS
+		 * 
+		 */
+		//updateGlobals();
+		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
+		//AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
+		//updateGlobals();
+		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
+		//cout << "\n";
 	}
 
 
@@ -854,13 +872,16 @@ void SceneLevelBuilder::Update(double dt)
 			////////////////////////////////////////////////////////////////////////////
 			// Player INPUT
 			{
-				if (AEInputCheckTriggered(AEVK_LBUTTON))
+				if (AEInputCheckCurr(AEVK_LBUTTON))
 				{
-					//player->setHandStateAnimationType(Player::HandAnimationType::Punch);
+					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
-				if (AEInputCheckTriggered(AEVK_SPACE))
+				else if (AEInputCheckCurr(AEVK_RBUTTON)) {
+					player->setHandStateAnimationType(Player::HandAnimationType::Ready);
+				}
+				else if (AEInputCheckTriggered(AEVK_SPACE))
 				{
-					//BLOCKING PUT HERE
+					player->setHandStateAnimationType(Player::HandAnimationType::Block);
 				}
 
 				//TO BE REMOVED
@@ -952,7 +973,7 @@ void SceneLevelBuilder::Update(double dt)
 				m_PanCloseToGround = true;
 				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? LERPING_SPEED : 0;
 				m_PanDownCam -= m_PanDownCam > -100 ? LERPING_SPEED : 0;
-				if (!m_CombatAnimationComp && ((CombatManager::TURN)t_whoseTurn-1)) dt *= 5; //SPEEDUP SPECIFICALLY FOR ENEMY START TURN
+				if (!m_CombatAnimationComp && ((CombatManager::TURN)t_whoseTurn - 1)) dt *= 5; //SPEEDUP SPECIFICALLY FOR ENEMY START TURN
 
 				if (!GameScene::combatAudioLoopIsPlaying) {
 					SoundPlayer::stopAll();
@@ -971,7 +992,7 @@ void SceneLevelBuilder::Update(double dt)
 	UpdateLvlName(static_cast<f32>(dt));
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
-	
+
 	//if (AEInputCheckCurr(AEVK_SPACE))
 	//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
 	//else if (AEInputCheckCurr(AEVK_Q))
@@ -1448,6 +1469,10 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
+	// down here because player should be drawn on top of everything else, save pause screen
+	if (!m_CombatPhase) {
+		player->render();
+	}
 
 	Pause::getInstance().render();
 }
@@ -1508,7 +1533,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			std::string Ref = "";
 			int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
 			int temp = 0;//Disregard this: for loop below
-			for(int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			for (int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
 			{
 				randnum -= curr;
 				if (randnum < 0)
@@ -1562,8 +1587,8 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			{
 				t_RandX = t_RandY = 0;
 			}
-					
-			
+
+
 			if (j < t_CenterFloorNum)//Left Side
 			{
 				AEMtx33Trans(&newObj.m_Trans, m_tileSP[t_RandY][t_RandX].m_X + m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
@@ -1630,9 +1655,9 @@ void SceneLevelBuilder::RenderLvlName()
 	AEGfxGetCamPosition(&t_camX, &t_camY);
 
 	AEVec2 RightOriginalHeaderPos{ 27.5f, 175.7f };
-	AEVec2 LeftOriginalHeaderPos{ -27.5f, 175.7f};
-	AEVec2 RightMaxHeaderPos{ -15.0f + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f};
-	AEVec2 LeftMaxHeaderPos{ 15.0f - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f};
+	AEVec2 LeftOriginalHeaderPos{ -27.5f, 175.7f };
+	AEVec2 RightMaxHeaderPos{ -15.0f + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f };
+	AEVec2 LeftMaxHeaderPos{ 15.0f - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f };
 	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
 	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
 	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;
@@ -1648,7 +1673,7 @@ void SceneLevelBuilder::RenderLvlName()
 		AEGfxPrint(pTextFont, strBuffer, -TextWidth / 2.0f - 0.01f, 0.61f, 0.8f, 0.f, 0.f, 0.f, m_LvlNameTransparency);
 		AEGfxPrint(pTextFont, strBuffer, -TextWidth / 2.0f, 0.6f, 0.8f, 1.0f, 0.75f, 0.0f, m_LvlNameTransparency);
 
-			
+
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
 		if (m_LvlNameTimer < 1.0) AEGfxSetTransparency(m_LvlNameTransparency - 0.9f);
 		else AEGfxSetTransparency(m_LvlNameTransparency + 0.2f);
@@ -1665,7 +1690,7 @@ void SceneLevelBuilder::RenderLvlName()
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
-		
+
 		AEMtx33Identity(&trans);
 		AEMtx33RotDeg(&trans, 180);
 		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
@@ -1690,7 +1715,7 @@ Screen Transition
 **********************************************************************************/
 void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
 {
-	m_currTransitionTransparency += (m_setTransitionTransparency - m_currTransitionTransparency) / (600* t_dt);
+	m_currTransitionTransparency += (m_setTransitionTransparency - m_currTransitionTransparency) / (600 * t_dt);
 }
 void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
@@ -1707,15 +1732,15 @@ void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 	static int y = -120;
 	mY = static_cast<int>(mY / 1.5 + y);
 	mY *= -1;
-	
+
 	//Furthest from sun -> Closest to sun
 	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
 	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
 	for (int i = 0; i < m_TransformSunLensData.size(); i++)
 	{
 		AEMtx33Identity(&m_TransformSunLensData[i]);
-		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x+ scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
-		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mX + (m_sunPos.x - mX) * (i+ varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
+		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x + scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
+		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mX + (m_sunPos.x - mX) * (i + varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
 	}
 }
 void SceneLevelBuilder::UpdateClouds(f32 t_dt)
@@ -1742,7 +1767,7 @@ void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 			************************************************************************************************************************/
 			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
 			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
-				                                                                                    305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
+				305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
 		}
 		else
 		{

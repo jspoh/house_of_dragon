@@ -16,7 +16,7 @@ using namespace std;
 // Constructor
 SoundManager::SoundManager()
 {
-	std::cout << "Initializing SoundManager..\n";
+	cout << "Initializing SoundManager..\n";
 	sfxGroup = AEAudioCreateGroup();
 	musicGroup = AEAudioCreateGroup();
 
@@ -90,7 +90,7 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 		soundMap[ref] = audio;
 	}
 
-	std::cout << "SoundManager loaded " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
+	cout << "SoundManager loaded " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
 
 
 	return true;

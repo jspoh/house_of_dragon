@@ -56,7 +56,7 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 
 	initialAttack = this->dmg;
 
-	std::cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
+	cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
 }
 
 Player::~Player() {
@@ -109,55 +109,58 @@ void Player::update(double dt) {
 
 	updateHands(static_cast<float>(dt));
 
-	//std::cout << mouseX << " | " << mouseY << "\n";
-	//std::cout << camOffset.x << " | " << camOffset.y << "\n";
+	//cout << mouseX << " | " << mouseY << "\n";
+	//cout << camOffset.x << " | " << camOffset.y << "\n";
 
 	/* blocking stuff */
+	//HandStateAnimationType;
 
 
-	if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING && CombatManager::getInstance().turn == CombatManager::TURN::ENEMY) {
-		HandStateAnimationType = HandAnimationType::Block;
-		elapsedTimeMs = 0;
-		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+	if (
+		AEInputCheckTriggered(AEVK_SPACE) 
+		&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING 
+		&& CombatManager::getInstance().turn == CombatManager::TURN::ENEMY
+		) {
+		setHandStateAnimationType(HandAnimationType::Block);
 	}
-	else if (!AEInputCheckCurr(AEVK_SPACE) && blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && blockingState != PLAYER_BLOCKING_STATES::ON_COOLDOWN) {
-		elapsedTimeMs = 0;
-		blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
-	}
+	//else if (!AEInputCheckCurr(AEVK_SPACE) && blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && blockingState != PLAYER_BLOCKING_STATES::ON_COOLDOWN) {
+	//	elapsedTimeMs = 0;
+	//	blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
+	//}
 
-
+	//cout << static_cast<int>(blockingState) << "\n";
 
 	switch (blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-		//std::cout << "Player blocking state: NOT_BLOCKING\n";
+		//cout << "Player blocking state: NOT_BLOCKING\n";
 		elapsedTimeMs = 0;
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
-		//std::cout << "Player blocking state: ON_ENTER\n";
+		//cout << "Player blocking state: ON_ENTER\n";
 		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
 			elapsedTimeMs = 0;
-			break;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
-		//std::cout << "Player blocking state: ON_UPDATE\n";
+		//cout << "Player blocking state: ON_UPDATE\n";
 		if (elapsedTimeMs >= shieldUpTimeMs) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
 			elapsedTimeMs = 0;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
-		//std::cout << "Player blocking state: ON_EXIT\n";
+		//cout << "Player blocking state: ON_EXIT\n";
 		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
 			blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 			elapsedTimeMs = 0;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-		//std::cout << "Player blocking state: ON_COOLDOWN\n";
+		//cout << "Player blocking state: ON_COOLDOWN\n";
 		if (elapsedTimeMs >= timeBeforeNextBlockMs) {
 			elapsedTimeMs = 0;
+			HandStateAnimationType = HandAnimationType::None;
 			blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
 		}
 		break;
@@ -165,8 +168,8 @@ void Player::update(double dt) {
 
 	//_updateShield(dt);
 	_updateBlockingHands();
-	//std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
-	//std::cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
+	//cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
+	//cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
 
 void Player::render() {
@@ -197,9 +200,9 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
 	DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
 	float multiplier = 1;
-	std::cout << "attackEl enum: " << attackEl << "\n";
-	std::cout << "targetEl enum: " << target.element << "\n";
-	std::cout << "Damage multiplier enum: " << dm << "\n";
+	cout << "attackEl enum: " << attackEl << "\n";
+	cout << "targetEl enum: " << target.element << "\n";
+	cout << "Damage multiplier enum: " << dm << "\n";
 	switch (dm) {
 	case Weak:
 		multiplier = 0.5;
@@ -222,15 +225,28 @@ void Player::attackMultipler(int turn) {
 
 void Player::setHandStateAnimationType(HandAnimationType t) {
 	HandStateAnimationType = t;
+
+	switch (HandStateAnimationType) {
+	case HandAnimationType::Block:
+		if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+			break;		// dont allow player to try to trigger block while not not blocking (yes its not not blocking and not just blocking)
+		}
+		elapsedTimeMs = 0;
+		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+		break;
+	}
 }
 
 void Player::updateHands(float t_dt)
 {
 	LerpSpeed = 10.0;
 	AEGfxGetCamPosition(&camX, &camY);
-	camX += AEGfxGetWindowWidth() / 2;
-	camY -= AEGfxGetWindowHeight() / 2;
+	//camX += AEGfxGetWindowWidth() / 2;
+	//camY -= AEGfxGetWindowHeight() / 2;
 	int mX{}, mY{};
+
+	//cout << static_cast<int>(HandStateAnimationType) << "\n";
+
 	switch (HandStateAnimationType)
 	{
 	case HandAnimationType::Punch:
@@ -345,7 +361,7 @@ void Player::updateHands(float t_dt)
 			if (t_AnimationDuration > 999) t_AnimationDuration = 3;
 			break;
 		default:
-			std::cout << "ERROR IN READYING ANIMATION\n";
+			cout << "ERROR IN READYING ANIMATION\n";
 		}
 		if (t_AnimationDuration < 0.0)
 		{
@@ -384,8 +400,11 @@ void Player::_updateBlockingHands() {
 
 	static PLAYER_BLOCKING_STATES prevState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 
+	//cout << static_cast<int>(blockingState) << ", " << static_cast<int>(prevState) << "\n";
+
 	if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
-		if (!LeftSide) {
+		LeftSide = rand() % 2 - 1;
+ 		if (!LeftSide) {
 			AEMtx33Identity(&Hand3PosData.second);
 			Hand1PosData.first = Hand3PosData.second;
 			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
@@ -395,7 +414,6 @@ void Player::_updateBlockingHands() {
 			targetPos = { -160.95f + camOffset.x, -499.5f + camOffset.y };
 			AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
 		}
-
 		else {
 			AEMtx33Identity(&Hand3PosData.first);
 			Hand1PosData.second = Hand3PosData.first;
@@ -408,7 +426,7 @@ void Player::_updateBlockingHands() {
 		}
 	}
 
-	//std::cout << static_cast<int>(blockingState) << "\n";
+	//cout << static_cast<int>(blockingState) << "\n";
 	//LeftSide = false;
 
 	if (!LeftSide) //Right Hand Blocking
@@ -453,28 +471,28 @@ void Player::_updateBlockingHands() {
 			break;
 		case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 			// cooldown
-			LeftSide = rand() % 2 - 1;		// huh why -1 here
+			//LeftSide = rand() % 2 - 1;		// huh why -1 here
 			Hand1PosData.first = Hand1PosData.second = {};
 			Hand2PosData.first = Hand2PosData.second = {};
 			Hand3PosData.first = Hand3PosData.second = {};
 			Hand4PosData.first = Hand4PosData.second = {};
 			break;
 		default:
-			std::cout << "ERROR IN BLOCKING ANIMATION\n";
+			cout << "ERROR IN BLOCKING ANIMATION\n";
 		}
 	else //Left Hand Blocking
 		switch (blockingState)
 		{
 		case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 			//Init
-			AEMtx33Identity(&Hand3PosData.first);
-			Hand1PosData.second = Hand3PosData.first;
-			AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
-			targetPos = { 160.95f + camOffset.x, -499.5f + camOffset.y };
-			AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
-			AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
-			targetPos = { 304.25f + camOffset.x, -526.f + camOffset.y };
-			AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+			//AEMtx33Identity(&Hand3PosData.first);
+			//Hand1PosData.second = Hand3PosData.first;
+			//AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+			//targetPos = { 160.95f + camOffset.x, -499.5f + camOffset.y };
+			//AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+			//AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+			//targetPos = { 304.25f + camOffset.x, -526.f + camOffset.y };
+			//AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
 			break;
 		case PLAYER_BLOCKING_STATES::ON_ENTER:
 			//Start of block
@@ -513,14 +531,14 @@ void Player::_updateBlockingHands() {
 			break;
 		case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 			// cooldown
-			LeftSide = rand() % 2 - 1;		// huh why -1 here
+			//LeftSide = rand() % 2 - 1;		// huh why -1 here
 			Hand1PosData.first = Hand1PosData.second = {};
 			Hand2PosData.first = Hand2PosData.second = {};
 			Hand3PosData.first = Hand3PosData.second = {};
 			Hand4PosData.first = Hand4PosData.second = {};
 			break;
 		default:
-			std::cout << "ERROR IN BLOCKING ANIMATION\n";
+			cout << "ERROR IN BLOCKING ANIMATION\n";
 		}
 
 	prevState = blockingState;
@@ -564,7 +582,7 @@ void Player::_updateShield(double dt) {
 		break;
 
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
-		//std::cout << "Player blocking state: ON_ENTER\n";
+		//cout << "Player blocking state: ON_ENTER\n";
 		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
 			// force shield to go to final pos
 			AEVec2Set(&shield.pos, shieldBlockingPos.x, shieldBlockingPos.y);
@@ -580,7 +598,7 @@ void Player::_updateShield(double dt) {
 		break;
 
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
-		//std::cout << "Player blocking state: ON_EXIT\n";
+		//cout << "Player blocking state: ON_EXIT\n";
 		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
 			// force shield to go to initial pos
 			AEVec2Set(&shield.pos, shieldInitialPos.x, shieldInitialPos.y);

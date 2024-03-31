@@ -38,7 +38,7 @@ void SceneStages::Load()
 
 void SceneStages::Init()
 {
-	std::cout << "Loading Scene Stages" << std::endl;
+	cout << "Loading Scene Stages" << "\n";
 
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
@@ -76,7 +76,7 @@ void SceneStages::Update(double dt)
 	m_LoadScreenTimer -= dt;
 	//This is to ensure that the game is on loading screen 
 	//before the lag hits than on menu screen
-	if ((m_LoadScreenTimer <= MAX_LOAD_SCREEN_TIME - 0.5)
+	if ((m_LoadScreenTimer <= (MAX_LOAD_SCREEN_TIME - 0.5))
 		&& m_LevelBuilder == nullptr)
 		m_LevelBuilder = new SceneLevelBuilder();
 	
@@ -186,7 +186,7 @@ void SceneStages::Render()
 
 void SceneStages::Exit()
 {
-	std::cout << "Exiting Scene SplashScreen" << std::endl;
+	cout << "Exiting Scene SplashScreen" << "\n";
 
 	AEGfxMeshFree(pMesh);
 	//Destroy Font
