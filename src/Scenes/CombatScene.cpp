@@ -318,12 +318,12 @@ namespace {
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag ) {
+			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag) {
 				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
 				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
-				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding );
+				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding);
 
 				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
@@ -495,7 +495,7 @@ void CombatScene::Update(double dt)
 		if (dialougeTime < dialogueMaxTime) {
 			dialougeTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		}
-		else if(dialougeTime >= dialogueMaxTime) {
+		else if (dialougeTime >= dialogueMaxTime) {
 			resetDialogue();
 		}
 	}
@@ -559,7 +559,7 @@ void CombatScene::Update(double dt)
 	else {
 		deadfinalflag = false;
 	}
-	if ( (winFlag && winTime < slideAnimationDuration) ) {
+	if ((winFlag && winTime < slideAnimationDuration)) {
 		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(winTime / slideAnimationDuration);
 		float t = percenttime;
@@ -574,7 +574,7 @@ void CombatScene::Update(double dt)
 	}
 
 
-	
+
 	if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
 		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
@@ -638,41 +638,41 @@ void CombatScene::Update(double dt)
 			enemyattackedRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		}
 		else {*/
-			CombatManager::getInstance().next();
-			enemyattackedRenderTime = 0.f;
+		CombatManager::getInstance().next();
+		enemyattackedRenderTime = 0.f;
 
-			dialogueState = DIALOGUE::PLAYER_ATTACK;
+		dialogueState = DIALOGUE::PLAYER_ATTACK;
 
-			std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
-			CombatManager::getInstance().isPlayingEvent = false;
-			CombatManager::getInstance().selectedEnemy->enemyAttacked();
-			/*check if success or failure and modify damage accordingly*/
-			switch (CombatManager::getInstance().qtEventResult) {
-			case EVENT_RESULTS::SUCCESS:
-				std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
+		std::cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
+		CombatManager::getInstance().isPlayingEvent = false;
+		CombatManager::getInstance().selectedEnemy->enemyAttacked();
+		/*check if success or failure and modify damage accordingly*/
+		switch (CombatManager::getInstance().qtEventResult) {
+		case EVENT_RESULTS::SUCCESS:
+			std::cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
+			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
 
-				break;
-			case EVENT_RESULTS::FAILURE:
-				std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
+			break;
+		case EVENT_RESULTS::FAILURE:
+			std::cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
+			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
 
-				break;
-			case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-				std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
+			break;
+		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+			std::cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
+			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
 
-				break;
-			}
-			CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+			break;
+		}
+		CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 
-			// reset states
-			CombatManager::getInstance().selectedEnemy = nullptr;
-			for (Enemy* e : groups.enemies) {
-				e->isSelected = false;
-			}
-			CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
-			currentState = ACTION_BTNS::MAIN;
+		// reset states
+		CombatManager::getInstance().selectedEnemy = nullptr;
+		for (Enemy* e : groups.enemies) {
+			e->isSelected = false;
+		}
+		CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
+		currentState = ACTION_BTNS::MAIN;
 		//}
 	}
 
@@ -681,7 +681,7 @@ void CombatScene::Update(double dt)
 		updateBtns(btns[currentState]);  // render player action buttons
 		blockNow = false;
 	}
-	else if (CombatManager::getInstance().turn == TURN::ENEMY) {
+	else if (CombatManager::getInstance().turn == TURN::ENEMY && groups.enemies.size()) {
 		//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
 		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
 		if (CombatManager::getInstance().enemyNextTurnMs < CombatManager::PLAYER_BLOCKING_REACTION_ALLOWANCE_MS) {
@@ -719,28 +719,28 @@ void CombatScene::Update(double dt)
 				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
 				CombatManager::getInstance().next();
 			}
-			else {
-				winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-				std::cout << "Transition to next level\n";
-				if (!winFlag && winTime != 1.0f) {
-					dialogueState = DIALOGUE::WIN;
-					//winFlag = true;
-
-				}
-				else if (dialogueState != DIALOGUE::WIN) {
-					//delete player;
-					//player = nullptr;
-					//CombatManager::getInstance().end();
-					//return;
-				}
-				// all enemies shldve been deleted
-				//delete player;
-				//player = nullptr;
-				CombatManager::getInstance().end();
-				return;
-			}
 		}
 
+	}
+	else if (groups.enemies.size() == 0) {
+		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		std::cout << "Transition to next level\n";
+		if (!winFlag && winTime != 1.0f) {
+			dialogueState = DIALOGUE::WIN;
+			//winFlag = true;
+
+		}
+		else if (dialogueState != DIALOGUE::WIN) {
+			//delete player;
+			//player = nullptr;
+			//CombatManager::getInstance().end();
+			//return;
+		}
+		// all enemies shldve been deleted
+		//delete player;
+		//player = nullptr;
+		CombatManager::getInstance().end();
+		return;
 	}
 
 }
@@ -762,7 +762,7 @@ void CombatScene::Render()
 	//panel rendering
 
 	//rendering enemies
-	
+
 
 
 	std::vector<int> deadEnemies;
@@ -785,7 +785,7 @@ void CombatScene::Render()
 			}
 			else if (CombatManager::getInstance().turn == TURN::ENEMY) {
 				//if (blockingRenderTime < 0.5f) {
-				if (blockNow == false) {
+				if (!blockNow) {
 					RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				}
@@ -793,22 +793,22 @@ void CombatScene::Render()
 					RenderHelper::getInstance()->texture("blockNow", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				}
-					//RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-				//}
-				//else if(blockingRenderTime < 1.f){
-				//	RenderHelper::getInstance()->texture("blockwait2", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+				//RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+			//}
+			//else if(blockingRenderTime < 1.f){
+			//	RenderHelper::getInstance()->texture("blockwait2", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
-				//}
-				//else {
-				//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+			//}
+			//else {
+			//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
-				//}
-				//blockingRenderTime += AEFrameRateControllerGetFrameTime();
-				//if (blockingRenderTime >= 1.5f) {
-				//	blockingRenderTime = 0.f;
-				//}
+			//}
+			//blockingRenderTime += AEFrameRateControllerGetFrameTime();
+			//if (blockingRenderTime >= 1.5f) {
+			//	blockingRenderTime = 0.f;
+			//}
 
-				//panel text
+			//panel text
 				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
 			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent) {
@@ -826,13 +826,13 @@ void CombatScene::Render()
 					if (EVENT_RESULTS::SUCCESS) {
 						fulloutput += "CRITICAL ATTACK!!!";
 					}
-					else if ( EVENT_RESULTS::FAILURE) {
+					else if (EVENT_RESULTS::FAILURE) {
 						fulloutput += "ATTACK NOT EFFECTIVE!!!";
 
 					}
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
-					
+
 				}
 			}
 
