@@ -26,14 +26,7 @@ Technology is prohibited.
 #include "SceneStages.h"
 
 
-
-namespace {
-	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
-	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
-}
-
-// DONT MANUALLY FREE THIS POINTER
-std::unique_ptr<Player> player = nullptr;
+extern std::unique_ptr<Player> player;
 //Player* player = nullptr;
 
 namespace {
@@ -423,8 +416,6 @@ void CombatScene::Load()
 
 
 	cout << "CombatScene loaded\n";
-
-	player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
 }
 
 
@@ -586,7 +577,7 @@ void CombatScene::Update(double dt)
 		panelflag = false;
 	}
 
-	player->update(dt);
+	//player->update(dt);		// moved to level builder
 
 	//if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 	//	selectflag = true;

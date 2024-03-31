@@ -130,7 +130,7 @@ void Player::update(double dt) {
 	//	blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
 	//}
 
-	cout << static_cast<int>(blockingState) << "\n";
+	//cout << static_cast<int>(blockingState) << "\n";
 
 	switch (blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
