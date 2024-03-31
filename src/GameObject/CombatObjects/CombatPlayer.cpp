@@ -107,6 +107,7 @@ void Player::update(double dt) {
 	elapsedTimeMs += static_cast<int>(dt * 1000);
 
 	if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+		HandStateAnimationType = HandAnimationType::Block;
 		elapsedTimeMs = 0;
 		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
 	}
@@ -155,6 +156,7 @@ void Player::update(double dt) {
 
 	//_updateShield(dt);
 	_updateBlockingHands();
+	updateHands(static_cast<float>(dt));
 	//std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
 	//std::cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
@@ -329,6 +331,7 @@ void Player::updateHands(float t_dt)
 		}
 		break;
 	case HandAnimationType::Block:
+		//_updateBlockingHands();
 		break;
 
 	case HandAnimationType::Ready: //For Getting ready in combat
