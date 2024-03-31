@@ -848,7 +848,17 @@ void SceneLevelBuilder::Update(double dt)
 	////////////////////////////////////////////////////////////////////////
 	//Adjustments to camera if necessary
 	{
-		AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
+		/**
+		 * this set cam positioning is messing up the camera positioning
+		 * for everything used after this. uncomment the code to see the print logs
+		 * - JS
+		 * 
+		 */
+		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
+		//AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
+		//updateGlobals();
+		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
+		//cout << "\n";
 	}
 
 

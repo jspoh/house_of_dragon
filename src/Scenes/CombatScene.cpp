@@ -471,6 +471,7 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 void CombatScene::Update(double dt)
 {
 	updateGlobals();
+	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 
 	if (AEInputCheckTriggered(AEVK_RBUTTON)) {
 		winFlag = true;
@@ -586,6 +587,7 @@ void CombatScene::Update(double dt)
 
 	// select enemy
 	if (!CombatManager::getInstance().isPlayingEvent) {
+		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 		for (Enemy* e : groups.enemies) {
 			e->update(dt);
 
@@ -741,6 +743,7 @@ void CombatScene::Render()
 	}
 
 	updateGlobals();
+	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 
 	//if (!playerAlive) {
 	//	RenderHelper::getInstance()->text("you have died", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
