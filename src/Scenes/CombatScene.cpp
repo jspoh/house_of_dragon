@@ -26,9 +26,6 @@ Technology is prohibited.
 #include "SceneStages.h"
 
 
-//additional
-
-CombatScene* CombatScene::sInstance = new CombatScene(SceneManager::GetInstance());
 
 namespace {
 	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
@@ -222,7 +219,7 @@ namespace {
 						}
 						else if (bv == "YES") {
 							std::cout << "Fleeing fight\n";
-							CombatScene::sInstance->cleanup();
+							CombatScene::getInstance().cleanup();
 							currentState = ACTION_BTNS::MAIN;
 							CombatManager::getInstance().end();
 						}
@@ -377,13 +374,13 @@ CombatScene::CombatScene()
 {
 }
 
-CombatScene::CombatScene(SceneManager* _sceneMgr)
-{
-	_sceneMgr->AddScene("CombatScene", this);
-}
-
 CombatScene::~CombatScene()
 {
+}
+
+CombatScene& CombatScene::getInstance() {
+	static CombatScene instance;
+	return instance;
 }
 
 void CombatScene::Load()
@@ -431,7 +428,7 @@ void CombatScene::Load()
 }
 
 
-void CombatScene::Init()
+void CombatScene::Init(CombatManager::TURN startingTurn)
 {
 	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
 	//player init
@@ -475,7 +472,7 @@ void CombatScene::Init()
 	btnWordPadding = 20.f;
 	btnDecreaseY = 0.f;
 
-	CombatManager::getInstance().start();
+	CombatManager::getInstance().start(startingTurn);
 
 	Event::getInstance()->init();
 }
@@ -677,11 +674,11 @@ void CombatScene::Update(double dt)
 	}
 
 	// when is player turn and player is not playing a quicktime event
-	if (CombatManager::getInstance().turn == TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
+	if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 		updateBtns(btns[currentState]);  // render player action buttons
 		blockNow = false;
 	}
-	else if (CombatManager::getInstance().turn == TURN::ENEMY && groups.enemies.size()) {
+	else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && groups.enemies.size()) {
 		//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
 		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
 		if (CombatManager::getInstance().enemyNextTurnMs < CombatManager::PLAYER_BLOCKING_REACTION_ALLOWANCE_MS) {
@@ -780,10 +777,10 @@ void CombatScene::Render()
 			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
 			//}
 
-			if (CombatManager::getInstance().turn == TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
+			if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
-			else if (CombatManager::getInstance().turn == TURN::ENEMY) {
+			else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY) {
 				//if (blockingRenderTime < 0.5f) {
 				if (!blockNow) {
 					RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw

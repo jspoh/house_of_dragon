@@ -658,7 +658,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Load Combat elements
-	CombatScene::sInstance->Load();
+	CombatScene::getInstance().Load();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -678,7 +678,7 @@ SceneLevelBuilder::SceneLevelBuilder():
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_04", "Assets/Combat_UI/MyFist_Right_4.png");
 }
 SceneLevelBuilder::~SceneLevelBuilder()
-{                          
+{
 	Exit();
 }
 
@@ -695,7 +695,7 @@ void SceneLevelBuilder::Init()
 				//Out of Screen Floor
 			case 0:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * static_cast<f32>(j-t_CenterFloorNum), -2829.0f);
+				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * static_cast<f32>(j - t_CenterFloorNum), -2829.0f);
 				break;
 			case 1:
 				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
@@ -752,7 +752,7 @@ void SceneLevelBuilder::Init()
 			m_Floor[j][i].m_TransformFloorCurr = m_Floor[j][i].m_TransformFloorData;
 		}
 	}
-	
+
 
 	AEMtx33 scale, trans, rotate;
 	//////////////////////////////////////////////////////////////////
@@ -798,7 +798,7 @@ void SceneLevelBuilder::Init()
 	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
 	for (int i = 0; i < 8; i++)
 		m_TransformSunLensData.push_back(m_temp);
-	
+
 	//DO FOG DATA
 	AEMtx33Scale(&scale, 2000.0f, 70.f);
 	AEMtx33Trans(&trans, 0, 80);
@@ -860,8 +860,9 @@ void SceneLevelBuilder::Update(double dt)
 				FadeOutBlack();
 				TestTimer = 2.5f;
 				std::vector<std::string> names = { "horse", "dragon", "cat", "cat" };
-				CombatScene::sInstance->spawnEnemies(names);
-				CombatScene::sInstance->Init();
+				CombatScene::getInstance().spawnEnemies(names);
+				CombatScene::getInstance().Init();							// player starts first
+				//CombatScene::getInstance().Init(CombatManager::TURN::ENEMY);	// enemy starts first
 				Combat = true;
 				break;
 			}
@@ -871,65 +872,65 @@ void SceneLevelBuilder::Update(double dt)
 	// Combat Setup
 	//TESTING
 	{
-	//Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
+		//Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
 
-	//if (AEInputCheckTriggered(AEVK_Z) && !Combat)
-	//{
-	//	TestTimer = 2.5f;
-	//	std::vector<std::string> names = { "horse", "dragon", "cat", "cat"};
-	//	CombatScene::sInstance->spawnEnemies(names);
-	//	CombatScene::sInstance->Init();
-	//	Combat = true;
-	//}
+		//if (AEInputCheckTriggered(AEVK_Z) && !Combat)
+		//{
+		//	TestTimer = 2.5f;
+		//	std::vector<std::string> names = { "horse", "dragon", "cat", "cat"};
+		//	CombatScene::getInstance().spawnEnemies(names);
+		//	CombatScene::getInstance().Init();
+		//	Combat = true;
+		//}
 
-	if (Combat)
-	{
-		// check if combat is over and update accordingly
-		Combat = CombatManager::getInstance().isInCombat;
+		if (Combat)
+		{
+			// check if combat is over and update accordingly
+			Combat = CombatManager::getInstance().isInCombat;
 
-		////////////////////////////////////////////////////////////////
-		//Slow Down
-		/*t_MovementSpeed -= t_MovementSpeed > 0 ? static_cast<f32>(dt * 3.f) : 0;*/
-		TestTimer -=static_cast<f32>(dt);
-		if (TestTimer < 0.0f)
-			m_StopMovement = true;
+			////////////////////////////////////////////////////////////////
+			//Slow Down
+			/*t_MovementSpeed -= t_MovementSpeed > 0 ? static_cast<f32>(dt * 3.f) : 0;*/
+			TestTimer -= static_cast<f32>(dt);
+			if (TestTimer < 0.0f)
+				m_StopMovement = true;
 
-		////////////////////////////////////////////////////////////////
-		//Slow Down
-		m_PanCloseToGround = true;
-		t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30 ? 1 : 0;
-		PanDown -= PanDown > -100 ? 1 : 0;
+			////////////////////////////////////////////////////////////////
+			//Slow Down
+			m_PanCloseToGround = true;
+			t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30 ? 1 : 0;
+			PanDown -= PanDown > -100 ? 1 : 0;
 
-		CombatScene::sInstance->Update(dt);
+			CombatScene::getInstance().Update(dt);
 
-		if (!GameScene::combatAudioLoopIsPlaying) {
-			SoundPlayer::stopAll();
-			SoundPlayer::CombatAudio::getInstance().playLoop();
-			GameScene::combatAudioLoopIsPlaying = true;
-			SceneStagesAudio::loopIsPlaying = false;
+			if (!GameScene::combatAudioLoopIsPlaying) {
+				SoundPlayer::stopAll();
+				SoundPlayer::CombatAudio::getInstance().playLoop();
+				GameScene::combatAudioLoopIsPlaying = true;
+				SceneStagesAudio::loopIsPlaying = false;
+			}
 		}
-	}
-	else
-	{
-		////////////////////////////////////////////////////////////////
-		//Reset
-		t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<f32>(dt) * 5.f : 0;
-		m_StopMovement = false;
+		else
+		{
+			////////////////////////////////////////////////////////////////
+			//Reset
+			t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<f32>(dt) * 5.f : 0;
+			m_StopMovement = false;
 
-		m_PanCloseToGround = false;
-		t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
-		PanDown += PanDown < 0 ? 4 : 0;
+			m_PanCloseToGround = false;
+			t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
+			PanDown += PanDown < 0 ? 4 : 0;
 
-		if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
-			SoundPlayer::stopAll();
-			SoundPlayer::GameAudio::getInstance().playLoop();
-			GameScene::combatAudioLoopIsPlaying = false;
-			SceneStagesAudio::loopIsPlaying = true;
+			if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
+				SoundPlayer::stopAll();
+				SoundPlayer::GameAudio::getInstance().playLoop();
+				GameScene::combatAudioLoopIsPlaying = false;
+				SceneStagesAudio::loopIsPlaying = true;
+			}
 		}
-	}
-	f32 t_x, t_y;
-	AEGfxGetCamPosition(&t_x, &t_y);
-	AEGfxSetCamPosition(t_x, t_y - static_cast<f32>(PanDown));
+		f32 t_x, t_y;
+		AEGfxGetCamPosition(&t_x, &t_y);
+		AEGfxSetCamPosition(t_x, t_y - static_cast<f32>(PanDown));
 
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -939,7 +940,7 @@ void SceneLevelBuilder::Update(double dt)
 	UpdateLvlName(static_cast<f32>(dt));
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
-	
+
 	if (AEInputCheckCurr(AEVK_SPACE))
 		player->setHandStateAnimationType(Player::HandAnimationType::Block);
 	else if (AEInputCheckCurr(AEVK_Q))
@@ -1038,15 +1039,15 @@ void SceneLevelBuilder::Update(double dt)
 							CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
 
 							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
-							
+
 						}
 					}
 					else
-						m_Floor[j][i].m_currFloorTimer +=static_cast<f32>(dt);
+						m_Floor[j][i].m_currFloorTimer += static_cast<f32>(dt);
 				}
 			}
 
-			if (t_ShiftRow.size()>=1)
+			if (t_ShiftRow.size() >= 1)
 			{
 				for (std::list<int>::iterator i = t_ShiftRow.begin(); i != t_ShiftRow.end(); i++)
 				{
@@ -1068,7 +1069,7 @@ void SceneLevelBuilder::Update(double dt)
 		//////////////////////////////////////////////////////////////////////////
 		GameObjectManager::GetInstance()->Update(dt);
 		v_SceneObject temp;
-		std::pair<int, int> t_TransScaleModifier = { 60, 48}; //For rand on tile pos
+		std::pair<int, int> t_TransScaleModifier = { 60, 48 }; //For rand on tile pos
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -1082,7 +1083,7 @@ void SceneLevelBuilder::Update(double dt)
 
 					//Skew on the tile
 					if (!AEInputCheckCurr(AEVK_L))
-					(*it).m_TransformData.m[1][0] = 0.30f * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1.0f) ;
+						(*it).m_TransformData.m[1][0] = 0.30f * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1.0f);
 
 					//Scale with the tile
 					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
@@ -1096,12 +1097,12 @@ void SceneLevelBuilder::Update(double dt)
 					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85f) * (*it).m_Scale.m[1][1];
 
 					//Translate to its specific position on the tile 
-					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, 
-						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]), 
+					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData,
+						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]),
 						0/*(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1])*/);
-				
+
 					//Adjusting Transparency
-					(*it).m_Transparency +=static_cast<f32>(dt)*1.5f;
+					(*it).m_Transparency += static_cast<f32>(dt) * 1.5f;
 				}
 			}
 		}
@@ -1193,7 +1194,7 @@ void SceneLevelBuilder::Render()
 			AEMtx33Identity(&temp);
 			AEMtx33ScaleApply(&temp, &temp, 240.0f, 360.f);
 			AEMtx33TransApply(&temp, &temp, (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
-				                                       205.f + static_cast<f32>(mouseY / 90.0f));
+				205.f + static_cast<f32>(mouseY / 90.0f));
 
 			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -1205,7 +1206,7 @@ void SceneLevelBuilder::Render()
 			AEMtx33Identity(&temp);
 			AEMtx33ScaleApply(&temp, &temp, 640.0f, 360.0f);
 			AEMtx33TransApply(&temp, &temp, (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
-				                                               205.f + static_cast<f32>(mouseY / 70.0f));
+				205.f + static_cast<f32>(mouseY / 70.0f));
 
 			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -1217,7 +1218,7 @@ void SceneLevelBuilder::Render()
 			AEMtx33Identity(&temp);
 			AEMtx33ScaleApply(&temp, &temp, 480.0f, 360.f);
 			AEMtx33TransApply(&temp, &temp, (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
-				                                               205.f + static_cast<f32>(mouseY / 50.0f));
+				205.f + static_cast<f32>(mouseY / 50.0f));
 
 			AEGfxSetTransform(temp.m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -1383,7 +1384,7 @@ void SceneLevelBuilder::Render()
 		AEMtx33 t_curr;
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
-		AEMtx33TransApply(&t_curr, &t_curr, camX, -AEGfxGetWindowHeight()/2 + camY);
+		AEMtx33TransApply(&t_curr, &t_curr, camX, -AEGfxGetWindowHeight() / 2 + camY);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEMtx33Identity(&t_curr);
@@ -1405,7 +1406,7 @@ void SceneLevelBuilder::Render()
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
 	if (Combat)
-		CombatScene::sInstance->Render();
+		CombatScene::getInstance().Render();
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//GAMEOBJ RENDER
@@ -1428,7 +1429,7 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
-	
+
 
 	Pause::getInstance().render();
 }
@@ -1458,7 +1459,7 @@ void SceneLevelBuilder::Exit()
 	//Destroy Font
 	AEGfxDestroyFont(pTextFont);
 
-	CombatScene::sInstance->Exit();
+	CombatScene::getInstance().Exit();
 }
 
 /*********************************************************************************

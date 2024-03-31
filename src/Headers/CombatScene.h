@@ -23,25 +23,23 @@ Technology is prohibited.
 #include "CombatManager.h"
 #include "Enemy.h"
 
-//Testing SpriteAnimation
-class SceneManager;
-class CombatScene : public Scene
+
+class CombatScene
 {
 public:
 	CombatScene();
 	~CombatScene();
 
-	virtual void Load();
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Render();
-	virtual void Exit();
+	void Load();
+	void Init(CombatManager::TURN startingTurn = CombatManager::TURN::PLAYER);
+	void Update(double dt);
+	void Render();
+	void Exit();
 	void spawnEnemies(std::vector<std::string> enemyRefs);
 	void cleanup();
 
-	static CombatScene* sInstance; // The pointer to the object that gets registered
+	static CombatScene& getInstance();
 private:
-	CombatScene(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
 	
 };

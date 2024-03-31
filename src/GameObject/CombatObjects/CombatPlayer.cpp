@@ -110,7 +110,7 @@ void Player::update(double dt) {
 
 	/* blocking stuff */
 
-	if (CombatManager::getInstance().turn != TURN::ENEMY) {
+	if (CombatManager::getInstance().turn != CombatManager::TURN::ENEMY) {
 		return;
 	}
 
