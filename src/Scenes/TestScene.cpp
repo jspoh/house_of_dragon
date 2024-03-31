@@ -44,6 +44,6 @@ void TestScene::Render()
 
 void TestScene::Exit()
 {
-    std::cout << "Exiting TestScene" << std::endl;
+    cout << "Exiting TestScene" << "\n";
     RenderHelper::getInstance()->removeTextureByRef(0);
 }

@@ -95,7 +95,7 @@ bool GameScene::afterInit = false;
 //	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
 //
 //	//if (player != nullptr) {
-//	//	std::cout << static_cast<int>(player->blockingState) << "\n";
+//	//	cout << static_cast<int>(player->blockingState) << "\n";
 //	//}
 //
 //	//handleBlockingAnimation();
@@ -740,7 +740,7 @@ void SceneLevelBuilder::Init()
 				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * static_cast<f32>(j - t_CenterFloorNum), 80.0f);
 				break;
 			default:
-				std::cout << "Error pls check floor" << std::endl;
+				cout << "Error pls check floor" << "\n";
 				break;
 			}
 			m_Floor[j][i].m_FloorNum = i;

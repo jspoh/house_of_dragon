@@ -549,6 +549,6 @@ void SceneMenu::Render()
 
 void SceneMenu::Exit()
 {
-	std::cout << "Exiting Scene Menu" << std::endl;
+	cout << "Exiting Scene Menu" << "\n";
 
 }

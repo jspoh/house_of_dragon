@@ -9,6 +9,8 @@
 // main
 
 bool gGameRunning = true;
+bool DEBUG = false;
+NullStream nullstream;
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -23,11 +25,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 	// Using custom window procedure
+//#ifndef NDEBUG
 	AESysInit(hInstance, nCmdShow, 1200, 750, 1, 60, true, NULL);
+//#else
+//    AESysInit(hInstance, nCmdShow, 1200, 750, 0, 60, true, NULL);
+//#endif
 
     //AESysSetFullScreen(true); //Dont do fullscreen
     // Changing the window title
     AESysSetWindowTitle("Version Alpha 0.6.IDK - INCORPARATING AND THE SYSTEM IS MELTING");
+
+#ifndef NDEBUG
+    DEBUG = true;
+#endif
     
     //Show Cursor - Disable when have custom cursor
     AEInputShowCursor(1);
@@ -39,7 +49,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Game System Loop
     while (gGameRunning)
     {
-    	//std::cout << AEGfxGetWindowWidth() << " " << AEGfxGetWindowHeight() << "\n";
+    	//cout << AEGfxGetWindowWidth() << " " << AEGfxGetWindowHeight() << "\n";
     
     	// Informing the system about the loop's start
     	AESysFrameStart();

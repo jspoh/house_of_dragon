@@ -53,5 +53,24 @@ Technology is prohibited.
 #include "Pause.h"
 
 extern bool gGameRunning;
+extern bool DEBUG;
+
+class NullStream {
+public:
+    NullStream() = default;
+    ~NullStream() = default;
+
+    template <typename T>
+    NullStream& operator<<(T _) {
+        return *this;
+    }
+};
+extern NullStream nullstream;
+
+#ifndef NDEBUG
+#define cout std::cout
+#else
+#define cout nullstream
+#endif
 
 #endif //PCH_H

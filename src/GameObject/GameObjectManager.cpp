@@ -58,7 +58,7 @@ void GameObjectManager::Render()
 void GameObjectManager::AddEntity(GameObject* _newEntity)
 {
 	entityList.push_back(_newEntity);
-	std::cout << "GameObject Add" << std::endl;
+	cout << "GameObject Add" << "\n";
 }
 
 // Remove an entity from this GameObjectManager

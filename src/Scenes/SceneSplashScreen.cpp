@@ -57,7 +57,7 @@ void SceneSplashScreen::Load()
 
 void SceneSplashScreen::Init()
 {
-	std::cout << "Loading Scene SplashScreen" << std::endl;
+	cout << "Loading Scene SplashScreen" << "\n";
 
 	AEMtx33 scale{}, trans{};
 	AEMtx33Scale(&scale, 1000.0f, 300.0f);
@@ -135,7 +135,7 @@ void SceneSplashScreen::Render()
 
 void SceneSplashScreen::Exit()
 {
-	std::cout << "Exiting Scene SplashScreen" << std::endl;
+	cout << "Exiting Scene SplashScreen" << "\n";
 
 	AEGfxMeshFree(m_Mesh);
 
