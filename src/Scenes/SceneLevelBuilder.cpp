@@ -1455,6 +1455,10 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
+	// down here because player should be drawn on top of everything else, save pause screen
+	if (!m_CombatPhase) {
+		player->render();
+	}
 
 	Pause::getInstance().render();
 }

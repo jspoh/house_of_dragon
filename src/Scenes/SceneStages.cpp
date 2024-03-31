@@ -11,7 +11,7 @@ namespace {
 
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
-	m_LoadScreenTimer(DEBUG ? 0 : MAX_LOAD_SCREEN_TIME),
+	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
 	pTextFont(0)
@@ -20,7 +20,7 @@ SceneStages::SceneStages() :
 
 SceneStages::SceneStages(SceneManager* _sceneMgr) :
 	m_LevelBuilder{ nullptr },
-	m_LoadScreenTimer(DEBUG ? 0 : MAX_LOAD_SCREEN_TIME),
+	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
 	pTextFont(0)
@@ -76,7 +76,7 @@ void SceneStages::Update(double dt)
 	m_LoadScreenTimer -= dt;
 	//This is to ensure that the game is on loading screen 
 	//before the lag hits than on menu screen
-	if ((m_LoadScreenTimer <= (DEBUG ? 0 : MAX_LOAD_SCREEN_TIME - 0.5))
+	if ((m_LoadScreenTimer <= (MAX_LOAD_SCREEN_TIME - 0.5))
 		&& m_LevelBuilder == nullptr)
 		m_LevelBuilder = new SceneLevelBuilder();
 	

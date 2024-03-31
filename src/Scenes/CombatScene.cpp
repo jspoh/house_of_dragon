@@ -865,7 +865,7 @@ void CombatScene::Render()
 	}
 	Event::getInstance()->render();
 
-	player->render();
+	player->render();		// rendering for combat scene. level builder will render while not in combat, else will default to this.
 
 	//for (i = 0; i < groups.enemies.size(); i++) {
 	//	groups.enemies[i]->render(); // render all, draw all enemys
