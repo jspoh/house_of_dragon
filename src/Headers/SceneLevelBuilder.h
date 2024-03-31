@@ -54,9 +54,10 @@ private:
 	void UpdateScreenTransition(f32 t_dt);
 	void FadeINBlack();
 	void FadeOutBlack();
-	void RenderLoadScreen();
+	//void RenderLoadScreen();
 	void UpdateLensFlare(f32 t_dt);
 	void UpdateClouds(f32 t_dt);
+	void UpdateBackdrop(f32 t_dt);
 
 	struct v_FloorData
 	{
@@ -226,6 +227,9 @@ private:
 	//TRANSFORM DATA
 	AEMtx33 m_TransformSkyData;
 	std::vector<AEMtx33> m_TransformCloudsData;
+	std::vector<AEMtx33> m_TransformBackDrops1Data;
+	std::vector<AEMtx33> m_TransformBackDrops2Data;
+	std::vector<AEMtx33> m_TransformBackDrops3Data;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
 	std::vector<AEMtx33> m_TransformSunLensData;

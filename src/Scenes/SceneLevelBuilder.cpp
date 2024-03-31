@@ -786,6 +786,14 @@ void SceneLevelBuilder::Init()
 		AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
 	}
 
+	//A Quick fix for retaining the previous transform of the backdrops
+	for (int i = 0; i < 9; i++)
+	{
+		m_TransformBackDrops1Data.push_back(m_temp);
+		m_TransformBackDrops2Data.push_back(m_temp);
+		m_TransformBackDrops3Data.push_back(m_temp);
+	}
+
 	//Do Sun Data
 	m_sunOverlayScale = { 120.f, 120.f };
 	m_sunPos = { 350, 350 };
@@ -964,6 +972,7 @@ void SceneLevelBuilder::Update(double dt)
 	//Sun Overlay Update
 	UpdateLensFlare(static_cast<float>(dt));
 	UpdateClouds(static_cast<float>(dt));
+	UpdateBackdrop(static_cast<float>(dt));
 
 	if (!m_StopMovement)
 	{
@@ -1199,37 +1208,19 @@ void SceneLevelBuilder::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
 		for (int i = 0; i < 9; i++)
 		{
-			AEMtx33 temp;
-			AEMtx33Identity(&temp);
-			AEMtx33ScaleApply(&temp, &temp, 240.0f, 360.f);
-			AEMtx33TransApply(&temp, &temp, (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
-				205.f + static_cast<f32>(mouseY / 90.0f));
-
-			AEGfxSetTransform(temp.m);
+			AEGfxSetTransform(m_TransformBackDrops1Data[i].m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
 		for (int i = 0; i < 5; i++)
 		{
-			AEMtx33 temp;
-			AEMtx33Identity(&temp);
-			AEMtx33ScaleApply(&temp, &temp, 640.0f, 360.0f);
-			AEMtx33TransApply(&temp, &temp, (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
-				205.f + static_cast<f32>(mouseY / 70.0f));
-
-			AEGfxSetTransform(temp.m);
+			AEGfxSetTransform(m_TransformBackDrops2Data[i].m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
 		for (int i = 0; i < 5; i++)
 		{
-			AEMtx33 temp;
-			AEMtx33Identity(&temp);
-			AEMtx33ScaleApply(&temp, &temp, 480.0f, 360.f);
-			AEMtx33TransApply(&temp, &temp, (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
-				205.f + static_cast<f32>(mouseY / 50.0f));
-
-			AEGfxSetTransform(temp.m);
+			AEGfxSetTransform(m_TransformBackDrops3Data[i].m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 
@@ -1693,8 +1684,10 @@ void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
 void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
-void SceneLevelBuilder::UpdateLensFlare([[maybe_unused]] f32 t_dt)
+void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 {
+	UNREFERENCED_PARAMETER(t_dt);
+
 	int mX, mY;
 	AEInputGetCursorPosition(&mX, &mY);
 
@@ -1752,6 +1745,35 @@ void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 			m_TransformCloudsData[i].m[0][2] += m_TransformCloudsData[i].m[0][0] * 2;
 	}
 }
+void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
+{
+	for (int i = 0; i < 9; i++)
+	{
+		AEMtx33Identity(&m_TransformBackDrops1Data[i]);
+		AEMtx33ScaleApply(&m_TransformBackDrops1Data[i], &m_TransformBackDrops1Data[i], 240.0f, 360.f);
+		AEMtx33TransApply(&m_TransformBackDrops1Data[i], &m_TransformBackDrops1Data[i], (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
+			205.f + static_cast<f32>(mouseY / 90.0f));
+
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		AEMtx33Identity(&m_TransformBackDrops2Data[i]);
+		AEMtx33ScaleApply(&m_TransformBackDrops2Data[i], &m_TransformBackDrops2Data[i], 640.0f, 360.0f);
+		AEMtx33TransApply(&m_TransformBackDrops2Data[i], &m_TransformBackDrops2Data[i], (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
+			205.f + static_cast<f32>(mouseY / 70.0f));
+	}
+
+
+	for (int i = 0; i < 5; i++)
+	{
+		AEMtx33Identity(&m_TransformBackDrops3Data[i]);
+		AEMtx33ScaleApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], 480.0f, 360.f);
+		AEMtx33TransApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
+			205.f + static_cast<f32>(mouseY / 50.0f));
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////
 /*
 //Placement Tool (Remove once done)
