@@ -5,6 +5,10 @@ bool SceneStagesAudio::loopIsPlaying = false;
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
+namespace {
+	static f32 transparency = 1.8f;
+}
+
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
 	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
@@ -140,7 +144,6 @@ void SceneStages::Render()
 	if (m_LoadScreenTimer >= -1.0)
 	{
 		//Fade out load screen(I just quickly make this)
-		static f32 transparency = 1.8f;
 		if (m_LoadScreenTimer < 1.0)
 			transparency -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * 2.f;
 
@@ -195,6 +198,10 @@ void SceneStages::Exit()
 	GameScene::afterInit = false;
 	SceneStagesAudio::loopIsPlaying = false;
 	SoundPlayer::stopAll();
+
+	// use loading screen again after exiting to menu
+	m_LoadScreenTimer = MIN_LOAD_SCREEN_TIME;
+	transparency = 1.8f;
 }
 
 //////////////////////////////////////////////////////////////////////////////
