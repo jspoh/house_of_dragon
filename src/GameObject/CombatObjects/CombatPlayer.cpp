@@ -242,9 +242,9 @@ void Player::updateHands(float t_dt)
 {
 	LerpSpeed = 10.0;
 	AEGfxGetCamPosition(&camX, &camY);
-	camX += AEGfxGetWindowWidth() / 2;
-	camY -= AEGfxGetWindowHeight() / 2;
-	int mX{mouseX}, mY{mouseY};
+	//camX += AEGfxGetWindowWidth() / 2;
+	//camY -= AEGfxGetWindowHeight() / 2;
+	int mX{}, mY{};
 
 	//cout << static_cast<int>(HandStateAnimationType) << "\n";
 
@@ -259,11 +259,11 @@ void Player::updateHands(float t_dt)
 				AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
 				targetPos = { -804.25f + camX, -526.f + camY };
 				AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
-				//mX = mouseX;
-				//mY = mouseY;
-				//mX -= AEGfxGetWindowWidth() / 2;
-				//mY -= AEGfxGetWindowHeight() / 2;
-				//mY *= -1;
+				mX = mouseX;
+				mY = mouseY;
+				mX -= AEGfxGetWindowWidth() / 2;
+				mY -= AEGfxGetWindowHeight() / 2;
+				mY *= -1;
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
 			case 1: //End Point
@@ -282,11 +282,11 @@ void Player::updateHands(float t_dt)
 				AEMtx33ScaleApply(&Hand2PosData.second, &Hand2PosData.second, 191.5, 307);
 				targetPos = { 804.25f + camX, -526.f + camY };
 				AEMtx33TransApply(&Hand2PosData.second, &Hand2PosData.second, targetPos.x, targetPos.y);
-				//mX = mouseX;
-				//mY = mouseY;
-				//mX -= AEGfxGetWindowWidth() / 2;
-				//mY -= AEGfxGetWindowHeight() / 2;
-				//mY *= -1;
+				mX = mouseX;
+				mY = mouseY;
+				mX -= AEGfxGetWindowWidth() / 2;
+				mY -= AEGfxGetWindowHeight() / 2;
+				mY *= -1;
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
 			case 1: //End Point
