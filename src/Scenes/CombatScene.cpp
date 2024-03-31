@@ -360,7 +360,7 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 		groups.enemies[i] = new Enemy(
 			elementMap.find(Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["element"])->second,
 			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["health"],
-			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["damage"],
+			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["damage"] * DIFFICULTY_ENEMY_DAMAGE_MULTIPLIER.at(difficulty),
 			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["texturePath"],
 			enemyRefs[i],
 			groups.coordinates[i].x,
