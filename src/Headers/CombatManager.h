@@ -64,7 +64,7 @@ public:
 	 * start combat manager turn based system.
 	 *
 	 */
-	void start();
+	void start(TURN t = TURN::PLAYER);
 
 	/**
 	 * go to next turn
