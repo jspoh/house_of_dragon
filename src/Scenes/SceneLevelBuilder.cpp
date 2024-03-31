@@ -411,7 +411,6 @@ bool GameScene::afterInit = false;
 //
 //}
 
-
 SceneLevelBuilder::v_FloorData::v_FloorData():
 	m_currFloorNum{0},
 	m_FloorNum{0},

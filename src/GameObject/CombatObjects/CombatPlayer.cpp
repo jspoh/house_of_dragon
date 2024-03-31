@@ -109,7 +109,6 @@ void Player::update(double dt) {
 	updateHands(static_cast<float>(dt));
 
 	/* blocking stuff */
-
 	if (CombatManager::getInstance().turn != CombatManager::TURN::ENEMY) {
 		return;
 	}

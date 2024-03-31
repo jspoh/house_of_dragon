@@ -207,14 +207,5 @@ void SceneStages::Util_Camera_Shake(float duration, float strength)
 
 /**********************************
 TODO:
-FIX LAG AAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-(SIMI LANJIAO NO LAG ON OTHER PEOPLE COM)
-Fix Floor 
-Adjust SceneObject Placement
-
-Add Backdrop (by today)
-Blocking (by today)
-Commenting Code (by today)
-Integrate combat system (by today)
-Integrate camera panning with combat (NEED TO IMPROVE/OVERHAUL)
+MERGE EVERYTHING
 ***/
