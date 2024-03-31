@@ -31,7 +31,7 @@ Database::Database() {
 	ifs = std::ifstream{ dbPath };
 
 	if (!ifs.is_open()) {
-		std::cerr << "failed to open file" << "\n";
+		std::cerr << "failed to open database file" << "\n";
 	}
 
 	this->data = json::parse(ifs);
