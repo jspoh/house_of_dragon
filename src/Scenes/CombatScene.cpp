@@ -806,7 +806,7 @@ void CombatScene::Render()
 			//}
 
 			//panel text
-				RenderHelper::getInstance()->text("Time your block with [SPACE]!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+				RenderHelper::getInstance()->text("Time your block with [SPACE] (hold)!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
 			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent) {
 				if (dialogueState == DIALOGUE::ITEM) {
