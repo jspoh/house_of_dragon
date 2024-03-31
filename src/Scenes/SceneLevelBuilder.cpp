@@ -454,7 +454,10 @@ SceneLevelBuilder::SceneLevelBuilder():
     m_LvlNameTransparency{ 0.0 },
 	m_currTransitionTransparency {1.0},
 	m_setTransitionTransparency {-1.0},
-	m_SceneEnemy{ nullptr }
+	m_SceneEnemy{ nullptr },
+	m_CombatPhase {false},
+	m_CombatAnimationComp {false},
+	m_CombatBufferingTime {0.0}
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -823,136 +826,147 @@ void SceneLevelBuilder::Update(double dt)
 {
 	/////////////////////////////////////////////////////////////////////////////////
 	// Generic Update calls can be placed here
-	updateGlobals();
-	UpdateScreenTransition(static_cast<f32>(dt)); // Screen Basic Transition
-	Pause::getInstance().update(dt); //Pause
-	if (Pause::getInstance().isPaused) {
-		return;
+	{
+		updateGlobals();
+		UpdateScreenTransition(static_cast<f32>(dt)); // Screen Basic Transition
+		Pause::getInstance().update(dt); //Pause
+		if (Pause::getInstance().isPaused) {
+			return;
+		}
+		UpdateLensFlare(static_cast<float>(dt));
+		UpdateClouds(static_cast<float>(dt));
+		UpdateBackdrop(static_cast<float>(dt));
 	}
 
-	static double TestTimer = 2.0f;
-	static float t_MovementSpeed = 1.0f;
-	static int t_PanCloseToGroundValue = 80;
-	static int t_PanSideWays = 80;
-	static int PanDown = 0;
+	////////////////////////////////////////////////////////////////////////
+	//Adjustments to camera if necessary
+	{
+		AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
+	}
 
-	camX = camOffset.x;
-	camY = camOffset.y;
 
 	////////////////////////////////////////////////////////////////////////////////
-	// GameObject Logic
-	if (!Combat)
+	// Combat & Player with Scene Interaction
 	{
-		if (AEInputCheckTriggered(AEVK_LBUTTON))
+		static int t_whoseTurn = 0;
+		if (!m_CombatPhase)
 		{
-			//player->setHandStateAnimationType(Player::HandAnimationType::Punch);
-		}
-		if (AEInputCheckTriggered(AEVK_RBUTTON))
-		{
-			m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
-			m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][CurrentTileNumFurthest].m_TransformFloorCurr);
-		}
-
-		if (m_SceneEnemy != nullptr)
-		{
-			if (m_SceneEnemy->m_StartCombat)
+			////////////////////////////////////////////////////////////////////////////
+			// Player INPUT
 			{
-				std::vector<std::string> names;
-				switch (m_SceneEnemy->m_StartCombat)
+				if (AEInputCheckTriggered(AEVK_LBUTTON))
 				{
-				case 1:
-					m_SceneEnemy->m_Active = false;
-					m_SceneEnemy = nullptr;
-					TestTimer = 2.5f;
-					names = { "horse", "dragon", "cat", "cat" };
-					CombatScene::getInstance().spawnEnemies(names);
-					CombatScene::getInstance().Init();
-					Combat = true;
-					break;
-				case 2:
-					m_SceneEnemy->m_Active = false;
-					m_SceneEnemy = nullptr;
-					m_currTransitionTransparency = 1.0f;
+					//player->setHandStateAnimationType(Player::HandAnimationType::Punch);
+				}
+				if (AEInputCheckTriggered(AEVK_SPACE))
+				{
+					//BLOCKING PUT HERE
+				}
+
+				//TO BE REMOVED
+				if (AEInputCheckTriggered(AEVK_RBUTTON) && !m_CombatPhase)
+				{
+					m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
+					m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
+				}
+			}
+
+			/////////////////////////////////////////////////////////////////////////////
+			// Settings to lerp to the movement view
+			{
+				//m_LerpingSpeed += m_LerpingSpeed < 5.0 ? static_cast<f32>(dt) * 5.f : 0;
+				m_StopMovement = false;
+
+				m_PanCloseToGround = false;
+				m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
+				m_PanDownCam += m_PanDownCam < 0 ? LERPING_SPEED : 0;
+
+				if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
+					SoundPlayer::stopAll();
+					SoundPlayer::GameAudio::getInstance().playLoop();
+					GameScene::combatAudioLoopIsPlaying = false;
+					SceneStagesAudio::loopIsPlaying = true;
+				}
+			}
+
+			/////////////////////////////////////////////////////////////////////////////
+			// Check to start Combat Phase
+			{
+				if (m_SceneEnemy != nullptr)
+				{
+					if (m_SceneEnemy->m_StartCombat)
+					{
+						std::vector<std::string> names;
+						switch (m_SceneEnemy->m_StartCombat)
+						{
+						case 1:
+							m_SceneEnemy->m_Active = false;
+							m_SceneEnemy = nullptr;
+							m_CombatBufferingTime = 2.5f;
+							names = { "horse", "dragon", "cat", "cat" };
+							CombatScene::getInstance().spawnEnemies(names);
+							t_whoseTurn = CombatManager::PLAYER;//CombatScene::getInstance().Init(CombatManager::PLAYER);
+							m_CombatPhase = true;
+							m_CombatAnimationComp = false;
+							break;
+						case 2:
+							m_SceneEnemy->m_Active = false;
+							m_SceneEnemy = nullptr;
+							m_currTransitionTransparency = 1.0f;
+							m_setTransitionTransparency = 1.0f;
+							m_CombatBufferingTime = 1.5f;
+							names = { "horse", "dragon", "cat", "cat" };
+							CombatScene::getInstance().spawnEnemies(names);
+							t_whoseTurn = CombatManager::ENEMY;//CombatScene::getInstance().Init(CombatManager::ENEMY);
+							m_CombatPhase = true;
+							m_CombatAnimationComp = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			//////////////////////////////////////////////////////////////////
+			// Combat Update
+			if (m_CombatAnimationComp)
+			{
+				// check if combat is over and update accordingly
+				m_CombatPhase = CombatManager::getInstance().isInCombat;
+				CombatScene::getInstance().Update(dt);
+			}
+
+			/////////////////////////////////////////////////////////////////////
+			// Settings to lerp to the combat view
+			{
+				m_CombatBufferingTime -= m_CombatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
+				if (m_CombatBufferingTime < 0.0f && !m_CombatAnimationComp)
+				{
+					m_CombatAnimationComp = true;
+					m_StopMovement = true;
+					CombatScene::getInstance().Init((CombatManager::TURN)t_whoseTurn);
 					FadeOutBlack();
-					TestTimer = 2.5f;
-					names = { "horse", "dragon", "cat", "cat" };
-					CombatScene::getInstance().spawnEnemies(names);
-					CombatScene::getInstance().Init();
-					Combat = true;
-					break;
+				}
+
+				m_PanCloseToGround = true;
+				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? LERPING_SPEED : 0;
+				m_PanDownCam -= m_PanDownCam > -100 ? LERPING_SPEED : 0;
+				if (!m_CombatAnimationComp && ((CombatManager::TURN)t_whoseTurn-1)) dt *= 5; //SPEEDUP SPECIFICALLY FOR ENEMY START TURN
+
+				if (!GameScene::combatAudioLoopIsPlaying) {
+					SoundPlayer::stopAll();
+					SoundPlayer::CombatAudio::getInstance().playLoop();
+					GameScene::combatAudioLoopIsPlaying = true;
+					SceneStagesAudio::loopIsPlaying = false;
 				}
 			}
 		}
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Combat Setup
-	//TESTING
-	{
-		//Combat = AEInputCheckTriggered(AEVK_M) ? false : Combat;
 
-		//if (AEInputCheckTriggered(AEVK_Z) && !Combat)
-		//{
-		//	TestTimer = 2.5f;
-		//	std::vector<std::string> names = { "horse", "dragon", "cat", "cat"};
-		//	CombatScene::getInstance().spawnEnemies(names);
-		//	CombatScene::getInstance().Init();
-		//	Combat = true;
-		//}
-
-		if (Combat)
-		{
-			// check if combat is over and update accordingly
-			Combat = CombatManager::getInstance().isInCombat;
-
-			////////////////////////////////////////////////////////////////
-			//Slow Down
-			/*t_MovementSpeed -= t_MovementSpeed > 0 ? static_cast<f32>(dt * 3.f) : 0;*/
-			TestTimer -= static_cast<f32>(dt);
-			if (TestTimer < 0.0f)
-				m_StopMovement = true;
-
-			////////////////////////////////////////////////////////////////
-			//Slow Down
-			m_PanCloseToGround = true;
-			t_PanCloseToGroundValue -= t_PanCloseToGroundValue > 30 ? 1 : 0;
-			PanDown -= PanDown > -100 ? 1 : 0;
-
-			CombatScene::getInstance().Update(dt);
-
-			if (!GameScene::combatAudioLoopIsPlaying) {
-				SoundPlayer::stopAll();
-				SoundPlayer::CombatAudio::getInstance().playLoop();
-				GameScene::combatAudioLoopIsPlaying = true;
-				SceneStagesAudio::loopIsPlaying = false;
-			}
-		}
-		else
-		{
-			////////////////////////////////////////////////////////////////
-			//Reset
-			t_MovementSpeed += t_MovementSpeed < TOP_MOVEMENT_SPEED ? static_cast<f32>(dt) * 5.f : 0;
-			m_StopMovement = false;
-
-			m_PanCloseToGround = false;
-			t_PanCloseToGroundValue += t_PanCloseToGroundValue < 80 ? 4 : 0;
-			PanDown += PanDown < 0 ? 4 : 0;
-
-			if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
-				SoundPlayer::stopAll();
-				SoundPlayer::GameAudio::getInstance().playLoop();
-				GameScene::combatAudioLoopIsPlaying = false;
-				SceneStagesAudio::loopIsPlaying = true;
-			}
-		}
-		f32 t_x, t_y;
-		AEGfxGetCamPosition(&t_x, &t_y);
-		AEGfxSetCamPosition(t_x, t_y - static_cast<f32>(PanDown));
-
-	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Game 3D Environment Update Cycle
-
 	//Level Name
 	UpdateLvlName(static_cast<f32>(dt));
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
@@ -969,10 +983,7 @@ void SceneLevelBuilder::Update(double dt)
 
 	//player->updateHands(static_cast<float>(dt));
 
-	//Sun Overlay Update
-	UpdateLensFlare(static_cast<float>(dt));
-	UpdateClouds(static_cast<float>(dt));
-	UpdateBackdrop(static_cast<float>(dt));
+
 
 	if (!m_StopMovement)
 	{
@@ -997,9 +1008,9 @@ void SceneLevelBuilder::Update(double dt)
 
 				//Minimum Speed of next floor
 				AEMtx33 m_MinimumNextFloorSpeed = {
-				(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / t_PanCloseToGroundValue,
+				(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / m_PanCloseToGroundValue,
 				(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
-				(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / t_PanCloseToGroundValue,
+				(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / m_PanCloseToGroundValue,
 				(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
 				(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
 				(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
@@ -1009,15 +1020,15 @@ void SceneLevelBuilder::Update(double dt)
 				};
 
 				//Incrementing speed
-				m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * t_MovementSpeed : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * t_MovementSpeed : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * TOP_MOVEMENT_SPEED : 0;
+				m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * TOP_MOVEMENT_SPEED : 0;
 				//Adding to floor
 				m_Floor[j][i].m_TransformFloorCurr.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0];
 				m_Floor[j][i].m_TransformFloorCurr.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1];
@@ -1054,7 +1065,7 @@ void SceneLevelBuilder::Update(double dt)
 							m_Floor[j][i].m_Trans.m[0][2] = m_Floor[j][8].m_OriginalTrans.m[0][2];
 							m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
 
-							CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
+							m_CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
 
 							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
 
@@ -1289,10 +1300,10 @@ void SceneLevelBuilder::Render()
 			for (int i = 0; i < NUM_OF_TILES - 1; i++)
 			{
 				////////////////////////////////////////////////
-				// CurrentTileNumFurthest = 4
+				// m_CurrentTileNumFurthest = 4
 				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
 				////////////////////////////////////////////////
-				int tempTileNum = CurrentTileNumFurthest - i;
+				int tempTileNum = m_CurrentTileNumFurthest - i;
 				if (tempTileNum < 0)
 					tempTileNum += NUM_OF_TILES - 1;
 
@@ -1313,10 +1324,10 @@ void SceneLevelBuilder::Render()
 			for (int i = 0; i < NUM_OF_TILES - 1; i++)
 			{
 				////////////////////////////////////////////////
-				// CurrentTileNumFurthest = 4
+				// m_CurrentTileNumFurthest = 4
 				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
 				////////////////////////////////////////////////
-				int tempTileNum = CurrentTileNumFurthest - i;
+				int tempTileNum = m_CurrentTileNumFurthest - i;
 				if (tempTileNum < 0)
 					tempTileNum += NUM_OF_TILES - 1;
 
@@ -1375,7 +1386,7 @@ void SceneLevelBuilder::Render()
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
-	if (Combat)
+	if (m_CombatPhase)
 		CombatScene::getInstance().Render();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
