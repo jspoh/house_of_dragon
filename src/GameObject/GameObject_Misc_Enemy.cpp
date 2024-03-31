@@ -18,34 +18,53 @@ void GameObject_Misc_Enemy::Init()
 
 void GameObject_Misc_Enemy::Update(double _dt)
 {
-	//Update Enemy Logic or anything basic
-	if (m_Active)
+	if (m_Active && m_Health > 0)
 	{
-		if (!m_AttackPlayer)
-			UpdateEnemyMov(_dt);
-		else
-			UpdateCombatTransition(_dt);
+		updateGlobals();
 
-		//Trigger combat if too close
-		if (m_AttachedFloorTransform != nullptr)
+		////////////////////////////////////////////////////////////////////////
+		//Flickering
+		if (m_FlickeringTimer > 0.0)
+			m_Transparency = rand() % 2 ? 1.0f : -0.5f;
+		else
+			m_Transparency = 1.0f;
+		m_FlickeringTimer -= _dt;
+
+		/////////////////////////////////////////////////////////////////////////
+		// Getting Hit
 		{
-			//Easy check via scale of enemy if too close
-			if (m_TransformData.m[0][0] >= 600 && !m_AttackPlayer)
+			Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
+			//Check Collision
+			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
-				m_AttackPlayer = true;
-				m_Scale.x = m_TransformData.m[0][0];
-				m_Scale.y = m_TransformData.m[1][1];
-				m_LocalPos.x = m_TransformData.m[0][2]/ m_Scale.x;
-				m_LocalPos.y = m_TransformData.m[1][2] / (m_Scale.y*2);
+				if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY))
+					&& !m_AttackPlayer)
+				{
+					m_Health -= 1; //Just a simple subtraction
+					m_FlickeringTimer = 0.3;
+				}
 			}
 		}
 
-		Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
-		//check Collision
-		//std::cout << mouseX << ", " << mouseY << " | " << pos.x << ", " << pos.y << "\n";
-		if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY)))
-				std::cout << "Collision with misc enemy is working" << std::endl;
+		///////////////////////////////////////////////////////////////////////////
+		// Movement
+		{
+			if (!m_AttackPlayer)
+				UpdateEnemyMov(_dt);
+			else
+				UpdateCombatTransition(_dt);
+
+			//Trigger combat if too close
+			if (m_AttachedFloorTransform != nullptr)
+			{
+				//Easy check via scale of enemy if too close
+				if (m_TransformData.m[0][0] >= 600 && !m_AttackPlayer) m_AttackPlayer = true;
+				
+			}
+		}
 	}
+	else if (m_Active)
+		m_StartCombat = 1;
 }
 
 void GameObject_Misc_Enemy::Render()
@@ -56,7 +75,7 @@ void GameObject_Misc_Enemy::Render()
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(1.0f);
+		AEGfxSetTransparency(m_Transparency);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMY_STRONG"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -82,6 +101,7 @@ void GameObject_Misc_Enemy::ActivateEnemy(AEMtx33& m_transform, v_EnemyBehaviour
 	m_StartCombat = false; // i know should put 0 but i like it this way since makes more sense
 	m_Scale.x = m_Scale.y = 1.0f;
 	m_LifeTime = 1.0;
+	m_Health = 5;
 	switch (_type)
 	{
 	default:
@@ -95,19 +115,17 @@ void GameObject_Misc_Enemy::UpdateEnemyMov(double _dt)
 	AEMtx33Identity(&m_TransformData);
 
 	//Scale with the tile
-	AEMtx33ScaleApply(&m_TransformData, &m_TransformData, m_AttachedFloorTransform->m[0][0] / (1 / m_Scale.x), m_AttachedFloorTransform->m[0][0] / (1 / m_Scale.y));
+	AEMtx33ScaleApply(&m_TransformData, &m_TransformData, m_AttachedFloorTransform->m[0][0], m_AttachedFloorTransform->m[0][0]);
 
 	//Translate with the tile
 	m_TransformData.m[0][2] = m_AttachedFloorTransform->m[0][2];
 	m_TransformData.m[1][2] = m_AttachedFloorTransform->m[1][2];
 
-	//Translate to its specific position on the tile 
-	//AEMtx33TransApply(&(m_TransformData, &m_TransformData,
-	//	(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]),
-	//	0/*(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1])*/);
+	m_Scale.x = m_TransformData.m[0][0];
+	m_Scale.y = m_TransformData.m[1][1];
+	m_LocalPos.x = m_TransformData.m[0][2] / m_Scale.x;
+	m_LocalPos.y = m_TransformData.m[1][2] / (m_Scale.y * 2);
 
-	//Adjusting Transparency
-	//m_Transparency += static_cast<f32>(_dt) * 1.5f;
 }
 
 void GameObject_Misc_Enemy::UpdateCombatTransition(double _dt)

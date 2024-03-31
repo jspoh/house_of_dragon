@@ -229,52 +229,8 @@ void Player::updateHands(float t_dt)
 {
 	LerpSpeed = 10.0;
 	AEGfxGetCamPosition(&camX, &camY);
-
-	//camX += AEGfxGetWindowWidth() / 2;
-	//camY -= AEGfxGetWindowHeight() / 2;
-	//Placement Tool (Remove once done)
-	static float x = 0, y = 0;
-	if (AEInputCheckCurr(AEVK_W))
-	{
-		y += 5.5f;
-	}
-	if (AEInputCheckCurr(AEVK_S))
-	{
-		y -= 5.5f;
-	}
-	if (AEInputCheckCurr(AEVK_A))
-	{
-		x -= 5.55f;
-	}
-	if (AEInputCheckCurr(AEVK_D))
-	{
-		x += 5.55f;
-	}
-	static float mx = 0, my = 0;
-	if (AEInputCheckCurr(AEVK_UP))
-	{
-		my += 0.55f;
-	}
-	if (AEInputCheckCurr(AEVK_DOWN))
-	{
-		my -= 0.55f;
-	}
-	if (AEInputCheckCurr(AEVK_RIGHT))
-	{
-		mx += 0.55f;
-	}
-	if (AEInputCheckCurr(AEVK_LEFT))
-	{
-		mx -= 0.55f;
-	}
-	//cout << x << " " << y << " " << (float)mouseX<< " " << (float)mouseY<< endl;
-
-	//if (player != nullptr) {
-	//	std::cout << static_cast<int>(player->blockingState) << "\n";
-	//}
-
-	//handleBlockingAnimation();
-
+	camX += AEGfxGetWindowWidth() / 2;
+	camY -= AEGfxGetWindowHeight() / 2;
 	int mX{}, mY{};
 	switch (HandStateAnimationType)
 	{
@@ -327,7 +283,13 @@ void Player::updateHands(float t_dt)
 			}
 		if (t_AnimationDuration < 0.0)
 		{
-			t_AnimationFrame = t_AnimationFrame < 1 ? ++t_AnimationFrame : 0; //Loop Animation // Remove this if u want one off
+			if (t_AnimationFrame < 1)
+				++t_AnimationFrame;//Loop Animation // Remove this if u want one off
+			else
+			{
+				t_AnimationFrame = 0;
+				HandStateAnimationType = HandAnimationType::None;
+			}
 			t_AnimationDuration = 9999.0;
 			if (t_AnimationFrame == 0)
 			{

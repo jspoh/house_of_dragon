@@ -35,6 +35,9 @@ private:
 	AEMtx33 m_TransformData;
 	bool m_AttackPlayer; //Trigger combat scene
 	double m_LifeTime;
+	int m_Health;
+	f32 m_Transparency;
+	double m_FlickeringTimer;
 };
 
 namespace Create

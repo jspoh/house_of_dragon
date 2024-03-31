@@ -834,12 +834,10 @@ void SceneLevelBuilder::Update(double dt)
 
 	////////////////////////////////////////////////////////////////////////////////
 	// GameObject Logic
-	//if (AEInputCheckTriggered(AEVK_LBUTTON) && !Combat)
-	//{
-	//	GameObject_Projectiles* temp = dynamic_cast<GameObject_Projectiles*>(GameObjectManager::GetInstance()->FindInactiveObjectByReference("Projectiles"));
-	//	if (temp != nullptr)
-	//		temp->FireAtPlayer({static_cast<float>(mouseX - AEGfxGetWindowWidth() / 2),static_cast<float>(AEGfxGetWindowHeight() / 2 - mouseY)}, { 100.0f, 100.0f});
-	//}
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && !Combat)
+	{
+		player->setHandStateAnimationType(Player::HandAnimationType::Punch);
+	}
 	if (AEInputCheckTriggered(AEVK_RBUTTON) && !Combat)
 	{
 		m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
@@ -850,16 +848,25 @@ void SceneLevelBuilder::Update(double dt)
 	{
 		if (m_SceneEnemy->m_StartCombat)
 		{
+			std::vector<std::string> names;
 			switch (m_SceneEnemy->m_StartCombat)
 			{
 			case 1:
+				m_SceneEnemy->m_Active = false;
+				m_SceneEnemy = nullptr;
+				TestTimer = 2.5f;
+				names = { "horse", "dragon", "cat", "cat" };
+				CombatScene::sInstance->spawnEnemies(names);
+				CombatScene::sInstance->Init();
+				Combat = true;
+				break;
 			case 2:
 				m_SceneEnemy->m_Active = false;
 				m_SceneEnemy = nullptr;
 				m_currTransitionTransparency = 1.0f;
 				FadeOutBlack();
 				TestTimer = 2.5f;
-				std::vector<std::string> names = { "horse", "dragon", "cat", "cat" };
+				names = { "horse", "dragon", "cat", "cat" };
 				CombatScene::sInstance->spawnEnemies(names);
 				CombatScene::sInstance->Init();
 				Combat = true;
@@ -940,16 +947,16 @@ void SceneLevelBuilder::Update(double dt)
 	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
 		SceneLevelBuilder::SpawnLvlName();
 	
-	if (AEInputCheckCurr(AEVK_SPACE))
-		player->setHandStateAnimationType(Player::HandAnimationType::Block);
-	else if (AEInputCheckCurr(AEVK_Q))
-		player->setHandStateAnimationType(Player::HandAnimationType::Punch);
-	else if (AEInputCheckCurr(AEVK_E))
-		player->setHandStateAnimationType(Player::HandAnimationType::Ready);
-	else
-		player->setHandStateAnimationType(Player::HandAnimationType::None);
+	//if (AEInputCheckCurr(AEVK_SPACE))
+	//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
+	//else if (AEInputCheckCurr(AEVK_Q))
+	//	player->setHandStateAnimationType(Player::HandAnimationType::Punch);
+	//else if (AEInputCheckCurr(AEVK_E))
+	//	player->setHandStateAnimationType(Player::HandAnimationType::Ready);
+	//else
+	//	player->setHandStateAnimationType(Player::HandAnimationType::None);
 
-	//player->updateHands(static_cast<float>(dt));
+	player->updateHands(static_cast<float>(dt));
 
 	//Sun Overlay Update
 	UpdateLensFlare(static_cast<float>(dt));
@@ -1333,11 +1340,8 @@ void SceneLevelBuilder::Render()
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	//UI / MISC RENDER
-	//RenderHands();
+	//Light Flare
 	{
-		RenderLvlName();
-
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
 		//Lens Flare
@@ -1373,6 +1377,20 @@ void SceneLevelBuilder::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Render
+	if (Combat)
+		CombatScene::sInstance->Render();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//UI / MISC RENDER
+	{
+		//Lvl Name
+		RenderLvlName();
+		//Hands
+		player->_renderHands();
 
 		//Border
 		f32 camX, camY;
@@ -1383,7 +1401,7 @@ void SceneLevelBuilder::Render()
 		AEMtx33 t_curr;
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
-		AEMtx33TransApply(&t_curr, &t_curr, camX, -AEGfxGetWindowHeight()/2 + camY);
+		AEMtx33TransApply(&t_curr, &t_curr, camX, -AEGfxGetWindowHeight() / 2 + camY);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEMtx33Identity(&t_curr);
@@ -1400,12 +1418,8 @@ void SceneLevelBuilder::Render()
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	// Combat Render
-	if (Combat)
-		CombatScene::sInstance->Render();
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//GAMEOBJ RENDER

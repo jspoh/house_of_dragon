@@ -58,7 +58,7 @@ private:
 
 	void _updateBlockingHands();
 
-	void _renderHands();
+
 
 	// discarded in favour of hands
 	void _updateShield(double dt);
@@ -104,6 +104,7 @@ public:
 	void update(double dt);
 
 	void render();
+	void _renderHands();
 
 	void attackMultipler(int turn);
 
