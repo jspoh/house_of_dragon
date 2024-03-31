@@ -513,7 +513,7 @@ void SceneMenu::Render()
     RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
     // Render the menu buttons
-    for (int i = 5; i >= 0; --i)
+    for (int i = 4; i >= 0; --i)
     {
         RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth * myMenu.buttonScale[i], myMenu.buttonHeight * myMenu.buttonScale[i]);
 
@@ -545,6 +545,8 @@ void SceneMenu::Render()
     }
 
     ParticleManager::GetInstance()->render();
+
+    //RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 }
 
 
