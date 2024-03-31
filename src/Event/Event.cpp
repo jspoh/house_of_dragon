@@ -213,22 +213,22 @@ void Event::init() {
 	const float sizeMultiplier = DIFFICULTY_SIZE_MULTIPLIER.at(difficulty);
 
 	// spamkey
-	_spamkeyTimeoutMs = static_cast<int>(_spamkeyTimeoutMs * timerMultiplier);
-	_proc *= sizeMultiplier;
+	_spamkeyTimeoutMs = static_cast<int>(SPAM_KEY_TIMEOUT_MS * timerMultiplier);
+	_proc = _PROC * sizeMultiplier;
 
 	// otimer
-	_oTimerTimeoutMs = static_cast<int>(_oTimerTimeoutMs * timerMultiplier);
+	_oTimerTimeoutMs = static_cast<int>(OTIMER_TIMEOUT_MS * timerMultiplier);
 
 	// mco
-	_multiClickTimeoutMs = static_cast<int>(_multiClickTimeoutMs * timerMultiplier);
-	_mcoRadius *= sizeMultiplier;
+	_multiClickTimeoutMs = static_cast<int>(_MULTICLICK_TIMEOUT_MS * timerMultiplier);
+	_mcoRadius = _MCO_RADIUS * sizeMultiplier;
 
 	// typing  
-	_typingTimeoutMs = static_cast<int>(_typingTimeoutMs * timerMultiplier);
+	_typingTimeoutMs = static_cast<int>(_TYPING_TIMEOUT_MS * timerMultiplier);
 
 	// orange/demon throwing
-	_orangeEventTimeoutMs = static_cast<int>(_orangeEventTimeoutMs * timerMultiplier);
-	_orangeRadius *= sizeMultiplier;
+	_orangeEventTimeoutMs = static_cast<int>(_ORANGE_TIMEOUT_MS * timerMultiplier);
+	_orangeRadius = _ORANGE_RADIUS * sizeMultiplier;
 }
 
 void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {

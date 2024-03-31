@@ -82,20 +82,23 @@ private:
 
 	/*spam key vars*/
 	EVENT_KEYS _spamKeyChoice = EVENT_KEYS::E;
-	int _spamkeyTimeoutMs = 5000;
+	static constexpr int SPAM_KEY_TIMEOUT_MS = 5000;
+	int _spamkeyTimeoutMs = SPAM_KEY_TIMEOUT_MS;
 	static constexpr float _minSize = 100;
 	static constexpr float _targetSize = 200;
 	float _size = _minSize;
 	float _spamkeyX;
 	float _spamkeyY;
 	// positive rate of change per click
-	float _proc = 10;
+	static constexpr float _PROC = 10;
+	float _proc = _PROC;
 	// negative rate of change per second
 	const float _nroc = 50;
 
 	/*oTimer vars*/
 	INNER_STATES oTimerEventState = INNER_STATES::ON_ENTER;
-	int _oTimerTimeoutMs = 5000;
+	static constexpr int OTIMER_TIMEOUT_MS = 5000;
+	int _oTimerTimeoutMs = OTIMER_TIMEOUT_MS;
 	float _oTimerOpacity = 1.f;		// percentage
 	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
 	float _oTimerFadeOutDuration = 0.5f;	// seconds
@@ -131,7 +134,8 @@ private:
 		bool blink;
 	};
 
-	int _multiClickTimeoutMs = 5000;
+	static constexpr int _MULTICLICK_TIMEOUT_MS = 5000;
+	int _multiClickTimeoutMs = _MULTICLICK_TIMEOUT_MS;
 	int _mcoHits = 0;
 	int _mcoMisses = 0;
 	int _mcoDisplayHits = 0;
@@ -141,7 +145,8 @@ private:
 	std::vector<MultiClickObject> _multiClickObjects;
 	// mco -> multi click object
 	static constexpr int _mcoCount = 3;
-	float _mcoRadius = 25.f;
+	static constexpr float _MCO_RADIUS = 25.F;
+	float _mcoRadius = _MCO_RADIUS;
 	// how long before transitioning to another display state (light vs dark) for blinking effect
 	static constexpr float _mcoBlinkDuration = 0.25f;
 	static constexpr float _mcoTransitionTime = 1.f;
@@ -162,16 +167,19 @@ private:
 	std::vector<std::pair<char, bool>> _typed;
 	static constexpr float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
 	INNER_STATES _typingState = INNER_STATES::ON_ENTER;
-	int _typingTimeoutMs = 5000;			// time before typing event ends
+	static constexpr int _TYPING_TIMEOUT_MS = 5000;
+	int _typingTimeoutMs = _TYPING_TIMEOUT_MS;			// time before typing event ends
 	int _wordsCompleted = 0;			// words player managed to type before timeends
 	static constexpr int _typingMaxScore = 5;
 
 	/*demon event vars*/
-	int _orangeEventTimeoutMs = 5000;
+	static constexpr int _ORANGE_TIMEOUT_MS = 5000;
+	int _orangeEventTimeoutMs = _ORANGE_TIMEOUT_MS;
 	static constexpr int _afterEventDisplayTimeoutMs = 1000;
 	INNER_STATES _orangeState = INNER_STATES::ON_ENTER;
 	static constexpr int spawnIntervalMs = 1000;
-	float _orangeRadius = 30.f;
+	static constexpr float _ORANGE_RADIUS = 30.f;
+	float _orangeRadius = _ORANGE_RADIUS;
 	static constexpr float _orangeSpeed = 500.f;
 	static constexpr float _orangeGravity = 15.f;
 	static constexpr float _xResistance = 1.f;		// how much of speed lost per second
