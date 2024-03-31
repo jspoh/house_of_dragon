@@ -47,7 +47,6 @@ void GameObject_Projectiles::Update(double _dt)
 	{
 		//Movement Logic
 		m_LifeTime -= _dt + m_Speed/10;
-		std::cout << m_LifeTime << std::endl;
 		if (m_LifeTime >= 0.0)
 		{
 			m_LocalPos.x = lerp(m_LocalPos.x, PLAYERSCREENPOSX, _dt / (m_LifeTime * 1000));
@@ -170,9 +169,9 @@ void GameObject_Projectiles::Exit()
 
 void GameObject_Projectiles::FireAtPlayer(const AEVec2& _startpos, 
 	const AEVec2& _startscale, 
+	GameObject_Projectiles::ProjectileType _type,
 	double _speed,
-	double _MovTimer,
-	GameObject_Projectiles::ProjectileType _type)
+	double _MovTimer)
 {
 	m_LocalPos = _startpos;
 	m_Scale = _startscale;

@@ -815,6 +815,13 @@ void SceneLevelBuilder::Update(double dt)
 {
 	updateGlobals();
 
+	////////////////////////////////////////////////////////////////////////////////
+	//Pause
+	Pause::getInstance().update(dt);
+	if (Pause::getInstance().isPaused) {
+		return;
+	}
+
 	static double TestTimer = 2.0f;
 	static float t_MovementSpeed = 1.0f;
 	static int t_PanCloseToGroundValue = 80;
@@ -838,7 +845,7 @@ void SceneLevelBuilder::Update(double dt)
 		y -= 0.05;
 	}
 	std::cout << y << std::endl;
-	if (AEInputCheckTriggered(AEVK_LBUTTON))
+	if (AEInputCheckTriggered(AEVK_LBUTTON) && !Combat)
 	{
 		GameObject_Projectiles* temp = dynamic_cast<GameObject_Projectiles*>(GameObjectManager::GetInstance()->FindInactiveObjectByReference("Projectiles"));
 		if (temp != nullptr)
@@ -857,11 +864,6 @@ void SceneLevelBuilder::Update(double dt)
 		CombatScene::sInstance->spawnEnemies(names);
 		CombatScene::sInstance->Init();
 		Combat = true;
-	}
-
-	Pause::getInstance().update(dt);
-	if (Pause::getInstance().isPaused) {
-		return;
 	}
 
 	if (Combat)
