@@ -473,9 +473,9 @@ void CombatScene::Update(double dt)
 	updateGlobals();
 	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 
-	if (AEInputCheckTriggered(AEVK_RBUTTON)) {
-		winFlag = true;
-	}
+	//if (AEInputCheckTriggered(AEVK_RBUTTON)) {
+	//	winFlag = true;
+	//}
 	if (!CombatManager::getInstance().isInCombat) {
 		return;
 	}
