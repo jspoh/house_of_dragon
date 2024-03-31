@@ -872,13 +872,13 @@ void SceneLevelBuilder::Update(double dt)
 			////////////////////////////////////////////////////////////////////////////
 			// Player INPUT
 			{
-				if (AEInputCheckTriggered(AEVK_LBUTTON))
+				if (AEInputCheckCurr(AEVK_LBUTTON))
 				{
-					//player->setHandStateAnimationType(Player::HandAnimationType::Punch);
+					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
 				if (AEInputCheckTriggered(AEVK_SPACE))
 				{
-					//BLOCKING PUT HERE
+					player->setHandStateAnimationType(Player::HandAnimationType::Block);
 				}
 
 				//TO BE REMOVED

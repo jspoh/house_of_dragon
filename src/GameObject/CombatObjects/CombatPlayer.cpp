@@ -229,6 +229,9 @@ void Player::setHandStateAnimationType(HandAnimationType t) {
 
 	switch (HandStateAnimationType) {
 	case HandAnimationType::Block:
+		if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+			break;		// dont allow player to try to trigger block while not not blocking (yes its not not blocking and not just blocking)
+		}
 		elapsedTimeMs = 0;
 		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
 		break;
@@ -242,6 +245,9 @@ void Player::updateHands(float t_dt)
 	camX += AEGfxGetWindowWidth() / 2;
 	camY -= AEGfxGetWindowHeight() / 2;
 	int mX{}, mY{};
+
+	//cout << static_cast<int>(HandStateAnimationType) << "\n";
+
 	switch (HandStateAnimationType)
 	{
 	case HandAnimationType::Punch:
