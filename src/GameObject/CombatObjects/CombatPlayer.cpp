@@ -17,6 +17,7 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "CombatPlayer.h"
+#include "CombatManager.h"
 
 namespace {
 	//First data is left, second data is right
@@ -104,6 +105,15 @@ void Player::_drawHealth(float screenX, float screenY) {
 }
 
 void Player::update(double dt) {
+
+	updateHands(static_cast<float>(dt));
+
+	/* blocking stuff */
+
+	if (CombatManager::getInstance().turn != TURN::ENEMY) {
+		return;
+	}
+
 	elapsedTimeMs += static_cast<int>(dt * 1000);
 
 	if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
@@ -156,7 +166,6 @@ void Player::update(double dt) {
 
 	//_updateShield(dt);
 	_updateBlockingHands();
-	updateHands(static_cast<float>(dt));
 	//std::cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
 	//std::cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
