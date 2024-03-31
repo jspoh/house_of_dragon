@@ -105,17 +105,17 @@ void Player::_drawHealth(float screenX, float screenY) {
 }
 
 void Player::update(double dt) {
+	elapsedTimeMs += static_cast<int>(dt * 1000);
 
 	updateHands(static_cast<float>(dt));
 
+	//std::cout << mouseX << " | " << mouseY << "\n";
+	//std::cout << camOffset.x << " | " << camOffset.y << "\n";
+
 	/* blocking stuff */
-	if (CombatManager::getInstance().turn != CombatManager::TURN::ENEMY) {
-		return;
-	}
 
-	elapsedTimeMs += static_cast<int>(dt * 1000);
 
-	if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+	if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING && CombatManager::getInstance().turn == CombatManager::TURN::ENEMY) {
 		HandStateAnimationType = HandAnimationType::Block;
 		elapsedTimeMs = 0;
 		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
@@ -389,10 +389,10 @@ void Player::_updateBlockingHands() {
 			AEMtx33Identity(&Hand3PosData.second);
 			Hand1PosData.first = Hand3PosData.second;
 			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
-			targetPos = { -304.25f + camX, -526.f + camY };
+			targetPos = { -304.25f + camOffset.x, -526.f + camOffset.y };
 			AEMtx33TransApply(&Hand1PosData.first, &Hand1PosData.first, targetPos.x, targetPos.y);
 			AEMtx33ScaleApply(&Hand3PosData.second, &Hand3PosData.second, 238, 333);
-			targetPos = { -160.95f + camX, -499.5f + camY };
+			targetPos = { -160.95f + camOffset.x, -499.5f + camOffset.y };
 			AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
 		}
 
@@ -400,10 +400,10 @@ void Player::_updateBlockingHands() {
 			AEMtx33Identity(&Hand3PosData.first);
 			Hand1PosData.second = Hand3PosData.first;
 			AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
-			targetPos = { 160.95f + camX, -499.5f + camY };
+			targetPos = { 160.95f + camOffset.x, -499.5f + camOffset.y };
 			AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
 			AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
-			targetPos = { 304.25f + camX, -526.f + camY };
+			targetPos = { 304.25f + camOffset.x, -526.f + camOffset.y };
 			AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
 		}
 	}
@@ -419,33 +419,33 @@ void Player::_updateBlockingHands() {
 			break;
 		case PLAYER_BLOCKING_STATES::ON_ENTER:
 			//Start of block
-			targetPos = { -304.25f + camX, -384.f + camY };
+			targetPos = { -304.25f + camOffset.x, -384.f + camOffset.y };
 			LerpSpeed = 2;
 			Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
 			Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
-			targetPos = { -160.95f + camX, -266.4f + camY };
+			targetPos = { -160.95f + camOffset.x, -266.4f + camOffset.y };
 			LerpSpeed = 2;
 			Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 			Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
 			break;
 		case PLAYER_BLOCKING_STATES::ON_UPDATE:
 			//Hold
-			targetPos = { -304.25f + camX, -384.0f + camY };
+			targetPos = { -304.25f + camOffset.x, -384.0f + camOffset.y };
 			LerpSpeed = 1.1;
 			Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
 			Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
-			targetPos = { 277.5f + camX, -94.35f + camY };
+			targetPos = { 277.5f + camOffset.x, -94.35f + camOffset.y };
 			LerpSpeed = 15;
 			Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 			Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / (LerpSpeed / 4));
 			break;
 		case PLAYER_BLOCKING_STATES::ON_EXIT:
 			//Exit
-			targetPos = { -425.35f + camX, -498.5f + camY };
+			targetPos = { -425.35f + camOffset.x, -498.5f + camOffset.y };
 			LerpSpeed = 5;
 			Hand1PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.first.m[0][2]) / LerpSpeed);
 			Hand1PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.first.m[1][2]) / LerpSpeed);
-			targetPos = { 555.f + camX, -510.25f + camY };
+			targetPos = { 555.f + camOffset.x, -510.25f + camOffset.y };
 			LerpSpeed = 5;
 			Hand3PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.second.m[0][2]) / LerpSpeed);
 			Hand3PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.second.m[1][2]) / LerpSpeed);
@@ -470,19 +470,19 @@ void Player::_updateBlockingHands() {
 			AEMtx33Identity(&Hand3PosData.first);
 			Hand1PosData.second = Hand3PosData.first;
 			AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
-			targetPos = { 160.95f + camX, -499.5f + camY };
+			targetPos = { 160.95f + camOffset.x, -499.5f + camOffset.y };
 			AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
 			AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
-			targetPos = { 304.25f + camX, -526.f + camY };
+			targetPos = { 304.25f + camOffset.x, -526.f + camOffset.y };
 			AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
 			break;
 		case PLAYER_BLOCKING_STATES::ON_ENTER:
 			//Start of block
-			targetPos = { 160.95f + camX, -266.4f + camY };
+			targetPos = { 160.95f + camOffset.x, -266.4f + camOffset.y };
 			LerpSpeed = 2;
 			Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
 			Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
-			targetPos = { 304.25f + camX, -384.f + camY };
+			targetPos = { 304.25f + camOffset.x, -384.f + camOffset.y };
 			LerpSpeed = 2;
 			Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 			Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
@@ -490,22 +490,22 @@ void Player::_updateBlockingHands() {
 			break;
 		case PLAYER_BLOCKING_STATES::ON_UPDATE:
 			//Hold
-			targetPos = { -277.5f + camX, -94.35f + camY };
+			targetPos = { -277.5f + camOffset.x, -94.35f + camOffset.y };
 			LerpSpeed = 15;
 			Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
 			Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / (LerpSpeed / 4));
-			targetPos = { 304.25f + camX, -384.0f + camY };
+			targetPos = { 304.25f + camOffset.x, -384.0f + camOffset.y };
 			LerpSpeed = 1.1;
 			Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 			Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
 			break;
 		case PLAYER_BLOCKING_STATES::ON_EXIT:
 			//Exit
-			targetPos = { -555.f + camX, -510.25f + camY };
+			targetPos = { -555.f + camOffset.x, -510.25f + camOffset.y };
 			LerpSpeed = 5;
 			Hand3PosData.first.m[0][2] += static_cast<float>((targetPos.x - Hand3PosData.first.m[0][2]) / LerpSpeed);
 			Hand3PosData.first.m[1][2] += static_cast<float>((targetPos.y - Hand3PosData.first.m[1][2]) / LerpSpeed);
-			targetPos = { 425.35f + camX, -498.5f + camY };
+			targetPos = { 425.35f + camOffset.x, -498.5f + camOffset.y };
 			LerpSpeed = 5;
 			Hand1PosData.second.m[0][2] += static_cast<float>((targetPos.x - Hand1PosData.second.m[0][2]) / LerpSpeed);
 			Hand1PosData.second.m[1][2] += static_cast<float>((targetPos.y - Hand1PosData.second.m[1][2]) / LerpSpeed);
