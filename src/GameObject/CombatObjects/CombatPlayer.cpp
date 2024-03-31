@@ -121,9 +121,7 @@ void Player::update(double dt) {
 		&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING 
 		&& CombatManager::getInstance().turn == CombatManager::TURN::ENEMY
 		) {
-		HandStateAnimationType = HandAnimationType::Block;
-		elapsedTimeMs = 0;
-		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+		setHandStateAnimationType(HandAnimationType::Block);
 	}
 	//else if (!AEInputCheckCurr(AEVK_SPACE) && blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && blockingState != PLAYER_BLOCKING_STATES::ON_COOLDOWN) {
 	//	elapsedTimeMs = 0;
@@ -135,10 +133,6 @@ void Player::update(double dt) {
 	switch (blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 		//cout << "Player blocking state: NOT_BLOCKING\n";
-		if (HandStateAnimationType == HandAnimationType::Block) {
-			HandStateAnimationType = HandAnimationType::None;
-			blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
-		}
 		elapsedTimeMs = 0;
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
@@ -166,12 +160,14 @@ void Player::update(double dt) {
 		//cout << "Player blocking state: ON_COOLDOWN\n";
 		if (elapsedTimeMs >= timeBeforeNextBlockMs) {
 			elapsedTimeMs = 0;
+			HandStateAnimationType = HandAnimationType::None;
 			blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
 		}
 		break;
 	}
 
 	//_updateShield(dt);
+	updateHands(static_cast<float>(dt));
 	_updateBlockingHands();
 	//cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
 	//cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
@@ -230,6 +226,13 @@ void Player::attackMultipler(int turn) {
 
 void Player::setHandStateAnimationType(HandAnimationType t) {
 	HandStateAnimationType = t;
+
+	switch (HandStateAnimationType) {
+	case HandAnimationType::Block:
+		elapsedTimeMs = 0;
+		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+		break;
+	}
 }
 
 void Player::updateHands(float t_dt)
@@ -392,8 +395,11 @@ void Player::_updateBlockingHands() {
 
 	static PLAYER_BLOCKING_STATES prevState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 
+	//cout << static_cast<int>(blockingState) << ", " << static_cast<int>(prevState) << "\n";
+
 	if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
-		if (!LeftSide) {
+		LeftSide = rand() % 2 - 1;
+ 		if (!LeftSide) {
 			AEMtx33Identity(&Hand3PosData.second);
 			Hand1PosData.first = Hand3PosData.second;
 			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
@@ -403,7 +409,6 @@ void Player::_updateBlockingHands() {
 			targetPos = { -160.95f + camOffset.x, -499.5f + camOffset.y };
 			AEMtx33TransApply(&Hand3PosData.second, &Hand3PosData.second, targetPos.x, targetPos.y);
 		}
-
 		else {
 			AEMtx33Identity(&Hand3PosData.first);
 			Hand1PosData.second = Hand3PosData.first;
@@ -461,7 +466,7 @@ void Player::_updateBlockingHands() {
 			break;
 		case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 			// cooldown
-			LeftSide = rand() % 2 - 1;		// huh why -1 here
+			//LeftSide = rand() % 2 - 1;		// huh why -1 here
 			Hand1PosData.first = Hand1PosData.second = {};
 			Hand2PosData.first = Hand2PosData.second = {};
 			Hand3PosData.first = Hand3PosData.second = {};
@@ -475,14 +480,14 @@ void Player::_updateBlockingHands() {
 		{
 		case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 			//Init
-			AEMtx33Identity(&Hand3PosData.first);
-			Hand1PosData.second = Hand3PosData.first;
-			AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
-			targetPos = { 160.95f + camOffset.x, -499.5f + camOffset.y };
-			AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
-			AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
-			targetPos = { 304.25f + camOffset.x, -526.f + camOffset.y };
-			AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
+			//AEMtx33Identity(&Hand3PosData.first);
+			//Hand1PosData.second = Hand3PosData.first;
+			//AEMtx33ScaleApply(&Hand3PosData.first, &Hand3PosData.first, 238, 333);
+			//targetPos = { 160.95f + camOffset.x, -499.5f + camOffset.y };
+			//AEMtx33TransApply(&Hand3PosData.first, &Hand3PosData.first, targetPos.x, targetPos.y);
+			//AEMtx33ScaleApply(&Hand1PosData.second, &Hand1PosData.second, 200, 318);
+			//targetPos = { 304.25f + camOffset.x, -526.f + camOffset.y };
+			//AEMtx33TransApply(&Hand1PosData.second, &Hand1PosData.second, targetPos.x, targetPos.y);
 			break;
 		case PLAYER_BLOCKING_STATES::ON_ENTER:
 			//Start of block
@@ -521,7 +526,7 @@ void Player::_updateBlockingHands() {
 			break;
 		case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 			// cooldown
-			LeftSide = rand() % 2 - 1;		// huh why -1 here
+			//LeftSide = rand() % 2 - 1;		// huh why -1 here
 			Hand1PosData.first = Hand1PosData.second = {};
 			Hand2PosData.first = Hand2PosData.second = {};
 			Hand3PosData.first = Hand3PosData.second = {};

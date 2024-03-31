@@ -854,6 +854,7 @@ void SceneLevelBuilder::Update(double dt)
 		 * - JS
 		 * 
 		 */
+		//updateGlobals();
 		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 		//AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
 		//updateGlobals();
