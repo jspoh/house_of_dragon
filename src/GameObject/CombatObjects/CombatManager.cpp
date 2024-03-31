@@ -26,9 +26,10 @@ CombatManager& CombatManager::getInstance() {
     return instance;
 }
 
-void CombatManager::start() {
-    turn = TURN::PLAYER;
+void CombatManager::start(TURN t) {
+    turn = t;
     isInCombat = true;
+    enemyNextTurnMs = initialEnemyAttackTimeMs;
 }
 
 void CombatManager::next() {
