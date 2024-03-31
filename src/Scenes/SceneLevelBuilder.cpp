@@ -949,7 +949,7 @@ void SceneLevelBuilder::Update(double dt)
 	else
 		player->setHandStateAnimationType(Player::HandAnimationType::None);
 
-	player->updateHands(static_cast<float>(dt));
+	//player->updateHands(static_cast<float>(dt));
 
 	//Sun Overlay Update
 	UpdateLensFlare(static_cast<float>(dt));

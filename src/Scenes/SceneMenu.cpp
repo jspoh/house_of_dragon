@@ -406,7 +406,7 @@ void SceneMenu::Update(double dt)
                         break;
                     case 3:
                         SceneManager::GetInstance()->SetActiveScene("HowToPlay");
-
+                        break;
                     case 4:
                         gGameRunning = false;
                         break;

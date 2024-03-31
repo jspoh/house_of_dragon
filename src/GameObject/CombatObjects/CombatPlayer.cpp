@@ -17,6 +17,7 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "CombatPlayer.h"
+#include "CombatManager.h"
 
 namespace {
 	//First data is left, second data is right
@@ -34,7 +35,7 @@ namespace {
 }
 
 
-Player::Player(float health, float dmg, Element element) : Mob(element, health, dmg) {
+Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg * DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
 	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
 	//float StartHealth = health;		// what is this for?
 	// set shield properties
@@ -55,6 +56,7 @@ Player::Player(float health, float dmg, Element element) : Mob(element, health, 
 
 	initialAttack = this->dmg;
 
+	std::cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
 }
 
 Player::~Player() {
@@ -103,9 +105,19 @@ void Player::_drawHealth(float screenX, float screenY) {
 }
 
 void Player::update(double dt) {
+
+	updateHands(static_cast<float>(dt));
+
+	/* blocking stuff */
+
+	if (CombatManager::getInstance().turn != TURN::ENEMY) {
+		return;
+	}
+
 	elapsedTimeMs += static_cast<int>(dt * 1000);
 
 	if (AEInputCheckCurr(AEVK_SPACE) && blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+		HandStateAnimationType = HandAnimationType::Block;
 		elapsedTimeMs = 0;
 		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
 	}
@@ -328,6 +340,7 @@ void Player::updateHands(float t_dt)
 		}
 		break;
 	case HandAnimationType::Block:
+		//_updateBlockingHands();
 		break;
 
 	case HandAnimationType::Ready: //For Getting ready in combat
