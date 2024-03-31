@@ -861,8 +861,8 @@ void SceneLevelBuilder::Update(double dt)
 				TestTimer = 2.5f;
 				std::vector<std::string> names = { "horse", "dragon", "cat", "cat" };
 				CombatScene::getInstance().spawnEnemies(names);
-				CombatScene::getInstance().Init();							// player starts first
-				//CombatScene::getInstance().Init(CombatManager::TURN::ENEMY);	// enemy starts first
+				//CombatScene::getInstance().Init();							// player starts first
+				CombatScene::getInstance().Init(CombatManager::TURN::ENEMY);	// enemy starts first
 				Combat = true;
 				break;
 			}

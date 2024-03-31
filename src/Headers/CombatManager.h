@@ -37,6 +37,7 @@ public:
 	};
 
 
+	static CombatManager& getInstance();
 	~CombatManager();
 
 	static constexpr int PLAYER_BLOCKING_REACTION_ALLOWANCE_MS = 750;
@@ -52,9 +53,9 @@ public:
 
 	static constexpr int minAttackIntervalMs = 1000;
 	static constexpr int maxAttackIntervalMs = 3000;
+	static constexpr int initialEnemyAttackTimeMs = 5000;	// if enemy starts first, wait this long before attacking player
 	int enemyNextTurnMs = 0;
 
-	static CombatManager& getInstance();
 
 	/**
 	 * for level scene to .

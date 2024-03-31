@@ -43,8 +43,9 @@ void GameObject_Misc_Enemy::Update(double _dt)
 		Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
 		//check Collision
 		//std::cout << mouseX << ", " << mouseY << " | " << pos.x << ", " << pos.y << "\n";
-		if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY)))
-				std::cout << "Collision with misc enemy is working" << std::endl;
+		if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+				//std::cout << "Collision with misc enemy is working" << std::endl;
+		}
 	}
 }
 
