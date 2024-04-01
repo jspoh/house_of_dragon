@@ -383,8 +383,8 @@ void SceneMenu::Update(double dt)
         {
             for (int i = 0; i < 5; ++i)
             {
-                AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
-                AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
+                AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.3f * myMenu.buttonScale[i], myMenu.buttonY[i] + myMenu.buttonHeight / 7.5f * myMenu.buttonScale[i] };
+                AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.3f * myMenu.buttonScale[i], myMenu.buttonY[i] - myMenu.buttonHeight / 7.5f * myMenu.buttonScale[i] };
 
                 if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
                 {
