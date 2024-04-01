@@ -19,6 +19,10 @@
 #include "GameObject_AmeTest.h"
 #include "GameObject_Misc_Enemy.h"
 #include "GameObject_Projectiles.h"
+
+#define PLAYERSCREENPOSX 0
+#define PLAYERSCREENPOSY 100
+
 class GameObject;
 
 class GameObjectManager : public Singleton<GameObjectManager>

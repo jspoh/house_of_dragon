@@ -150,7 +150,7 @@ void Event::startRandomEvent() {
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
 	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
-	std::cout << "Random event: " << e << "\n";
+	cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
 
@@ -213,22 +213,22 @@ void Event::init() {
 	const float sizeMultiplier = DIFFICULTY_SIZE_MULTIPLIER.at(difficulty);
 
 	// spamkey
-	_spamkeyTimeoutMs = static_cast<int>(_spamkeyTimeoutMs * timerMultiplier);
-	_proc *= sizeMultiplier;
+	_spamkeyTimeoutMs = static_cast<int>(SPAM_KEY_TIMEOUT_MS * timerMultiplier);
+	_proc = _PROC * sizeMultiplier;
 
 	// otimer
-	_oTimerTimeoutMs = static_cast<int>(_oTimerTimeoutMs * timerMultiplier);
+	_oTimerTimeoutMs = static_cast<int>(OTIMER_TIMEOUT_MS * timerMultiplier);
 
 	// mco
-	_multiClickTimeoutMs = static_cast<int>(_multiClickTimeoutMs * timerMultiplier);
-	_mcoRadius *= sizeMultiplier;
+	_multiClickTimeoutMs = static_cast<int>(_MULTICLICK_TIMEOUT_MS * timerMultiplier);
+	_mcoRadius = _MCO_RADIUS * sizeMultiplier;
 
 	// typing  
-	_typingTimeoutMs = static_cast<int>(_typingTimeoutMs * timerMultiplier);
+	_typingTimeoutMs = static_cast<int>(_TYPING_TIMEOUT_MS * timerMultiplier);
 
 	// orange/demon throwing
-	_orangeEventTimeoutMs = static_cast<int>(_orangeEventTimeoutMs * timerMultiplier);
-	_orangeRadius *= sizeMultiplier;
+	_orangeEventTimeoutMs = static_cast<int>(_ORANGE_TIMEOUT_MS * timerMultiplier);
+	_orangeRadius = _ORANGE_RADIUS * sizeMultiplier;
 }
 
 void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
@@ -368,7 +368,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 	_updateTime(dt);
 	_spamKeyChoice = key;
 
-	//std::cout << _totalElapsedMs << "\n";
+	//cout << _totalElapsedMs << "\n";
 
 	Point worldPos = stow(_spamkeyX, _spamkeyY);
 	//float worldX = worldPos.x;
@@ -424,7 +424,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 	_size = _size < _minSize ? _minSize : _size;
 
 	/*rendering*/
-	//std::cout << _elapsedTimeMs << "\n";
+	//cout << _elapsedTimeMs << "\n";
 
 	if (_elapsedTimeMs > _changeMs) {
 		_useOutline = !_useOutline;
@@ -519,7 +519,7 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 		_piVelocity = _piVelocity > _piMaxVelocity ? _piMaxVelocity : _piVelocity;
 		_piVelocity = _piVelocity < -_piMaxVelocity ? -_piMaxVelocity : _piVelocity;
 
-		//std::cout << "Power indicator speed: " << _piVelocity << std::endl;
+		//cout << "Power indicator speed: " << _piVelocity << "\n";
 		_piX += static_cast<f32>(_piVelocity * dt);
 
 		// guards to ensure that pi does not go out of bar
@@ -596,7 +596,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 
 	// multiclick is based on duration and if event is completed
 	if ((_totalElapsedMs >= _multiClickTimeoutMs && !_mcoIsTransitioningOut) || (_mcoHits - _mcoMisses == _maxMcoHits && !_mcoIsTransitioningOut)) {
-		std::cout << "multiclick event over\n";
+		cout << "multiclick event over\n";
 		_elapsedTimeMs = 0;
 		_mcoIsTransitioningOut = true;
 		int score = (_mcoHits - _mcoMisses);
@@ -626,7 +626,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 
 			hit = CollisionChecker::isMouseInCircle(collisionPos.x, collisionPos.y, mco.radius, static_cast<f32>(mouseX), static_cast<f32>(mouseY));
 			if (hit) {
-				std::cout << "mco hit\n";
+				cout << "mco hit\n";
 				_mcoHits++;
 				_mcoDisplayHits++;
 				mco.alive = false;
@@ -640,7 +640,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 			_multiClickObjects.erase(_multiClickObjects.begin() + i);
 		}
 		else if (!hit) {
-			std::cout << "mco missed\n";
+			cout << "mco missed\n";
 			_mcoDisplayHits--;
 			_mcoMisses++;
 		}
@@ -894,9 +894,9 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 
-		//std::cout << (_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE) << "\n";
+		//cout << (_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE) << "\n";
 
-		//std::cout << "obj vel: " << _orangeObj.vel.x << ", " << _orangeObj.vel.y << "\n";
+		//cout << "obj vel: " << _orangeObj.vel.x << ", " << _orangeObj.vel.y << "\n";
 
 		// obj not held, apply normal physics to object
 		if (!_orangeObj.isHeld) {
@@ -980,7 +980,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 
 			// check for collision with ball (orange?)
 			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, _orangeObj.x, _orangeObj.y, _orangeObj.radius)) {
-				//std::cout << "collided\n";
+				//cout << "collided\n";
 				d.isActive = false;
 			}
 		}

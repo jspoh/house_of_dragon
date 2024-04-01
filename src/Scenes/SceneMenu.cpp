@@ -394,9 +394,9 @@ void SceneMenu::Update(double dt)
                     {
                     case 0:
                         myMenu.levelSelecting = true;
-                        SoundPlayer::stopAll();
-                        SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
-                        loopIsPlaying = false;
+                        //SoundPlayer::stopAll();
+                        //SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
+                        //loopIsPlaying = false;
                         break;
                     case 1:
                         SceneManager::GetInstance()->SetActiveScene("SceneCredits");
@@ -406,7 +406,7 @@ void SceneMenu::Update(double dt)
                         break;
                     case 3:
                         SceneManager::GetInstance()->SetActiveScene("HowToPlay");
-
+                        break;
                     case 4:
                         gGameRunning = false;
                         break;
@@ -457,9 +457,6 @@ void SceneMenu::Update(double dt)
             if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
             {
                 myMenu.levelSelecting = false;
-                SoundPlayer::stopAll();
-                SoundPlayer::MenuAudio::getInstance().playLoopMenu();
-                loopIsPlaying = false;
             }
         }
 
@@ -513,7 +510,7 @@ void SceneMenu::Render()
     RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
     // Render the menu buttons
-    for (int i = 5; i >= 0; --i)
+    for (int i = 4; i >= 0; --i)
     {
         RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth * myMenu.buttonScale[i], myMenu.buttonHeight * myMenu.buttonScale[i]);
 
@@ -545,11 +542,13 @@ void SceneMenu::Render()
     }
 
     ParticleManager::GetInstance()->render();
+
+    //RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 }
 
 
 void SceneMenu::Exit()
 {
-	std::cout << "Exiting Scene Menu" << std::endl;
+	cout << "Exiting Scene Menu" << "\n";
 
 }

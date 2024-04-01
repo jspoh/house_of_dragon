@@ -73,7 +73,7 @@ void SceneBase::Render()
 void SceneBase::Exit()
 {
     GameObjectManager::GetInstance()->Destroy();
-	std::cout << "Exiting Scene Base" << std::endl;
+	cout << "Exiting Scene Base" << "\n";
 }
 
 

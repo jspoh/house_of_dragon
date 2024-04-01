@@ -91,7 +91,6 @@ public:
 private:
     Menu myMenu{ 0 };
     static SceneMenu* sInstance;
-    bool gGameRunning;
 };
 
 #endif

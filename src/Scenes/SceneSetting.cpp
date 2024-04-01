@@ -89,13 +89,13 @@ void SceneSetting::Update(double dt)
 			modState = MOD_STATES::SFX_AUDIO_VOLUME;
 			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
 			sfxVolume = (sliderX - minX) / (maxX - minX);
-			//std::cout << "modifying sfx: " << sfxVolume << "\n";
+			//cout << "modifying sfx: " << sfxVolume << "\n";
 		}
 		else if (modState == MOD_STATES::MUSIC_AUDIO_VOLUME || CollisionChecker::isMouseInCircle(mPos.x, mPos.y, sliderRadius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			modState = MOD_STATES::MUSIC_AUDIO_VOLUME;
 			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
 			musicVolume = (sliderX - minX) / (maxX - minX);
-			//std::cout << "modifying music: " << musicVolume << "\n";
+			//cout << "modifying music: " << musicVolume << "\n";
 		}
 	}
 	else {
@@ -116,7 +116,7 @@ void SceneSetting::Update(double dt)
 	int i{};
 	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
 		Point rectScreenPos = wtos(btnPos.x, btnPos.y);
-		//std::cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
+		//cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
 		if (CollisionChecker::isMouseInRect(rectScreenPos.x, rectScreenPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			// hover state
 			if (!AEInputCheckTriggered(AEVK_LBUTTON)) {
@@ -142,7 +142,7 @@ void SceneSetting::Update(double dt)
 		lerpElapsedTime = 0;
 	}
 
-	//std::cout << static_cast<int>(difficulty) << "\n";
+	//cout << static_cast<int>(difficulty) << "\n";
 }
 
 void SceneSetting::Render()

@@ -26,6 +26,7 @@ Technology is prohibited.
 #define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
 #define MAX_NUM_SCENEOBJS_TILE 8
 #define MAX_LVLNAMETIMER 4.0
+#define LERPING_SPEED 10.0
 
 namespace GameScene {
 	extern bool combatAudioLoopIsPlaying;
@@ -52,11 +53,12 @@ private:
 	void RenderLvlName();
 
 	void UpdateScreenTransition(f32 t_dt);
-	void FadeINBlack();
-	void FadeOutBlack();
-	void RenderLoadScreen();
+	void FadeINBlack(); //Call when u want fade into black
+	void FadeOutBlack(); //Call when u want fade out from black
+
 	void UpdateLensFlare(f32 t_dt);
 	void UpdateClouds(f32 t_dt);
+	void UpdateBackdrop(f32 t_dt);
 
 	struct v_FloorData
 	{
@@ -177,6 +179,7 @@ private:
 		float m_Transparency;
 		v_SceneObjectTypes m_Type;
 		std::string m_TexRef; //Used with draw
+		bool m_tobeCentered;
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,16 +229,25 @@ private:
 	//TRANSFORM DATA
 	AEMtx33 m_TransformSkyData;
 	std::vector<AEMtx33> m_TransformCloudsData;
+	std::vector<AEMtx33> m_TransformBackDrops1Data;
+	std::vector<AEMtx33> m_TransformBackDrops2Data;
+	std::vector<AEMtx33> m_TransformBackDrops3Data;
 	AEMtx33 m_TransformSunData;
 	AEMtx33 m_TransformSunOverlayData;
 	std::vector<AEMtx33> m_TransformSunLensData;
 	AEVec2 m_sunPos, m_sunOverlayScale;
 	AEMtx33 m_TransformFogData;
 
+	///////////////////////////////////////////////////////
+	//Combat 
 	bool m_StopMovement;
 	bool m_PanCloseToGround;
-
-	int CurrentTileNumFurthest;
-
-	bool Combat = false;
+	int m_PanCloseToGroundValue = 80;
+	//float m_LerpingSpeed = 10.0f;
+	//int m_PanDownCam = 0;
+	int m_CurrentTileNumFurthest;
+	bool m_CombatPhase;
+	bool m_CombatAnimationComp;
+	double m_CombatBufferingTime;
+	GameObject_Misc_Enemy* m_SceneEnemy; // Just as a reference to easily start the combat
 };

@@ -20,14 +20,6 @@ Technology is prohibited.
 #include "Elements.hpp"
 #include "Pch.h"
 #include "Enemy.h"
-namespace {
-	enum TURN {
-		NONE_TURN,
-		PLAYER,
-		ENEMY,
-		NUM_TURNS
-	};
-}
 
 class CombatManager {
 private:
@@ -36,6 +28,16 @@ private:
 
 
 public:
+
+	enum TURN {
+		NONE_TURN,
+		PLAYER,
+		ENEMY,
+		NUM_TURNS
+	};
+
+
+	static CombatManager& getInstance();
 	~CombatManager();
 
 	static constexpr int PLAYER_BLOCKING_REACTION_ALLOWANCE_MS = 750;
@@ -50,10 +52,10 @@ public:
 	Enemy* selectedEnemy = nullptr;
 
 	static constexpr int minAttackIntervalMs = 1000;
-	static constexpr int maxAttackIntervalMs = 5000;
+	static constexpr int maxAttackIntervalMs = 3000;
+	static constexpr int initialEnemyAttackTimeMs = 5000;	// if enemy starts first, wait this long before attacking player
 	int enemyNextTurnMs = 0;
 
-	static CombatManager& getInstance();
 
 	/**
 	 * for level scene to .
@@ -64,7 +66,7 @@ public:
 	 * start combat manager turn based system.
 	 *
 	 */
-	void start();
+	void start(TURN t = TURN::PLAYER);
 
 	/**
 	 * go to next turn

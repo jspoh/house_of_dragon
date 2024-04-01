@@ -9,6 +9,14 @@
 class GameObject_Misc_Enemy : public GameObject, public CCollider
 {
 public:
+	enum v_EnemyBehaviour
+	{
+		Normal,
+		Hunt,
+		Aggressive,
+		Shy
+	};
+
 	GameObject_Misc_Enemy(/*Maybe put texture here still thinking*/);
 	virtual ~GameObject_Misc_Enemy();
 
@@ -17,14 +25,22 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
-	// Set the maxAABB and minAABB
-	void SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB);
+	void ActivateEnemy(AEMtx33& m_transform, v_EnemyBehaviour _type = Normal);
+	void UpdateEnemyMov(double _dt);
+	void UpdateCombatTransition(double _dt);
 
+	int m_StartCombat; //0 - dont, 1 - Natural, 2 - Abrupt
 private:
-
+	AEMtx33* m_AttachedFloorTransform;
+	AEMtx33 m_TransformData;
+	bool m_AttackPlayer; //Trigger combat scene
+	double m_LifeTime;
+	int m_Health;
+	f32 m_Transparency;
+	double m_FlickeringTimer;
 };
 
 namespace Create
 {
-	GameObject_Misc_Enemy* MiscEnemy( const AEVec2& _position = { 0.0f,0.0f }, const AEVec2& _scale = {200.0f, 200.0f});
+	GameObject_Misc_Enemy* MiscEnemy( const AEVec2& _position = { 0.0f,0.0f }, const AEVec2& _scale = {1.0f, 1.0f});
 };

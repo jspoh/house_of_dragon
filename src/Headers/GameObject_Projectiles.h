@@ -7,9 +7,6 @@
 #include "2DCollider.h"
 #include "Pch.h"
 
-#define PLAYERSCREENPOSX 0
-#define PLAYERSCREENPOSY 100
-
 class GameObject_Projectiles : public GameObject, public CCollider
 {
 public:

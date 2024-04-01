@@ -31,7 +31,7 @@ Database::Database() {
 	ifs = std::ifstream{ dbPath };
 
 	if (!ifs.is_open()) {
-		std::cerr << "failed to open file" << std::endl;
+		std::cerr << "failed to open database file" << "\n";
 	}
 
 	this->data = json::parse(ifs);
@@ -60,7 +60,7 @@ bool Database::forceUpdate() {
 		ofs.close();
 	}
 	catch (std::exception& e) {
-		std::cerr << "failed to update file: " << e.what() << std::endl;
+		std::cerr << "failed to update file: " << e.what() << "\n";
 		return false;
 	}
 	return true;

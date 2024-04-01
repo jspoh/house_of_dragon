@@ -58,7 +58,8 @@ private:
 
 	void _updateBlockingHands();
 
-	void _renderHands();
+
+	void updateHands(float t_dt);
 
 	// discarded in favour of hands
 	void _updateShield(double dt);
@@ -77,9 +78,13 @@ public:
 	static constexpr int shieldUpTimeMs = 1000;
 	static constexpr int timeBeforeNextBlockMs = 1000;
 
+	/**
+	 * used to trigger hand animations.
+	 * 
+	 * \param t
+	 */
 	void setHandStateAnimationType(HandAnimationType t);
 
-	void updateHands(float t_dt);
 
 	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
 	~Player();
@@ -104,6 +109,7 @@ public:
 	void update(double dt);
 
 	void render();
+	void _renderHands();
 
 	void attackMultipler(int turn);
 

@@ -124,13 +124,13 @@ RenderHelper::~RenderHelper() {
 	//AEGfxMeshFree(_invisibleMesh);
 	
 	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
-		std::cout << "Automatically removing texture with ref " << map.first << "\n";
+		cout << "Automatically removing texture with ref " << map.first << "\n";
 		AEGfxTextureUnload(map.second);
 		map.second = nullptr;
 	}
 
 	for (std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
-		std::cout << "Automatically removing mesh with ref " << map.first << "\n";
+		cout << "Automatically removing mesh with ref " << map.first << "\n";
 		AEGfxMeshFree(map.second);
 		map.second = nullptr;
 	}
@@ -139,7 +139,7 @@ RenderHelper::~RenderHelper() {
 		if (pTex == nullptr) {
 			continue;
 		}
-		std::cout << "Automatically removing texture with id \n";
+		cout << "Automatically removing texture with id \n";
 		AEGfxTextureUnload(pTex);
 		pTex = nullptr;
 	}
@@ -196,45 +196,45 @@ void RenderHelper::rect(std::string meshRef, f32 transX, f32 transY, f32 scaleX,
 }
 
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
-	std::cout << "Loading texture " << path << " with reference " << reference << "\n";
+	cout << "Loading texture " << path << " with reference " << reference << "\n";
 
 	if (_textureRef.find(reference) != _textureRef.end()) {
-		std::cerr << "Texture ref already in use!\n";
+		std::cerr << "Texture ref " << reference << " already in use!\n";
 		//throw std::exception();
 		return false;
 	}
 
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
-		std::cerr << "Texture failed to load\n";
+		std::cerr << "Texture with reference " << reference << " and path " << path << " failed to load\n";
 		throw std::exception();
 		return false;
 	}
 	_textureRef[reference] = pTex;
-	std::cout << "Loaded texture with string reference " << reference << " at location " << pTex << "\n";
+	cout << "Loaded texture with string reference " << reference << " at location " << pTex << "\n";
 	return true;
 }
 
 bool RenderHelper::registerTexture(int reference, std::string path) {
 	if (reference >= MAX_TEXTURE_IDS) {
-		std::cerr << "reference cannot be greater than array size!\n";
+		std::cerr << "Texture reference id(" << reference << ") cannot be greater than array size!\n";
 		throw std::exception();
 		return false;
 	}
 	if (_textureIdRefs[reference] != nullptr) {
-		std::cerr << "int reference already used\n";
+		std::cerr << "int reference " << reference << " already used\n";
 		//throw std::exception();
 		return false;
 	}
 
 	AEGfxTexture* pTex = AEGfxTextureLoad(path.c_str());
 	if (!pTex) {
-		std::cerr << "Texture failed to load\n";
+		std::cerr << "Texture with reference " << reference << " and path " << path << " failed to load\n";
 		throw std::exception();
 		return false;
 	}
 	_textureIdRefs[reference] = pTex;
-	std::cout << "Loaded texture with int reference " << reference << " at location " << pTex << "\n";
+	cout << "Loaded texture with int reference " << reference << " at location " << pTex << "\n";
 	return true;
 }
 
@@ -250,7 +250,7 @@ AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
 
 AEGfxTexture* RenderHelper::getTextureByRef(int reference) {
 	if (_textureIdRefs[reference] == nullptr) {
-		std::cerr << "reference has not been set!\n";
+		std::cerr << "Reference " << reference << " has not been set!\n";
 	}
 	return _textureIdRefs[reference];
 }
@@ -266,7 +266,7 @@ void RenderHelper::removeTextureByRef(std::string reference) {
 	AEGfxTextureUnload(pTex);
 	_textureRef.erase(reference);
 
-	std::cout << "Manually removed texture with ref " << reference << "\n";
+	cout << "Manually removed texture with ref " << reference << "\n";
 }
 
 void RenderHelper::removeTextureByRef(int reference) {
@@ -278,7 +278,7 @@ void RenderHelper::removeTextureByRef(int reference) {
 	AEGfxTextureUnload(pTex);
 	_textureIdRefs[reference] = nullptr;
 
-	std::cout << "Manually removed texture with ref " << reference << "\n";
+	cout << "Manually removed texture with ref " << reference << "\n";
 }
 
 void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
@@ -329,7 +329,7 @@ void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f
 	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
 
 	if (pTex == nullptr) {
-		std::cerr << "texture wasnt initialized!\n";
+		std::cerr << "Texture with reference " << textureRef << " wasnt initialized!\n";
 		return;
 	}
 
@@ -370,7 +370,7 @@ AEGfxTexture* RenderHelper::GetTexture(int textureRef)
 	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
 
 	if (pTex == nullptr) {
-		std::cerr << "texture wasnt initialized!\n";
+		std::cerr << "Texture with reference " << textureRef << " wasnt initialized!\n";
 		return nullptr;
 	}
 	return pTex;

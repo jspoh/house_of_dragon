@@ -50,10 +50,10 @@ void Enemy::update([[maybe_unused]] double dt) {
     Point pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
 
     if (AEInputCheckTriggered(AEVK_LBUTTON) && CollisionChecker::isMouseInRect(pos.x, pos.y, _size, _size, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-        //std::cout << _textureRef << " enemy selected\n";
+        //cout << _textureRef << " enemy selected\n";
         isSelected = !isSelected;
     }
-    //std::cout << camOffset.x << ", " << camOffset.y << "\n";
+    //cout << camOffset.x << ", " << camOffset.y << "\n";
     if (this->attacked == true && this->healthRenderTime < this->healthRenderTimeMax) {
         healthRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
         float percenttime = static_cast<float>(healthRenderTime / healthRenderTimeMax);
@@ -73,7 +73,7 @@ void Enemy::render() {
     //AEVec2 camOffset;
     //AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
-    //std::cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
+    //cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
     if(this->attacked == true){
         if (this->shakeDuration > 0) {
             // Apply shake effect only when attacked
@@ -127,7 +127,7 @@ void Enemy::render() {
 }
 
 Enemy::~Enemy() {
-    std::cout << "Destroying enemy with texture ref: " << this->_textureRef << "\n";
+    cout << "Destroying enemy with texture ref: " << this->_textureRef << "\n";
     // dont free here!!!!!!!!!!!!
     //RenderHelper::getInstance()->removeTextureByRef(this->_textureRef);
     //RenderHelper::getInstance()->removeTextureByRef("healthbar1");

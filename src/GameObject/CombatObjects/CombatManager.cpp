@@ -18,7 +18,7 @@ Technology is prohibited.
 #include "CombatManager.h"
 
 CombatManager::~CombatManager() {
-    std::cout << "Destroying CombatManager\n";
+    cout << "Destroying CombatManager\n";
 }
 
 CombatManager& CombatManager::getInstance() {
@@ -26,9 +26,10 @@ CombatManager& CombatManager::getInstance() {
     return instance;
 }
 
-void CombatManager::start() {
-    turn = TURN::PLAYER;
+void CombatManager::start(TURN t) {
+    turn = t;
     isInCombat = true;
+    enemyNextTurnMs = initialEnemyAttackTimeMs;
 }
 
 void CombatManager::next() {
