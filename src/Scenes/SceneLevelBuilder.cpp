@@ -82,7 +82,7 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 SceneLevelBuilder::SceneLevelBuilder() :
 	m_StopMovement{ false },
 	m_PanCloseToGround{ false },
-	m_CompletionStatus{ 0 },
+	m_CompletionStatus{ 98 },
 	m_currLevel{ 0 },
 	m_LvlNameTimer{ 0.0 },
 	m_LvlNameTransparency{ 0.0 },
@@ -91,7 +91,8 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	m_SceneEnemy{ nullptr },
 	m_CombatPhase{ false },
 	m_CombatAnimationComp{ false },
-	m_CombatBufferingTime{ 0.0 }
+	m_CombatBufferingTime{ 0.0 },
+	m_LevelClearSpeed{0.0}
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////
     //                       Loading of ALL Scene Textures
@@ -337,6 +338,10 @@ void SceneLevelBuilder::Init()
 		{
 			Create::Projectiles();
 		}
+
+		m_CompletionStatus = 98;
+		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_LevelClearSpeed = 0.9;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -477,6 +482,8 @@ void SceneLevelBuilder::Init()
 
 void SceneLevelBuilder::Update(double dt)
 {
+	if (!SceneStages::sInstance->m_StartGame) dt *= 3; //JUST A SPEED UP TO WARM UP THE ENGINE BEFORE GAMEPLAY
+
 	/////////////////////////////////////////////////////////////////////////////////
 	// Generic Update calls can be placed here
 	{
@@ -487,13 +494,20 @@ void SceneLevelBuilder::Update(double dt)
 		if (Pause::getInstance().isPaused) {
 			return;
 		}
-		UpdateLvlName(static_cast<f32>(dt));//Level Name
-		if (m_CompletionStatus > 100)
+		UpdateLvlName(static_cast<f32>(dt));//Level Name Animation
+		///////////////////////////////////////////////////////////////////////////////
+		//Level Progression Update
+		if(!m_CombatPhase)
 		{
-			++m_currLevel;
-			SceneLevelBuilder::SpawnLvlName();
+			if (m_CompletionStatus > 100.0 && SceneStages::sInstance->m_StartGame)
+			{
+				++m_currLevel;
+				SceneLevelBuilder::SpawnLvlName();
+				m_CompletionStatus = 0.0;
+			}
+			m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_LevelClearSpeed : 0.0;
 		}
-
+		//UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));
 		UpdateBackdrop(static_cast<float>(dt));
@@ -514,17 +528,6 @@ void SceneLevelBuilder::Update(double dt)
 		//updateGlobals();
 		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 		//cout << "\n";
-
-		if (AEInputCheckCurr(AEVK_1))
-		{
-			m_PanCloseToGround = true;
-			m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? LERPING_SPEED : 0;
-		}
-		if (AEInputCheckCurr(AEVK_2))
-		{
-			m_PanCloseToGround = false;
-			m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
-		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -1313,7 +1316,6 @@ Level Name
 void SceneLevelBuilder::SpawnLvlName()
 {
 	m_LvlNameTimer = MAX_LVLNAMETIMER;
-	//m_currLevel += m_currLevel<3?1:-2;
 	m_LvlNameTransparency = -1.2f;
 }
 void SceneLevelBuilder::UpdateLvlName(f32 t_dt)
@@ -1333,10 +1335,10 @@ void SceneLevelBuilder::RenderLvlName()
 	f32 t_camX, t_camY;
 	AEGfxGetCamPosition(&t_camX, &t_camY);
 
-	AEVec2 RightOriginalHeaderPos{ 27.5f, 175.7f };
-	AEVec2 LeftOriginalHeaderPos{ -27.5f, 175.7f };
-	AEVec2 RightMaxHeaderPos{ -15.0f + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f };
-	AEVec2 LeftMaxHeaderPos{ 15.0f - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 175.7f };
+	AEVec2 RightOriginalHeaderPos{ 27.5f, 205.7f };
+	AEVec2 LeftOriginalHeaderPos{ -27.5f, 205.7f };
+	AEVec2 RightMaxHeaderPos{ -15.0f + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
+	AEVec2 LeftMaxHeaderPos{ 15.0f - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
 	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
 	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
 	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;

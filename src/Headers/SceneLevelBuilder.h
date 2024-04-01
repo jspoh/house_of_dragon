@@ -210,7 +210,8 @@ private:
 	int t_CenterFloorNum;
 
 	v_SceneLevelData* m_SceneLevelDataList;
-	int m_CompletionStatus; //0 - 100%
+	double m_CompletionStatus; //0 - 100%
+	double m_LevelClearSpeed;
 	int m_currLevel;
 
 	///////////////////////////////////////////////////////
@@ -242,8 +243,6 @@ private:
 	bool m_StopMovement;
 	bool m_PanCloseToGround;
 	int m_PanCloseToGroundValue = 80;
-	//float m_LerpingSpeed = 10.0f;
-	//int m_PanDownCam = 0;
 	int m_CurrentTileNumFurthest;
 	bool m_CombatPhase;
 	bool m_CombatAnimationComp;

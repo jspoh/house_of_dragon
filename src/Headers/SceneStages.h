@@ -24,7 +24,7 @@ Technology is prohibited.
 
 #define MOUSE_SENSITIVITY 5
 #define MAX_LOAD_SCREEN_TIME 6.0
-#define MIN_LOAD_SCREEN_TIME 2.5
+#define MIN_LOAD_SCREEN_TIME 1.5
 
 namespace SceneStagesAudio {
 	extern bool loopIsPlaying;
@@ -45,13 +45,17 @@ public:
 
 	void Util_Camera_Shake(float duration, float strength);
 	static SceneStages* sInstance; // The pointer to the object that gets registered
+	bool m_StartGame;
+
 private:
 	SceneStages(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
 
 	SceneLevelBuilder* m_LevelBuilder;
 
+	f32 m_transparency;
 	double m_LoadScreenTimer;
+	
 
 	//////////////////////////////////////////////////////////////////////////
 	// Animation

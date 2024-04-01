@@ -13,7 +13,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 
-pragma once
+#pragma once
 
 #ifndef SCENE_BASE_H
 #define SCENE_BASE_H
