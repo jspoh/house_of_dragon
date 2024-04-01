@@ -1,6 +1,6 @@
 /* Start Header ************************************************************************/
 /*!
-\file SceneManager.cpp
+\file SceneStages.cpp
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date 01 Apr 2024

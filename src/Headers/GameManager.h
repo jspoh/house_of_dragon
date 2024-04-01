@@ -1,6 +1,6 @@
 /* Start Header ************************************************************************/
 /*!
-\file GameManager.cpp
+\file GameManager.h
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date 28 feb 2024

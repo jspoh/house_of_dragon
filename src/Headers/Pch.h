@@ -1,7 +1,8 @@
-#pragma once
 /* Start Header ************************************************************************/
 /*!
 \file pch.h
+\author Poh Jing Seng, jingseng.poh, 2301363
+\par jingseng.poh\@digipen.edu
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date Jan 18, 2024
@@ -17,6 +18,8 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
+
+#pragma once
 
 #ifndef PCH_H
 #define PCH_H

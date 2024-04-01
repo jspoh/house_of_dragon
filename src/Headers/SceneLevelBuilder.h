@@ -1,4 +1,3 @@
-#pragma once
 /* Start Header ************************************************************************/
 /*!
 \file SceneLevelBuilder.h
@@ -14,6 +13,7 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
+#pragma once
 
 #include "Pch.h"
 #include "GameObjectManager.h"
