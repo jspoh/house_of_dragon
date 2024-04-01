@@ -142,6 +142,10 @@ void Enemy::enemyAttacked() {
 
 }
 
+std::string Enemy::getTextureRef() const {
+    return _textureRef;
+}
+
 void Enemy::enemyAttacking(float timeleft) {
     //this->attacking = true;
     // udpating the coordinates

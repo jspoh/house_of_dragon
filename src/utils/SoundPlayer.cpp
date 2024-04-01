@@ -132,7 +132,7 @@ SoundPlayer::CombatAudio::CombatAudio() {
 		// add animal sounds to map, based on animal type
 		if (filename.find("animal") == 0) {
 			const std::vector<std::string> tokens = split(filename, '_');
-			animalSfxRef[tokens[1]] = filename;
+			animalSfxRef[tokens[1]].push_back(filename);
 		}
 		// add sounds to relevant vector, based on sound type
 		else if (filename.find("hurt") == 0) {
@@ -177,9 +177,26 @@ void SoundPlayer::CombatAudio::playSfxDeath() {
 	SoundManager::GetInstance()->playAudio("death_0.wav");
 }
 
-// !TODO: get more animal assets
+// !TODO: jspoh remove cat audio
 void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
-	SoundManager::GetInstance()->playAudio("animal_" + animal + "_0.wav");
+	int availSounds{};
+	const std::string prefix = animal;
+	for (const auto& [mapKey, refs] : animalSfxRef) {
+		if (mapKey.substr(0, prefix.size()) == prefix) {
+			availSounds = refs.size();
+		}
+	}
+
+	if (availSounds == 0) {
+		std::cerr << "Combat animal sound for " << animal << " does not exist!\n";
+		throw std::exception();
+	}
+
+	const int randSoundIdx = rand() % availSounds;
+	std::stringstream soundRef;
+	soundRef << "animal_" << prefix << "_" << randSoundIdx << ".wav";
+
+	SoundManager::GetInstance()->playAudio(soundRef.str());
 }
 
 void SoundPlayer::CombatAudio::playSfxHealth() {

@@ -352,7 +352,7 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["health"],
 			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["damage"] * DIFFICULTY_ENEMY_DAMAGE_MULTIPLIER.at(difficulty),
 			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["texturePath"],
-			enemyRefs[i],
+			enemyRefs[i],		// dont change this, using this for audio too
 			groups.coordinates[i].x,
 			groups.coordinates[i].y,
 			texSize
@@ -662,6 +662,7 @@ void CombatScene::Update(double dt)
 
 			break;
 		}
+		SoundPlayer::CombatAudio::getInstance().playSfxAnimal(CombatManager::getInstance().selectedEnemy->getTextureRef());
 		CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 
 		// reset states
@@ -714,6 +715,7 @@ void CombatScene::Update(double dt)
 			if (groups.enemies.size()) {
 				int randEnemyIndex = rand() % groups.enemies.size();
 				cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
+				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(groups.enemies[randEnemyIndex]->getTextureRef());
 				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
 				CombatManager::getInstance().next();
 			}
@@ -822,13 +824,15 @@ void CombatScene::Render()
 				}
 				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
 					std::string fulloutput = "You used " + attackUsed + "!\n";
-					if (EVENT_RESULTS::SUCCESS) {
-						fulloutput += "CRITICAL ATTACK!!!";
-					}
-					else if (EVENT_RESULTS::FAILURE) {
-						fulloutput += "ATTACK NOT EFFECTIVE!!!";
+					// !TODO: kuek
+					// this 2 conditional statement is constant, youre checking enum, not a state.
+					//if (EVENT_RESULTS::SUCCESS) {
+					//	fulloutput += "CRITICAL ATTACK!!!";
+					//}
+					//else if (EVENT_RESULTS::FAILURE) {
+					//	fulloutput += "ATTACK NOT EFFECTIVE!!!";
 
-					}
+					//}
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
 

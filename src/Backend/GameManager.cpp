@@ -60,6 +60,8 @@ void GameManager::Run()
 	//SoundManager::GetInstance()->getVolume(sfx, music);
 	//cout << sfx << " | " << music << "\n";
 
+	cout << SoundManager::GetInstance()->getSfxVolume() << ", " << SoundManager::GetInstance()->getMusicVolume() << "\n";
+
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 		SoundPlayer::GlobalAudio::getInstance().playSfxClick();
 	}

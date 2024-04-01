@@ -110,7 +110,7 @@ public:
 		std::vector<std::string> punchSfxRefs{};
 
 		static constexpr int NUM_ANIMALS = 13;		// 12 zodiac animals + nian
-		std::unordered_map<std::string, std::string> animalSfxRef{};
+		std::unordered_map<std::string, std::vector<std::string>> animalSfxRef{};
 
 	public:
 		static CombatAudio& getInstance();

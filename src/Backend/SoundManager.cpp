@@ -117,6 +117,15 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 }
 
 
+float SoundManager::getSfxVolume() const {
+	return SFX_VOLUME;
+}
+
+float SoundManager::getMusicVolume() const {
+	return MUSIC_VOLUME;
+}
+
+
 void SoundManager::setVolume(float volume, bool setMusic) {
 	if (setMusic) {
 		MUSIC_VOLUME = volume;
