@@ -208,7 +208,6 @@ private:
 	v_TileSpawnPoint** m_tileSP; //0 
 	std::list<v_SceneObject>** m_FloorOBJs;
 	int t_CenterFloorNum;
-	//v_WallData** m_Wall;
 
 	v_SceneLevelData* m_SceneLevelDataList;
 	int m_CompletionStatus; //0 - 100%

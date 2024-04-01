@@ -514,6 +514,17 @@ void SceneLevelBuilder::Update(double dt)
 		//updateGlobals();
 		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
 		//cout << "\n";
+
+		if (AEInputCheckCurr(AEVK_1))
+		{
+			m_PanCloseToGround = true;
+			m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? LERPING_SPEED : 0;
+		}
+		if (AEInputCheckCurr(AEVK_2))
+		{
+			m_PanCloseToGround = false;
+			m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
+		}
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -771,47 +782,12 @@ void SceneLevelBuilder::Update(double dt)
 		}
 
 		///////////////////////////////////////////////////////////////////////////
-		//UPDATE OBJs Pos and Logic
+		//UPDATE SCENEOBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
 		GameObjectManager::GetInstance()->Update(dt);
 		v_SceneObject temp;
-		static double x = 2, y = 80;
-		if (AEInputCheckCurr(AEVK_W))
-		{
-			y += 1;
-		}
-		if (AEInputCheckCurr(AEVK_S))
-		{
-			y -= 1;
-		}
-		if (AEInputCheckCurr(AEVK_A))
-		{
-			x -= 0.55;
-		}
-		if (AEInputCheckCurr(AEVK_D))
-		{
-			x += 0.55;
-		}
-		static double mx = 0, my = 0;
-		if (AEInputCheckCurr(AEVK_UP))
-		{
-			mx += 0.55;
-		}
-		if (AEInputCheckCurr(AEVK_DOWN))
-		{
-			mx -= 0.55;
-		}
-		if (AEInputCheckCurr(AEVK_RIGHT))
-		{
-			my += 12.55;
-		}
-		if (AEInputCheckCurr(AEVK_LEFT))
-		{
-			my -= 12.55;
-		}
-		cout << x << " " << y << endl;
-
 		std::pair<int, int> t_TransScaleModifier = { 60, 48 }; //For rand on tile pos
+		static double t_XModifier = 2, t_YModifier = 225, t_MXModifier = 45, t_MYModifier = 1;
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
@@ -820,44 +796,42 @@ void SceneLevelBuilder::Update(double dt)
 					it != m_FloorOBJs[j][i].end();
 					it++)
 				{
-					{
-						////Reset Transform data
-					//AEMtx33Identity(&(*it).m_TransformData);
-
-					////Skew on the tile
-					//if (!(*it).m_tobeCentered)
-					//	(*it).m_TransformData.m[1][0] = 0.30f * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1.0f);
-
-					////Scale with the tile
-					//AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[0][0]), m_Floor[j][i].m_TransformFloorCurr.m[0][0] / (1 / (*it).m_Scale.m[1][1]));
-
-					////Translate to the tile
-					////(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
-					////(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
-
-					////Translate to the tile
-					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55f) * (*it).m_Scale.m[0][0];
-					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85f) * (*it).m_Scale.m[1][1];
-
-					////Translate to its specific position on the tile 
-					//AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData,
-					//	(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]),
-					//	0/*(*it).m_Trans.m[1][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.second) / (*it).m_Scale.m[1][1])*/);
-
-					}
-					
 					//Reset Transform data
 					AEMtx33Identity(&(*it).m_TransformData);
 					
+					if (!m_PanCloseToGround)
+					{
+						t_XModifier = t_XModifier > 2.0 ? t_XModifier - dt : t_XModifier;
+						t_YModifier = t_YModifier > 225 ? t_YModifier - dt * LerpSpeed : t_YModifier;
+						t_MXModifier = t_MXModifier < 45 ? t_MXModifier + dt * LerpSpeed : t_MXModifier;
+						t_MYModifier = t_MYModifier > 1 ? t_MYModifier - dt : t_MYModifier;
+					}
+					else
+					{
+						t_XModifier = t_XModifier < 2.3 ? t_XModifier + dt / 400 : t_XModifier;
+						t_YModifier = t_YModifier < 938 ? t_YModifier + dt / 12.7 * LerpSpeed : t_YModifier;
+						t_MXModifier = t_MXModifier > -10.45 ? t_MXModifier - dt / 100 * LerpSpeed : t_MXModifier;
+						t_MYModifier = t_MYModifier < 10 ? t_MYModifier + dt / 100 : t_MYModifier;
+					}
+
 					//Scale with the tile
-					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0]* 2, m_Floor[j][i].m_TransformFloorCurr.m[0][0] * 2);
+					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] * 2, m_Floor[j][i].m_TransformFloorCurr.m[0][0] * 2);
 
 					//Translate with the tile
 					if (j < t_CenterFloorNum)
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * 2 + 45, m_Floor[j][i].m_Trans.m[1][2] + 80);
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * t_XModifier + t_MXModifier, t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier);
 					else
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * 2 - 45, m_Floor[j][i].m_Trans.m[1][2] + 80);
-					
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * t_XModifier - t_MXModifier, t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier);
+
+
+					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					//Objects floating up
+					/*if (j < t_CenterFloorNum)
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * x + (mx), y - m_Floor[j][i].m_Trans.m[1][2] * 10);
+					else
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * x - (mx), y - m_Floor[j][i].m_Trans.m[1][2] * 10);
+					*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 					////Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData,
 						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]),
