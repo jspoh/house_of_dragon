@@ -1,3 +1,19 @@
+/* Start Header ************************************************************************/
+/*!
+\file GameObject_Misc_Enemy.cpp
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 01 Apr 2024
+\brief misc enemy implementation
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 #include "Pch.h"
 #include "GameObject_Misc_Enemy.h"
 #include "GameObjectManager.h"

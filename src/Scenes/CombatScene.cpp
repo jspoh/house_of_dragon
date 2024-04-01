@@ -3,6 +3,8 @@
 \file CombatScene.cpp
 \author Poh Jing Seng, jingseng.poh, 2301363
 \par jingseng.poh\@digipen.edu
+\author Kuek wei jie, weijie.kuek, 2301325
+\par weijie.kuek\@digipen.edu
 \date 28 feb 2024
 \brief renders and manages the combat scene
 /*

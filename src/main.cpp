@@ -1,3 +1,21 @@
+/* Start Header ************************************************************************/
+/*!
+\file main.cpp
+\author Poh Jing Seng, jingseng.poh, 2301363
+\par jingseng.poh\@digipen.edu
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 20 Jan 2024
+\brief entry point of program
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 // ---------------------------------------------------------------------------
 // includes
 #include "Pch.h"
