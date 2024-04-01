@@ -548,16 +548,33 @@ void SceneLevelBuilder::Update(double dt)
 			/////////////////////////////////////////////////////////////////////////////
 			// Settings to lerp to the movement view
 			{
-				m_StopMovement = false;
+				if (m_currTransitionTransparency >= 0.5f)
+				{
+					m_CombatBufferingTime -= m_CombatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
+					if (m_CombatBufferingTime > 0.2f)
+					{
+						dt *= 15; //SPEEDUP SPECIFICALLY
+						m_StopMovement = false;
+						m_PanCloseToGround = false;
+						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
 
-				m_PanCloseToGround = false;
-				m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
-
-				if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
-					SoundPlayer::stopAll();
-					SoundPlayer::GameAudio::getInstance().playLoop();
-					GameScene::combatAudioLoopIsPlaying = false;
-					SceneStagesAudio::loopIsPlaying = true;
+					}
+				}
+				if (m_CombatBufferingTime <= 0.0f)
+				{
+					////////////////////////////////////////////////////////////////////////
+					// Fade out after combat
+					//might give potential errors if using fade in/fade out in other areas, so watch out
+					{
+						FadeOutBlack(); 
+					}
+					//////////////////////////////////////////////////////////////////////////
+					if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
+						SoundPlayer::stopAll();
+						SoundPlayer::GameAudio::getInstance().playLoop();
+						GameScene::combatAudioLoopIsPlaying = false;
+						SceneStagesAudio::loopIsPlaying = true;
+					}
 				}
 			}
 
@@ -607,6 +624,12 @@ void SceneLevelBuilder::Update(double dt)
 				// check if combat is over and update accordingly
 				m_CombatPhase = CombatManager::getInstance().isInCombat;
 				CombatScene::getInstance().Update(dt);
+				if (!m_CombatPhase)
+				{
+					m_CombatBufferingTime = 0.6f;
+					FadeINBlack();
+				}
+					
 			}
 
 			/////////////////////////////////////////////////////////////////////
@@ -643,7 +666,6 @@ void SceneLevelBuilder::Update(double dt)
 	// Game 3D Environment Update Cycle
 	if (!m_StopMovement)
 	{
-
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE FLOOR MOVEMENT
 		//////////////////////////////////////////////////////////////////////////
