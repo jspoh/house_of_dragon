@@ -62,7 +62,8 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	:m_TexRef{ "" },
 	m_RenderOrder{ 0 },
 	m_Transparency{ -1.5f },
-	m_Type{ v_SceneObjectTypes::LAST_TYPE }
+	m_Type{ v_SceneObjectTypes::LAST_TYPE },
+	m_tobeCentered {false}
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_Scale);
@@ -787,7 +788,7 @@ void SceneLevelBuilder::Update(double dt)
 					AEMtx33Identity(&(*it).m_TransformData);
 
 					//Skew on the tile
-					if (!AEInputCheckCurr(AEVK_L))
+					if (!(*it).m_tobeCentered)
 						(*it).m_TransformData.m[1][0] = 0.30f * (j - t_CenterFloorNum) / (m_Floor[j][i].m_currFloorNum + 1.0f);
 
 					//Scale with the tile
@@ -797,7 +798,7 @@ void SceneLevelBuilder::Update(double dt)
 					//(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * 1.3* (*it).m_Scale.m[0][0];
 					//(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * 0.7* (*it).m_Scale.m[1][1];
 
-					//CHANGE TO THIS ANGLE
+					//Translate to the tile
 					(*it).m_TransformData.m[0][2] = m_Floor[j][i].m_Trans.m[0][2] * (0.55f) * (*it).m_Scale.m[0][0];
 					(*it).m_TransformData.m[1][2] = m_Floor[j][i].m_Trans.m[1][2] * (0.85f) * (*it).m_Scale.m[1][1];
 
@@ -1200,32 +1201,31 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			}
 
 			//Selecting Entity from entity group to spawn
-			bool tobeCentered = false;
 			if (Ref == "Grass")
 			{
 				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Grass - v_SceneObjectTypes::TYPE_Grass) + v_SceneObjectTypes::TYPE_Grass),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_Grass + 1),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Grass - 1)));
-				tobeCentered = true;
+				newObj.m_tobeCentered = true;
 			}
 			else if (Ref == "Tree")
 			{
 				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Tree - v_SceneObjectTypes::TYPE_Tree) + v_SceneObjectTypes::TYPE_Tree),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_Tree + 1),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Tree - 1)));
-				tobeCentered = false;
+				newObj.m_tobeCentered = false;
 			}
 			else if (Ref == "Rock")
 			{
 				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Rock - v_SceneObjectTypes::TYPE_Rock) + v_SceneObjectTypes::TYPE_Rock),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_Rock + 1),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Rock - 1)));
-				tobeCentered = true;
+				newObj.m_tobeCentered = true;
 			}
 
 			//Random Selection of Spawn location on tile
 			int t_RandX, t_RandY;
-			if (!tobeCentered)
+			if (!newObj.m_tobeCentered)
 			{
 				if (j == t_CenterFloorNum - 1 || j == t_CenterFloorNum + 1)
 				{
@@ -1253,9 +1253,6 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 				AEMtx33Trans(&newObj.m_Trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 
-			////Random Scaling ( TOBEDELETED
-			//float scale = (rand() % 20) * 0.01f + 0.1f;
-			//AEMtx33Scale(&newObj.m_Scale, scale, scale);
 			//Scaling (Uniform Scaling)
 			AEMtx33Scale(&newObj.m_Scale, 2.5f, 2.5f);
 

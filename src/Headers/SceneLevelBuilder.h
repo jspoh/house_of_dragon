@@ -179,6 +179,7 @@ private:
 		float m_Transparency;
 		v_SceneObjectTypes m_Type;
 		std::string m_TexRef; //Used with draw
+		bool m_tobeCentered;
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
