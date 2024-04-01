@@ -69,6 +69,7 @@ extern NullStream nullstream;
 
 #ifndef NDEBUG
 #define cout std::cout
+#define endl std::endl
 #else
 #define cout nullstream
 #endif
