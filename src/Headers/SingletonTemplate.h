@@ -1,3 +1,20 @@
+/* Start Header ************************************************************************/
+/*!
+\file SingletonTemplate.cpp
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 01 Apr 2024
+\brief base template class for singletons
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+#pragma once
+
 #ifndef SINGLETON_TEMPLATE_H
 #define SINGLETON_TEMPLATE_H
 

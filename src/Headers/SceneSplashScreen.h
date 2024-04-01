@@ -1,3 +1,20 @@
+/* Start Header ************************************************************************/
+/*!
+\file SceneSplashScreen.h
+\author
+\par
+\date 01 Apr 2024
+\brief splash screen implementation
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+#pragma once
+
 #ifndef SCENE_SPLASHSCREEN_H
 #define SCENE_SPLASHSCREEN_H
 

@@ -1,3 +1,21 @@
+/* Start Header ************************************************************************/
+/*!
+\file SceneSetting.cpp
+\author Yang yujie, yujie.yang, 2301383
+\par yujie.yang\@digipen.edu
+\author Poh Jing Seng, jingseng.poh, 2301363
+\par jingseng.poh\@digipen.edu
+\date 01 Apr 2024
+\brief settings scene implementation, changes of difficulty and sound settings
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 #include "Pch.h"
 #include "SceneSetting.h"
 #include "ParticleManager.h"

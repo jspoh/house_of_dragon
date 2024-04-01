@@ -1,3 +1,19 @@
+/* Start Header ************************************************************************/
+/*!
+\file GameManager.cpp
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 28 feb 2024
+\brief base game manager
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 #include "Pch.h"
 #include "GameManager.h"
 #include "MyMath.h"
@@ -59,6 +75,8 @@ void GameManager::Run()
 	//float sfx, music;
 	//SoundManager::GetInstance()->getVolume(sfx, music);
 	//cout << sfx << " | " << music << "\n";
+
+	cout << SoundManager::GetInstance()->getSfxVolume() << ", " << SoundManager::GetInstance()->getMusicVolume() << "\n";
 
 	if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 		SoundPlayer::GlobalAudio::getInstance().playSfxClick();

@@ -1,3 +1,19 @@
+/* Start Header ************************************************************************/
+/*!
+\file SceneMenu.cpp
+\author Yang yujie, yujie.yang, 2301383
+\par yujie.yang\@digipen.edu
+\date 01 Apr 2024
+\brief menu scene implementation
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 #include "Pch.h"
 #include "SceneMenu.h"
 #include "SoundPlayer.h"
@@ -383,8 +399,8 @@ void SceneMenu::Update(double dt)
         {
             for (int i = 0; i < 5; ++i)
             {
-                AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
-                AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
+                AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.3f * myMenu.buttonScale[i], myMenu.buttonY[i] + myMenu.buttonHeight / 7.5f * myMenu.buttonScale[i] };
+                AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.3f * myMenu.buttonScale[i], myMenu.buttonY[i] - myMenu.buttonHeight / 7.5f * myMenu.buttonScale[i] };
 
                 if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
                 {

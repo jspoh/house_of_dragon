@@ -1,3 +1,18 @@
+/* Start Header ************************************************************************/
+/*!
+\file SceneCredit.h
+\author Yang yujie, yujie.yang, 2301383
+\par yujie.yang\@digipen.edu
+\date 01 Apr 2024
+\brief credits scene
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
 #pragma once
 
 #include "Scene.h"

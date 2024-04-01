@@ -1,13 +1,19 @@
-#pragma once
-/*!************************************************************************
+/* Start Header ************************************************************************/
+/*!
 \file SoundManager.h
-\author Soh Wei Jie (weijie.soh), Poh Jing Seng (jingseng.poh)
-\par DP email: weijie.soh\@digipen.edu, jingseng.poh\@digipen.edu
-\par Course: csd1451
-\par House 0F Dragons
-\date 23-1-2024
-\brief This source file manages sounds from AEAudio to play sounds from Fmod.
-**************************************************************************/
+\author Poh Jing Seng, jingseng.poh, 2301363
+\par jingseng.poh\@digipen.edu
+\date 28 feb 2024
+\brief SoundManager wrapper for AEAudio
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+#pragma once
 
 #include "SingletonTemplate.h"
 #include "AEAudio.h"
@@ -31,6 +37,9 @@ public:
 	// Constructor
 	SoundManager();
 	~SoundManager();
+
+	float getSfxVolume() const;
+	float getMusicVolume() const;
 
 	bool registerAudio(std::string ref, std::string path, bool isMusic=false);
 

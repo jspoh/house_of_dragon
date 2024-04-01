@@ -1,3 +1,18 @@
+/* Start Header ************************************************************************/
+/*!
+\file MyMath.h
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 01 Apr 2024
+\brief common math functions
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
 #ifndef MY_MATH_H
 #define MY_MATH_H
 /*!************************************************************************
