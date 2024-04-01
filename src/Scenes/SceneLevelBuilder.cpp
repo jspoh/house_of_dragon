@@ -463,368 +463,385 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	m_CombatAnimationComp{ false },
 	m_CombatBufferingTime{ 0.0 }
 {
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//LOAD ALL TEXTURES
-	/*********************************************
-	//Level Header
-	**********************************************/
-	RenderHelper::getInstance()->registerTexture("LVL_HEADER", "Assets/SceneObjects/LvlHeader.png");
-	RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png"); //FOR TEST CASES OF ASSETS - TO BE REMOVED
-	pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
-
-	/*********************************************
-	//Floor
-	**********************************************/
-	RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-	RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-	RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
-
-	/*********************************************
-	//Sky
-	**********************************************/
-	RenderHelper::getInstance()->registerTexture("SKY_1", "Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
-	//Still testing assets
-	RenderHelper::getInstance()->registerTexture("SKY_TEST_1", "Assets/SceneObjects/SKY/1.png");
-	RenderHelper::getInstance()->registerTexture("SKY_TEST_2", "Assets/SceneObjects/SKY/2.png");
-	RenderHelper::getInstance()->registerTexture("SKY_TEST_3", "Assets/SceneObjects/SKY/3.png");
-	RenderHelper::getInstance()->registerTexture("SKY_TEST_4", "Assets/SceneObjects/SKY/4.png");
-	RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
-
-	RenderHelper::getInstance()->registerTexture("SUN_LENS_1", "Assets/SceneObjects/SKY/lense_ghost_3.png");
-	RenderHelper::getInstance()->registerTexture("SUN_LENS_2", "Assets/SceneObjects/SKY/lense_ghost_1.png");
-	RenderHelper::getInstance()->registerTexture("SUN_LENS_3", "Assets/SceneObjects/SKY/lense_ghost_2.png");
-	RenderHelper::getInstance()->registerTexture("SUN_LENS_4", "Assets/SceneObjects/SKY/lense_chroma_ring.png");
-	RenderHelper::getInstance()->registerTexture("SUN_LENS_5", "Assets/SceneObjects/SKY/lense_bokeh.png");
-
-	/*********************************************
-	//Fog
-	**********************************************/
-	RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_NEW_Color.png");
-
-	/*********************************************
-	//BackDrop
-	**********************************************/
-	RenderHelper::getInstance()->registerTexture("BACKDROP_1", "Assets/SceneObjects/BACKGROUND/BackDrop_01.png");
-	RenderHelper::getInstance()->registerTexture("BACKDROP_2", "Assets/SceneObjects/BACKGROUND/BackDrop_02.png");
-	RenderHelper::getInstance()->registerTexture("BACKDROP_3", "Assets/SceneObjects/BACKGROUND/BackDrop_03.png");
-
-	/*********************************************
-	//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
-	**********************************************/
-	///////////////////////////////////////////
-	//Grass
-	RenderHelper::getInstance()->registerTexture(EType_Grass_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_1.png");
-	RenderHelper::getInstance()->registerTexture(EType_Grass_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_2.png");
-	RenderHelper::getInstance()->registerTexture(EType_Grass_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_3.png");
-	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage1.png");
-	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage2.png");
-	RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage3.png");
-
-	//Rocks
-	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_BROWN.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_BROWN.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_BROWN.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_BROWN.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_BROWN.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_BROWN.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_WHITE.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_WHITE.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_WHITE.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_WHITE.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_WHITE.png");
-	RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_WHITE.png");
-
-	//Trees
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_DEAD.png");
-
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_DEAD.png");
-	RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
-	//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
-
-	/*********************************************
-	//GameObjects
-	**********************************************/
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_STRONG", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMY_WEAK", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Weak.png");
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_UPPER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_UpperJaw.png");
-	RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_LOWER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_LowerJaw.png");
-
-	RenderHelper::getInstance()->registerTexture("FIREBALL", "Assets/Combat_Enemy/Projectiles/FireBall.png");
-	RenderHelper::getInstance()->registerTexture("ENERGYBALL", "Assets/Combat_Enemy/Projectiles/EnergyBall.png");
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//Allocate relevant memory depending on defined values (Check #define in .hpp)
-	m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
-	m_FloorOBJs = new std::list<v_SceneObject>*[SIZE_OF_FLOOR];
-	for (int i = 0; i < SIZE_OF_FLOOR; i++)
+	//////////////////////////////////////////////////////////////////////////////////////////////
+    //                       Loading of ALL Scene Textures
+    /*
+    *     All assets in scene are to be loaded here to allow loading screen to do its magic.
+    */
+    //////////////////////////////////////////////////////////////////////////////////////////////
 	{
-		m_Floor[i] = new v_FloorData[NUM_OF_TILES];
-		m_FloorOBJs[i] = new std::list<v_SceneObject>[NUM_OF_TILES];
+		/*********************************************
+		//Level Header
+		**********************************************/
+		RenderHelper::getInstance()->registerTexture("LVL_HEADER", "Assets/SceneObjects/LvlHeader.png");
+		RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png"); //FOR TEST CASES OF ASSETS - TO BE REMOVED
+		pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+
+		/*********************************************
+		//Floor
+		**********************************************/
+		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+
+		/*********************************************
+		//Sky
+		**********************************************/
+		RenderHelper::getInstance()->registerTexture("SKY_1", "Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
+		//Still testing assets
+		RenderHelper::getInstance()->registerTexture("SKY_TEST_1", "Assets/SceneObjects/SKY/1.png");
+		RenderHelper::getInstance()->registerTexture("SKY_TEST_2", "Assets/SceneObjects/SKY/2.png");
+		RenderHelper::getInstance()->registerTexture("SKY_TEST_3", "Assets/SceneObjects/SKY/3.png");
+		RenderHelper::getInstance()->registerTexture("SKY_TEST_4", "Assets/SceneObjects/SKY/4.png");
+		RenderHelper::getInstance()->registerTexture("SUN_OVERLAY_1", "Assets/SceneObjects/SKY/Scene_Sun_Overlaylighting.png");
+
+		RenderHelper::getInstance()->registerTexture("SUN_LENS_1", "Assets/SceneObjects/SKY/lense_ghost_3.png");
+		RenderHelper::getInstance()->registerTexture("SUN_LENS_2", "Assets/SceneObjects/SKY/lense_ghost_1.png");
+		RenderHelper::getInstance()->registerTexture("SUN_LENS_3", "Assets/SceneObjects/SKY/lense_ghost_2.png");
+		RenderHelper::getInstance()->registerTexture("SUN_LENS_4", "Assets/SceneObjects/SKY/lense_chroma_ring.png");
+		RenderHelper::getInstance()->registerTexture("SUN_LENS_5", "Assets/SceneObjects/SKY/lense_bokeh.png");
+
+		/*********************************************
+		//Fog
+		**********************************************/
+		RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_NEW_Color.png");
+
+		/*********************************************
+		//BackDrop
+		**********************************************/
+		RenderHelper::getInstance()->registerTexture("BACKDROP_1", "Assets/SceneObjects/BACKGROUND/BackDrop_01.png");
+		RenderHelper::getInstance()->registerTexture("BACKDROP_2", "Assets/SceneObjects/BACKGROUND/BackDrop_02.png");
+		RenderHelper::getInstance()->registerTexture("BACKDROP_3", "Assets/SceneObjects/BACKGROUND/BackDrop_03.png");
+
+		/*********************************************
+		//SceneObjects (Ref NAME: SCENEOBJECT_*ENUMID*)
+		**********************************************/
+		///////////////////////////////////////////
+		//Grass
+		RenderHelper::getInstance()->registerTexture(EType_Grass_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_1.png");
+		RenderHelper::getInstance()->registerTexture(EType_Grass_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_2.png");
+		RenderHelper::getInstance()->registerTexture(EType_Grass_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_3.png");
+		RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_1, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage1.png");
+		RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_2, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage2.png");
+		RenderHelper::getInstance()->registerTexture(EType_Grass_Foliage_3, "Assets/SceneObjects/SCENE_OBJECTS/Grass_Foliage3.png");
+
+		//Rocks
+		RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_BROWN.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_BROWN.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_BROWN.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_BROWN.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_BROWN.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_BROWN_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_BROWN.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_1, "Assets/SceneObjects/SCENE_OBJECTS/RockPile1_WHITE.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_2, "Assets/SceneObjects/SCENE_OBJECTS/RockPile2_WHITE.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_3, "Assets/SceneObjects/SCENE_OBJECTS/RockPile3_WHITE.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_4, "Assets/SceneObjects/SCENE_OBJECTS/RockPile4_WHITE.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_5, "Assets/SceneObjects/SCENE_OBJECTS/RockPile5_WHITE.png");
+		RenderHelper::getInstance()->registerTexture(EType_Rock_WHITE_6, "Assets/SceneObjects/SCENE_OBJECTS/RockPile6_WHITE.png");
+
+		//Trees
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_DEAD.png");
+
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_DEAD.png");
+		RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
+		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
+
+		/*********************************************
+		//GameObjects
+		**********************************************/
+		RenderHelper::getInstance()->registerTexture("MISC_ENEMY_STRONG", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Strong.png");
+		RenderHelper::getInstance()->registerTexture("MISC_ENEMY_WEAK", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_Weak.png");
+		RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_UPPER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_UpperJaw.png");
+		RenderHelper::getInstance()->registerTexture("MISC_ENEMYJAW_LOWER", "Assets/SceneObjects/GAME_OBJECTS/Scene_Enemy_LowerJaw.png");
+
+		RenderHelper::getInstance()->registerTexture("FIREBALL", "Assets/Combat_Enemy/Projectiles/FireBall.png");
+		RenderHelper::getInstance()->registerTexture("ENERGYBALL", "Assets/Combat_Enemy/Projectiles/EnergyBall.png");
+
 	}
 
-	m_tileSP = new v_TileSpawnPoint * [NUM_OF_TILESPAWNPOINTS];
-	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Allocate Memory to the variable pointers
+	/*
+	*     Allocate relevant memory depending on defined values (Check #define in .hpp)
+	*/
+	//////////////////////////////////////////////////////////////////////////////////////////////
 	{
-		m_tileSP[i] = new v_TileSpawnPoint[NUM_OF_TILESPAWNPOINTS];
-		for (int j = 0; j < NUM_OF_TILESPAWNPOINTS; j++)
+		m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
+		m_FloorOBJs = new std::list<v_SceneObject>*[SIZE_OF_FLOOR];
+		for (int i = 0; i < SIZE_OF_FLOOR; i++)
 		{
-			m_tileSP[i][j].m_X = (36.0f / NUM_OF_TILESPAWNPOINTS * static_cast<float>(j)) - 18.0f;
-			m_tileSP[i][j].m_Y = (50.0f / NUM_OF_TILESPAWNPOINTS * static_cast<float>(i)) - 25.0f;
+			m_Floor[i] = new v_FloorData[NUM_OF_TILES];
+			m_FloorOBJs[i] = new std::list<v_SceneObject>[NUM_OF_TILES];
+		}
+
+		m_tileSP = new v_TileSpawnPoint * [NUM_OF_TILESPAWNPOINTS];
+		for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
+		{
+			m_tileSP[i] = new v_TileSpawnPoint[NUM_OF_TILESPAWNPOINTS];
+			for (int j = 0; j < NUM_OF_TILESPAWNPOINTS; j++)
+			{
+				m_tileSP[i][j].m_X = (36.0f / NUM_OF_TILESPAWNPOINTS * static_cast<float>(j)) - 18.0f;
+				m_tileSP[i][j].m_Y = (50.0f / NUM_OF_TILESPAWNPOINTS * static_cast<float>(i)) - 25.0f;
+			}
+		}
+		//Set the Center floor num - the one the player is traversing on
+		t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Load data from Json
+	/*
+	*     Load All Level Data from Json, for instance, enemies to spawn and title name and objs
+	*/
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	{
+		if (Database::getInstance()->data["levels"].size() > 0)
+		{
+			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
+			for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
+			{
+				v_SceneLevelData t_curr{};
+				t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
+				t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
+				//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
+				t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
+				t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
+
+				for (auto& map : Database::getInstance()->data["levels"][i]["enemySpawnWeight"].items())
+				{
+					for (auto type = map.value().begin(); type != map.value().end(); type++)
+					{
+						//cout << type.key() <<" || "<< type.value() << endl; //Working example
+						t_curr.m_EnemyTypes.push_back(type.key());
+						t_curr.m_EnemySpawnWeight.push_back(type.value());
+					}
+				}
+
+				for (auto& map : Database::getInstance()->data["levels"][i]["SceneOBJSpawnWeight"].items())
+				{
+					for (auto type = map.value().begin(); type != map.value().end(); type++)
+					{
+						t_curr.m_SceneObjTypes.push_back(type.key());
+						t_curr.m_SceneObjSpawnWeight.push_back(type.value());
+					}
+				}
+
+				*m_SceneLevelDataList = t_curr;
+				m_SceneLevelDataList++;
+			}
+			m_SceneLevelDataList -= Database::getInstance()->data["levels"].size();
 		}
 	}
-	//Set the Center floor num - the one the player is traversing on
-	t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
+	
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Load All Level Data from Json
-	if (Database::getInstance()->data["levels"].size() > 0)
-	{
-		m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
-		for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
-		{
-			v_SceneLevelData t_curr{};
-			t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
-			t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
-			//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
-			t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
-			t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
-
-			for (auto& map : Database::getInstance()->data["levels"][i]["enemySpawnWeight"].items())
-			{
-				for (auto type = map.value().begin(); type != map.value().end(); type++)
-				{
-					//cout << type.key() <<" || "<< type.value() << endl; //Working example
-					t_curr.m_EnemyTypes.push_back(type.key());
-					t_curr.m_EnemySpawnWeight.push_back(type.value());
-				}
-			}
-
-			for (auto& map : Database::getInstance()->data["levels"][i]["SceneOBJSpawnWeight"].items())
-			{
-				for (auto type = map.value().begin(); type != map.value().end(); type++)
-				{
-					t_curr.m_SceneObjTypes.push_back(type.key());
-					t_curr.m_SceneObjSpawnWeight.push_back(type.value());
-				}
-			}
-
-			*m_SceneLevelDataList = t_curr;
-			m_SceneLevelDataList++;
-		}
-		m_SceneLevelDataList -= Database::getInstance()->data["levels"].size();
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Load Combat elements
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Load Combat elements
+	//////////////////////////////////////////////////////////////////////////////////////////////
 	CombatScene::getInstance().Load();
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Initialise 3D engine & relevant values
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Initialise 3D engine & relevant values
+	//////////////////////////////////////////////////////////////////////////////////////////////// 
 	Init();
-
-	///////////////////////////////////////////////
-	// TO BE MOVED TO PLAYER COMBAT
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_01", "Assets/Combat_UI/MyFist_Left_1.png");
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_02", "Assets/Combat_UI/MyFist_Left_2.png");
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_03", "Assets/Combat_UI/MyFist_Left_3.png");
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_04", "Assets/Combat_UI/MyFist_Left_4.png");
-
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_01", "Assets/Combat_UI/MyFist_Right_1.png");
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_02", "Assets/Combat_UI/MyFist_Right_2.png");
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_03", "Assets/Combat_UI/MyFist_Right_3.png");
-	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_04", "Assets/Combat_UI/MyFist_Right_4.png");
 }
 SceneLevelBuilder::~SceneLevelBuilder()
 {
-	Exit();
+	Exit(); //Hehe, dont allow sneaky memory leak
 }
 
 void SceneLevelBuilder::Init()
 {
-	player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
-
-	/*******************************************************************************/
-	//MAIN FLOOR
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	/////////////////////////////////////////////////////////////
+	// Basic Setup of all necessary objects in scene
 	{
-		for (int i = 0; i < NUM_OF_TILES; i++)
+		player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
+		/////////////////////////////////////////////////////////////
+		//Creating GameObjects
+		Create::MiscEnemy();
+		for (int i = 0; i < 10; i++)
 		{
-			switch (i)
-			{
-				//Out of Screen Floor
-			case 0:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * static_cast<f32>(j - t_CenterFloorNum), -2829.0f);
-				break;
-			case 1:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750.0f * static_cast<f32>(j - t_CenterFloorNum), -2229.0f);
-				break;
-			case 2:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350.0f * static_cast<f32>(j - t_CenterFloorNum), -1629.0f);
-				break;
-				//First Floor
-			case 3:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150.0f * static_cast<f32>(j - t_CenterFloorNum), -696.0f);
-				break;
-				//Second Floor
-			case 4:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150.0f * static_cast<f32>(j - t_CenterFloorNum), -282.0f);
-				break;
-				//Third floor
-			case 5:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 555.0f * static_cast<f32>(j - t_CenterFloorNum), -50.0f);
-				break;
-				//Fourth floor
-			case 6:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 270.0f * static_cast<f32>(j - t_CenterFloorNum), 39.0f);
-				break;
-				//Fifth floor
-			case 7:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 130.0f * static_cast<f32>(j - t_CenterFloorNum), 69.0f);
-				break;
-				//Sixth floor
-			case 8:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 59.0f * static_cast<f32>(j - t_CenterFloorNum), 78.0f);
-				break;
-				//Seventh floor
-			case 9:
-				AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
-				AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * static_cast<f32>(j - t_CenterFloorNum), 80.0f);
-				break;
-			default:
-				cout << "Error pls check floor" << "\n";
-				break;
-			}
-			m_Floor[j][i].m_FloorNum = i;
-			m_Floor[j][i].m_OriginalTrans = m_Floor[j][i].m_Trans;
-			AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
-			m_Floor[j][i].m_currFloorNum = i;
-			//Setting Movement Point To
-			m_Floor[j][i].m_TransformFloorCurr = m_Floor[j][i].m_TransformFloorData;
+			Create::Projectiles();
 		}
 	}
 
-
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	//                       GENERATION OF TRANSFORMATION DATA
+	/*              
+	*         Here lies the beginning of the 3D engine initialization, starting with the outset of
+	*         my sanity degradation \(-_-)/ and also the creation of all the relevant transformations
+	*         for each tile, the tiles will then interpolate towards the player then return 
+	*         to the back of the list at the end of its cycle, resulting in the movement of the 
+	*         player.
+	*          
+	*         This engine was inspired by the world shader in Animal Crossing on DS to have
+	*         infinite scrolling by the player.
+	*/
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	AEMtx33 scale, trans, rotate;
-	//////////////////////////////////////////////////////////////////
-	//// Create Scene Objects
-	//// Use this to spawn objects into scene when starting
-	//for (int j = 0; j < SIZE_OF_FLOOR; j++)
-	//{
-	//	for (int i = 0; i < NUM_OF_TILES; i++)
-	//	{
-	//		if (j == t_CenterFloorNum)
-	//			continue;
-	//	    v_SceneObject newObj;
-	//		newObj.m_TexRef = "Mystery_S_Enemy";
-	//		AEMtx33Trans(&newObj.m_Trans, (rand() % 20 - 10) * 1 ,20);
-	//		AEMtx33Scale(&newObj.m_Scale, 0.2f, 0.2f);
-	//		m_FloorOBJs[j][i].push_back(newObj);
-	//	}
-	//}
+	/////////////////////////////////////////////////////////////
+	//MAIN FLOOR
+	{
+		for (int j = 0; j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = 0; i < NUM_OF_TILES; i++)
+			{
+				switch (i)
+				{
+					//Out of Screen Floor
+				case 0:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * static_cast<f32>(j - t_CenterFloorNum), -2829.0f);
+					break;
+				case 1:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750.0f * static_cast<f32>(j - t_CenterFloorNum), -2229.0f);
+					break;
+				case 2:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350.0f * static_cast<f32>(j - t_CenterFloorNum), -1629.0f);
+					break;
+					//First Floor
+				case 3:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150.0f * static_cast<f32>(j - t_CenterFloorNum), -696.0f);
+					break;
+					//Second Floor
+				case 4:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150.0f * static_cast<f32>(j - t_CenterFloorNum), -282.0f);
+					break;
+					//Third floor
+				case 5:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 555.0f * static_cast<f32>(j - t_CenterFloorNum), -50.0f);
+					break;
+					//Fourth floor
+				case 6:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 270.0f * static_cast<f32>(j - t_CenterFloorNum), 39.0f);
+					break;
+					//Fifth floor
+				case 7:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 130.0f * static_cast<f32>(j - t_CenterFloorNum), 69.0f);
+					break;
+					//Sixth floor
+				case 8:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 59.0f * static_cast<f32>(j - t_CenterFloorNum), 78.0f);
+					break;
+					//Seventh floor
+				case 9:
+					AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
+					AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * static_cast<f32>(j - t_CenterFloorNum), 80.0f);
+					break;
+				default:
+					cout << "Error pls check floor" << "\n";
+					break;
+				}
+				m_Floor[j][i].m_FloorNum = i;
+				m_Floor[j][i].m_OriginalTrans = m_Floor[j][i].m_Trans;
+				AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
+				m_Floor[j][i].m_currFloorNum = i;
+				//Setting Movement Point To
+				m_Floor[j][i].m_TransformFloorCurr = m_Floor[j][i].m_TransformFloorData;
+			}
+		}
+
+
+	}
 
 	/////////////////////////////////////////////////////////////
-	// ETC Transformations
-	AEMtx33 m_temp;
-	AEMtx33Identity(&m_temp);
-	//DO SKY DATA
-	AEMtx33Scale(&scale, 1700.0f, 600.f);
-	AEMtx33Trans(&trans, 0, 220);
-	AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
-	for (int i = 0; i < 9; i++)
+	// BACKDROP
 	{
-		m_TransformCloudsData.push_back(m_temp);
-		AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
-		AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
-	}
+		////////////////////////////////////////////////////////////////////////
+		//Sky
+		AEMtx33 m_temp;
+		AEMtx33Identity(&m_temp);
+		//DO SKY DATA
+		AEMtx33Scale(&scale, 1700.0f, 600.f);
+		AEMtx33Trans(&trans, 0, 220);
+		AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
+		for (int i = 0; i < 9; i++)
+		{
+			m_TransformCloudsData.push_back(m_temp);
+			AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
+			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
+		}
 
-	//A Quick fix for retaining the previous transform of the backdrops
-	for (int i = 0; i < 9; i++)
-	{
-		m_TransformBackDrops1Data.push_back(m_temp);
-		m_TransformBackDrops2Data.push_back(m_temp);
-		m_TransformBackDrops3Data.push_back(m_temp);
-	}
+		////////////////////////////////////////////////////////////////////////
+		//Mountain, hills, whatnot
+		//A Quick fix for retaining the previous transform of the backdrops
+		for (int i = 0; i < 9; i++)
+		{
+			m_TransformBackDrops1Data.push_back(m_temp);
+			m_TransformBackDrops2Data.push_back(m_temp);
+			m_TransformBackDrops3Data.push_back(m_temp);
+		}
 
-	//Do Sun Data
-	m_sunOverlayScale = { 120.f, 120.f };
-	m_sunPos = { 350, 350 };
-	AEMtx33Scale(&scale, 50.0f, 50.f);
-	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
-	AEMtx33Concat(&m_TransformSunData, &trans, &scale);
-	AEMtx33Scale(&scale, m_sunOverlayScale.x, m_sunOverlayScale.y);
-	AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
-	AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
-	for (int i = 0; i < 8; i++)
-		m_TransformSunLensData.push_back(m_temp);
+		////////////////////////////////////////////////////////////////////////
+		//Sun
+		m_sunOverlayScale = { 120.f, 120.f };
+		m_sunPos = { 350, 350 };
+		AEMtx33Scale(&scale, 50.0f, 50.f);
+		AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
+		AEMtx33Concat(&m_TransformSunData, &trans, &scale);
+		AEMtx33Scale(&scale, m_sunOverlayScale.x, m_sunOverlayScale.y);
+		AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
+		AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
+		for (int i = 0; i < 8; i++)
+			m_TransformSunLensData.push_back(m_temp);
 
-	//DO FOG DATA
-	AEMtx33Scale(&scale, 2000.0f, 70.f);
-	AEMtx33Trans(&trans, 0, 80);
-	AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-
-	//Creating GameObjects
-	Create::MiscEnemy();
-	for (int i = 0; i < 10; i++)
-	{
-		Create::Projectiles();
+		////////////////////////////////////////////////////////////////////////
+		//Fog
+		AEMtx33Scale(&scale, 2000.0f, 70.f);
+		AEMtx33Trans(&trans, 0, 80);
+		AEMtx33Concat(&m_TransformFogData, &trans, &scale);
 	}
 }
 
@@ -840,6 +857,13 @@ void SceneLevelBuilder::Update(double dt)
 		if (Pause::getInstance().isPaused) {
 			return;
 		}
+		UpdateLvlName(static_cast<f32>(dt));//Level Name
+		if (m_CompletionStatus > 100)
+		{
+			++m_currLevel;
+			SceneLevelBuilder::SpawnLvlName();
+		}
+
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));
 		UpdateBackdrop(static_cast<float>(dt));
@@ -862,7 +886,6 @@ void SceneLevelBuilder::Update(double dt)
 		//cout << "\n";
 	}
 
-
 	////////////////////////////////////////////////////////////////////////////////
 	// Combat & Player with Scene Interaction
 	{
@@ -876,13 +899,14 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
-				else if (AEInputCheckCurr(AEVK_RBUTTON)) {
-					player->setHandStateAnimationType(Player::HandAnimationType::Ready);
-				}
-				else if (AEInputCheckTriggered(AEVK_SPACE))
-				{
-					player->setHandStateAnimationType(Player::HandAnimationType::Block);
-				}
+				//Not planning to implement for now
+				//else if (AEInputCheckCurr(AEVK_RBUTTON)) {
+				//	player->setHandStateAnimationType(Player::HandAnimationType::Ready);
+				//}
+				//else if (AEInputCheckTriggered(AEVK_SPACE))
+				//{
+				//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
+				//}
 
 				//TO BE REMOVED
 				if (AEInputCheckTriggered(AEVK_RBUTTON) && !m_CombatPhase)
@@ -895,12 +919,10 @@ void SceneLevelBuilder::Update(double dt)
 			/////////////////////////////////////////////////////////////////////////////
 			// Settings to lerp to the movement view
 			{
-				//m_LerpingSpeed += m_LerpingSpeed < 5.0 ? static_cast<f32>(dt) * 5.f : 0;
 				m_StopMovement = false;
 
 				m_PanCloseToGround = false;
 				m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
-				m_PanDownCam += m_PanDownCam < 0 ? LERPING_SPEED : 0;
 
 				if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
 					SoundPlayer::stopAll();
@@ -923,10 +945,10 @@ void SceneLevelBuilder::Update(double dt)
 						case 1:
 							m_SceneEnemy->m_Active = false;
 							m_SceneEnemy = nullptr;
-							m_CombatBufferingTime = 2.5f;
+							m_CombatBufferingTime = 2.0f;
 							names = { "horse", "dragon", "cat", "cat" };
 							CombatScene::getInstance().spawnEnemies(names);
-							t_whoseTurn = CombatManager::PLAYER;//CombatScene::getInstance().Init(CombatManager::PLAYER);
+							t_whoseTurn = CombatManager::PLAYER;
 							m_CombatPhase = true;
 							m_CombatAnimationComp = false;
 							break;
@@ -935,10 +957,10 @@ void SceneLevelBuilder::Update(double dt)
 							m_SceneEnemy = nullptr;
 							m_currTransitionTransparency = 1.0f;
 							m_setTransitionTransparency = 1.0f;
-							m_CombatBufferingTime = 1.5f;
+							m_CombatBufferingTime = 0.8f;
 							names = { "horse", "dragon", "cat", "cat" };
 							CombatScene::getInstance().spawnEnemies(names);
-							t_whoseTurn = CombatManager::ENEMY;//CombatScene::getInstance().Init(CombatManager::ENEMY);
+							t_whoseTurn = CombatManager::ENEMY;
 							m_CombatPhase = true;
 							m_CombatAnimationComp = false;
 							break;
@@ -969,11 +991,14 @@ void SceneLevelBuilder::Update(double dt)
 					CombatScene::getInstance().Init((CombatManager::TURN)t_whoseTurn);
 					FadeOutBlack();
 				}
+				//For faster setup
+				if (m_CombatBufferingTime > 0.4f && !m_CombatAnimationComp)
+				{
+					if ((CombatManager::TURN)t_whoseTurn - 1) dt *= 5; //SPEEDUP SPECIFICALLY FOR ENEMY START TURN
+				}
 
 				m_PanCloseToGround = true;
 				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? LERPING_SPEED : 0;
-				m_PanDownCam -= m_PanDownCam > -100 ? LERPING_SPEED : 0;
-				if (!m_CombatAnimationComp && ((CombatManager::TURN)t_whoseTurn - 1)) dt *= 5; //SPEEDUP SPECIFICALLY FOR ENEMY START TURN
 
 				if (!GameScene::combatAudioLoopIsPlaying) {
 					SoundPlayer::stopAll();
@@ -985,27 +1010,8 @@ void SceneLevelBuilder::Update(double dt)
 		}
 	}
 
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Game 3D Environment Update Cycle
-	//Level Name
-	UpdateLvlName(static_cast<f32>(dt));
-	if (m_CompletionStatus > 100 || AEInputCheckTriggered(AEVK_C))
-		SceneLevelBuilder::SpawnLvlName();
-
-	//if (AEInputCheckCurr(AEVK_SPACE))
-	//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
-	//else if (AEInputCheckCurr(AEVK_Q))
-	//	player->setHandStateAnimationType(Player::HandAnimationType::Punch);
-	//else if (AEInputCheckCurr(AEVK_E))
-	//	player->setHandStateAnimationType(Player::HandAnimationType::Ready);
-	//else
-	//	player->setHandStateAnimationType(Player::HandAnimationType::None);
-
-	//player->updateHands(static_cast<float>(dt));
-
-
-
 	if (!m_StopMovement)
 	{
 
@@ -1110,8 +1116,6 @@ void SceneLevelBuilder::Update(double dt)
 				}
 				t_ShiftRow.clear();
 			}
-
-
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -1176,7 +1180,7 @@ void SceneLevelBuilder::Render()
 	// This will allow transparency.
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
-	////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//SKY RENDER
 	{
 		AEGfxSetTransparency(1.0f);
@@ -1234,7 +1238,7 @@ void SceneLevelBuilder::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// BACKDROP RENDER
 	{
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
@@ -1257,7 +1261,7 @@ void SceneLevelBuilder::Render()
 		}
 
 	}
-	//////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// FLOOR RENDER
 	{
 		//// Tell the engine to get ready to draw something with texture.
@@ -1311,7 +1315,6 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(m_TransformFogData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//SCENEOBJ RENDER
 	{
@@ -1364,8 +1367,7 @@ void SceneLevelBuilder::Render()
 			}
 		}
 	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//Light Flare
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -1404,13 +1406,11 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
 	if (m_CombatPhase)
 		CombatScene::getInstance().Render();
-
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//UI / MISC RENDER
 	{
 		//Lvl Name
@@ -1446,12 +1446,10 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	}
-
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//GAMEOBJ RENDER
 	GameObjectManager::GetInstance()->Render();
-
-	////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
 	{
 		//LIGHT FILTER
@@ -1469,13 +1467,19 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
-	// down here because player should be drawn on top of everything else, save pause screen
-	if (!m_CombatPhase) {
-		player->render();
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//UI / MISC RENDER PART 2
+	{
+		// down here because player should be drawn on top of everything else, save pause screen
+		if (!m_CombatPhase) {
+			player->render();
+		}
+
+		Pause::getInstance().render();
 	}
 
-	Pause::getInstance().render();
 }
+
 void SceneLevelBuilder::Exit()
 {
 	//Clear Floor
@@ -1616,7 +1620,6 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 		}
 	}
 }
-
 void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
 {
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
@@ -1635,7 +1638,6 @@ void SceneLevelBuilder::SpawnLvlName()
 	//m_currLevel += m_currLevel<3?1:-2;
 	m_LvlNameTransparency = -1.2f;
 }
-
 void SceneLevelBuilder::UpdateLvlName(f32 t_dt)
 {
 	if (m_LvlNameTimer > MAX_LVLNAMETIMER - 1.0)
@@ -1648,7 +1650,6 @@ void SceneLevelBuilder::UpdateLvlName(f32 t_dt)
 	}
 	m_LvlNameTimer -= t_dt;
 }
-
 void SceneLevelBuilder::RenderLvlName()
 {
 	f32 t_camX, t_camY;
@@ -1720,6 +1721,9 @@ void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
 void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
 void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 
+/*********************************************************************************
+GENERIC UPDATE FUNCTIONS (PARALLAX SCROLLING)
+**********************************************************************************/
 void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 {
 	UNREFERENCED_PARAMETER(t_dt);
@@ -1810,8 +1814,9 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 	}
 }
 
+
 ////////////////////////////////////////////////////////////////////////////
-/*
+/* TO BE DELETED
 //Placement Tool (Remove once done)
 static double x = 1, y = 1;
 if (AEInputCheckCurr(AEVK_W))

@@ -243,7 +243,7 @@ private:
 	bool m_PanCloseToGround;
 	int m_PanCloseToGroundValue = 80;
 	//float m_LerpingSpeed = 10.0f;
-	int m_PanDownCam = 0;
+	//int m_PanDownCam = 0;
 	int m_CurrentTileNumFurthest;
 	bool m_CombatPhase;
 	bool m_CombatAnimationComp;

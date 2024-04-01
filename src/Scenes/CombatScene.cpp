@@ -407,6 +407,14 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("blockwait3", "./Assets/Combat_UI/waitingForBlock3.png");
 	RenderHelper::getInstance()->registerTexture("blockNow", "./Assets/Combat_UI/BlockHappens.png");
 	RenderHelper::getInstance()->registerTexture("nian", "./Assets/Combat_UI/nian.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_01", "Assets/Combat_UI/MyFist_Left_1.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_02", "Assets/Combat_UI/MyFist_Left_2.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_03", "Assets/Combat_UI/MyFist_Left_3.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_04", "Assets/Combat_UI/MyFist_Left_4.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_01", "Assets/Combat_UI/MyFist_Right_1.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_02", "Assets/Combat_UI/MyFist_Right_2.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_03", "Assets/Combat_UI/MyFist_Right_3.png");
+	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_04", "Assets/Combat_UI/MyFist_Right_4.png");
 
 
 
