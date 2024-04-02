@@ -1063,7 +1063,7 @@ void SceneLevelBuilder::Render()
 	GameObjectManager::GetInstance()->Render();
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Light Flare
-	if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
+	if (m_SceneLevelDataList[m_currLevel].m_DayTime)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
@@ -1099,20 +1099,6 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransparency(transparency[0]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
-	{
-		AEGfxSetTransparency(1.0f);
-		AEMtx33 t_curr;
-		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1152,6 +1138,20 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
+	{
+		AEGfxSetTransparency(1.0f);
+		AEMtx33 t_curr;
+		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetColorToAdd(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
