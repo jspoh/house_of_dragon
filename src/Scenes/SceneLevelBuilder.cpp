@@ -344,7 +344,7 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 5; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
