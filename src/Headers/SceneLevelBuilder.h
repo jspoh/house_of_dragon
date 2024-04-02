@@ -217,6 +217,9 @@ private:
 	v_SceneLevelData* m_SceneLevelDataList;
 	double m_CompletionStatus; //0 - 100%
 	int m_currLevel;
+	int m_MAXLevel;
+
+	Color m_Lighting;
 
 	///////////////////////////////////////////////////////
 	//LEVEL NAME DISPLAY

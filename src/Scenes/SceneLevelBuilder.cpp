@@ -94,7 +94,8 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	m_SceneEnemy{ nullptr },
 	m_CombatPhase{ false },
 	m_CombatAnimationComp{ false },
-	m_CombatBufferingTime{ 0.0 }
+	m_CombatBufferingTime{ 0.0 },
+	m_Lighting {1.0f,1.0f,1.0f,1.0f}
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////
     //                       Loading of ALL Scene Textures
@@ -348,7 +349,8 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_currLevel = 3; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -1057,7 +1059,11 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// GAMEOBJ RENDER
+	GameObjectManager::GetInstance()->Render();
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Light Flare
+	if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
@@ -1095,6 +1101,20 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
+	{
+		AEGfxSetTransparency(1.0f);
+		AEMtx33 t_curr;
+		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetColorToAdd(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
 	if (m_CombatPhase)
@@ -1104,8 +1124,6 @@ void SceneLevelBuilder::Render()
 	{
 		//Lvl Name
 		RenderLvlName();
-		//Hands
-		//player->_renderHands();
 
 		//Border
 		f32 camX, camY;
@@ -1135,35 +1153,19 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// GAMEOBJ RENDER
-	GameObjectManager::GetInstance()->Render();
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
-	{
-		//LIGHT FILTER
-		//-0.39 0.06 0.3 (NIGHTTIME)
-		//1.01 0.45 0.79 (DUSK/TWILIGHT)
-		// 0.92 1 0.19 (Dawn)
-		AEGfxSetTransparency(1.0f);
-		AEMtx33 t_curr;
-		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// UI / MISC RENDER PART 2
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 3
 	{
 		// down here because player should be drawn on top of everything else, save pause screen
 		if (!m_CombatPhase) {
 			player->render();
 		}
+	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 3
+	{
 		Pause::getInstance().render();
 	}
 
@@ -1438,19 +1440,40 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 				  like lighting
 		*/
 		/////////////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////////////
-		//Change of Daytime to nighttime
-		if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
-		{
+		// 		//LIGHT FILTER
+		//-0.39, 0.06, 0.3 (NIGHTTIME)
+		//1.0, 0.45, 0.79 (DUSK/TWILIGHT)
+		// 0.92 1 0.19 (Dawn)
 
+		static double t_r, t_g, t_b;
+		/////////////////////////////////////////////////////////////////////
+		//Change to nighttime
+		if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = -0.39; t_g = 0.06; t_b = 0.3;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to Dawn
+		else if (m_SceneLevelDataList[m_currLevel + 1].m_DayTime && !m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = 0.92; t_g = 1.0; t_b = 0.19;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to Dusk
+		else if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = 1.0; t_g = 0.45; t_b = 0.79;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to DayTime
+		else
+		{
+			t_r = 1.0; t_g = 1.0; t_b = 1.0;
 		}
 
-		/////////////////////////////////////////////////////////////////////
-		//Change of NightTime to DayTime
-		if (m_SceneLevelDataList[m_currLevel + 1].m_DayTime && !m_SceneLevelDataList[m_currLevel].m_DayTime)
-		{
-
-		}
+		m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt : 0;
+		m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt? -dt : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt? dt : 0;
+		m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt? -dt : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt? dt : 0;
 
 		/////////////////////////////////////////////////////////////////////
 		/*
