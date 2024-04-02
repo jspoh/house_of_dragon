@@ -62,6 +62,9 @@ private:
 	void UpdateClouds(f32 t_dt);
 	void UpdateBackdrop(f32 t_dt);
 
+	std::vector<std::string> GenerateEnemyToSpawn();
+
+
 	struct v_FloorData
 	{
 		v_FloorData();
@@ -249,4 +252,5 @@ private:
 	bool m_CombatAnimationComp;
 	double m_CombatBufferingTime;
 	GameObject_Misc_Enemy* m_SceneEnemy; // Just as a reference to easily start the combat
+	std::vector<std::string> m_CombatNames;
 };

@@ -91,7 +91,7 @@
         "maxSceneOBJperTile": 4,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -112,7 +112,7 @@
         "maxSceneOBJperTile": 8,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -133,7 +133,7 @@
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -154,7 +154,7 @@
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -175,7 +175,7 @@
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 2
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -196,12 +196,13 @@
         "maxSceneOBJperTile": 12,
         "enemySpawnWeight": [
             {
-                "dog": 2
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
             {
-                "Rock": 10
+                "Rock": 20,
+                "Grass": 2
             }
         ],
         "DayTime": true
@@ -216,12 +217,13 @@
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 2
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
             {
-                "Rock": 10
+                "Rock": 20,
+                "Grass": 2
             }
         ],
         "DayTime": true

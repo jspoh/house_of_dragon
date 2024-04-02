@@ -600,15 +600,13 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					if (m_SceneEnemy->m_StartCombat)
 					{
-						std::vector<std::string> names;
 						switch (m_SceneEnemy->m_StartCombat)
 						{
 						case 1:
 							m_SceneEnemy->m_Active = false;
 							m_SceneEnemy = nullptr;
 							m_CombatBufferingTime = 2.0f;
-							names = { "horse", "dragon", "cat", "cat" };
-							CombatScene::getInstance().spawnEnemies(names);
+							CombatScene::getInstance().spawnEnemies(GenerateEnemyToSpawn());
 							t_whoseTurn = CombatManager::PLAYER;
 							m_CombatPhase = true;
 							m_CombatAnimationComp = false;
@@ -619,8 +617,7 @@ void SceneLevelBuilder::Update(double dt)
 							m_currTransitionTransparency = 1.0f;
 							m_setTransitionTransparency = 1.0f;
 							m_CombatBufferingTime = 0.8f;
-							names = { "horse", "dragon", "cat", "cat" };
-							CombatScene::getInstance().spawnEnemies(names);
+							CombatScene::getInstance().spawnEnemies(GenerateEnemyToSpawn());
 							t_whoseTurn = CombatManager::ENEMY;
 							m_CombatPhase = true;
 							m_CombatAnimationComp = false;
@@ -1517,6 +1514,40 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 	}
 }
 
+std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
+{
+	m_CombatNames.clear();//= { "horse", "dragon", "cat", "cat" };
+	int TotalProb = 0; //Get total probability
+	for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+	{
+		TotalProb += curr;
+	}
+	for (int i = 0; i < m_SceneLevelDataList[m_currLevel].m_MaxEnemies; i++)
+	{
+		std::string Ref = "";
+		int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
+		int temp = 0;//Disregard this: for loop below
+		for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+		{
+			randnum -= curr;
+			if (randnum < 0)
+			{
+				Ref = m_SceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
+				break;
+			}
+			temp++;
+		}
+		m_CombatNames.push_back(Ref);
+
+		if (rand() % 100 < 10)
+		{
+			break;
+		}
+	}
+	
+
+	return m_CombatNames;
+}
 
 ////////////////////////////////////////////////////////////////////////////
 /* TO BE DELETED

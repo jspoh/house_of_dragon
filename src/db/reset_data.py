@@ -87,7 +87,7 @@ def constructData() -> dict:
         "enemySpawnWeight": [
             {
                 "cat": 2,
-                "dog": 1
+                "dragon": 1
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -109,7 +109,7 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 4,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -130,7 +130,7 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 8,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -151,7 +151,7 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -172,7 +172,7 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 1
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -193,7 +193,7 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 2
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -214,12 +214,13 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 12,
         "enemySpawnWeight": [
             {
-                "dog": 2
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
             {
-                "Rock": 10
+                "Rock": 20,
+                "Grass": 2
             }
         ],
         "DayTime": true
@@ -234,12 +235,13 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 20,
         "enemySpawnWeight": [
             {
-                "dog": 2
+                "dragon": 2
             }
         ],
         "SceneOBJSpawnWeight": [
             {
-                "Rock": 10
+                "Rock": 20,
+                "Grass": 2
             }
         ],
         "DayTime": true
