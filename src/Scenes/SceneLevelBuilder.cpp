@@ -113,9 +113,12 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		/*********************************************
 		//Floor
 		**********************************************/
-		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_2", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Rocky1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_2", "Assets/SceneObjects/FLOOR/Scene_Floor_Path2.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_2", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Rocky1.png");
 
 		/*********************************************
 		//Sky
