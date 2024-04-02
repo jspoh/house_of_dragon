@@ -153,12 +153,48 @@ private:
 	bool _mcoIsTransitioningOut = false;
 
 	/*typing event vars*/
-	const std::array<std::string, 5> _wordlist{
+	const std::array<std::string, 40> _wordlist{
 		"nian",
 		"dragon",
 		"angpao",
 		"oranges",
-		"caishenye"
+		"caishenye",
+		"abundance",
+		"ancestors",
+		"auspicious",
+		"bamboo",
+		"blessings",
+		"bok choy",
+		"bai nian",
+		"dim sum",
+		"dumplings",
+		"emperor",
+		"evil spirit",
+		"family",
+		"fortune",
+		"fireworks",
+		"firecrackers",
+		"full moon",
+		"gold",
+		"gongfu",
+		"good luck",
+		"gratitude",
+		"fat choy",
+		"incense",
+		"jade",
+		"lantern",
+		"festival",
+		"longevity",
+		"lunar",
+		"panda",
+		"poetry",
+		"qipao",
+		"reunion",
+		"spirits",
+		"season",
+		"tangyuan",
+		"zongzi"
+
 	};
 	// determines whether to get a new word.
 	// when user is done typing current word, then set this to true

@@ -49,7 +49,8 @@ SceneLevelBuilder::v_FloorData::v_FloorData() :
 	m_FloorNum{ 0 },
 	m_currFloorTimer{ 0.0 },
 	m_FloorSpeedTimer{ 0.5 },
-	m_IsRender{ true }
+	m_IsRender{ true },
+	m_Type{0}
 {
 	AEMtx33Identity(&m_TransformFloorData);
 	AEMtx33Identity(&m_TransformFloorCurr);
@@ -62,7 +63,7 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	:m_TexRef{ "" },
 	m_RenderOrder{ 0 },
 	m_Transparency{ -1.5f },
-	m_Type{ v_SceneObjectTypes::LAST_TYPE },
+	m_Type{ v_SceneObjectTypes::EType_Grass_Foliage_1 },
 	m_tobeCentered {false}
 {
 	AEMtx33Identity(&m_TransformData);
@@ -77,7 +78,10 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	m_EnemyTypes{},
 	m_EnemySpawnWeight{},
 	m_SceneObjTypes{},
-	m_SceneObjSpawnWeight{} {}
+	m_SceneObjSpawnWeight{},
+	m_LevelCompletionRate{ 0.0 },
+	m_Unlocked{ false },
+	m_EnemySpawnRate{0}{}
 
 SceneLevelBuilder::SceneLevelBuilder() :
 	m_StopMovement{ false },
@@ -92,7 +96,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	m_CombatPhase{ false },
 	m_CombatAnimationComp{ false },
 	m_CombatBufferingTime{ 0.0 },
-	m_LevelClearSpeed{0.0}
+	m_Lighting {1.0f,1.0f,1.0f,1.0f}
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////
     //                       Loading of ALL Scene Textures
@@ -111,9 +115,12 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		/*********************************************
 		//Floor
 		**********************************************/
-		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass.png");
-		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path.png");
-		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Grass1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_1", "Assets/SceneObjects/FLOOR/Scene_Floor_Path1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_1", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Grass1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_LEFT_2", "Assets/SceneObjects/FLOOR/Scene_FloorSideLeft_Rocky1.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_CENTER_2", "Assets/SceneObjects/FLOOR/Scene_Floor_Path2.png");
+		RenderHelper::getInstance()->registerTexture("FLOOR_RIGHT_2", "Assets/SceneObjects/FLOOR/Scene_FloorSideRight_Rocky1.png");
 
 		/*********************************************
 		//Sky
@@ -274,12 +281,15 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		if (Database::getInstance()->data["levels"].size() > 0)
 		{
 			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
+			m_MAXLevel = Database::getInstance()->data["levels"].size() - 1;
 			for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
 			{
 				v_SceneLevelData t_curr{};
 				t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
+				t_curr.m_LevelCompletionRate = Database::getInstance()->data["levels"][i]["levelCompletionRate"];
 				t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
-				//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
+				t_curr.m_EnemySpawnRate = Database::getInstance()->data["levels"][i]["enemySpawnRate"];
+				t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
 				t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
 				t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
 
@@ -340,8 +350,8 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
-		m_LevelClearSpeed = 0.9;
+		m_currLevel = 5; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -501,13 +511,20 @@ void SceneLevelBuilder::Update(double dt)
 		{
 			if (m_CompletionStatus > 100.0 && SceneStages::sInstance->m_StartGame)
 			{
-				++m_currLevel;
+				if (m_currLevel <= m_MAXLevel)
+					++m_currLevel;
+				//else
+				//	m_currLevel; //ALL LEVELS DONE
 				SceneLevelBuilder::SpawnLvlName();
 				m_CompletionStatus = 0.0;
 			}
-			m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_LevelClearSpeed : 0.0;
+			m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+			if (AEInputCheckCurr(AEVK_1))
+				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
+
 		}
-		//UpdateLevelGameplay(static_cast<float>(dt));
+		cout << "Level Done: " << m_CompletionStatus << "%" << endl;
+		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));
 		UpdateBackdrop(static_cast<float>(dt));
@@ -551,13 +568,6 @@ void SceneLevelBuilder::Update(double dt)
 				//{
 				//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
 				//}
-
-				//TO BE REMOVED
-				if (AEInputCheckTriggered(AEVK_RBUTTON) && !m_CombatPhase)
-				{
-					m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
-					m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
-				}
 			}
 
 			/////////////////////////////////////////////////////////////////////////////
@@ -572,7 +582,6 @@ void SceneLevelBuilder::Update(double dt)
 						m_StopMovement = false;
 						m_PanCloseToGround = false;
 						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
-
 					}
 				}
 				if (m_CombatBufferingTime <= 0.0f)
@@ -580,9 +589,7 @@ void SceneLevelBuilder::Update(double dt)
 					////////////////////////////////////////////////////////////////////////
 					// Fade out after combat
 					//might give potential errors if using fade in/fade out in other areas, so watch out
-					{
-						FadeOutBlack(); 
-					}
+					FadeOutBlack();
 					//////////////////////////////////////////////////////////////////////////
 					if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
 						SoundPlayer::stopAll();
@@ -600,15 +607,13 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					if (m_SceneEnemy->m_StartCombat)
 					{
-						std::vector<std::string> names;
 						switch (m_SceneEnemy->m_StartCombat)
 						{
 						case 1:
 							m_SceneEnemy->m_Active = false;
 							m_SceneEnemy = nullptr;
 							m_CombatBufferingTime = 2.0f;
-							names = { "horse", "dragon", "cat", "cat" };
-							CombatScene::getInstance().spawnEnemies(names);
+							CombatScene::getInstance().spawnEnemies(GenerateEnemyToSpawn());
 							t_whoseTurn = CombatManager::PLAYER;
 							m_CombatPhase = true;
 							m_CombatAnimationComp = false;
@@ -619,8 +624,7 @@ void SceneLevelBuilder::Update(double dt)
 							m_currTransitionTransparency = 1.0f;
 							m_setTransitionTransparency = 1.0f;
 							m_CombatBufferingTime = 0.8f;
-							names = { "horse", "dragon", "cat", "cat" };
-							CombatScene::getInstance().spawnEnemies(names);
+							CombatScene::getInstance().spawnEnemies(GenerateEnemyToSpawn());
 							t_whoseTurn = CombatManager::ENEMY;
 							m_CombatPhase = true;
 							m_CombatAnimationComp = false;
@@ -643,6 +647,9 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					m_CombatBufferingTime = 0.6f;
 					FadeINBlack();
+					//if(PlayerVictory)
+					m_CompletionStatus += 30; // Increment Progression of level for completing the battle
+
 				}
 					
 			}
@@ -762,6 +769,12 @@ void SceneLevelBuilder::Update(double dt)
 
 							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
 
+							//FORCE CHANGE OF FLOORING TYPE
+							//Change of flooring at Stage 6
+							if (m_currLevel >= 6 && m_currLevel <= 7)
+								m_Floor[j][i].m_Type = 1;
+							else
+								m_Floor[j][i].m_Type = 0;
 						}
 					}
 					else
@@ -856,7 +869,7 @@ void SceneLevelBuilder::Render()
 
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
@@ -953,11 +966,15 @@ void SceneLevelBuilder::Render()
 		//// Set the color to add to nothing, so that we don't alter the sprite's color
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 
-		std::string texRef = "Floor_Center_";// + LEVELNUM
 		//Main Floor
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
+		
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
 		{
+			if(m_Floor[t_CenterFloorNum][i].m_Type ==0)
+				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
+			else
+				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_2"), 0, 0);
+
 			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 			{
 				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
@@ -966,11 +983,15 @@ void SceneLevelBuilder::Render()
 		}
 
 		////Left Floor
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
 		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
+				if (m_Floor[j][i].m_Type == 0)
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
+				else
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_2"), 0, 0);
+
 				if (m_Floor[j][i].m_IsRender)
 				{
 					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
@@ -979,11 +1000,15 @@ void SceneLevelBuilder::Render()
 			}
 		}
 		//Right Floor
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
 		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
+				if (m_Floor[j][i].m_Type == 0)
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
+				else
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_2"), 0, 0);
+
 				if (m_Floor[j][i].m_IsRender)
 				{
 					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
@@ -999,9 +1024,15 @@ void SceneLevelBuilder::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
 		AEGfxSetTransform(m_TransformFogData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//MASSIVE FOG AT LEVEL 7
+		if (m_currLevel == 7)
+		{
+
+		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//SCENEOBJ RENDER
+	// SCENEOBJ RENDER
 	{
 		//Render Left Side
 		for (int j = 0; j < SIZE_OF_FLOOR / 2; j++)
@@ -1053,7 +1084,8 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//Light Flare
+	// Light Flare
+	if(m_SceneLevelDataList[m_currLevel].m_DayTime)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
@@ -1096,12 +1128,10 @@ void SceneLevelBuilder::Render()
 	if (m_CombatPhase)
 		CombatScene::getInstance().Render();
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//UI / MISC RENDER
+	// UI / MISC RENDER
 	{
 		//Lvl Name
 		RenderLvlName();
-		//Hands
-		//player->_renderHands();
 
 		//Border
 		f32 camX, camY;
@@ -1132,34 +1162,35 @@ void SceneLevelBuilder::Render()
 
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//GAMEOBJ RENDER
+	// GAMEOBJ RENDER
 	GameObjectManager::GetInstance()->Render();
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
-	{
-		//LIGHT FILTER
-		//-0.39 0.06 0.3 (NIGHTTIME)
-		//1.01 0.45 0.79 (DUSK/TWILIGHT)
-		// 0.92 1 0.19 (Dawn)
-		AEGfxSetTransparency(1.0f);
-		AEMtx33 t_curr;
-		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//UI / MISC RENDER PART 2
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 2
 	{
 		// down here because player should be drawn on top of everything else, save pause screen
 		if (!m_CombatPhase) {
 			player->render();
 		}
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
+	/*{
+		cout << m_Lighting.r << " " << m_Lighting.b << " " << m_Lighting.g << endl;
+		AEGfxSetTransparency(1.0f);
+		AEMtx33 t_curr;
+		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetColorToAdd(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}*/
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 3
+	{
 		Pause::getInstance().render();
 	}
 
@@ -1404,6 +1435,84 @@ void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 /*********************************************************************************
 GENERIC UPDATE FUNCTIONS (PARALLAX SCROLLING)
 **********************************************************************************/
+void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
+{
+	/////////////////////////////////////////////////////////////////////////
+	// Auto Spawning of enemies
+	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
+	m_TryTimer -= dt;
+	if (m_TryTimer < 0)
+	{
+		if (m_SceneEnemy == nullptr && !m_CombatPhase && SceneStages::sInstance->m_StartGame)
+		{
+			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate)
+			{
+				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
+				m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
+			}
+		}
+		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
+	}
+
+	/////////////////////////////////////////////////////////////////////
+	/*
+			  Anything written in this part is meant for generic changes
+			  like lighting
+	*/
+	/////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
+	// Update backdrop main position or light filter 
+	// betweem each level to seamlessly transit
+	static double t_r, t_g, t_b;
+	if (m_currLevel < m_MAXLevel) //Check the stats for next level
+	{
+
+		/////////////////////////////////////////////////////////////////////
+		//Change to nighttime
+		if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = -0.39; t_g = 0.06; t_b = 0.3;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to Dawn
+		else if (!m_SceneLevelDataList[m_currLevel - 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = 1.0; t_g = 0.7; t_b = 1.0;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to Dusk
+		else if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = 1.0; t_g = 0.34; t_b = 0.3;
+		}
+	}
+	/////////////////////////////////////////////////////////////////////
+	//Change to DayTime
+	else
+	{
+		t_r = 1.0; t_g = 1.0; t_b = 1.0;
+	}
+
+	m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt ? -dt / LERPING_SPEED : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt ? -dt / LERPING_SPEED : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
+
+	/////////////////////////////////////////////////////////////////////
+	/*
+			  Anything written below this part is meant for specific
+			  stages. SO BASICALLY HARD CODED FOR THAT STAGE
+	*/
+	/////////////////////////////////////////////////////////////////////
+	{
+		if (m_currLevel == 5 && m_CompletionStatus >= 50)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				m_TransformBackDrops3Data[i].m[1][2] -= dt / LERPING_SPEED;
+			}
+		}
+	}
+}
 void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 {
 	UNREFERENCED_PARAMETER(t_dt);
@@ -1494,6 +1603,40 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 	}
 }
 
+std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
+{
+	m_CombatNames.clear();
+	int TotalProb = 0; //Get total probability
+	for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+	{
+		TotalProb += curr;
+	}
+	for (int i = 0; i < m_SceneLevelDataList[m_currLevel].m_MaxEnemies; i++)
+	{
+		std::string Ref = "";
+		int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
+		int temp = 0;//Disregard this: for loop below
+		for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+		{
+			randnum -= curr;
+			if (randnum < 0)
+			{
+				Ref = m_SceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
+				break;
+			}
+			temp++;
+		}
+		m_CombatNames.push_back(Ref);
+
+		if (rand() % 100 < 10)
+		{
+			break;
+		}
+	}
+	
+
+	return m_CombatNames;
+}
 
 ////////////////////////////////////////////////////////////////////////////
 /* TO BE DELETED

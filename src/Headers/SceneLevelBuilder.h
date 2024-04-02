@@ -27,6 +27,7 @@ Technology is prohibited.
 #define MAX_NUM_SCENEOBJS_TILE 8
 #define MAX_LVLNAMETIMER 4.0
 #define LERPING_SPEED 10.0
+#define TRY_TO_SPAWN_ENEMY_TIMER 1.0
 
 namespace GameScene {
 	extern bool combatAudioLoopIsPlaying;
@@ -56,9 +57,13 @@ private:
 	void FadeINBlack(); //Call when u want fade into black
 	void FadeOutBlack(); //Call when u want fade out from black
 
+	void UpdateLevelGameplay(f32 t_dt);
 	void UpdateLensFlare(f32 t_dt);
 	void UpdateClouds(f32 t_dt);
 	void UpdateBackdrop(f32 t_dt);
+
+	std::vector<std::string> GenerateEnemyToSpawn();
+
 
 	struct v_FloorData
 	{
@@ -94,6 +99,7 @@ private:
 		//And this is basically Render or Not
 		bool m_IsRender;
 		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
+		int m_Type; //0 for grass, 1 for rocky
 	};
 
 	struct v_TileSpawnPoint
@@ -117,9 +123,6 @@ private:
     ////////////////////////////////////////////////////////////////////////////////////////////////
 	enum v_SceneObjectTypes
 	{
-		EType_MysteryEnemyStrong,
-		EType_MysteryEnemyWeak,
-
 		FIRST_TYPE,
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		TYPE_Grass, //To define objs that are grass
@@ -194,8 +197,11 @@ private:
 	{
 		v_SceneLevelData();
 		std::string m_LevelName;
+		double m_LevelCompletionRate;
 		bool m_Completed;
+		bool m_Unlocked;
 		int m_MaxEnemies;
+		int m_EnemySpawnRate;
 		std::vector<std::string> m_EnemyTypes;
 		std::vector<int> m_EnemySpawnWeight;
 		std::vector<std::string> m_SceneObjTypes;
@@ -211,8 +217,10 @@ private:
 
 	v_SceneLevelData* m_SceneLevelDataList;
 	double m_CompletionStatus; //0 - 100%
-	double m_LevelClearSpeed;
 	int m_currLevel;
+	int m_MAXLevel;
+
+	Color m_Lighting;
 
 	///////////////////////////////////////////////////////
 	//LEVEL NAME DISPLAY
@@ -248,4 +256,5 @@ private:
 	bool m_CombatAnimationComp;
 	double m_CombatBufferingTime;
 	GameObject_Misc_Enemy* m_SceneEnemy; // Just as a reference to easily start the combat
+	std::vector<std::string> m_CombatNames;
 };
