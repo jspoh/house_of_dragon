@@ -99,6 +99,7 @@ private:
 		//And this is basically Render or Not
 		bool m_IsRender;
 		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
+		int m_Type; //0 for grass, 1 for rocky
 	};
 
 	struct v_TileSpawnPoint

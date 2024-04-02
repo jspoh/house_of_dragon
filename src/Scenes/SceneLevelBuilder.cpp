@@ -49,7 +49,8 @@ SceneLevelBuilder::v_FloorData::v_FloorData() :
 	m_FloorNum{ 0 },
 	m_currFloorTimer{ 0.0 },
 	m_FloorSpeedTimer{ 0.5 },
-	m_IsRender{ true }
+	m_IsRender{ true },
+	m_Type{0}
 {
 	AEMtx33Identity(&m_TransformFloorData);
 	AEMtx33Identity(&m_TransformFloorCurr);
@@ -768,6 +769,12 @@ void SceneLevelBuilder::Update(double dt)
 
 							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
 
+							//FORCE CHANGE OF FLOORING TYPE
+							//Change of flooring at Stage 6
+							if (m_currLevel >= 6 && m_currLevel <= 7)
+								m_Floor[j][i].m_Type = 1;
+							else
+								m_Floor[j][i].m_Type = 0;
 						}
 					}
 					else
@@ -959,11 +966,15 @@ void SceneLevelBuilder::Render()
 		//// Set the color to add to nothing, so that we don't alter the sprite's color
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 
-		std::string texRef = "Floor_Center_";// + LEVELNUM
 		//Main Floor
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
+		
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
 		{
+			if(m_Floor[t_CenterFloorNum][i].m_Type ==0)
+				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
+			else
+				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_2"), 0, 0);
+
 			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 			{
 				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
@@ -972,11 +983,15 @@ void SceneLevelBuilder::Render()
 		}
 
 		////Left Floor
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
 		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
+				if (m_Floor[j][i].m_Type == 0)
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
+				else
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_2"), 0, 0);
+
 				if (m_Floor[j][i].m_IsRender)
 				{
 					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
@@ -985,11 +1000,15 @@ void SceneLevelBuilder::Render()
 			}
 		}
 		//Right Floor
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
 		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
+				if (m_Floor[j][i].m_Type == 0)
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
+				else
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_2"), 0, 0);
+
 				if (m_Floor[j][i].m_IsRender)
 				{
 					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
@@ -1005,6 +1024,12 @@ void SceneLevelBuilder::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
 		AEGfxSetTransform(m_TransformFogData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//MASSIVE FOG AT LEVEL 7
+		if (m_currLevel == 7)
+		{
+
+		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// SCENEOBJ RENDER
@@ -1428,19 +1453,20 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		}
 		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
 	}
-	
+
+	/////////////////////////////////////////////////////////////////////
+	/*
+			  Anything written in this part is meant for generic changes
+			  like lighting
+	*/
+	/////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////
 	// Update backdrop main position or light filter 
 	// betweem each level to seamlessly transit
+	static double t_r, t_g, t_b;
 	if (m_currLevel < m_MAXLevel) //Check the stats for next level
 	{
-		/////////////////////////////////////////////////////////////////////
-		/*
-				  Anything written in this part is meant for generic changes
-				  like lighting
-		*/
-		/////////////////////////////////////////////////////////////////////
-		static double t_r, t_g, t_b;
+
 		/////////////////////////////////////////////////////////////////////
 		//Change to nighttime
 		if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
@@ -1459,34 +1485,32 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		{
 			t_r = 1.0; t_g = 0.34; t_b = 0.3;
 		}
-		/////////////////////////////////////////////////////////////////////
-		//Change to DayTime
-		else
+	}
+	/////////////////////////////////////////////////////////////////////
+	//Change to DayTime
+	else
+	{
+		t_r = 1.0; t_g = 1.0; t_b = 1.0;
+	}
+
+	m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt ? -dt / LERPING_SPEED : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt ? -dt / LERPING_SPEED : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
+
+	/////////////////////////////////////////////////////////////////////
+	/*
+			  Anything written below this part is meant for specific
+			  stages. SO BASICALLY HARD CODED FOR THAT STAGE
+	*/
+	/////////////////////////////////////////////////////////////////////
+	{
+		if (m_currLevel == 5 && m_CompletionStatus >= 50)
 		{
-			t_r = 1.0; t_g = 1.0; t_b = 1.0;
+			for (int i = 0; i < 5; i++)
+			{
+				m_TransformBackDrops3Data[i].m[1][2] -= dt / LERPING_SPEED;
+			}
 		}
-
-		m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
-		m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt? -dt / LERPING_SPEED : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt? dt / LERPING_SPEED : 0;
-		m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt? -dt / LERPING_SPEED : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt? dt / LERPING_SPEED : 0;
-
-		/////////////////////////////////////////////////////////////////////
-		/*
-		          Anything written below this part is meant for specific
-				  stages. SO BASICALLY HARD CODED FOR THAT STAGE
-		*/
-		/////////////////////////////////////////////////////////////////////
-		//Change of flooring at Stage 6
-		if (m_currLevel>=6 && m_currLevel <= 7)
-		{
-
-		}
-		//Addition of mass fog at Stage 7
-		if (m_currLevel == 7)
-		{
-
-		}
-
 	}
 }
 void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
