@@ -58,157 +58,173 @@
         }
     },
     "levels": [
-        {
-            "levelName": "TUTORIAL",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 1,
-            "maxSceneOBJperTile": 2,
-            "enemySpawnWeight": [
-                {
-                    "cat": 2,
-                    "dog": 1
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Grass": 10,
-                    "Tree": 1,
-                    "Rock": 1
-                }
-            ],
-            "DayTime": true
-        },
-        {
-            "levelName": "Level 1: Plains",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 2,
-            "maxSceneOBJperTile": 2,
-            "enemySpawnWeight": [
-                {
-                    "dog": 1
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Grass": 10,
-                    "Rock": 1
-                }
-            ],
-            "DayTime": true
-        },
-        {
-            "levelName": "Level 2: Rolling Plains",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 2,
-            "maxSceneOBJperTile": 4,
-            "enemySpawnWeight": [
-                {
-                    "dog": 1
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Grass": 15,
-                    "Tree": 3
-                }
-            ],
-            "DayTime": true
-        },
-        {
-            "levelName": "Level 3: Forest",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 2,
-            "maxSceneOBJperTile": 10,
-            "enemySpawnWeight": [
-                {
-                    "dog": 1
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Grass": 4,
-                    "Tree": 15
-                }
-            ],
-            "DayTime": true
-        },
-        {
-            "levelName": "Level 4: Forest Sunset",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 3,
-            "maxSceneOBJperTile": 10,
-            "enemySpawnWeight": [
-                {
-                    "dog": 1
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Grass": 4,
-                    "Tree": 20
-                }
-            ],
-            "DayTime": true
-        },
-        {
-            "levelName": "Level 5: Forest - Night",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 4,
-            "maxSceneOBJperTile": 10,
-            "enemySpawnWeight": [
-                {
-                    "dog": 2
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Grass": 4,
-                    "Tree": 20
-                }
-            ],
-            "DayTime": false
-        },
-        {
-            "levelName": "Level 6: Rocky Plains",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 2,
-            "maxSceneOBJperTile": 8,
-            "enemySpawnWeight": [
-                {
-                    "dog": 2
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Rock": 1
-                }
-            ],
-            "DayTime": true
-        },
-        {
-            "levelName": "Level 7: ??? - DANGER",
-            "unlocked": false,
-            "completed": false,
-            "maxEnemies": 4,
-            "maxSceneOBJperTile": 12,
-            "enemySpawnWeight": [
-                {
-                    "dog": 2
-                }
-            ],
-            "SceneOBJSpawnWeight": [
-                {
-                    "Rock": 1
-                }
-            ],
-            "DayTime": true
-        }
-    ]
+    {
+        "levelName": "TUTORIAL",
+        "levelCompletionRate": 0.9,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 1,
+        "enemySpawnRate": 9,
+        "maxSceneOBJperTile": 2,
+        "enemySpawnWeight": [
+            {
+                "cat": 2,
+                "dog": 1
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Grass": 10,
+                "Tree": 1,
+                "Rock": 1
+            }
+        ],
+        "DayTime": true
+    },
+    {
+        "levelName": "Level 1: Plains",
+        "levelCompletionRate": 0.9,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 2,
+        "enemySpawnRate": 9,
+        "maxSceneOBJperTile": 4,
+        "enemySpawnWeight": [
+            {
+                "dog": 1
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Grass": 10,
+                "Rock": 1
+            }
+        ],
+        "DayTime": true
+    },
+    {
+        "levelName": "Level 2: Rolling Plains",
+        "levelCompletionRate": 0.9,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 2,
+        "enemySpawnRate": 9,
+        "maxSceneOBJperTile": 8,
+        "enemySpawnWeight": [
+            {
+                "dog": 1
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Grass": 15,
+                "Tree": 3
+            }
+        ],
+        "DayTime": true
+    },
+    {
+        "levelName": "Level 3: Forest",
+        "levelCompletionRate": 0.9,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 2,
+        "enemySpawnRate": 9,
+        "maxSceneOBJperTile": 20,
+        "enemySpawnWeight": [
+            {
+                "dog": 1
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Grass": 4,
+                "Tree": 15
+            }
+        ],
+        "DayTime": true
+    },
+    {
+        "levelName": "Level 4: Forest Sunset",
+        "levelCompletionRate": 0.9,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 3,
+        "enemySpawnRate": 9,
+        "maxSceneOBJperTile": 20,
+        "enemySpawnWeight": [
+            {
+                "dog": 1
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Grass": 4,
+                "Tree": 20
+            }
+        ],
+        "DayTime": true
+    },
+    {
+        "levelName": "Level 5: Forest - Night",
+        "levelCompletionRate": 0.3,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 4,
+        "enemySpawnRate": 20,
+        "maxSceneOBJperTile": 20,
+        "enemySpawnWeight": [
+            {
+                "dog": 2
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Grass": 4,
+                "Tree": 20
+            }
+        ],
+        "DayTime": false
+    },
+    {
+        "levelName": "Level 6: Rocky Plains",
+        "levelCompletionRate": 0.9,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 2,
+        "enemySpawnRate": 9,
+        "maxSceneOBJperTile": 12,
+        "enemySpawnWeight": [
+            {
+                "dog": 2
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Rock": 10
+            }
+        ],
+        "DayTime": true
+    },
+    {
+        "levelName": "Level 7: ??? - DANGER",
+        "levelCompletionRate": 0.3,
+        "unlocked": false,
+        "completed": false,
+        "maxEnemies": 4,
+        "enemySpawnRate": 20,
+        "maxSceneOBJperTile": 20,
+        "enemySpawnWeight": [
+            {
+                "dog": 2
+            }
+        ],
+        "SceneOBJSpawnWeight": [
+            {
+                "Rock": 10
+            }
+        ],
+        "DayTime": true
+    }
+]
 }

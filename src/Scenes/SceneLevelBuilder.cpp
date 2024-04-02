@@ -62,7 +62,7 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	:m_TexRef{ "" },
 	m_RenderOrder{ 0 },
 	m_Transparency{ -1.5f },
-	m_Type{ v_SceneObjectTypes::LAST_TYPE },
+	m_Type{ v_SceneObjectTypes::EType_Grass_Foliage_1 },
 	m_tobeCentered {false}
 {
 	AEMtx33Identity(&m_TransformData);
@@ -77,7 +77,10 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	m_EnemyTypes{},
 	m_EnemySpawnWeight{},
 	m_SceneObjTypes{},
-	m_SceneObjSpawnWeight{} {}
+	m_SceneObjSpawnWeight{},
+	m_LevelCompletionRate{ 0.0 },
+	m_Unlocked{ false },
+	m_EnemySpawnRate{0}{}
 
 SceneLevelBuilder::SceneLevelBuilder() :
 	m_StopMovement{ false },
@@ -91,8 +94,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	m_SceneEnemy{ nullptr },
 	m_CombatPhase{ false },
 	m_CombatAnimationComp{ false },
-	m_CombatBufferingTime{ 0.0 },
-	m_LevelClearSpeed{0.0}
+	m_CombatBufferingTime{ 0.0 }
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////
     //                       Loading of ALL Scene Textures
@@ -278,8 +280,10 @@ SceneLevelBuilder::SceneLevelBuilder() :
 			{
 				v_SceneLevelData t_curr{};
 				t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
+				t_curr.m_LevelCompletionRate = Database::getInstance()->data["levels"][i]["levelCompletionRate"];
 				t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
-				//t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
+				t_curr.m_EnemySpawnRate = Database::getInstance()->data["levels"][i]["enemySpawnRate"];
+				t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
 				t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
 				t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
 
@@ -340,8 +344,7 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
-		m_LevelClearSpeed = 0.9;
+		m_currLevel = 5; //CHANGE HERE (SUPPOSEDLY LEVEL)
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -505,9 +508,13 @@ void SceneLevelBuilder::Update(double dt)
 				SceneLevelBuilder::SpawnLvlName();
 				m_CompletionStatus = 0.0;
 			}
-			m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_LevelClearSpeed : 0.0;
+			m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+			if (AEInputCheckCurr(AEVK_1))
+				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
+
 		}
-		//UpdateLevelGameplay(static_cast<float>(dt));
+		cout << "Level Done: " << m_CompletionStatus << "%" << endl;
+		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));
 		UpdateBackdrop(static_cast<float>(dt));
@@ -551,13 +558,6 @@ void SceneLevelBuilder::Update(double dt)
 				//{
 				//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
 				//}
-
-				//TO BE REMOVED
-				if (AEInputCheckTriggered(AEVK_RBUTTON) && !m_CombatPhase)
-				{
-					m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
-					m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
-				}
 			}
 
 			/////////////////////////////////////////////////////////////////////////////
@@ -572,7 +572,6 @@ void SceneLevelBuilder::Update(double dt)
 						m_StopMovement = false;
 						m_PanCloseToGround = false;
 						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
-
 					}
 				}
 				if (m_CombatBufferingTime <= 0.0f)
@@ -580,9 +579,7 @@ void SceneLevelBuilder::Update(double dt)
 					////////////////////////////////////////////////////////////////////////
 					// Fade out after combat
 					//might give potential errors if using fade in/fade out in other areas, so watch out
-					{
-						FadeOutBlack(); 
-					}
+					FadeOutBlack();
 					//////////////////////////////////////////////////////////////////////////
 					if (GameScene::combatAudioLoopIsPlaying && !SceneStagesAudio::loopIsPlaying && GameScene::afterInit) {
 						SoundPlayer::stopAll();
@@ -643,6 +640,9 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					m_CombatBufferingTime = 0.6f;
 					FadeINBlack();
+					//if(PlayerVictory)
+					m_CompletionStatus += 30; // Increment Progression of level for completing the battle
+
 				}
 					
 			}
@@ -1001,7 +1001,7 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//SCENEOBJ RENDER
+	// SCENEOBJ RENDER
 	{
 		//Render Left Side
 		for (int j = 0; j < SIZE_OF_FLOOR / 2; j++)
@@ -1053,7 +1053,7 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//Light Flare
+	// Light Flare
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
@@ -1096,7 +1096,7 @@ void SceneLevelBuilder::Render()
 	if (m_CombatPhase)
 		CombatScene::getInstance().Render();
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//UI / MISC RENDER
+	// UI / MISC RENDER
 	{
 		//Lvl Name
 		RenderLvlName();
@@ -1132,7 +1132,7 @@ void SceneLevelBuilder::Render()
 
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//GAMEOBJ RENDER
+	// GAMEOBJ RENDER
 	GameObjectManager::GetInstance()->Render();
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
@@ -1153,7 +1153,7 @@ void SceneLevelBuilder::Render()
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//UI / MISC RENDER PART 2
+	// UI / MISC RENDER PART 2
 	{
 		// down here because player should be drawn on top of everything else, save pause screen
 		if (!m_CombatPhase) {
@@ -1404,6 +1404,26 @@ void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
 /*********************************************************************************
 GENERIC UPDATE FUNCTIONS (PARALLAX SCROLLING)
 **********************************************************************************/
+void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
+{
+	///////////////////////////////////////////////////////
+	// Auto Spawning of enemies
+	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
+	m_TryTimer -= dt;
+	if (m_TryTimer < 0)
+	{
+		if (m_SceneEnemy == nullptr && !m_CombatPhase && SceneStages::sInstance->m_StartGame)
+		{
+			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate)
+			{
+				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
+				m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
+			}
+		}
+		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
+	}
+	
+}
 void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 {
 	UNREFERENCED_PARAMETER(t_dt);
