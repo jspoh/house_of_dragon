@@ -1,4 +1,3 @@
-#pragma once
 /* Start Header ************************************************************************/
 /*!
 \file SceneLevelBuilder.h
@@ -14,6 +13,7 @@ without the prior written consent of DigiPen Institute of
 Technology is prohibited.
 */
 /* End Header **************************************************************************/
+#pragma once
 
 #include "Pch.h"
 #include "GameObjectManager.h"
@@ -208,10 +208,10 @@ private:
 	v_TileSpawnPoint** m_tileSP; //0 
 	std::list<v_SceneObject>** m_FloorOBJs;
 	int t_CenterFloorNum;
-	//v_WallData** m_Wall;
 
 	v_SceneLevelData* m_SceneLevelDataList;
-	int m_CompletionStatus; //0 - 100%
+	double m_CompletionStatus; //0 - 100%
+	double m_LevelClearSpeed;
 	int m_currLevel;
 
 	///////////////////////////////////////////////////////
@@ -243,8 +243,6 @@ private:
 	bool m_StopMovement;
 	bool m_PanCloseToGround;
 	int m_PanCloseToGroundValue = 80;
-	//float m_LerpingSpeed = 10.0f;
-	//int m_PanDownCam = 0;
 	int m_CurrentTileNumFurthest;
 	bool m_CombatPhase;
 	bool m_CombatAnimationComp;

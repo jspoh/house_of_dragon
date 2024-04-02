@@ -52,6 +52,8 @@ private:
 public:
 	bool isSelected = false;
 
+	std::string getTextureRef() const;
+
 	const int projectileTravelTimeMs;
 	
 	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50, int _projectileTravelTimeMs = 1000);

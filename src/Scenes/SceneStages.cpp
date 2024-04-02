@@ -1,3 +1,19 @@
+/* Start Header ************************************************************************/
+/*!
+\file SceneStages.cpp
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
+\date 01 Apr 2024
+\brief Staging scene between menu and combat
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
+
 #include "Pch.h"
 #include "SceneStages.h"
 
@@ -5,16 +21,13 @@ bool SceneStagesAudio::loopIsPlaying = false;
 
 SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
 
-namespace {
-	static f32 transparency = 1.8f;
-}
-
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
 	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
-	pTextFont(0)
+	pTextFont(0),
+	m_transparency(1.8f)
 {
 }	
 
@@ -23,7 +36,9 @@ SceneStages::SceneStages(SceneManager* _sceneMgr) :
 	m_LoadScreenTimer(MAX_LOAD_SCREEN_TIME),
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
-	pTextFont(0)
+	pTextFont(0),
+	m_transparency(1.8f)
+	
 {
 	_sceneMgr->AddScene("SceneStages", this);
 }
@@ -69,6 +84,9 @@ void SceneStages::Init()
 
 	m_ScreenShakeTimer = 0.0f;
 	m_ScreenShakeModifier = 1.0f;
+
+	m_StartGame = false;
+	m_transparency = 1.8f;
 }
 
 void SceneStages::Update(double dt)
@@ -79,7 +97,12 @@ void SceneStages::Update(double dt)
 	if ((m_LoadScreenTimer <= (MAX_LOAD_SCREEN_TIME - 0.5))
 		&& m_LevelBuilder == nullptr)
 		m_LevelBuilder = new SceneLevelBuilder();
-	
+
+	m_StartGame = m_LoadScreenTimer < 1.0 ? AEInputCheckTriggered(AEVK_LBUTTON) | m_StartGame : m_StartGame;
+	////Fade out load screen(I just quickly make this)
+	if (m_LoadScreenTimer < 1.0 && m_StartGame)
+		m_transparency -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * 2.f;
+
 	//When level builder is created
 	if (m_LevelBuilder != nullptr)
 	{
@@ -108,20 +131,16 @@ void SceneStages::Update(double dt)
 	}
 
 	//Call this for screen shake
-	if (AEInputCheckTriggered(AEVK_M))
-		Util_Camera_Shake(0.5, 100);
+	{
+		//if (AEInputCheckTriggered(AEVK_M))
+		//	Util_Camera_Shake(0.5, 100);
+	}
 
 	// Update the animation timer.
-   // animation_timer should go up to animation_duration_per_frame.
 	animation_timer += static_cast<float>(dt);
 	if (animation_timer >= animation_duration_per_frame)
 	{
-		// When the time is up go to the next sprite.
-
-		// Reset the timer.
 		animation_timer = 0;
-
-		// Calculate the next sprite UV
 		current_sprite_index = ++current_sprite_index % spritesheet_max_sprites;
 
 		u32 current_sprite_row = current_sprite_index / spritesheet_cols;
@@ -131,31 +150,27 @@ void SceneStages::Update(double dt)
 		current_sprite_uv_offset_y = sprite_uv_height * current_sprite_row;
 
 	}
+
+	if (m_transparency <= 0 && !SceneStagesAudio::loopIsPlaying) {
+		SoundPlayer::GameAudio::getInstance().playLoop();
+		SceneStagesAudio::loopIsPlaying = true;
+		GameScene::afterInit = true;
+	}
 }
 
 
 void SceneStages::Render()
 {
-	if (m_LoadScreenTimer <= 1.0 && m_LevelBuilder != nullptr)
+	if (m_LoadScreenTimer <= 1.0 && m_LevelBuilder != nullptr && m_StartGame)
 		m_LevelBuilder->Render();
 
 	/////////////////////////////////////////////////////
 	// Render Load Screen
-	if (m_LoadScreenTimer >= -1.0)
+	if (m_LoadScreenTimer >= -1.0 || !m_StartGame || (m_StartGame && m_transparency >= -2.0f))
 	{
-		//Fade out load screen(I just quickly make this)
-		if (m_LoadScreenTimer < 1.0)
-			transparency -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * 2.f;
-
-		if (transparency <= 0 && !SceneStagesAudio::loopIsPlaying) {
-			SoundPlayer::GameAudio::getInstance().playLoop();
-			SceneStagesAudio::loopIsPlaying = true;
-			GameScene::afterInit = true;
-		}
-
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxSetTransparency(transparency);
+		AEGfxSetTransparency(m_transparency);
 		AEMtx33 t_curr;
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
@@ -165,16 +180,27 @@ void SceneStages::Render()
 		AEGfxTextureSet(NULL, 0, 0);
 		f32 TextWidth = 0, TextHeight = 0;
 		char strBuffer[1024];
-		sprintf_s(strBuffer, "LOADING");
-		AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
-		AEGfxPrint(pTextFont, strBuffer, static_cast<float>(-mouseX)/2750.f /*-TextWidth*/ - 0.2f, static_cast<float>(mouseY) / 2000.f - 0.2f, 0.8f, 1.0f, 1.0f, 1.0f, transparency - 0.8f);
+		if (m_LoadScreenTimer < 1.0)
+		{
+			sprintf_s(strBuffer, "CLICK TO START");
+			AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
+			AEGfxPrint(pTextFont, strBuffer, static_cast<float>(-mouseX) / 2750.f - 0.4f, static_cast<float>(mouseY) / 2000.f - 0.2f, 0.65f, 1.0f, 1.0f, 1.0f, m_transparency - 0.8f);
 
+		}
+		else
+		{
+			sprintf_s(strBuffer, "LOADING");
+			AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
+			AEGfxPrint(pTextFont, strBuffer, static_cast<float>(-mouseX) / 2750.f - 0.2f, static_cast<float>(mouseY) / 2000.f - 0.2f, 0.8f, 1.0f, 1.0f, 1.0f, m_transparency - 0.8f);
+
+		}
+			
 		//Load animation
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-		AEGfxSetTransparency(transparency - 0.8f);
+		AEGfxSetTransparency(m_transparency - 0.8f);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 1000.0f, 800.0f);
@@ -201,7 +227,6 @@ void SceneStages::Exit()
 
 	// use loading screen again after exiting to menu
 	m_LoadScreenTimer = MIN_LOAD_SCREEN_TIME;
-	transparency = 1.8f;
 }
 
 //////////////////////////////////////////////////////////////////////////////

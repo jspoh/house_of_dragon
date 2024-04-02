@@ -1,3 +1,18 @@
+/* Start Header ************************************************************************/
+/*!
+\file Elements.cpp
+\author Kuek wei jie, weijie.kuek, 2301325
+\par weijie.kuek\@digipen.edu
+\date 28 feb 2024
+\brief game element mechanics implementation
+/*
+Copyright (C) 2024 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents
+without the prior written consent of DigiPen Institute of
+Technology is prohibited.
+*/
+/* End Header **************************************************************************/
+
 // Elements.cpp
 #include "Pch.h"
 #include "Elements.hpp"
