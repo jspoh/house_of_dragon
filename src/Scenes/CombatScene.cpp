@@ -396,16 +396,16 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("bar1", "./Assets/Health/start.png");
 	RenderHelper::getInstance()->registerTexture("bar2", "./Assets/Health/end.png");
 	RenderHelper::getInstance()->registerTexture("bar3", "./Assets/Health/bar.png");
-	RenderHelper::getInstance()->registerTexture("cat", "./Assets/Combat_Enemy/cat.jpg");
-	RenderHelper::getInstance()->registerTexture("horse", "./Assets/Combat_Enemy/horse.jpg");
-	RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.jpg");
+	RenderHelper::getInstance()->registerTexture("cat", "./Assets/Combat_Enemy/cat.png");
+	RenderHelper::getInstance()->registerTexture("horse", "./Assets/Combat_Enemy/horse.png");
+	RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.png");
 	RenderHelper::getInstance()->registerTexture("playerdead", "./Assets/Combat_UI/playerdeadscreen.png");
 	RenderHelper::getInstance()->registerTexture("button", "./Assets/Combat_UI/Button.png");
 	RenderHelper::getInstance()->registerTexture("respawn", "./Assets/Combat_UI/respawn.png");
 	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
 	RenderHelper::getInstance()->registerTexture("victory", "./Assets/Combat_UI/victory.png");
-	RenderHelper::getInstance()->registerTexture("blockwait1", "./Assets/Combat_UI/waitingForBlock1.png");
-	RenderHelper::getInstance()->registerTexture("blockwait2", "./Assets/Combat_UI/waitingForBlock2.png");
+	//RenderHelper::getInstance()->registerTexture("blockwait1", "./Assets/Combat_UI/waitingForBlock1.png");
+	//RenderHelper::getInstance()->registerTexture("blockwait2", "./Assets/Combat_UI/waitingForBlock2.png");
 	RenderHelper::getInstance()->registerTexture("blockwait3", "./Assets/Combat_UI/waitingForBlock3.png");
 	RenderHelper::getInstance()->registerTexture("blockNow", "./Assets/Combat_UI/BlockHappens.png");
 	RenderHelper::getInstance()->registerTexture("nian", "./Assets/Combat_UI/nian.png");
@@ -733,6 +733,8 @@ void CombatScene::Update(double dt)
 
 		}
 		else if (dialogueState != DIALOGUE::WIN) {
+			CombatManager::getInstance().end();
+
 			//delete player;
 			//player = nullptr;
 			//CombatManager::getInstance().end();
@@ -741,7 +743,7 @@ void CombatScene::Update(double dt)
 		// all enemies shldve been deleted
 		//delete player;
 		//player = nullptr;
-		CombatManager::getInstance().end();
+		//CombatManager::getInstance().end();
 		return;
 	}
 
@@ -789,7 +791,7 @@ void CombatScene::Render()
 			else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY) {
 				//if (blockingRenderTime < 0.5f) {
 				if (!blockNow) {
-					RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
+					RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 
 				}
 				else {

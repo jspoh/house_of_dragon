@@ -25,7 +25,7 @@ def constructData() -> dict:
         "difficulty": 0
     },
     "player": {
-        "completedTutorial": false,
+        "completedTutorial": False,
         "xpToNextLevel": 0,
         "level": 1,
         "inventory": [],
@@ -34,25 +34,60 @@ def constructData() -> dict:
     },
     "enemyAttributes": {
         "cat": {
-            "texturePath": "./Assets/Combat_Enemy/cat.jpg",
+            "texturePath": "./Assets/Combat_Enemy/cat.png",
             "soundPath": "./Assets/sounds/cat.mp3",
             "element": "fire",
             "health": 100,
             "damage": 10
         },
         "dragon": {
-            "texturePath": "./Assets/Combat_Enemy/dragon.jpg",
+            "texturePath": "./Assets/Combat_Enemy/dragon.png",
             "soundPath": "./Assets/sounds/dragon.mp3",
             "element": "earth",
             "health": 150,
             "damage": 20
         },
         "horse": {
-            "texturePath": "./Assets/Combat_Enemy/horse.jpg",
+            "texturePath": "./Assets/Combat_Enemy/horse.png",
             "soundPath": "./Assets/sounds/horse.mp3",
             "element": "water",
             "health": 120,
             "damage": 12
+        },
+        "pig": {
+                "texturePath": "./Assets/Combat_Enemy/pig.png",
+                "soundPath": "./Assets/sounds/cat.mp3",
+                "element": "wood",
+                "health": 200,
+                "damage": 5
+        },
+        "snake": {
+                "texturePath": "./Assets/Combat_Enemy/snake.png",
+                "soundPath": "./Assets/sounds/cat.mp3",
+                "element": "metal",
+                "health": 110,
+                "damage": 15
+        },
+        "monkey": {
+                "texturePath": "./Assets/Combat_Enemy/monkey.png",
+                "soundPath": "./Assets/sounds/cat.mp3",
+                "element": "fire",
+                "health": 110,
+                "damage": 15
+        },
+        "goat": {
+                "texturePath": "./Assets/Combat_Enemy/goat.png",
+                "soundPath": "./Assets/sounds/cat.mp3",
+                "element": "earth",
+                "health": 90,
+                "damage": 25
+        },
+        "cow": {
+                "texturePath": "./Assets/Combat_Enemy/cow.png",
+                "soundPath": "./Assets/sounds/cat.mp3",
+                "element": "water",
+                "health": 150,
+                "damage": 25
         }
     },
     "items": {
@@ -79,8 +114,8 @@ def constructData() -> dict:
     {
         "levelName": "TUTORIAL",
         "levelCompletionRate": 0.9,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 1,
         "enemySpawnRate": 9,
         "maxSceneOBJperTile": 2,
@@ -97,13 +132,13 @@ def constructData() -> dict:
                 "Rock": 1
             }
         ],
-        "DayTime": true
+        "DayTime": True
     },
     {
         "levelName": "Level 1: Plains",
         "levelCompletionRate": 0.9,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 2,
         "enemySpawnRate": 9,
         "maxSceneOBJperTile": 4,
@@ -118,13 +153,13 @@ def constructData() -> dict:
                 "Rock": 1
             }
         ],
-        "DayTime": true
+        "DayTime": True
     },
     {
         "levelName": "Level 2: Rolling Plains",
         "levelCompletionRate": 0.9,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 2,
         "enemySpawnRate": 9,
         "maxSceneOBJperTile": 8,
@@ -139,13 +174,13 @@ def constructData() -> dict:
                 "Tree": 3
             }
         ],
-        "DayTime": true
+        "DayTime": True
     },
     {
         "levelName": "Level 3: Forest",
         "levelCompletionRate": 0.9,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 2,
         "enemySpawnRate": 9,
         "maxSceneOBJperTile": 20,
@@ -160,13 +195,13 @@ def constructData() -> dict:
                 "Tree": 15
             }
         ],
-        "DayTime": true
+        "DayTime": True
     },
     {
         "levelName": "Level 4: Forest Sunset",
         "levelCompletionRate": 0.9,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 3,
         "enemySpawnRate": 9,
         "maxSceneOBJperTile": 20,
@@ -181,13 +216,13 @@ def constructData() -> dict:
                 "Tree": 20
             }
         ],
-        "DayTime": true
+        "DayTime": True
     },
     {
         "levelName": "Level 5: Forest - Night",
         "levelCompletionRate": 0.3,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 4,
         "enemySpawnRate": 20,
         "maxSceneOBJperTile": 20,
@@ -202,13 +237,13 @@ def constructData() -> dict:
                 "Tree": 20
             }
         ],
-        "DayTime": false
+        "DayTime": False
     },
     {
         "levelName": "Level 6: Rocky Plains",
         "levelCompletionRate": 0.9,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 2,
         "enemySpawnRate": 9,
         "maxSceneOBJperTile": 12,
@@ -223,13 +258,13 @@ def constructData() -> dict:
                 "Grass": 2
             }
         ],
-        "DayTime": true
+        "DayTime": True
     },
     {
         "levelName": "Level 7: ??? - DANGER",
         "levelCompletionRate": 0.3,
-        "unlocked": false,
-        "completed": false,
+        "unlocked": False,
+        "completed": False,
         "maxEnemies": 4,
         "enemySpawnRate": 20,
         "maxSceneOBJperTile": 30,
@@ -241,11 +276,11 @@ def constructData() -> dict:
         "SceneOBJSpawnWeight": [
             {
                 "Rock": 10,
-                "Grass": 2
+                "Grass": 2,
                 "Tree": 2
             }
         ],
-        "DayTime": true
+        "DayTime": True
     }
 ]
 }
