@@ -61,7 +61,7 @@ void SceneMenu::Load()
 	RenderHelper::getInstance()->registerTexture("level4", "Assets/Menu/level4.png");
 	RenderHelper::getInstance()->registerTexture("level5", "Assets/Menu/level5.png");
 
-    RenderHelper::getInstance()->registerTexture("back", "Assets/Menu/back.png");
+    RenderHelper::getInstance()->registerTexture("back", "Assets/Menu/back1.png");
 }
 
 void SceneMenu::Init()
@@ -115,247 +115,7 @@ void SceneMenu::Init()
 	AEGfxSetCamPosition(0, 0);
 }
 
-//void SceneMenu::Update(double dt)
-//{
-//	int mX, mY;
-//	AEInputGetCursorPosition(&mX, &mY);
-//
-//	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
-//	ParticleManager::GetInstance()->update(dt);
-//
-//
-//	//if (AEInputCheckTriggered(AEVK_1)) {
-//	//	SceneManager::GetInstance()->SetActiveScene("TestScene");
-//	//}
-//	//else if (AEInputCheckTriggered(AEVK_2)) {
-//	//	SceneManager::GetInstance()->SetActiveScene("CombatScene");
-//	//}
-//
-//
-//	if (AEInputCheckTriggered(AEVK_LBUTTON))
-//	{
-//		s32 mxx, myy;
-//		AEInputGetCursorPosition(&mxx, &myy);
-//		float mx = static_cast<float>(mxx);
-//		float my = static_cast<float>(myy);
-//		mx -= AEGfxGetWindowWidth() / 2;
-//
-//		my = -my;
-//		my += AEGfxGetWindowHeight() / 2.0f;
-//
-//		Point cursorPos = { mx, my };
-//
-//		if (!myMenu.levelSelecting)
-//		{
-//			for (int i = 0; i < 5; ++i)
-//			{
-//				AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
-//				AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
-//
-//				if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
-//				{
-//
-//					myMenu.hovering[i] = true;
-//					switch (i)
-//					{
-//					case 0:
-//						myMenu.levelSelecting = true;
-//						SoundPlayer::stopAll();
-//						SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
-//						loopIsPlaying = false;
-//						break;
-//					case 1:
-//						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
-//						break;
-//					case 2:
-//						SceneManager::GetInstance()->SetActiveScene("SceneSetting");
-//						break;
-//					case 3:
-//						SceneManager::GetInstance()->SetActiveScene("HowToPlay");
-//
-//					case 4:
-//						gGameRunning = false;
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		else
-//		{
-//
-//			for (int i = 0; i < 5; ++i)
-//			{
-//				AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 2.f };
-//				AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 2.f };
-//
-//				if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
-//				{
-//					myMenu.hoveringSelect[i] = true;
-//					switch (i)
-//					{
-//					case 0:SceneManager::GetInstance()->SetActiveScene("SceneStages");
-//						SoundPlayer::stopAll();
-//						loopIsPlaying = false;
-//						break;
-//					case 1:SceneManager::GetInstance()->SetActiveScene("SceneStages");
-//						SoundPlayer::stopAll();
-//						loopIsPlaying = false;
-//						break;
-//					case 2:SceneManager::GetInstance()->SetActiveScene("SceneStages");
-//						SoundPlayer::stopAll();
-//						loopIsPlaying = false;
-//						break;
-//					case 3:SceneManager::GetInstance()->SetActiveScene("SceneStages");
-//						SoundPlayer::stopAll();
-//						loopIsPlaying = false;
-//						break;
-//					case 4:SceneManager::GetInstance()->SetActiveScene("SceneStages");
-//						SoundPlayer::stopAll();
-//						loopIsPlaying = false;
-//						break;
-//					}
-//				}
-//				else
-//				{
-//					myMenu.hoveringSelect[i] = false;
-//
-//				}
-//			}
-//		}
-//
-//		return;
-//	}
-//	else
-//	{
-//		for (int i = 0; i < 5; ++i)
-//		{
-//			myMenu.hovering[i] = false;
-//		}
-//	}
-//
-//	// !TODO: implement back button too
-//	if (AEInputCheckTriggered(AEVK_Q) && myMenu.levelSelecting) {
-//		SoundPlayer::stopAll();
-//		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
-//		myMenu.levelSelecting = false;
-//		return;
-//	}
-//}
 
-//void SceneMenu::Update(double dt)
-//{
-//    int mX, mY;
-//    AEInputGetCursorPosition(&mX, &mY);
-//
-//    ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
-//    ParticleManager::GetInstance()->update(dt);
-//
-//    if (AEInputCheckTriggered(AEVK_LBUTTON))
-//    {
-//        s32 mxx, myy;
-//        AEInputGetCursorPosition(&mxx, &myy);
-//        float mx = static_cast<float>(mxx);
-//        float my = static_cast<float>(myy);
-//        mx -= AEGfxGetWindowWidth() / 2;
-//
-//        my = -my;
-//        my += AEGfxGetWindowHeight() / 2.0f;
-//
-//        Point cursorPos = { mx, my };
-//
-//        if (!myMenu.levelSelecting)
-//        {
-//            for (int i = 0; i < 5; ++i)
-//            {
-//                AEVec2 p1 = { myMenu.buttonX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonY[i] + myMenu.buttonHeight / 2.f };
-//                AEVec2 p2 = { myMenu.buttonX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonY[i] - myMenu.buttonHeight / 2.f };
-//
-//                if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
-//                {
-//                    myMenu.hovering[i] = true;
-//                    myMenu.buttonScale[i] = 1.2f; // Increase the scale when hovering
-//                    switch (i)
-//                    {
-//                    case 0:
-//                        myMenu.levelSelecting = true;
-//                        SoundPlayer::stopAll();
-//                        SoundPlayer::MenuAudio::getInstance().playLoopLevelSelect();
-//                        loopIsPlaying = false;
-//                        break;
-//                    case 1:
-//                        SceneManager::GetInstance()->SetActiveScene("SceneCredits");
-//                        break;
-//                    case 2:
-//                        SceneManager::GetInstance()->SetActiveScene("SceneSetting");
-//                        break;
-//                    case 3:
-//                        SceneManager::GetInstance()->SetActiveScene("HowToPlay");
-//
-//                    case 4:
-//                        gGameRunning = false;
-//                        break;
-//                    }
-//                }
-//                else
-//                {
-//                    myMenu.hovering[i] = false;
-//                    myMenu.buttonScale[i] = 1.0f; // Reset the scale when not hovering
-//                }
-//            }
-//        }
-//        else
-//        {
-//            for (int i = 0; i < 5; ++i)
-//            {
-//                AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 2.f };
-//                AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 2.f };
-//
-//                if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
-//                {
-//                    myMenu.hoveringSelect[i] = true;
-//                    myMenu.buttonSelectScale[i] = 1.2f; // Increase the scale when hovering
-//                    switch (i)
-//                    {
-//                    case 0:
-//                    case 1:
-//                    case 2:
-//                    case 3:
-//                    case 4:
-//                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
-//                        SoundPlayer::stopAll();
-//                        loopIsPlaying = false;
-//                        break;
-//                    }
-//                }
-//                else
-//                {
-//                    myMenu.hoveringSelect[i] = false;
-//                    myMenu.buttonSelectScale[i] = 1.0f; // Reset the scale when not hovering
-//                }
-//            }
-//        }
-//
-//        return;
-//
-//   
-//    }
-//
-//
-//    else
-//    {
-//        for (int i = 0; i < 5; ++i)
-//        {
-//			myMenu.hovering[i] = false;
-//			myMenu.buttonScale[i] = 1.0f; // Reset the scale when not hovering
-//		}
-//	}
-//
-//
-//
-//        	
-//
-//    
-//}
 
 
 void SceneMenu::Update(double dt)
@@ -423,8 +183,8 @@ void SceneMenu::Update(double dt)
         {
             for (int i = 0; i < 5; ++i)
             {
-                AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 2.f };
-                AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 2.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 2.f };
+                AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 4.f };
+                AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 4.f };
 
                 if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
                 {
@@ -433,14 +193,31 @@ void SceneMenu::Update(double dt)
                     switch (i)
                     {
                     case 0:
+                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        SoundPlayer::stopAll();
+                        loopIsPlaying = false;
+                        break;
                     case 1:
+                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        SoundPlayer::stopAll();
+                        loopIsPlaying = false;
+                        break;
                     case 2:
+                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        SoundPlayer::stopAll();
+                        loopIsPlaying = false;
+                        break;
                     case 3:
+                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        SoundPlayer::stopAll();
+                        loopIsPlaying = false;
+                        break;
                     case 4:
                         SceneManager::GetInstance()->SetActiveScene("SceneStages");
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
+                        
                     }
                 }
                 else
@@ -474,36 +251,7 @@ void SceneMenu::Update(double dt)
     }
 }
 
-//void SceneMenu::Render()
-//{
-//	RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
-//
-//	// Render the menu buttons
-//	for (int i = 5; i >= 0; --i)
-//	{
-//		RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth, myMenu.buttonHeight);
-//
-//		if (myMenu.hovering[i])
-//		{
-//			RenderHelper::getInstance()->texture(myMenu.pointer, myMenu.buttonX[i] - myMenu.buttonWidth / 2.0f - 30.0f, myMenu.buttonY[i], 40, 40);
-//		}
-//	}
-//
-//	// Render the background image again before rendering buttonSelect - should not do it like this, implement inner states in this scene
-//	if (myMenu.levelSelecting)
-//	{
-//		RenderHelper::getInstance()->texture("menuBg1", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
-//
-//		// Render the buttonSelect buttons
-//		for (int i = 0; i < 5; ++i)
-//		{
-//		
-//			RenderHelper::getInstance()->texture(myMenu.buttonSelect[i], myMenu.buttonSelectX[i], myMenu.buttonSelectY[i], myMenu.buttonWidth, myMenu.buttonHeight);
-//		}
-//	}
-//
-//	ParticleManager::GetInstance()->render();
-//}
+
 
 void SceneMenu::Render()
 {
@@ -532,7 +280,7 @@ void SceneMenu::Render()
         }
 
         // Render the back button
-        RenderHelper::getInstance()->texture(myMenu.back, myMenu.backButtonX, myMenu.backButtonY, myMenu.backButtonWidth, myMenu.backButtonHeight);
+        RenderHelper::getInstance()->texture(myMenu.back, myMenu.backButtonX, myMenu.backButtonY, myMenu.backButtonWidth , myMenu.backButtonHeight );
 
         if (myMenu.hoveringBack)
         {
