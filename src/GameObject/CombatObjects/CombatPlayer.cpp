@@ -55,6 +55,9 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 	transitionDownSpeed = initialFinalDistance / (shieldDownTransitionTimeMs / 1000.f);
 
 	initialAttack = this->dmg;
+	this->attacked = false;
+	this->startingHealth = health;
+	this->AttackedRenderX = health / 80;
 
 	cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
 }
@@ -63,6 +66,12 @@ Player::~Player() {
 	//RenderHelper::getInstance()->removeTextureByRef("shield");	// let renderhelper manage
 }
 
+void Player::playerAttacked() {
+	this->attacked = true;
+	this->AttackedRenderXprev = AttackedRenderX;
+	healthRenderTime = 0.f;
+
+}
 
 
 void Player::healthGain(float healthIncrease) {
@@ -88,18 +97,18 @@ void Player::_drawHealth(float screenX, float screenY) {
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 	if (this->health > 66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20  , 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
-		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
+		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else if (this->health > 33) {
 		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
-		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else {
 		RenderHelper::getInstance()->texture("redbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + (health / 80) * 50, panelPos.y + truey + paddingY - 20, (health / 80) * 100, 15);
-		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + (health / 80) * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 
 	}
 }
@@ -114,7 +123,19 @@ void Player::update(double dt) {
 
 	/* blocking stuff */
 	//HandStateAnimationType;
-
+	if (this->attacked == true && this->healthRenderTime < this->healthRenderTimeMax) {
+		healthRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+		float percenttime = static_cast<float>(healthRenderTime / healthRenderTimeMax);
+		float t = percenttime;
+		if (t > healthRenderTimeMax) {
+			t = healthRenderTimeMax;
+		}
+		this->AttackedRenderX = lerp(this->AttackedRenderXprev, health / 80, t);
+	}
+	else {
+		this->attacked = false;
+		this->healthRenderTime = 0.f;
+	}
 
 	if (
 		AEInputCheckTriggered(AEVK_SPACE) 
@@ -173,12 +194,12 @@ void Player::update(double dt) {
 }
 
 void Player::render() {
-	this->_drawHealth(150, 150);
-
 	//_renderShield();
 	_renderHands();
 }
-
+void Player::renderHealth(double x, double y ) {
+	this->_drawHealth(x, y);
+}
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
 	if (this->attackMultiplerTurn > 0) {

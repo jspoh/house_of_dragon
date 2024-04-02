@@ -58,12 +58,21 @@ private:
 
 	void _updateBlockingHands();
 
-
 	void updateHands(float t_dt);
 
 	// discarded in favour of hands
 	void _updateShield(double dt);
 	void _renderShield();
+
+	float AttackedRenderX{ 0 };
+	float AttackedRenderXprev{ 0 };
+	float startingHealth{ 0 };
+	bool attacked{ 0 };
+	float healthRenderTime{ 0 };
+	const float healthRenderTimeMax = 0.75f;
+
+
+
 
 public:
 	enum class HandAnimationType {
@@ -107,9 +116,10 @@ public:
 	float attack(Mob& target, Element attackEl, float qtMultiplier);
 
 	void update(double dt);
-
+	void renderHealth(double x, double y);
 	void render();
 	void _renderHands();
+	void playerAttacked();
 
 	void attackMultipler(int turn);
 

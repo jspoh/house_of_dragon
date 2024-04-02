@@ -93,10 +93,10 @@ void Enemy::render() {
     if (isSelected) {
         RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
     }
-    if (this->attacking == true) {
-        RenderHelper::getInstance()->texture("nian", this->attackPoint.x, this->attackPoint.y, 10, 10);
+    //if (this->attacking == true) {
+    //    RenderHelper::getInstance()->texture("nian", this->attackPoint.x, this->attackPoint.y, 10, 10);
 
-    }
+    //}
 
     //RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
     //RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);
