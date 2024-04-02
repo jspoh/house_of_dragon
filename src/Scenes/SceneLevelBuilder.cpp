@@ -298,7 +298,6 @@ SceneLevelBuilder::SceneLevelBuilder() :
 				{
 					for (auto type = map.value().begin(); type != map.value().end(); type++)
 					{
-						//cout << type.key() <<" || "<< type.value() << endl; //Working example
 						t_curr.m_EnemyTypes.push_back(type.key());
 						t_curr.m_EnemySpawnWeight.push_back(type.value());
 					}
@@ -871,7 +870,7 @@ void SceneLevelBuilder::Render()
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
 	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-	cout << m_Lighting.r << endl;
+
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -1518,13 +1517,7 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	*/
 	/////////////////////////////////////////////////////////////////////
 	{
-		if (m_currLevel == 5 && m_CompletionStatus >= 50)
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				m_TransformBackDrops3Data[i].m[1][2] -= dt / LERPING_SPEED;
-			}
-		}
+
 	}
 }
 void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
@@ -1608,13 +1601,18 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 	}
 
 
-	for (int i = 0; i < 5; i++)
+	if (m_currLevel <= 5)
 	{
-		AEMtx33Identity(&m_TransformBackDrops3Data[i]);
-		AEMtx33ScaleApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], 480.0f, 360.f);
-		AEMtx33TransApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
-			205.f + static_cast<f32>(mouseY / 50.0f));
+		for (int i = 0; i < 5; i++)
+		{
+			AEMtx33Identity(&m_TransformBackDrops3Data[i]);
+			AEMtx33ScaleApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], 480.0f, 360.f);
+			AEMtx33TransApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
+				205.f + static_cast<f32>(mouseY / 50.0f));
+		}
 	}
+	else
+		for (int i = 0; i < 5; i++) AEMtx33Identity(&m_TransformBackDrops3Data[i]);
 }
 
 std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
