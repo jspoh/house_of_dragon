@@ -123,6 +123,9 @@
     <ClCompile Include="src\GameObject\GameObject_Projectiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scenes\HowToPlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Headers\Elements.hpp">
@@ -249,6 +252,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\GameObject_Projectiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Headers\HowToPlay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
