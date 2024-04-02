@@ -232,7 +232,7 @@ def constructData() -> dict:
         "completed": false,
         "maxEnemies": 4,
         "enemySpawnRate": 20,
-        "maxSceneOBJperTile": 20,
+        "maxSceneOBJperTile": 30,
         "enemySpawnWeight": [
             {
                 "dragon": 2
@@ -240,8 +240,9 @@ def constructData() -> dict:
         ],
         "SceneOBJSpawnWeight": [
             {
-                "Rock": 20,
+                "Rock": 10,
                 "Grass": 2
+                "Tree": 2
             }
         ],
         "DayTime": true

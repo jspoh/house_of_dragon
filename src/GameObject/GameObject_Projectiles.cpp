@@ -144,18 +144,18 @@ void GameObject_Projectiles::Render()
 		AEGfxSetTransform(transform.m);
 		switch (m_type)
 		{
-		case P_FireBall_Red: 
+		case P_FireBall_Red:
 			AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f); 
+			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 			goto RENDERFIREBALL; break;
-		case P_FireBall_Blue: 
+		case P_FireBall_Blue:
 			AEGfxSetColorToMultiply(0.0f, 0.0f, 1.0f, 1.0f);
-			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f); 
+			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 			goto RENDERFIREBALL; break;
 		case P_FireBall_Green:
 			AEGfxSetColorToMultiply(0.0f, 1.0f, 0.0f, 1.0f);
 			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-RENDERFIREBALL:
+		RENDERFIREBALL:
 			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FIREBALL"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
 			AEGfxMeshDraw(pFireBallMesh, AE_GFX_MDM_TRIANGLES);
 			break;
@@ -164,17 +164,17 @@ RENDERFIREBALL:
 		case P_EnergyBall_Green:
 			AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
-RENDERENERGY:
+		RENDERENERGY:
 			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("ENERGYBALL"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
-			AEGfxMeshDraw(pEnergyBallMesh, AE_GFX_MDM_TRIANGLES);	
+			AEGfxMeshDraw(pEnergyBallMesh, AE_GFX_MDM_TRIANGLES);
 			break;
 		}
 
-
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
+
 }
 
 void GameObject_Projectiles::Exit()

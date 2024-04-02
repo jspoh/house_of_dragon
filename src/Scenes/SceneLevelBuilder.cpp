@@ -143,6 +143,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		//Fog
 		**********************************************/
 		RenderHelper::getInstance()->registerTexture("FOG_1", "Assets/SceneObjects/BACKGROUND/Scene_Fog_NEW_Color.png");
+		RenderHelper::getInstance()->registerTexture("FOG_2", "Assets/SceneObjects/BACKGROUND/Scene_Fog_Color_MASSIVE.png");
 
 		/*********************************************
 		//BackDrop
@@ -350,7 +351,7 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 5; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_currLevel = 6; //CHANGE HERE (SUPPOSEDLY LEVEL)
 		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
@@ -1024,12 +1025,6 @@ void SceneLevelBuilder::Render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
 		AEGfxSetTransform(m_TransformFogData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-		//MASSIVE FOG AT LEVEL 7
-		if (m_currLevel == 7)
-		{
-
-		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// SCENEOBJ RENDER
@@ -1123,6 +1118,28 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//MASSIVE FOG AT LEVEL 7 (Quickly created last minute)
+	{
+		static double t_Transparency = -1.1;
+		if (m_currLevel == 7)
+		{
+			static double t_Transparency = -1.1;
+			t_Transparency += AEFrameRateControllerGetFrameTime() / LERPING_SPEED;
+			AEMtx33 transform;
+			AEMtx33Identity(&transform);
+			AEMtx33ScaleApply(&transform, &transform, 1800, 1440);
+			AEMtx33TransApply(&transform, &transform, 0, 315);
+			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_2"), 0, 0);
+			AEGfxSetTransparency(t_Transparency);
+			AEGfxSetTransform(transform.m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+		else
+			t_Transparency = -1.1;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
 	if (m_CombatPhase)
@@ -1151,6 +1168,13 @@ void SceneLevelBuilder::Render()
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
+		/////////////////////////////////////////////////////////////////////////
+		// RESET SETTINGS
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+
 		//Screen Transition
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1173,20 +1197,6 @@ void SceneLevelBuilder::Render()
 			player->render();
 		}
 	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
-	/*{
-		cout << m_Lighting.r << " " << m_Lighting.b << " " << m_Lighting.g << endl;
-		AEGfxSetTransparency(1.0f);
-		AEMtx33 t_curr;
-		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetColorToAdd(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER PART 3
