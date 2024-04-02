@@ -349,7 +349,7 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 3; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_currLevel = 5; //CHANGE HERE (SUPPOSEDLY LEVEL)
 		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
@@ -862,7 +862,7 @@ void SceneLevelBuilder::Render()
 
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1059,11 +1059,8 @@ void SceneLevelBuilder::Render()
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// GAMEOBJ RENDER
-	GameObjectManager::GetInstance()->Render();
-	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Light Flare
-	if (m_SceneLevelDataList[m_currLevel].m_DayTime)
+	if(m_SceneLevelDataList[m_currLevel].m_DayTime)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
@@ -1139,10 +1136,22 @@ void SceneLevelBuilder::Render()
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// GAMEOBJ RENDER
+	GameObjectManager::GetInstance()->Render();
 
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 2
+	{
+		// down here because player should be drawn on top of everything else, save pause screen
+		if (!m_CombatPhase) {
+			player->render();
+		}
+	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// LIGHT FILTER ( AMAZING VISUAL EFFECTS )
-	{
+	/*{
+		cout << m_Lighting.r << " " << m_Lighting.b << " " << m_Lighting.g << endl;
 		AEGfxSetTransparency(1.0f);
 		AEMtx33 t_curr;
 		AEGfxSetBlendMode(AE_GFX_BM_MULTIPLY);
@@ -1152,16 +1161,7 @@ void SceneLevelBuilder::Render()
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	// UI / MISC RENDER PART 3
-	{
-		// down here because player should be drawn on top of everything else, save pause screen
-		if (!m_CombatPhase) {
-			player->render();
-		}
-	}
+	}*/
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER PART 3
@@ -1440,11 +1440,6 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 				  like lighting
 		*/
 		/////////////////////////////////////////////////////////////////////
-		// 		//LIGHT FILTER
-		//-0.39, 0.06, 0.3 (NIGHTTIME)
-		//1.0, 0.45, 0.79 (DUSK/TWILIGHT)
-		// 0.92 1 0.19 (Dawn)
-
 		static double t_r, t_g, t_b;
 		/////////////////////////////////////////////////////////////////////
 		//Change to nighttime
@@ -1454,15 +1449,15 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		}
 		/////////////////////////////////////////////////////////////////////
 		//Change to Dawn
-		else if (m_SceneLevelDataList[m_currLevel + 1].m_DayTime && !m_SceneLevelDataList[m_currLevel].m_DayTime)
+		else if (!m_SceneLevelDataList[m_currLevel - 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
 		{
-			t_r = 0.92; t_g = 1.0; t_b = 0.19;
+			t_r = 1.0; t_g = 0.7; t_b = 1.0;
 		}
 		/////////////////////////////////////////////////////////////////////
 		//Change to Dusk
 		else if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
 		{
-			t_r = 1.0; t_g = 0.45; t_b = 0.79;
+			t_r = 1.0; t_g = 0.34; t_b = 0.3;
 		}
 		/////////////////////////////////////////////////////////////////////
 		//Change to DayTime
@@ -1471,9 +1466,9 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 			t_r = 1.0; t_g = 1.0; t_b = 1.0;
 		}
 
-		m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt : 0;
-		m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt? -dt : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt? dt : 0;
-		m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt? -dt : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt? dt : 0;
+		m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
+		m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt? -dt / LERPING_SPEED : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt? dt / LERPING_SPEED : 0;
+		m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt? -dt / LERPING_SPEED : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt? dt / LERPING_SPEED : 0;
 
 		/////////////////////////////////////////////////////////////////////
 		/*
