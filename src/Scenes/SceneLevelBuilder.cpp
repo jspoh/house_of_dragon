@@ -279,6 +279,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		if (Database::getInstance()->data["levels"].size() > 0)
 		{
 			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
+			m_MAXLevel = Database::getInstance()->data["levels"].size() - 1;
 			for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
 			{
 				v_SceneLevelData t_curr{};
@@ -507,7 +508,10 @@ void SceneLevelBuilder::Update(double dt)
 		{
 			if (m_CompletionStatus > 100.0 && SceneStages::sInstance->m_StartGame)
 			{
-				++m_currLevel;
+				if (m_currLevel <= m_MAXLevel)
+					++m_currLevel;
+				//else
+				//	m_currLevel; //ALL LEVELS DONE
 				SceneLevelBuilder::SpawnLvlName();
 				m_CompletionStatus = 0.0;
 			}
@@ -1406,7 +1410,7 @@ GENERIC UPDATE FUNCTIONS (PARALLAX SCROLLING)
 **********************************************************************************/
 void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 {
-	///////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
 	// Auto Spawning of enemies
 	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
 	m_TryTimer -= dt;
@@ -1423,6 +1427,49 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
 	}
 	
+	/////////////////////////////////////////////////////////////////////////
+	// Update backdrop main position or light filter 
+	// betweem each level to seamlessly transit
+	if (m_currLevel < m_MAXLevel) //Check the stats for next level
+	{
+		/////////////////////////////////////////////////////////////////////
+		/*
+				  Anything written in this part is meant for generic changes
+				  like lighting
+		*/
+		/////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////
+		//Change of Daytime to nighttime
+		if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+
+		}
+
+		/////////////////////////////////////////////////////////////////////
+		//Change of NightTime to DayTime
+		if (m_SceneLevelDataList[m_currLevel + 1].m_DayTime && !m_SceneLevelDataList[m_currLevel].m_DayTime)
+		{
+
+		}
+
+		/////////////////////////////////////////////////////////////////////
+		/*
+		          Anything written below this part is meant for specific
+				  stages. SO BASICALLY HARD CODED FOR THAT STAGE
+		*/
+		/////////////////////////////////////////////////////////////////////
+		//Change of flooring at Stage 6
+		if (m_currLevel>=6 && m_currLevel <= 7)
+		{
+
+		}
+		//Addition of mass fog at Stage 7
+		if (m_currLevel == 7)
+		{
+
+		}
+
+	}
 }
 void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 {
@@ -1516,7 +1563,7 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 
 std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 {
-	m_CombatNames.clear();//= { "horse", "dragon", "cat", "cat" };
+	m_CombatNames.clear();
 	int TotalProb = 0; //Get total probability
 	for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
 	{
