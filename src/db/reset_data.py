@@ -74,59 +74,132 @@ def constructData() -> dict:
             }
         },
         "levels": [
-            {
-                "levelName": "Level 1: Plains",
-                "unlocked": False,
-                "completed": False,
-                "maxEnemies": 1,
-                "maxSceneOBJperTile": 2,
-                "enemySpawnWeight": [
                     {
-                        "cat": 2,
-                        "dog": 1
-                    }
-                ],
-                "SceneOBJSpawnWeight": [{
+                  "levelName": "TUTORIAL",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 1,
+                  "maxSceneOBJperTile": 2,
+                  "enemySpawnWeight": [
+                 	 {
+                  	  "cat": 2,
+                  	 "dog": 1
+                  	}
+                   ],
+                  "SceneOBJSpawnWeight":[ {
                     "Grass": 10,
                     "Tree": 1,
                     "Rock": 1
-                }],
-                "DayTime": True
-            },
-            {
-                "levelName": "Level 2: Forest",
-                "unlocked": False,
-                "completed": False,
-                "maxEnemies": 2,
-                "maxSceneOBJperTile": 5,
-                "enemySpawnWeight": [{
-                    "cat": 1,
+                  }],
+                  "DayTime": true
+                },
+                {
+                  "levelName": "Level 1: Plains",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 2,
+                  "maxSceneOBJperTile": 2,
+                  "enemySpawnWeight": [
+                 	 {
+                  	 "dog": 1
+                  	}
+                   ],
+                  "SceneOBJSpawnWeight":[ {
+                    "Grass": 10,
+                    "Rock": 1
+                  }],
+                  "DayTime": true
+                },
+                    {
+                  "levelName": "Level 2: Rolling Plains",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 2,
+                  "maxSceneOBJperTile": 4,
+                  "enemySpawnWeight": [
+                 	 {
+                  	 "dog": 1
+                  	}
+                   ],
+                  "SceneOBJSpawnWeight":[ {
+                    "Grass": 15,
+                    "Tree": 3,
+                  }],
+                  "DayTime": true
+                },
+                {
+                  "levelName": "Level 3: Forest",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 2,
+                  "maxSceneOBJperTile": 10,
+                  "enemySpawnWeight": [{
                     "dog": 1
-                }],
-                "SceneOBJSpawnWeight": [{
-                    "Grass": 1,
-                    "Tree": 1,
-                    "Rock": 1
-                }],
-                "DayTime": True
-            },
-            {
-                "levelName": "Level 3: Forest - Night",
-                "unlocked": False,
-                "completed": False,
-                "maxEnemies": 3,
-                "maxSceneOBJperTile": 5,
-                "enemySpawnWeight": [{
-                    "cat": 1,
+                  }],
+                  "SceneOBJSpawnWeight": [{
+                    "Grass": 4,
+                    "Tree": 15,
+                  }],
+                  "DayTime": true
+                },
+                {
+                  "levelName": "Level 4: Forest Sunset",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 3,
+                  "maxSceneOBJperTile": 10,
+                  "enemySpawnWeight": [{
+                    "dog": 1
+                  }],
+                  "SceneOBJSpawnWeight": [{
+                    "Grass": 4,
+                    "Tree": 20,
+                  }],
+                  "DayTime": true
+                },
+                {
+                  "levelName": "Level 5: Forest - Night",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 4,
+                  "maxSceneOBJperTile": 10,
+                  "enemySpawnWeight": [{
                     "dog": 2
-                }],
-                "SceneOBJSpawnWeight": [{
-                    "Grass": 1,
-                    "Tree": 1,
+                  }],
+                  "SceneOBJSpawnWeight": [{
+                    "Grass": 4,
+                    "Tree": 20,
+                  }],
+                  "DayTime": false
+                },
+                {
+                  "levelName": "Level 6: Rocky Plains",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 2,
+                  "maxSceneOBJperTile": 8,
+                  "enemySpawnWeight": [{
+                    "dog": 2
+                  }],
+                  "SceneOBJSpawnWeight": [{
                     "Rock": 1
-                }],
-                "DayTime": False
-            }
+                  }],
+                  "DayTime": true
+                },
+                {
+                  "levelName": "Level 7: ??? - DANGER",
+                  "unlocked": false,
+                  "completed": false,
+                  "maxEnemies": 4,
+                  "maxSceneOBJperTile": 12,
+                  "enemySpawnWeight": [{
+                    "dog": 2
+                  }],
+                  "SceneOBJSpawnWeight": [{
+                    "Rock": 1
+                  }],
+                  "DayTime": true
+                }
         ]
     }
 
