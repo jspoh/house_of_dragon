@@ -351,7 +351,7 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 6; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
 		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
@@ -871,7 +871,7 @@ void SceneLevelBuilder::Render()
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
 	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-
+	cout << m_Lighting.r << endl;
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -1121,24 +1121,30 @@ void SceneLevelBuilder::Render()
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
 	//MASSIVE FOG AT LEVEL 7 (Quickly created last minute)
-	{
-		static double t_Transparency = -1.1;
-		if (m_currLevel == 7)
-		{
-			static double t_Transparency = -1.1;
-			t_Transparency += AEFrameRateControllerGetFrameTime() / LERPING_SPEED;
-			AEMtx33 transform;
-			AEMtx33Identity(&transform);
-			AEMtx33ScaleApply(&transform, &transform, 1800, 1440);
-			AEMtx33TransApply(&transform, &transform, 0, 315);
-			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_2"), 0, 0);
-			AEGfxSetTransparency(t_Transparency);
-			AEGfxSetTransform(transform.m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		}
-		else
-			t_Transparency = -1.1;
-	}
+	//{
+	//	static double t_Transparency = -1.1;
+	//	if (m_currLevel == 7)
+	//	{
+	// 		/////////////////////////////////////////////////////////////////////////
+	//   // RESET SETTINGS
+	//   	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	//   	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+	//   	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+	//   	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	//		static double t_Transparency = -1.1;
+	//		t_Transparency += AEFrameRateControllerGetFrameTime() / LERPING_SPEED;
+	//		AEMtx33 transform;
+	//		AEMtx33Identity(&transform);
+	//		AEMtx33ScaleApply(&transform, &transform, 1800, 1440);
+	//		AEMtx33TransApply(&transform, &transform, 0, 315);
+	//		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_2"), 0, 0);
+	//		AEGfxSetTransparency(t_Transparency);
+	//		AEGfxSetTransform(transform.m);
+	//		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//	}
+	//	else
+	//		t_Transparency = -1.1;
+	//}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
@@ -1167,13 +1173,6 @@ void SceneLevelBuilder::Render()
 		AEMtx33TransApply(&t_curr, &t_curr, camX, AEGfxGetWindowHeight() / 2 + camY);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-		/////////////////////////////////////////////////////////////////////////
-		// RESET SETTINGS
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 
 		//Screen Transition
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -1476,7 +1475,6 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	static double t_r, t_g, t_b;
 	if (m_currLevel < m_MAXLevel) //Check the stats for next level
 	{
-
 		/////////////////////////////////////////////////////////////////////
 		//Change to nighttime
 		if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
@@ -1494,6 +1492,12 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		else if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
 		{
 			t_r = 1.0; t_g = 0.34; t_b = 0.3;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to DayTime
+		else
+		{
+			t_r = 1.0; t_g = 1.0; t_b = 1.0;
 		}
 	}
 	/////////////////////////////////////////////////////////////////////

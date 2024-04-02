@@ -27,7 +27,7 @@ Technology is prohibited.
 #define MAX_NUM_SCENEOBJS_TILE 8
 #define MAX_LVLNAMETIMER 4.0
 #define LERPING_SPEED 10.0
-#define TRY_TO_SPAWN_ENEMY_TIMER 2.0
+#define TRY_TO_SPAWN_ENEMY_TIMER 2000.0
 
 namespace GameScene {
 	extern bool combatAudioLoopIsPlaying;
