@@ -107,7 +107,7 @@ private:
 	static constexpr int DIFFICULTY_BUTTON_WIDTH = 185;
 	static constexpr int DIFFICULTY_BUTTON_HEIGHT = 40;
 	const AEVec2 btnStartPos{ 0, 125 };
-	AEVec2 selectionPos{0, btnStartPos.y};	// update x in init
+	AEVec2 selectionPos{-999, btnStartPos.y};	// update x in init
 	AEVec2 selectionTargetPos{};			// on changing difficulty, the pos for the selection highlight to go to
 	static constexpr float DIFFICULTY_LERP_TIME = 1;
 	float lerpElapsedTime = 0;
