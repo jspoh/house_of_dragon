@@ -252,7 +252,7 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 
 AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
 	auto map = _textureRef.find(reference.c_str());
-	if (map == _textureRef.end()) {  // does not exist
+	if (map == _textureRef.end() || map->second == nullptr) {  // does not exist
 		std::cerr << "Reference " << reference << " does not exist!\n";
 		throw std::exception();
 		return nullptr;
