@@ -203,7 +203,11 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	cout << "Loading texture " << path << " with reference " << reference << "\n";
 
 	if (_textureRef.find(reference) != _textureRef.end()) {
-		std::cerr << "Texture ref " << reference << " already in use!\n";
+		// it is intended behaviour to catch all textures that has already been loaded to mitigate the issue of 
+		// load being called on state reload. we do not want to free assets that has already been loaded to save
+		// resources and load times
+		
+		//std::cerr << "Texture ref " << reference << " already in use!\n";
 		//throw std::exception();
 		return false;
 	}
@@ -226,6 +230,10 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 		return false;
 	}
 	if (_textureIdRefs[reference] != nullptr) {
+		// it is intended behaviour to catch all textures that has already been loaded to mitigate the issue of 
+		// load being called on state reload. we do not want to free assets that has already been loaded to save
+		// resources and load times
+
 		std::cerr << "int reference " << reference << " already used\n";
 		//throw std::exception();
 		return false;

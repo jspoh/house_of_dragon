@@ -42,19 +42,6 @@ void HowToPlay::Load() {
     slideshow.images[5] = "image6";
     slideshow.images[6] = "image7";
     slideshow.images[7] = "image8";
-
-    RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
-    RenderHelper::getInstance()->registerTexture("leftButton", "Assets/Menu/leftButton.png");
-    RenderHelper::getInstance()->registerTexture("rightButton", "Assets/Menu/rightButton.png");
-    RenderHelper::getInstance()->registerTexture("backButton", "Assets/Menu/back1.png");
-    RenderHelper::getInstance()->registerTexture("image1", "Assets/Menu/01.png");
-    RenderHelper::getInstance()->registerTexture("image2", "Assets/Menu/02.png");
-    RenderHelper::getInstance()->registerTexture("image3", "Assets/Menu/03.png");
-    RenderHelper::getInstance()->registerTexture("image4", "Assets/Menu/04.png");
-    RenderHelper::getInstance()->registerTexture("image5", "Assets/Menu/05.png");
-    RenderHelper::getInstance()->registerTexture("image6", "Assets/Menu/06.png");
-    RenderHelper::getInstance()->registerTexture("image7", "Assets/Menu/07.png");
-    RenderHelper::getInstance()->registerTexture("image8", "Assets/Menu/08.png");
 }
 
 void HowToPlay::Init() {
