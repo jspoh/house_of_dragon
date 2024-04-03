@@ -28,6 +28,7 @@ Technology is prohibited.
 
 GameManager::GameManager()
 {
+	loadAllTextures();
 }
 
 GameManager::~GameManager()
