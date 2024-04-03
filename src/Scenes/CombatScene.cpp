@@ -226,7 +226,8 @@ namespace {
 								if (bv == "BACON") {
 									cout << "Bacon eaten\n";
 									itemUsed = "BACON";
-									player->attackMultipler(3);
+									int attackChange = rand() % 5 + 1; // Random value between 1-5
+									player->attackMultipler(attackChange);
 									dialogueState = DIALOGUE::ITEM;
 									itemUsedSinceLastAttack = true;
 								}
