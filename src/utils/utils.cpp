@@ -161,7 +161,7 @@ namespace {
 }
 
 void loadAllTextures() {
-	std::vector<std::string> assets = getAllFiles("./Assets/", { "audio" });
+	std::vector<std::string> assets = getAllFiles("./Assets/", { "audio", "fonts"});
 	// asset path
 	for (const std::string& ap : assets) {
 		RenderHelper::getInstance()->registerTexture("./Assets/" + ap, "./Assets/" + ap);
