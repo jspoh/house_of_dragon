@@ -75,6 +75,7 @@ void HowToPlay::Init() {
 }
 
 void HowToPlay::Update(double dt) {
+    UNREFERENCED_PARAMETER(dt);
     int mX, mY;
     AEInputGetCursorPosition(&mX, &mY);
 

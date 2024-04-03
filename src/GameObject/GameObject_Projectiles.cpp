@@ -19,7 +19,9 @@ Technology is prohibited.
 #include "GameObjectManager.h"
 
 
-GameObject_Projectiles::GameObject_Projectiles()
+GameObject_Projectiles::GameObject_Projectiles() :
+	m_type { P_FireBall_Red },
+	m_Speed {0.2f}
 {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -62,22 +64,22 @@ void GameObject_Projectiles::Update(double _dt)
 	if (m_Active)
 	{
 		//Movement Logic
-		m_LifeTime -= _dt + m_Speed/10;
-		if (m_LifeTime >= 0.0)
+		m_Lifetime -= _dt + m_Speed/10;
+		if (m_Lifetime >= 0.0)
 		{
-			m_LocalPos.x = lerp(m_LocalPos.x, PLAYERSCREENPOSX, _dt / (m_LifeTime * 1000));
-			m_LocalPos.y = lerp(m_LocalPos.y, PLAYERSCREENPOSY, _dt / (m_LifeTime * 1000));
+			m_LocalPos.x = lerp(m_LocalPos.x, static_cast<float>(PLAYERSCREENPOSX), static_cast<float>(_dt / (m_Lifetime * 1000.0)));
+			m_LocalPos.y = lerp(m_LocalPos.y, static_cast<float>(PLAYERSCREENPOSY), static_cast<float>(_dt / (m_Lifetime * 1000.0)));
 
 			// Move in the positive direction if the current position is less than the target position
 			if (m_LocalPos.x > PLAYERSCREENPOSX)
-				m_LocalPos.x += (_dt / (m_LifeTime * 1000));
+				m_LocalPos.x += static_cast<float>(_dt / (m_Lifetime * 1000));
 
 			// Move in the negative direction if the current position is greater than the target position
 			if (m_LocalPos.y > PLAYERSCREENPOSY)
-				m_LocalPos.y -= (_dt / (m_LifeTime * 1000));
+				m_LocalPos.y -= static_cast<float>(_dt / (m_Lifetime * 1000));
 
-			m_Scale.x += lerp(m_Scale.x, 400, _dt / (m_LifeTime * 1000)) * m_Speed;
-			m_Scale.y += lerp(m_Scale.y, 400, _dt / (m_LifeTime * 1000)) * m_Speed;
+			m_Scale.x += lerp(m_Scale.x, 400.f, static_cast<float>(_dt / (m_Lifetime * 1000.0))) * static_cast<float>(m_Speed);
+			m_Scale.y += lerp(m_Scale.y, 400.f, static_cast<float>(_dt / (m_Lifetime * 1000.0))) * static_cast<float>(m_Speed);
 		}
 		else
 		{
@@ -191,7 +193,7 @@ void GameObject_Projectiles::FireAtPlayer(const AEVec2& _startpos,
 {
 	m_LocalPos = _startpos;
 	m_Scale = _startscale;
-	m_LifeTime = _MovTimer;
+	m_Lifetime = _MovTimer;
 	m_Speed = _speed;
 	m_type = _type;
 	m_Active = true;
