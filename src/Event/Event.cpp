@@ -157,12 +157,17 @@ void Event::startRandomEvent() {
 bool Event::setActiveEvent(EVENT_TYPES e) {
 	if (_activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
 		_activeEvent = e;
+		
 		return true;
 	}
 	std::cerr << "An event is already running!\n";
 	return false;
 }
 
+
+EVENT_TYPES Event::getActiveEvent() {
+	return _activeEvent;
+}
 void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
 	AEInputGetCursorPosition(&_mouseX, &_mouseY);
 	if (_prevMouseX == 0 || _prevMouseY == 0) {
