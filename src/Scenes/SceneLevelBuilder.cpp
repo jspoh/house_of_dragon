@@ -282,7 +282,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		if (Database::getInstance()->data["levels"].size() > 0)
 		{
 			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
-			m_MAXLevel = Database::getInstance()->data["levels"].size() - 1;
+			m_MAXLevel = static_cast<int>(Database::getInstance()->data["levels"].size()) - 1;
 			for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
 			{
 				v_SceneLevelData t_curr{};
@@ -340,7 +340,7 @@ void SceneLevelBuilder::Init()
 	/////////////////////////////////////////////////////////////
 	// Basic Setup of all necessary objects in scene
 	{
-		player = std::make_unique<Player>(Player(PLAYER_BASE_HEALTH, PLAYER_BASE_DAMAGE));
+		player = std::make_unique<Player>(Player((float)PLAYER_BASE_HEALTH, (float)PLAYER_BASE_DAMAGE));
 		/////////////////////////////////////////////////////////////
 		//Creating GameObjects
 		Create::MiscEnemy();
@@ -367,7 +367,7 @@ void SceneLevelBuilder::Init()
 	*         infinite scrolling by the player.
 	*/
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	AEMtx33 scale, trans, rotate;
+	AEMtx33 scale, trans;
 	/////////////////////////////////////////////////////////////
 	//MAIN FLOOR
 	{
@@ -581,7 +581,7 @@ void SceneLevelBuilder::Update(double dt)
 						dt *= 15; //SPEEDUP SPECIFICALLY
 						m_StopMovement = false;
 						m_PanCloseToGround = false;
-						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? LERPING_SPEED : 0;
+						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? static_cast<int>(LERPING_SPEED) : 0;
 					}
 				}
 				if (m_CombatBufferingTime <= 0.0f)
@@ -672,7 +672,7 @@ void SceneLevelBuilder::Update(double dt)
 				}
 
 				m_PanCloseToGround = true;
-				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? LERPING_SPEED : 0;
+				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? static_cast<int>(LERPING_SPEED) : 0;
 
 				if (!GameScene::combatAudioLoopIsPlaying) {
 					SoundPlayer::stopAll();
@@ -835,25 +835,33 @@ void SceneLevelBuilder::Update(double dt)
 
 					//Translate with the tile
 					if (j < t_CenterFloorNum)
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * t_XModifier + t_MXModifier, t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier);
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, static_cast<float>(m_Floor[j][i].m_Trans.m[0][2] * t_XModifier + t_MXModifier), static_cast<float>(t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier));
 					else
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * t_XModifier - t_MXModifier, t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier);
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, static_cast<float>(m_Floor[j][i].m_Trans.m[0][2] * t_XModifier - t_MXModifier), static_cast<float>(t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier));
 
 
-					////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					//Objects floating up
-					/*if (j < t_CenterFloorNum)
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * x + (mx), y - m_Floor[j][i].m_Trans.m[1][2] * 10);
-					else
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_Trans.m[0][2] * x - (mx), y - m_Floor[j][i].m_Trans.m[1][2] * 10);
-					*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-					////Translate to its specific position on the tile 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData,
 						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]),
 						0);
 					 
 					//Adjusting Transparency
+					(*it).m_Transparency += static_cast<f32>(dt) * 1.5f;
+				}
+			}
+		}
+	}
+	else
+	{
+		////////////////////////////////////////////////////////////////////////////
+		// Make all Scene Objs visible if possible if stop movement
+		for (int j = 0; j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
+					it != m_FloorOBJs[j][i].end();
+					it++)
+				{
 					(*it).m_Transparency += static_cast<f32>(dt) * 1.5f;
 				}
 			}
@@ -1119,7 +1127,7 @@ void SceneLevelBuilder::Render()
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
-	//MASSIVE FOG AT LEVEL 7 (Quickly created last minute)
+	//MASSIVE FOG AT LEVEL 7 (REMOVED FROM FINAL PRODUCT DUE TO PROBLEMS WITH RENDERING)
 	//{
 	//	static double t_Transparency = -1.1;
 	//	if (m_currLevel == 7)
@@ -1506,9 +1514,9 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		t_r = 1.0; t_g = 1.0; t_b = 1.0;
 	}
 
-	m_Lighting.r += m_Lighting.r > t_r && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < t_r && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
-	m_Lighting.g += m_Lighting.g > t_g && abs(t_g - m_Lighting.g) > dt ? -dt / LERPING_SPEED : m_Lighting.g < t_g && abs(m_Lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
-	m_Lighting.b += m_Lighting.b > t_b && abs(t_b - m_Lighting.b) > dt ? -dt / LERPING_SPEED : m_Lighting.b < t_b && abs(m_Lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.r += m_Lighting.r > static_cast<float>(t_r) && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < static_cast<float>(t_r) && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.g += m_Lighting.g > static_cast<float>(t_g) && abs(t_g - m_Lighting.g) > dt ? -dt / LERPING_SPEED : m_Lighting.g < static_cast<float>(t_g) && abs(m_Lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
+	m_Lighting.b += m_Lighting.b > static_cast<float>(t_b) && abs(t_b - m_Lighting.b) > dt ? -dt / LERPING_SPEED : m_Lighting.b < static_cast<float>(t_b) && abs(m_Lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
 
 	/////////////////////////////////////////////////////////////////////
 	/*
@@ -1583,6 +1591,7 @@ void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 }
 void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 {
+	UNREFERENCED_PARAMETER(t_dt);
 	for (int i = 0; i < 9; i++)
 	{
 		AEMtx33Identity(&m_TransformBackDrops1Data[i]);

@@ -198,7 +198,7 @@ void Player::render() {
 	_renderHands();
 }
 void Player::renderHealth(double x, double y ) {
-	this->_drawHealth(x, y);
+	this->_drawHealth(static_cast<float>(x), static_cast<float>(y));
 }
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
@@ -261,23 +261,25 @@ void Player::setHandStateAnimationType(HandAnimationType t) {
 void Player::updateHands(float t_dt)
 {
 	LerpSpeed = 10.0;
+	updateGlobals();
+	
 	AEGfxGetCamPosition(&camX, &camY);
 	//camX += AEGfxGetWindowWidth() / 2;
 	//camY -= AEGfxGetWindowHeight() / 2;
-	int mX{}, mY{};
 
-	//cout << static_cast<int>(HandStateAnimationType) << "\n";
-
+	static int mX{}, mY{};
+	
 	switch (HandStateAnimationType)
 	{
 	case HandAnimationType::Punch:
+		
 		if (!LeftSide) //Left Hand Punch
 			switch (t_AnimationFrame)
 			{
 			case 0://Init
 				AEMtx33Identity(&Hand2PosData.first);
 				AEMtx33ScaleApply(&Hand2PosData.first, &Hand2PosData.first, 191.5, 307);
-				targetPos = { -804.25f + camX, -526.f + camY };
+				targetPos = { -804.25f + camOffset.x, -526.f + camOffset.y };
 				AEMtx33TransApply(&Hand2PosData.first, &Hand2PosData.first, targetPos.x, targetPos.y);
 				mX = mouseX;
 				mY = mouseY;
@@ -287,6 +289,7 @@ void Player::updateHands(float t_dt)
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
 			case 1: //End Point
+				cout << mX << endl;
 				targetPos = { (float)mX - 166.0f + camX, (float)mY - 198.0f + camY };
 				LerpSpeed = 1.05;
 				Hand2PosData.first.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0);

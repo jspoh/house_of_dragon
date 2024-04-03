@@ -199,7 +199,7 @@ void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
 	const std::string prefix = animal;
 	for (const auto& [mapKey, refs] : animalSfxRef) {
 		if (mapKey.substr(0, prefix.size()) == prefix) {
-			availSounds = refs.size();
+			availSounds = static_cast<int>(refs.size());
 		}
 	}
 

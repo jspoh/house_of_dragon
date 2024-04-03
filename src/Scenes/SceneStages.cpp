@@ -27,7 +27,8 @@ SceneStages::SceneStages() :
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
 	pTextFont(0),
-	m_transparency(1.8f)
+	m_transparency(1.8f),
+	m_StartGame(false)
 {
 }	
 
@@ -37,8 +38,8 @@ SceneStages::SceneStages(SceneManager* _sceneMgr) :
 	m_ScreenShakeModifier(0),
 	m_ScreenShakeTimer(0),
 	pTextFont(0),
-	m_transparency(1.8f)
-	
+	m_transparency(1.8f),
+	m_StartGame(false)
 {
 	_sceneMgr->AddScene("SceneStages", this);
 }
@@ -98,7 +99,7 @@ void SceneStages::Update(double dt)
 		&& m_LevelBuilder == nullptr)
 		m_LevelBuilder = new SceneLevelBuilder();
 
-	m_StartGame = m_LoadScreenTimer < 1.0 ? AEInputCheckTriggered(AEVK_LBUTTON) | m_StartGame : m_StartGame;
+	m_StartGame = m_LoadScreenTimer < 1.0 ? AEInputCheckTriggered(AEVK_LBUTTON) || m_StartGame : m_StartGame;
 	////Fade out load screen(I just quickly make this)
 	if (m_LoadScreenTimer < 1.0 && m_StartGame)
 		m_transparency -= static_cast<f32>(AEFrameRateControllerGetFrameTime()) * 2.f;
