@@ -46,6 +46,10 @@ namespace {
 RenderHelper* RenderHelper::_instance = nullptr;
 
 RenderHelper::RenderHelper() {
+
+}
+
+void RenderHelper::load() {
 	// init reusable mesh
 	AEGfxMeshStart();
 	AEGfxTriAdd(

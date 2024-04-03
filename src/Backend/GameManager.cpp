@@ -49,6 +49,9 @@ void GameManager::Init()
 	//SoundManager::GetInstance()->Init();
 
 	initGlobals();
+	RenderHelper::getInstance()->load();
+	//std::thread t1(loadAllTextures);
+	//t1.join();
 }
 
 void GameManager::Run()

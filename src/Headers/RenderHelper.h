@@ -56,6 +56,8 @@ public:
 	 */
 	bool registerMeshByRef(std::string reference, AEGfxVertexList* mesh);
 
+	void load();
+
 	/**
 	 * .
 	 * 
