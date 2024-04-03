@@ -126,13 +126,13 @@ Event::Event() {
 }
 
 Event::~Event() {
-	for (const std::string& ref : meshReferences) {
-		RenderHelper::getInstance()->removeMeshByRef(ref);
-	}
+	//for (const std::string& ref : meshReferences) {
+	//	RenderHelper::getInstance()->removeMeshByRef(ref);
+	//}
 
-	for (const std::string& ref : textureReferences) {
-		RenderHelper::getInstance()->removeTextureByRef(ref);
-	}
+	//for (const std::string& ref : textureReferences) {
+	//	RenderHelper::getInstance()->removeTextureByRef(ref);
+	//}
 }
 
 Event* Event::getInstance() {

@@ -20,7 +20,7 @@ Technology is prohibited.
 #include "ParticleManager.h"
 
 namespace {
-	bool loopIsPlaying = false;
+    bool loopIsPlaying = false;
 }
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
@@ -32,7 +32,7 @@ SceneMenu::SceneMenu()
 
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
-	_sceneMgr->AddScene("SceneMenu", this);
+    _sceneMgr->AddScene("SceneMenu", this);
 }
 
 SceneMenu::~SceneMenu()
@@ -42,40 +42,40 @@ SceneMenu::~SceneMenu()
 void SceneMenu::Load()
 {
 
-	myMenu.bg = "menuBg";
-	myMenu.bg1 = "menuBg1";
-	myMenu.pointer = "dagger";
-	myMenu.button[0] = "olay";
-	myMenu.button[1] = "xredit";
-	myMenu.button[2] = "aetting";
-	myMenu.button[3] = "howtoplay";
-	myMenu.button[4] = "quit";
+    myMenu.bg = "menuBg";
+    myMenu.bg1 = "menuBg1";
+    myMenu.pointer = "dagger";
+    myMenu.button[0] = "olay";
+    myMenu.button[1] = "xredit";
+    myMenu.button[2] = "aetting";
+    myMenu.button[3] = "howtoplay";
+    myMenu.button[4] = "quit";
     myMenu.back = "back";
 
 
-	myMenu.buttonSelect[0] = "level1";
-	myMenu.buttonSelect[1] = "level2";
-	myMenu.buttonSelect[2] = "level3";
-	myMenu.buttonSelect[3] = "level4";
-	myMenu.buttonSelect[4] = "level5";
+    myMenu.buttonSelect[0] = "level1";
+    myMenu.buttonSelect[1] = "level2";
+    myMenu.buttonSelect[2] = "level3";
+    myMenu.buttonSelect[3] = "level4";
+    myMenu.buttonSelect[4] = "level5";
 
 
-	RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
-	RenderHelper::getInstance()->registerTexture("menuBg1", "Assets/Menu/levelselector.png");
-	RenderHelper::getInstance()->registerTexture("dagger", "Assets/Menu/buttons/dagger.png");
+    RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
+    RenderHelper::getInstance()->registerTexture("menuBg1", "Assets/Menu/levelselector.png");
+    RenderHelper::getInstance()->registerTexture("dagger", "Assets/Menu/buttons/dagger.png");
 
-	RenderHelper::getInstance()->registerTexture("olay", "Assets/Menu/buttons/playy.png");
-	RenderHelper::getInstance()->registerTexture("xredit", "Assets/Menu/buttons/credits.png");
-	RenderHelper::getInstance()->registerTexture("aetting", "Assets/Menu/buttons/settings.png");
-	RenderHelper::getInstance()->registerTexture("howtoplay", "Assets/Menu/buttons/howtoplay.png");
-	RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/exits.png");
+    RenderHelper::getInstance()->registerTexture("olay", "Assets/Menu/buttons/playy.png");
+    RenderHelper::getInstance()->registerTexture("xredit", "Assets/Menu/buttons/credits.png");
+    RenderHelper::getInstance()->registerTexture("aetting", "Assets/Menu/buttons/settings.png");
+    RenderHelper::getInstance()->registerTexture("howtoplay", "Assets/Menu/buttons/howtoplay.png");
+    RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/exits.png");
 
 
-	RenderHelper::getInstance()->registerTexture("level1", "Assets/Menu/level1.png");
-	RenderHelper::getInstance()->registerTexture("level2", "Assets/Menu/level2.png");
-	RenderHelper::getInstance()->registerTexture("level3", "Assets/Menu/level3.png");
-	RenderHelper::getInstance()->registerTexture("level4", "Assets/Menu/level4.png");
-	RenderHelper::getInstance()->registerTexture("level5", "Assets/Menu/level5.png");
+    RenderHelper::getInstance()->registerTexture("level1", "Assets/Menu/level1.png");
+    RenderHelper::getInstance()->registerTexture("level2", "Assets/Menu/level2.png");
+    RenderHelper::getInstance()->registerTexture("level3", "Assets/Menu/level3.png");
+    RenderHelper::getInstance()->registerTexture("level4", "Assets/Menu/level4.png");
+    RenderHelper::getInstance()->registerTexture("level5", "Assets/Menu/level5.png");
 
     RenderHelper::getInstance()->registerTexture("back", "Assets/Menu/back1.png");
 }
@@ -83,41 +83,41 @@ void SceneMenu::Load()
 void SceneMenu::Init()
 {
 
-	myMenu.buttonWidth = 300.0f; // Example initialization
-	myMenu.buttonHeight = 230.0f; // Example initialization
-	myMenu.transitionEnd = false; // Example initialization
-	myMenu.transitionTimer = 0.0f; // Example initialization
-	myMenu.transitionElapse = 0.0f; // Example initialization
-	myMenu.nextLevel = 0; // Example initialization
-	const float buttonGap = 100.0f; // Adjust the value as needed
-	for (int i = 0; i < 5; ++i)
-	{
+    myMenu.buttonWidth = 300.0f; // Example initialization
+    myMenu.buttonHeight = 230.0f; // Example initialization
+    myMenu.transitionEnd = false; // Example initialization
+    myMenu.transitionTimer = 0.0f; // Example initialization
+    myMenu.transitionElapse = 0.0f; // Example initialization
+    myMenu.nextLevel = 0; // Example initialization
+    const float buttonGap = 100.0f; // Adjust the value as needed
+    for (int i = 0; i < 5; ++i)
+    {
         myMenu.buttonScale[i] = 1.0f; // Initialize button scales to 1.0f
 
-		myMenu.buttonX[i] = 0;
-		myMenu.buttonY[i] = -i * (myMenu.buttonHeight - buttonGap) + 250;
-	}
+        myMenu.buttonX[i] = 0;
+        myMenu.buttonY[i] = -i * (myMenu.buttonHeight - buttonGap) + 250;
+    }
 
-	myMenu.buttonSelectWidth = 250.0f;
-	myMenu.buttonSelectHeight = 400.0f;
+    myMenu.buttonSelectWidth = 250.0f;
+    myMenu.buttonSelectHeight = 400.0f;
 
 
-	const float buttonSelectGap = 15.0f; // Adjust the value as needed
-	for (int i = 0; i < 5; ++i)
-	{
+    const float buttonSelectGap = 15.0f; // Adjust the value as needed
+    for (int i = 0; i < 5; ++i)
+    {
         myMenu.buttonSelectScale[i] = 1.0f; // Initialize button select scales to 1.0f
 
 
-		myMenu.buttonSelectX[i] = -500.0f + i * (myMenu.buttonSelectWidth - buttonSelectGap); // Adjust the x-coordinate calculation
-		myMenu.buttonSelectY[i] = 0.0f; // Adjust the y-coordinate as needed
-		myMenu.hoveringSelect[i] = false;
-	}
-	ParticleManager::GetInstance()->init();
+        myMenu.buttonSelectX[i] = -500.0f + i * (myMenu.buttonSelectWidth - buttonSelectGap); // Adjust the x-coordinate calculation
+        myMenu.buttonSelectY[i] = 0.0f; // Adjust the y-coordinate as needed
+        myMenu.hoveringSelect[i] = false;
+    }
+    ParticleManager::GetInstance()->init();
 
-	if (!loopIsPlaying) {
-		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
-		loopIsPlaying = true;
-	}
+    if (!loopIsPlaying) {
+        SoundPlayer::MenuAudio::getInstance().playLoopMenu();
+        loopIsPlaying = true;
+    }
 
     // Initialize back button variables
     myMenu.backButtonWidth = 100.0f;
@@ -128,7 +128,7 @@ void SceneMenu::Init()
 
 
 
-	AEGfxSetCamPosition(0, 0);
+    AEGfxSetCamPosition(0, 0);
 }
 
 
@@ -233,7 +233,7 @@ void SceneMenu::Update(double dt)
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
-                        
+
                     }
                 }
                 else
@@ -296,7 +296,7 @@ void SceneMenu::Render()
         }
 
         // Render the back button
-        RenderHelper::getInstance()->texture(myMenu.back, myMenu.backButtonX, myMenu.backButtonY, myMenu.backButtonWidth , myMenu.backButtonHeight );
+        RenderHelper::getInstance()->texture(myMenu.back, myMenu.backButtonX, myMenu.backButtonY, myMenu.backButtonWidth, myMenu.backButtonHeight);
 
         if (myMenu.hoveringBack)
         {
@@ -313,6 +313,6 @@ void SceneMenu::Render()
 
 void SceneMenu::Exit()
 {
-	cout << "Exiting Scene Menu" << "\n";
+    cout << "Exiting Scene Menu" << "\n";
 
 }

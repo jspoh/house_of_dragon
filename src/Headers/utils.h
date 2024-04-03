@@ -140,6 +140,11 @@ std::vector<std::string> split(const std::string& str, const char sep);
 void initGlobals();
 void updateGlobals();
 
+std::string upper(const std::string& text);
+
+// load all textures
+void loadAllTextures();
+
 /*for ease of inclusion*/
 #include "RenderHelper.h"
 #include "CollisionChecker.h"

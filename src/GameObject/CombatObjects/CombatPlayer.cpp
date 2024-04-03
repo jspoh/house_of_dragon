@@ -36,7 +36,7 @@ namespace {
 
 
 Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg * DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
-	RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
+	//RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
 	//float StartHealth = health;		// what is this for?
 	// set shield properties
 	AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
