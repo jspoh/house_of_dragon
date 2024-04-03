@@ -32,6 +32,8 @@ extern std::unique_ptr<Player> player;
 //Player* player = nullptr;
 
 namespace {
+	bool itemUsedSinceLastAttack = false;
+
 	// game objects
 	bool playerAlive;
 	bool extraflagtest;
@@ -219,39 +221,48 @@ namespace {
 							CombatManager::getInstance().end();
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
-							if (bv == "BACON") {
-								cout << "Bacon eaten\n";
-								itemUsed = "BACON";
-								player->attackMultipler(3);
-								dialogueState = DIALOGUE::ITEM;
-
+							if (!itemUsedSinceLastAttack)
+							{
+								if (bv == "BACON") {
+									cout << "Bacon eaten\n";
+									itemUsed = "BACON";
+									player->attackMultipler(3);
+									dialogueState = DIALOGUE::ITEM;
+									itemUsedSinceLastAttack = true;
+								}
+								else if (bv == "CHICKEN") {
+									cout << "CHICKEN eaten\n";
+									itemUsed = "CHICKEN";
+									int healthChange = -rand() % 11 - 5; // Random value between -15 and -5
+									player->healthGain(healthChange);
+									dialogueState = DIALOGUE::ITEM;
+									itemUsedSinceLastAttack = true;
+								}
+								else if (bv == "BEEF") {
+									cout << "BEEF eaten\n";
+									itemUsed = "BEEF";
+									int healthChange = -rand() % 11 - 10; // Random value between -20 and -10
+									player->healthGain(healthChange);
+									dialogueState = DIALOGUE::ITEM;
+									itemUsedSinceLastAttack = true;
+								}
+								else if (bv == "CAT") {
+									cout << "CAT eaten\n";
+									itemUsed = "CAT";
+									int healthChange = rand() % 11 + 10; // Random value between 10 and 20
+									player->healthGain(healthChange);
+									dialogueState = DIALOGUE::ITEM;
+									itemUsedSinceLastAttack = true;
+								}
 							}
-							else if (bv == "CHICKEN") {
-								cout << "CHICKEN eaten\n";
-								itemUsed = "CHICKEN";
-								player->healthGain(-10);
-								dialogueState = DIALOGUE::ITEM;
-
-							}
-							else if (bv == "BEEF") {
-								cout << "BEEF eaten\n";
-								itemUsed = "BEEF";
-								player->healthGain(-20);
-								dialogueState = DIALOGUE::ITEM;
-
-							}
-							else if (bv == "CAT") {
-								cout << "CAT eaten\n";
-								itemUsed = "CAT";
-								player->healthGain(20);
-								dialogueState = DIALOGUE::ITEM;
-
-							}
+							else {
+								cout << "Item used since last attack\n";
 							currentState = ACTION_BTNS::MAIN;
 						}
 					}
-
 				}
+
+			}
 				bPosX += btnWidth + spacing;
 			}
 		}
@@ -671,6 +682,8 @@ void CombatScene::Update(double dt)
 		}
 		CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
 		currentState = ACTION_BTNS::MAIN;
+		itemUsedSinceLastAttack = false; // Reset the flag after each attack
+
 		//}
 	}
 
