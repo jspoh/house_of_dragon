@@ -39,6 +39,8 @@ namespace {
 
 	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
 	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
+
+	bool showGameEnd = false;
 }
 
 bool GameScene::combatAudioLoopIsPlaying = false;
@@ -299,6 +301,7 @@ SceneLevelBuilder::~SceneLevelBuilder()
 	Exit(); //Hehe, dont allow sneaky memory leak
 }
 
+// !TODO: jspoh showGameEnd = false; reset this. my visual studio is bugged cant expand
 void SceneLevelBuilder::Init()
 {
 	/////////////////////////////////////////////////////////////
@@ -475,19 +478,30 @@ void SceneLevelBuilder::Update(double dt)
 		{
 			if (m_CompletionStatus > 100.0 && SceneStages::sInstance->m_StartGame)
 			{
-				if (m_currLevel <= m_MAXLevel)
+				if (m_currLevel < m_MAXLevel) {
 					++m_currLevel;
+				}
+				else {
+					showGameEnd = true;
+					if (AEInputCheckTriggered(AEVK_SPACE)) {
+						SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+						return;			// terminate this scene state early
+					}
+				}
 				//else
 				//	m_currLevel; //ALL LEVELS DONE
 				SceneLevelBuilder::SpawnLvlName();
 				m_CompletionStatus = 0.0;
 			}
-			m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
-			if (AEInputCheckCurr(AEVK_1))
-				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
+
+			if (!showGameEnd) {
+				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+				if (AEInputCheckCurr(AEVK_1))
+					m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
+			}
+			cout << "Level Done: " << m_CompletionStatus << "%\n";
 
 		}
-		//cout << "Level Done: " << m_CompletionStatus << "%\n";
 		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));
@@ -843,6 +857,7 @@ void SceneLevelBuilder::Update(double dt)
 		}
 	}
 }
+
 void SceneLevelBuilder::Render()
 {
 	// Set the background to black.
@@ -1174,6 +1189,12 @@ void SceneLevelBuilder::Render()
 		if (!m_CombatPhase) {
 			player->render();
 		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// show game end screen if no more levels
+	if (showGameEnd) {
+		cout << "show game end screen\n";
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
