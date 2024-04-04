@@ -583,8 +583,10 @@ void CombatScene::Update(double dt)
 	}
 
 	for (GameObject_Projectiles* pp : projectiles) {
+		if (!pp->m_Active) {
+			continue;
+		}
 		pp->Update(dt);
-		pp->Render();
 	}
 
 	if (dialogueState != DIALOGUE::NONE) {
@@ -898,8 +900,6 @@ void CombatScene::Render()
 			player->renderHealth(150, 150);
 		}
 
-		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
-
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 			if (enemy->isDead()) {
 				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
@@ -908,6 +908,9 @@ void CombatScene::Render()
 			//else if (player->isDead()) {
 			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
 			//}
+
+			enemy->render();
+			RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 			if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 
@@ -981,7 +984,7 @@ void CombatScene::Render()
 			}
 
 			i++;
-			enemy->render();
+			
 		}
 
 	}
@@ -1042,7 +1045,9 @@ void CombatScene::Render()
 
 	player->render();		// rendering for combat scene. level builder will render while not in combat, else will default to this.
 
-
+	for (GameObject_Projectiles* pp : projectiles) {
+		pp->Render();
+	}
 }
 
 void CombatScene::cleanup() {
