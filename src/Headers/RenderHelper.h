@@ -49,7 +49,7 @@ public:
 
 	/**
 	 * .
-	 * 
+	 *
 	 * \param reference
 	 * \param mesh
 	 * \return true if mesh was successfully registered
@@ -65,7 +65,7 @@ public:
 
 	/**
 	 * .
-	 * 
+	 *
 	 * \param reference
 	 * \return true if mesh was successfully removed
 	 */
@@ -77,7 +77,7 @@ public:
 
 	/**
 	 * Sets background color.
-	 * 
+	 *
 	 * \param color
 	 */
 	void setBackgroundColor(Color color);
@@ -112,7 +112,7 @@ public:
 	/*texture stuff*/
 	/**
 	 * register a texture(img) for `.texture` method to work properly.
-	 * 
+	 *
 	 * \param reference reference you want to use
 	 * \param path path to asset
 	 * \returns if registration was successful
@@ -124,16 +124,16 @@ public:
 	/**
 	 * get AEGfxTexture pointer by reference.
 	 * DO NOT free pointers returned by this function. call `removeTextureByRef` instead.
-	 * 
+	 *
 	 * \param reference
-	 * \return 
+	 * \return
 	 */
 	AEGfxTexture* getTextureByRef(std::string reference);
 	AEGfxTexture* getTextureByRef(int reference);
 
 	/**
 	 * Draws a texture.
-	 * 
+	 *
 	 * \param textureRef
 	 * \param transX world transform x
 	 * \param transY world transform y
@@ -143,19 +143,19 @@ public:
 	 * \param color
 	 * \param rotation
 	 */
-	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,1 }, f32 rotation = 0);
-	void texture(int textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,1 }, f32 rotation = 0);
+	void texture(std::string textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,1 }, f32 rotation = 0, Color defaultColor = Color{ 1,1,1,1 });
+	void texture(int textureRef, f32 transX = 0, f32 transY = 0, f32 scaleX = 50, f32 scaleY = 50, f32 opacity = 1, Color color = Color{ 0,0,0,1 }, f32 rotation = 0, Color defaultColor = Color{ 1,1,1,1 });
 
 	/**
 	 * draws a centered text on screen
-	 * 
+	 *
 	 * pass the window width to screenX and window height to screenY to get a centered text.
-	 * 
+	 *
 	 * \param s
 	 * \param screenX
 	 * \param screenY
 	 */
-	void text(std::string s, float screenX, float screenY, float r=1, float g=1, float b=1, float a=1);
+	void text(std::string s, float screenX, float screenY, float r = 1, float g = 1, float b = 1, float a = 1);
 
 	int getFontSize();
 

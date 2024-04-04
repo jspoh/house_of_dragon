@@ -22,15 +22,17 @@ Technology is prohibited.
 
 
 //local variables
-float paddingY = 90;
+float paddingY = 120.f;
+float paddingInfoY = 110.f;
 
 Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size, int _projectileTravelTimeMs)
     : Mob(element, health, dmg), _textureRef(textureRef), _size(size), projectileTravelTimeMs(_projectileTravelTimeMs) {
     this->_spos.x = screenX;
     this->_spos.y = screenY;
+    this->elementString = element;
     this->fullhealth = health;
     this->_textureRef = textureRef;
-    _spos = Point{ screenX, screenY};
+    _spos = AEVec2{ screenX, screenY};
     this->_wpos = stow(_spos.x, _spos.y);
     this->healthpos.x = this->_wpos.x - 50;
     this->healthpos.y = this->_wpos.y + 50;
@@ -45,9 +47,13 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     //RenderHelper::getInstance()->texture(_textureRef, _wpos.x, _wpos.y, _size, _size);
 }
 
+
+void Enemy::elementstringinput(std::string element) {
+    this->elementString = element;
+}
 void Enemy::update([[maybe_unused]] double dt) {
 
-    Point pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
+    AEVec2 pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
 
     if (AEInputCheckTriggered(AEVK_LBUTTON) && CollisionChecker::isMouseInRect(pos.x, pos.y, _size, _size, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
         //cout << _textureRef << " enemy selected\n";
@@ -73,7 +79,8 @@ void Enemy::render() {
     //AEVec2 camOffset;
     //AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
-    //cout << RenderHelper::getInstance()->getTextureByRef(this->_textureRef) << ", " << this->_textureRef << "\n";
+
+    // shaking motion when enemy is attacked
     if(this->attacked == true){
         if (this->shakeDuration > 0) {
             // Apply shake effect only when attacked
@@ -88,30 +95,33 @@ void Enemy::render() {
 
     }
     else {
+        // render the enemy texture static
         RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size, this->_size);
     }
     if (isSelected) {
         RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
     }
-    //if (this->attacking == true) {
-    //    RenderHelper::getInstance()->texture("nian", this->attackPoint.x, this->attackPoint.y, 10, 10);
+     
+    //health rendering
+      //rendering of enemy info
+    RenderHelper::getInstance()->texture("enemyPanel", this->_wpos.x, this->healthpos.y - paddingInfoY, 160, 40); //start point, but coordinates is centralised so need to take account of the widthw
+    RenderHelper::getInstance()->texture((elementString), this->_wpos.x - 60, this->healthpos.y - paddingInfoY + 5.f, 50, 50); //start point, but coordinates is centralised so need to take account of the widthw
+    RenderHelper::getInstance()->texture((_textureRef + "name"), this->_wpos.x -10.f, this->healthpos.y - paddingInfoY + 5.f, 70, 20); //start point, but coordinates is centralised so need to take account of the widthw
 
-    //}
-
-    //RenderHelper::getInstance()->texture("bar1", this->healthpos.x, this->healthpos.y, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
-    //RenderHelper::getInstance()->texture("bar3", this->_wpos.x - 45 + 50, this->healthpos.y, (health / 100) * 100, 10);
-    //RenderHelper::getInstance()->texture("bar2", this->_wpos.x + (fullhealth / 100) * 100 - 40, this->healthpos.y, 10, 10);
-    //healthbar; currently hardcoded so its not as usable
+    //  health over 2/3, green bar
     if (this->health > 66) {
         RenderHelper::getInstance()->texture("greenbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("greenbar3", this->_wpos.x - 45 + AttackedRenderX * 50 , this->healthpos.y - paddingY, AttackedRenderX * 100, 10);
         RenderHelper::getInstance()->texture("greenbar2", this->_wpos.x + AttackedRenderX * 100 - 40, this->healthpos.y - paddingY, 10, 10);
     }
+     // health between 1/3 and 2/3 , bar turns to orange/yellow
     else if (this->health > 33) {
         RenderHelper::getInstance()->texture("yellowbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("yellowbar3", this->_wpos.x - 45 + AttackedRenderX * 50, this->healthpos.y - paddingY, AttackedRenderX * 100, 10);
         RenderHelper::getInstance()->texture("yellowbar2", this->_wpos.x + AttackedRenderX * 100 - 40, this->healthpos.y - paddingY, 10, 10);
     }
+    // health lower than 1/3, bar will turn red
+
     else {
         RenderHelper::getInstance()->texture("redbar1", this->_wpos.x - 50, this->healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("redbar3", this->_wpos.x - 45 + AttackedRenderX * 50, this->healthpos.y - paddingY, AttackedRenderX * 100, 10);
@@ -120,10 +130,10 @@ void Enemy::render() {
     }
 
 
-    /* need to change the values into variable, formaula::healthbar1 = (position x - (standardsize), position y - (standardsize);(texSize,texSize)
-    healthbar2 = (position x - (standardsize - texSize/2) + (health / healthlength) * healthlength/2,  position y - (standardsize);(healthlength,texSize)
-    healthbar3 = (position x -  (standardsize - texSize) +  (health / healthlength) * healthlength,position y - (standardsize);(texSize,texSize);
-    */
+
+
+
+
 }
 
 Enemy::~Enemy() {

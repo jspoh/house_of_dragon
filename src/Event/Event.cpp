@@ -301,7 +301,7 @@ void Event::render() {
 void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 	float x = AEGfxGetWindowWidth() * 0.95f;
 	float y = AEGfxGetWindowHeight() * 0.8f;
-	Point world = stow(x, y);
+	AEVec2 world = stow(x, y);
 
 	std::array<int, 5> thresholds = { 100,75,50,25,0 };
 
@@ -375,7 +375,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 
 	//cout << _totalElapsedMs << "\n";
 
-	Point worldPos = stow(_spamkeyX, _spamkeyY);
+	AEVec2 worldPos = stow(_spamkeyX, _spamkeyY);
 	//float worldX = worldPos.x;
 	//float worldY = worldPos.y;
 
@@ -441,7 +441,7 @@ void Event::_spamKeyEventRender() {
 
 	_renderTimer(_totalElapsedMs, _spamkeyTimeoutMs);
 
-	Point worldPos = stow(_spamkeyX, _spamkeyY);
+	AEVec2 worldPos = stow(_spamkeyX, _spamkeyY);
 	float worldX = worldPos.x;
 	float worldY = worldPos.y;
 
@@ -557,12 +557,12 @@ void Event::_oscillatingTimerEventRender() {
 	case INNER_STATES::ON_UPDATE: {
 		/*rendering*/
 		const std::string oTimerMesh = meshReferences[0];
-		const Point barTranslation = stow(_barX, _barY);
+		const AEVec2 barTranslation = stow(_barX, _barY);
 
 		// power bar
 		RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
 
-		Point piTranslation = stow(_piX, _piY);
+		AEVec2 piTranslation = stow(_piX, _piY);
 		// power indicator
 		RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
 		_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
@@ -575,11 +575,11 @@ void Event::_oscillatingTimerEventRender() {
 		}
 		// power bar
 		const std::string oTimerMesh = meshReferences[0];
-		const Point barTranslation = stow(_barX, _barY);
+		const AEVec2 barTranslation = stow(_barX, _barY);
 
 		RenderHelper::getInstance()->rect(oTimerMesh, barTranslation.x, barTranslation.y, _barWidth, _barHeight, 0.f, Color{ 0,0,0,_oTimerOpacity }, _oTimerOpacity);
 
-		Point piTranslation = stow(_piX, _piY);
+		AEVec2 piTranslation = stow(_piX, _piY);
 		// power indicator
 		RenderHelper::getInstance()->rect(piTranslation.x, piTranslation.y, _piWidth, _piHeight, 0.f, Color{ 0.95f,0.95f,0.95f,_oTimerOpacity }, _oTimerOpacity);
 		//_renderTimer(_totalElapsedMs, _oTimerTimeoutMs);
@@ -626,8 +626,8 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		bool hit = false;
 		int i = 0;
 		for (MultiClickObject& mco : _multiClickObjects) {
-			Point worldPos = stow(mco.x, mco.y);
-			Point collisionPos = wtos(worldPos.x - camOffset.x, worldPos.y - camOffset.y);
+			AEVec2 worldPos = stow(mco.x, mco.y);
+			AEVec2 collisionPos = wtos(worldPos.x - camOffset.x, worldPos.y - camOffset.y);
 
 			hit = CollisionChecker::isMouseInCircle(collisionPos.x, collisionPos.y, mco.radius, static_cast<f32>(mouseX), static_cast<f32>(mouseY));
 			if (hit) {
@@ -683,7 +683,7 @@ void Event::_multiClickEventRender() {
 			mco.timeSinceChange = 0.f;
 		}
 
-		Point translate = stow(mco.x, mco.y);
+		AEVec2 translate = stow(mco.x, mco.y);
 		if (mco.blink) {
 			RenderHelper::getInstance()->texture("clickme_light", translate.x, translate.y, mco.radius * 2, mco.radius * 2, 1, Color{ 0,0,0,1 }, 0.f);
 		}
@@ -1012,7 +1012,7 @@ void Event::_orangeEventRender() {
 		break;
 
 	case INNER_STATES::ON_UPDATE:
-		Point pos = stow(_orangeObj.x, _orangeObj.y);
+		AEVec2 pos = stow(_orangeObj.x, _orangeObj.y);
 		RenderHelper::getInstance()->texture("ball", pos.x + camOffset.x, pos.y + camOffset.y, _orangeObj.radius, _orangeObj.radius, 1.f, Color{ 1.f, 0, 0, 1.f }, 0);
 		for (const Demon& d : demons) {
 			if (!d.isActive) {

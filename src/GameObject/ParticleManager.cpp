@@ -124,7 +124,7 @@ void ParticleManager::update(double dt)
 void ParticleManager::render() {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	for (const ParticleManager::Particle& p : particles) {
-		const Point pos = stow(p.pos.x, p.pos.y);
+		const AEVec2 pos = stow(p.pos.x, p.pos.y);
 		//RenderHelper::getInstance()->rect(pos.x, pos.y, p.size.x, p.size.y, 0, p.color, p.color.a);
 		AEGfxTextureSet(RenderHelper::getInstance()->GetTexture(p.type), 0, 0);
 		AEGfxSetTransparency(p.transparency);
