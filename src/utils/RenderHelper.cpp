@@ -293,7 +293,7 @@ void RenderHelper::removeTextureByRef(int reference) {
 	cout << "Manually removed texture with ref " << reference << "\n";
 }
 
-void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
+void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color addColor, f32 rotation, Color defaultColor) {
 	// create matrix
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, scaleX, scaleY);
@@ -314,8 +314,8 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	// prepare to draw
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(color.r, color.g, color.b, color.a);
+	AEGfxSetColorToMultiply(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
+	AEGfxSetColorToAdd(addColor.r, addColor.g, addColor.b, addColor.a);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
@@ -323,7 +323,7 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
-void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color color, f32 rotation) {
+void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color addColor, f32 rotation, Color defaultColor) {
 	// create matrix
 	AEMtx33 scale = { 0 };
 	AEMtx33Scale(&scale, scaleX, scaleY);
@@ -349,8 +349,8 @@ void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f
 	// prepare to draw
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-	AEGfxSetColorToAdd(color.r, color.g, color.b, color.a);
+	AEGfxSetColorToMultiply(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
+	AEGfxSetColorToAdd(addColor.r, addColor.g, addColor.b, addColor.a);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
