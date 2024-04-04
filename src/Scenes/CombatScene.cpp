@@ -40,7 +40,7 @@ namespace {
 	bool deadfinalflag;
 	bool winFlag;
 	const float slideAnimationDuration = 1.f;
-	float dialogueMaxTime = 0.8f;
+	float dialogueMaxTime = 1.2f;
 	float dialougeTime;
 	float winTime;
 	float itemTime;
@@ -53,9 +53,9 @@ namespace {
 	f32 camX, camY;
 
 
-	// item drop
-	std::vector<std::string> itemDrop;
-	std::map<std::string, int> itemCounts;
+	// item drop, [0] is bacon, [1] is beef, [2] is chicken
+	std::array<int, 3> itemdrops;
+	float itemPadding;
 
 
 	//death buttons values
@@ -144,7 +144,7 @@ namespace {
 	std::vector<std::vector<std::string>> btns = {
 		{"ATTACK", "ITEMS", "FLEE"},  // main buttons. the rest are submenu
 		{"FIRE", "WATER", "METAL", "WOOD", "EARTH", "BACK"},  // attack elements
-		{"BACON", "BEEF", "CHICKEN", "CAT", "BACK"},  // items
+		{"BACON", "BEEF", "CHICKEN", "BACK"},  // items
 		{"YES", "NO"},  // confirmation. only used for flee option
 	};
 	float padding = 50.f;
@@ -370,23 +370,27 @@ namespace {
 
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
-	itemDrop = enemyRefs;
-
+	itemdrops = { 0,0,0 };
+	
 	float Enemypadding = 50.0f;
 	float texSize = 60.f;
 	float newspacing = 225.f;
 	int sz = static_cast<int>(enemyRefs.size()); // number of enemies;
-	for (const auto& str : enemyRefs) {
-		// Check if the string is already in the map
-		if (itemCounts.find(str) != itemCounts.end()) {
-			// Increment the count
-			itemCounts[str]++;
-		}
-		else {
-			// If not found, add it to the map with count as 1
-			itemCounts[str] = 1;
-		}
+	for (int i = 0; i < sz; i++) {
+		int item = rand() % 3;
+		itemdrops[item]++;
 	}
+	//for (const auto& str : enemyRefs) {
+	//	// Check if the string is already in the map
+	//	if (itemCounts.find(str) != itemCounts.end()) {
+	//		// Increment the count
+	//		itemCounts[str]++;
+	//	}
+	//	else {
+	//		// If not found, add it to the map with count as 1
+	//		itemCounts[str] = 1;
+	//	}
+	//}
 	groups.coordinates.resize(sz); // setting the coordinates
 	groups.enemies.resize(sz); // setting up the checking of enemies
 	groups.activeEnemy.resize(sz);
@@ -490,6 +494,21 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
 	RenderHelper::getInstance()->registerTexture("snakename", "./Assets/Combat_UI/snake.png");
 	RenderHelper::getInstance()->registerTexture("enemyPanel", "./Assets/Combat_UI/enemyPanel.png");
+	RenderHelper::getInstance()->registerTexture("chicken", "./Assets/Combat_UI/chicken.png");
+	RenderHelper::getInstance()->registerTexture("beef", "./Assets/Combat_UI/beef.png");
+	RenderHelper::getInstance()->registerTexture("bacon", "./Assets/Combat_UI/bacon.png");
+	RenderHelper::getInstance()->registerTexture("winbutton", "./Assets/Combat_UI/winbutton.png");
+	RenderHelper::getInstance()->registerTexture("itemdrop", "./Assets/Combat_UI/itemdrop.png");
+
+	RenderHelper::getInstance()->registerTexture("0item", "./Assets/Combat_UI/0item.png");
+	RenderHelper::getInstance()->registerTexture("1item", "./Assets/Combat_UI/1item.png");
+	RenderHelper::getInstance()->registerTexture("2item", "./Assets/Combat_UI/2item.png");
+	RenderHelper::getInstance()->registerTexture("3item", "./Assets/Combat_UI/3item.png");
+	RenderHelper::getInstance()->registerTexture("4item", "./Assets/Combat_UI/4item.png");
+	RenderHelper::getInstance()->registerTexture("5item", "./Assets/Combat_UI/5item.png");
+
+
+
 
 
 
@@ -537,7 +556,7 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	ItemPanel.x = wpos.x;
 	ItemPanel.y = wpos.y;
 	itemPanelY = wpos.y + 150.f;
-
+	itemPadding = 20.f;
 
 	blockingRenderTime = 0.f;
 	blockNow = false;
@@ -821,6 +840,7 @@ void CombatScene::Update(double dt)
 			//blockNow = false;
 			//Util_Camera_Shake(0.5, 100);
 			player->playerAttacked();
+			dialogueState = DIALOGUE::ENEMY_ATTACK;
 			float multiplier = 1.f;
 			switch (player->blockingState) {
 			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
@@ -871,15 +891,7 @@ void CombatScene::Update(double dt)
 			cout << "Transition to next level\n";
 			CombatManager::getInstance().end();
 
-			//delete player;
-			//player = nullptr;
-			//CombatManager::getInstance().end();
-			//return;
 		}
-		// all enemies shldve been deleted
-		//delete player;
-		//player = nullptr;
-		//CombatManager::getInstance().end();
 		return;
 	}
 
@@ -894,12 +906,6 @@ void CombatScene::Render()
 
 	updateGlobals();
 	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
-
-	//if (!playerAlive) {
-	//	RenderHelper::getInstance()->text("you have died", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
-
-	//}
-
 	//panel rendering
 
 	//rendering enemies
@@ -922,9 +928,7 @@ void CombatScene::Render()
 				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
 				deadEnemies.push_back(i);
 			}
-			//else if (player->isDead()) {
-			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
-			//}
+
 
 			enemy->render();
 			RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
@@ -933,7 +937,7 @@ void CombatScene::Render()
 
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
-			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent) { // playing event, render the text on the panel!
+			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
 				//std::string fulloutput;
 				switch (combatEventResult) {
 				case EVENT_TYPES::SPAM_KEY:
@@ -955,7 +959,7 @@ void CombatScene::Render()
 
 
 			}
-			else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY) {
+			else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY  && dialogueState == DIALOGUE::NONE) {
 				//if (blockingRenderTime < 0.5f) {
 				//if (!blockNow) {
 				//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
@@ -992,7 +996,24 @@ void CombatScene::Render()
 
 				}
 				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
-					std::string fulloutput = "You used " + attackUsed + "!\n";
+					std::string fulloutput = "Incoming attack!!! ";
+					//std::string multipler;
+					//switch(player->blockingState) {
+					//case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+					//case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+					//	multipler = "x1";
+					//	fulloutput += "Attack not blocked by player at all, receiving " + multipler + " damage !!!\n";
+					//	break;
+					//case PLAYER_BLOCKING_STATES::ON_ENTER:
+					//case PLAYER_BLOCKING_STATES::ON_EXIT:
+					//	multipler = "x0.5";
+					//	fulloutput += "Attack not fully blocked by player, receiving " + multipler + " damage!!!\n";
+					//	break;
+					//case PLAYER_BLOCKING_STATES::ON_UPDATE:
+					//	multipler = "x0.3";
+					//	fulloutput += "Attack blocked by player, receiving " + multipler + " damage !!!\n";
+					//	break;
+					//}
 
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
@@ -1042,7 +1063,26 @@ void CombatScene::Render()
 		// new panel
 		if (itemTime > slideAnimationDuration) {
 			// panel for the item drop
-			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - 100.f + camOffset.y, 550.f, 350.f);
+			std::string itemnum;
+			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x , wpos.y - 100.f + camOffset.y, 550.f, 350.f);
+			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - 150, wpos.y + camOffset.y + 25.f, 150.f, 50.f);
+
+				RenderHelper::getInstance()->texture("bacon", ItemPanel.x + camOffset.x - 150, wpos.y - 25.f + camOffset.y, 100.f, 50.f);
+				itemnum = std::to_string(itemdrops[0]) + "item";
+				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x , wpos.y - 25.f + camOffset.y, 50.f, 50.f);
+
+			
+
+				RenderHelper::getInstance()->texture("beef", ItemPanel.x + camOffset.x - 150, wpos.y - 75.f + camOffset.y, 100.f, 50.f);
+				itemnum = std::to_string(itemdrops[1]) + "item";
+				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 75.f + camOffset.y, 50.f, 50.f);
+			
+				RenderHelper::getInstance()->texture("chicken", ItemPanel.x + camOffset.x - 150, wpos.y - 125.f + camOffset.y, 100.f, 50.f);
+				itemnum = std::to_string(itemdrops[1]) + "item";
+				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 125.f + camOffset.y, 50.f, 50.f);
+
+			
+			RenderHelper::getInstance()->texture("winbutton", ItemPanel.x + camOffset.x - 50, wpos.y - 200.f + camOffset.y, 400.f, 75.f);
 
 
 			// item drops 

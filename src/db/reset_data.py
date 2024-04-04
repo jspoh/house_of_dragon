@@ -33,13 +33,6 @@ def constructData() -> dict:
         "baseDamage": 100
     },
     "enemyAttributes": {
-        "cat": {
-            "texturePath": "./Assets/Combat_Enemy/cat.png",
-            "soundPath": "./Assets/sounds/cat.mp3",
-            "element": "fire",
-            "health": 100,
-            "damage": 10
-        },
         "dragon": {
             "texturePath": "./Assets/Combat_Enemy/dragon.png",
             "soundPath": "./Assets/sounds/dragon.mp3",
@@ -56,35 +49,35 @@ def constructData() -> dict:
         },
         "pig": {
                 "texturePath": "./Assets/Combat_Enemy/pig.png",
-                "soundPath": "./Assets/sounds/cat.mp3",
+                "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "wood",
                 "health": 200,
                 "damage": 5
         },
         "snake": {
                 "texturePath": "./Assets/Combat_Enemy/snake.png",
-                "soundPath": "./Assets/sounds/cat.mp3",
+                "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "metal",
                 "health": 110,
                 "damage": 15
         },
         "monkey": {
                 "texturePath": "./Assets/Combat_Enemy/monkey.png",
-                "soundPath": "./Assets/sounds/cat.mp3",
+                "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "fire",
                 "health": 110,
                 "damage": 15
         },
         "goat": {
                 "texturePath": "./Assets/Combat_Enemy/goat.png",
-                "soundPath": "./Assets/sounds/cat.mp3",
+                "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "earth",
                 "health": 90,
                 "damage": 25
         },
         "cow": {
                 "texturePath": "./Assets/Combat_Enemy/cow.png",
-                "soundPath": "./Assets/sounds/cat.mp3",
+                "soundPath": "./Assets/sounds/dragon.mp3",
                 "element": "water",
                 "health": 150,
                 "damage": 25
