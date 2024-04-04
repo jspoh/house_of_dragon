@@ -370,6 +370,7 @@ namespace {
 	}
 
 }
+
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
 	itemDrop = enemyRefs;
@@ -564,6 +565,8 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	Event::getInstance()->init();
 }
 
+std::vector<GameObject_Projectiles*> projectiles;
+
 void CombatScene::Update(double dt)
 {
 	updateGlobals();
@@ -571,6 +574,17 @@ void CombatScene::Update(double dt)
 
 	if (!CombatManager::getInstance().isInCombat) {
 		return;
+	}
+
+	if (AEInputCheckTriggered(AEVK_1)) {
+		GameObject_Projectiles* np = Create::Projectiles({ -AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f });
+		projectiles.push_back(np);
+		np->FireAtPlayer();
+	}
+
+	for (GameObject_Projectiles* pp : projectiles) {
+		pp->Update(dt);
+		pp->Render();
 	}
 
 	if (dialogueState != DIALOGUE::NONE) {
