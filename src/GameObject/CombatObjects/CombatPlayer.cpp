@@ -283,7 +283,8 @@ void Player::updateHands(float t_dt)
 				mY *= -1;
 				if (t_AnimationDuration > 999) t_AnimationDuration = 0.0;
 				break;
-			case 1: //End Point
+			case 1: //End 
+
 				targetPos = { (float)mX - 166.0f + camX, (float)mY - 198.0f + camY };
 				LerpSpeed = 1.05;
 				Hand2PosData.first.m[0][2] += static_cast<float>(abs((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) > 0.5 ? ((targetPos.x - Hand2PosData.first.m[0][2]) / LerpSpeed) : 0);

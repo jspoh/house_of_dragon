@@ -55,9 +55,13 @@ SceneSetting::~SceneSetting()
  */
 void SceneSetting::Load()
 {
+	myBackButton.back = "back";
 
+	RenderHelper::getInstance()->registerTexture("back", "./Assets/Menu/back1.png");
 	RenderHelper::getInstance()->registerTexture("settingbg", "./Assets/Menu/setting.png");
 	RenderHelper::getInstance()->registerTexture("musicnote", "./Assets/Menu/musicnote.png");
+
+
 
 }
 
@@ -76,6 +80,12 @@ void SceneSetting::Init()
 
 	selectionPos.x = btnStartPos.x + btnIndex * (DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP);
 	selectionTargetPos.y = selectionPos.y;
+
+	myBackButton.backButtonWidth = 100.0f;
+	myBackButton.backButtonHeight = 50.0f;
+	myBackButton.backButtonX = -AEGfxGetWindowWidth() / 2.0f + myBackButton.backButtonWidth / 2.0f + 20.0f;
+	myBackButton.backButtonY = AEGfxGetWindowHeight() / 2.0f - myBackButton.backButtonHeight / 2.0f - 20.0f;
+	myBackButton.hoveringBack = false;
 }
 
 /**
@@ -90,6 +100,30 @@ void SceneSetting::Init()
  */
 void SceneSetting::Update(double dt)
 {
+	// Button hovering logic for back button
+	AEVec2 p1 = { myBackButton.backButtonX - myBackButton.backButtonWidth / 2.0f, myBackButton.backButtonY + myBackButton.backButtonHeight / 2.0f };
+	AEVec2 p2 = { myBackButton.backButtonX + myBackButton.backButtonWidth / 2.0f, myBackButton.backButtonY - myBackButton.backButtonHeight / 2.0f };
+
+	// Check if the cursor is hovering over the back button
+	if (p1.x < wMouseX && p1.y > wMouseY && p2.x > wMouseX && p2.y < wMouseY)
+	{
+		myBackButton.hoveringBack = true;
+	}
+	else
+	{
+		myBackButton.hoveringBack = false;
+	}
+
+	// Check if the back button is clicked
+	if (AEInputCheckTriggered(AEVK_LBUTTON))
+	{
+		if (p1.x < wMouseX && p1.y > wMouseY && p2.x > wMouseX && p2.y < wMouseY)
+		{
+			SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		}
+	}
+
+
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
@@ -143,7 +177,7 @@ void SceneSetting::Update(double dt)
 	AEVec2 btnPos = btnStartPos;
 	int i{};
 	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
-		Point rectScreenPos = wtos(btnPos.x, btnPos.y);
+		//Point rectScreenPos = wtos(btnPos.x, btnPos.y);
 
 		AEVec2 rectScreenPos = wtos(btnPos.x, btnPos.y);
 		//cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
@@ -209,6 +243,8 @@ void SceneSetting::Render()
 	RenderHelper::getInstance()->rect(musicBarPos.x, musicBarPos.y, soundBarScale.x, soundBarScale.y, 0, soundBarColor);
 	RenderHelper::getInstance()->texture("musicnote", soundSliderPos.x, soundSliderPos.y, sliderScale.x, sliderScale.y);
 	RenderHelper::getInstance()->texture("musicnote", musicSliderPos.x, musicSliderPos.y, sliderScale.x, sliderScale.y);
+
+	RenderHelper::getInstance()->texture("back", myBackButton.backButtonX, myBackButton.backButtonY, myBackButton.backButtonWidth, myBackButton.backButtonHeight);
 
 
 	ParticleManager::GetInstance()->render();

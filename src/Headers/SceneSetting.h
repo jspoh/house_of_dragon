@@ -45,11 +45,19 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
+	typedef struct {
+		float backButtonWidth;
+		float backButtonHeight;
+		float backButtonX;
+		float backButtonY;
+		bool hoveringBack;
+		std::string back;
 
+	} BackButton;
 
 private:
 
-
+	BackButton myBackButton{ 0 };
 
 	static SceneSetting* sInstance; // The pointer to the object that gets registered
 

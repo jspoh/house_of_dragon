@@ -265,37 +265,43 @@ void SceneMenu::Update(double dt)
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
-                        
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     case 1:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     case 2:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     case 3:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     case 4:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     case 5:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     case 6:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     default:
                         cout << "Error in selection\n";
@@ -366,10 +372,10 @@ void SceneMenu::Render()
         // Render the back button
         RenderHelper::getInstance()->texture(myMenu.back, myMenu.backButtonX, myMenu.backButtonY, myMenu.backButtonWidth, myMenu.backButtonHeight);
 
-        if (myMenu.hoveringBack)
+     /*   if (myMenu.hoveringBack)
         {
             RenderHelper::getInstance()->texture(myMenu.pointer, myMenu.backButtonX - myMenu.backButtonWidth / 2.0f - 30.0f, myMenu.backButtonY, 40, 40);
-        }
+        }*/
     }
 
     ParticleManager::GetInstance()->render();

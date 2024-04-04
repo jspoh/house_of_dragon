@@ -56,6 +56,7 @@ Technology is prohibited.
 #include "SoundManager.h"
 #include "SoundPlayer.h"
 #include "Pause.h"
+#include "SceneCredit.h"
 
 extern bool gGameRunning;
 extern bool DEBUG;
