@@ -605,7 +605,18 @@ void SceneLevelBuilder::Update(double dt)
 			if (m_CombatAnimationComp)
 			{
 				// check if combat is over and update accordingly
+				bool prevCombatPhaseState = m_CombatPhase;
 				m_CombatPhase = CombatManager::getInstance().isInCombat;
+
+				// switch combat audio back to game audio
+				if (prevCombatPhaseState && !m_CombatPhase) {
+					SoundPlayer::stopAll();
+					SoundPlayer::GameAudio::getInstance().playLoop();
+					GameScene::combatAudioLoopIsPlaying = false;
+					SceneStagesAudio::loopIsPlaying = true;
+					
+				}
+
 				CombatScene::getInstance().Update(dt);
 				if (!m_CombatPhase)
 				{
@@ -638,7 +649,7 @@ void SceneLevelBuilder::Update(double dt)
 				m_PanCloseToGround = true;
 				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? static_cast<int>(LERPING_SPEED) : 0;
 
-				if (!GameScene::combatAudioLoopIsPlaying) {
+				if (!GameScene::combatAudioLoopIsPlaying && m_CombatPhase) {
 					SoundPlayer::stopAll();
 					SoundPlayer::CombatAudio::getInstance().playLoop();
 					GameScene::combatAudioLoopIsPlaying = true;
