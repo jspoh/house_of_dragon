@@ -850,7 +850,7 @@ void CombatScene::Update(double dt)
  				GameObject_Projectiles* np = Create::Projectiles(groups.enemies[randEnemyIndex]->getWorldPos());
 				//cout << "Projectile pos: " << groups.enemies[randEnemyIndex]->getWorldPos().x << ", " << groups.enemies[randEnemyIndex]->getWorldPos().y << "\n";
 				projectiles.push_back(np);
-				np->FireAtPlayer();
+				np->FireAtPlayer(groups.enemies[randEnemyIndex]->getWorldPos());
 			}
 		}
 
