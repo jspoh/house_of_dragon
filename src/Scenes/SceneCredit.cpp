@@ -21,7 +21,7 @@ Technology is prohibited.
 static char strBuffer[1024];
 static char strBuffer1[1024];
 static float speed = 8;
-static Point text;
+static AEVec2 text;
 static float scrolling;
 static float timef;
 

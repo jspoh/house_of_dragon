@@ -361,7 +361,7 @@ void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f
 void RenderHelper::text(std::string s, float screenX, float screenY, float r, float g, float b, float a) {
 	AEGfxSetRenderMode(AE_GFX_RM_NONE);
 
-	Point p = ston(screenX, screenY);
+	AEVec2 p = ston(screenX, screenY);
 
 	f32 width, height;
 	AEGfxGetPrintSize(_font, s.c_str(), 1, &width, &height);

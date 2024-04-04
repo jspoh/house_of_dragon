@@ -30,7 +30,7 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     this->_spos.y = screenY;
     this->fullhealth = health;
     this->_textureRef = textureRef;
-    _spos = Point{ screenX, screenY};
+    _spos = AEVec2{ screenX, screenY};
     this->_wpos = stow(_spos.x, _spos.y);
     this->healthpos.x = this->_wpos.x - 50;
     this->healthpos.y = this->_wpos.y + 50;
@@ -47,7 +47,7 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
 
 void Enemy::update([[maybe_unused]] double dt) {
 
-    Point pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
+    AEVec2 pos = wtos(_wpos.x - camOffset.x, _wpos.y - camOffset.y);
 
     if (AEInputCheckTriggered(AEVK_LBUTTON) && CollisionChecker::isMouseInRect(pos.x, pos.y, _size, _size, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
         //cout << _textureRef << " enemy selected\n";

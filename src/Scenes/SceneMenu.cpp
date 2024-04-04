@@ -161,7 +161,7 @@ void SceneMenu::Update(double dt)
     my = -my;
     my += AEGfxGetWindowHeight() / 2.0f;
 
-    Point cursorPos = { mx, my };
+    AEVec2 cursorPos = { mx, my };
 
     if (!myMenu.levelSelecting)
     {
