@@ -191,30 +191,22 @@ namespace {
 						}
 						else if (currentState == ACTION_BTNS::ATTACK) {
 							if (bv == "FIRE") {
-								cout << "fire pressed\n";
-								attackUsed = "FIRE";
 								CombatManager::getInstance().attackElement = Fire;
 							}
 							else if (bv == "WATER") {
-								cout << "water pressed\n";
-								attackUsed = "WATER";
 								CombatManager::getInstance().attackElement = Water;
 							}
 							else if (bv == "METAL") {
-								cout << "metal pressed\n";
-								attackUsed = "METAL";
 								CombatManager::getInstance().attackElement = Metal;
 							}
 							else if (bv == "WOOD") {
-								cout << "wood pressed\n";
-								attackUsed = "WOOD";
 								CombatManager::getInstance().attackElement = Wood;
 							}
 							else if (bv == "EARTH") {
-								cout << "earth pressed\n";
-								attackUsed = "EARTH";
 								CombatManager::getInstance().attackElement = Earth;
 							}
+							attackUsed = bv;
+							cout << bv << " pressed\n";
 
 							if (CombatManager::getInstance().selectedEnemy != nullptr && CombatManager::getInstance().attackElement != Element::NO_ELEMENT) {
 								/*if user presses attack*/
@@ -266,12 +258,12 @@ namespace {
 							}
 							else {
 								cout << "Item used since last attack\n";
-							currentState = ACTION_BTNS::MAIN;
+								currentState = ACTION_BTNS::MAIN;
+							}
 						}
 					}
-				}
 
-			}
+				}
 				bPosX += btnWidth + spacing;
 			}
 		}
@@ -378,7 +370,7 @@ namespace {
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
 	itemDrop = enemyRefs;
-	
+
 	float Enemypadding = 50.0f;
 	float texSize = 60.f;
 	float newspacing = 225.f;
@@ -398,7 +390,7 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	groups.enemies.resize(sz); // setting up the checking of enemies
 	groups.activeEnemy.resize(sz);
 	groups.names.resize(sz); // might not be needed, after getting the information from the
-	float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding *2 ) - (sz - 1) * newspacing) / sz);
+	float Enemyspacing = static_cast<float>((AEGfxGetWindowWidth() - (Enemypadding * 2) - (sz - 1) * newspacing) / sz);
 	for (int i = 0; i < sz; i++) {
 		groups.activeEnemy[i] = true;
 		// coordindates
@@ -524,7 +516,7 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	winTime = 0.0f;
 	winButtonFlag = false;
 	itemTime = 0.f;
-	
+
 	ItemPanel.x = wpos.x;
 	ItemPanel.y = wpos.y;
 	itemPanelY = wpos.y + 150.f;
@@ -655,7 +647,7 @@ void CombatScene::Update(double dt)
 			t = slideAnimationDuration;
 		}
 		ItemPanel.y = lerp(wpos.y, itemPanelY, t);
-		
+
 	}
 
 
@@ -710,7 +702,7 @@ void CombatScene::Update(double dt)
 
 	Point p = stow(100, 100);
 	Event::getInstance()->update(CombatManager::getInstance().qtEventResult, dt);
-	
+
 
 
 	// if player has finished quicktime event
@@ -883,7 +875,7 @@ void CombatScene::Render()
 
 				renderBtns(btns[currentState]);  // render player action buttons
 			}
-			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent ) { // playing event, render the text on the panel!
+			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent) { // playing event, render the text on the panel!
 				//std::string fulloutput;
 				switch (combatEventResult) {
 				case EVENT_TYPES::SPAM_KEY:
@@ -988,8 +980,8 @@ void CombatScene::Render()
 		RenderHelper::getInstance()->texture("victory", ItemPanel.x + camOffset.x, ItemPanel.y + camOffset.y, currScaleDead.x, currScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
 		// to do: new btns
 		// new panel
-		if (itemTime > slideAnimationDuration ) {
-			RenderHelper::getInstance()->texture("panel", ItemPanel.x  + camOffset.x, wpos.y - 100.f + camOffset.y, 550.f, 350.f);
+		if (itemTime > slideAnimationDuration) {
+			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - 100.f + camOffset.y, 550.f, 350.f);
 		}
 	}
 
