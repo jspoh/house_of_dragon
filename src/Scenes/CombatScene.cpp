@@ -234,19 +234,19 @@ namespace {
 							{
 								if (bv == "BACON") {
 									int attackChange = rand() % 5 + 1; // Random value between 1-5
-									player->attackMultipler(attackChange);
+									player->healthGain(static_cast<float>(attackChange));
 								}
 								else if (bv == "CHICKEN") {
 									int healthChange = -rand() % 11 - 5; // Random value between -15 and -5
-									player->healthGain(healthChange);
+									player->healthGain(static_cast<float>(healthChange));
 								}
 								else if (bv == "BEEF") {
 									int healthChange = -rand() % 11 - 10; // Random value between -20 and -10
-									player->healthGain(healthChange);
+									player->healthGain(static_cast<float>(healthChange));
 								}
 								else if (bv == "CAT") {
 									int healthChange = rand() % 11 + 10; // Random value between 10 and 20
-									player->healthGain(healthChange);
+									player->healthGain(static_cast<float>(healthChange));
 								}
 								cout << bv << " eaten\n";
 								itemUsed = bv;
