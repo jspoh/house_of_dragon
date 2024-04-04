@@ -49,7 +49,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //    AESysInit(hInstance, nCmdShow, 1200, 750, 0, 60, true, NULL);
 //#endif
 
-    //AESysSetFullScreen(true); //Dont do fullscreen
     // Changing the window title
     AESysSetWindowTitle("Version Alpha 0.6.IDK - INCORPARATING AND THE SYSTEM IS MELTING");
 
@@ -67,8 +66,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // Game System Loop
     while (gGameRunning)
     {
-    	//cout << AEGfxGetWindowWidth() << " " << AEGfxGetWindowHeight() << "\n";
-    
     	// Informing the system about the loop's start
     	AESysFrameStart();
     
@@ -94,9 +91,4 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Game.Exit();
 	// free the system
 	AESysExit();
-	
-    //// check for memory leaks. i think our project nv config for checking of memory leaks in c++..
-    //_CrtDumpMemoryLeaks();
-
-    //system("pause");
 }

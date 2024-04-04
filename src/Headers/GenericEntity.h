@@ -18,9 +18,8 @@ Technology is prohibited.
 #define GENERIC_ENTITY_H
 //Basic Entity in game (COPY THIS TO MAKE YOUR PLAYER ENTITY / ENEMY ENTITIES / ETC)
 #include "GameObject.h"
-#include "2DCollider.h"
 
-class GenericEntity : public GameObject, public CCollider
+class GenericEntity : public GameObject
 {
 public:
 	GenericEntity(/*Maybe put texture here still thinking*/);
@@ -30,9 +29,6 @@ public:
 	virtual void Update(double _dt);
 	virtual void Render();
 	virtual void Exit();
-
-	// Set the maxAABB and minAABB
-	void SetAABB(Vector3 t_maxAABB, Vector3 t_minAABB);
 private:
 
 };
