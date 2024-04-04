@@ -19,6 +19,7 @@ Technology is prohibited.
 #include "GameObjectManager.h"
 #include "ParticleManager.h"
 #include "CombatScene.h"
+#include "SceneMenu.h"//For getting selected level
 
 #define SIZE_OF_FLOOR 11 //X Axis
 #define NUM_OF_TILES 10 //Z Axis

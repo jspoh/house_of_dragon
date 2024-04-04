@@ -4,7 +4,7 @@
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date 21 Feb 2024
-\brief Handles the update and rendering of the levels
+\brief The 3D engine, the heart of the game and my pain.
 
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
@@ -109,7 +109,6 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		//Level Header
 		**********************************************/
 		RenderHelper::getInstance()->registerTexture("LVL_HEADER", "Assets/SceneObjects/LvlHeader.png");
-		RenderHelper::getInstance()->registerTexture("TEST", "Assets/TEST.png"); //FOR TEST CASES OF ASSETS - TO BE REMOVED
 		pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
 
 		/*********************************************
@@ -125,8 +124,6 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		/*********************************************
 		//Sky
 		**********************************************/
-		RenderHelper::getInstance()->registerTexture("SKY_1", "Assets/SceneObjects/SKY/Scene_Sky_Clear.png");
-		//Still testing assets
 		RenderHelper::getInstance()->registerTexture("SKY_TEST_1", "Assets/SceneObjects/SKY/1.png");
 		RenderHelper::getInstance()->registerTexture("SKY_TEST_2", "Assets/SceneObjects/SKY/2.png");
 		RenderHelper::getInstance()->registerTexture("SKY_TEST_3", "Assets/SceneObjects/SKY/3.png");
@@ -180,55 +177,22 @@ SceneLevelBuilder::SceneLevelBuilder() :
 
 		//Trees
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeXL_Dark_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeL_Dark_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("FORESTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark_DEAD.png");
-
+		
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_XL_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_L_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_L_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL_Dark_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_M_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_M_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeM_Dark_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_1_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_DEAD.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_SHADOW", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_SHADOW.png");
-		//RenderHelper::getInstance()->registerTexture("NIGHTTREE_S_2_DEAD", "Assets/SceneObjects/SCENE_OBJECTS/NightTreeS_Dark_DEAD.png");
-
 		/*********************************************
 		//GameObjects
 		**********************************************/
@@ -350,7 +314,7 @@ void SceneLevelBuilder::Init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = 0; //CHANGE HERE (SUPPOSEDLY LEVEL)
+		m_currLevel = SceneMenu::sInstance->m_SelectedLevel;
 		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
@@ -523,7 +487,7 @@ void SceneLevelBuilder::Update(double dt)
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
 
 		}
-		cout << "Level Done: " << m_CompletionStatus << "%" << endl;
+		cout << "Level Done: " << m_CompletionStatus << "%\n";
 		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));
@@ -641,14 +605,25 @@ void SceneLevelBuilder::Update(double dt)
 			if (m_CombatAnimationComp)
 			{
 				// check if combat is over and update accordingly
+				bool prevCombatPhaseState = m_CombatPhase;
 				m_CombatPhase = CombatManager::getInstance().isInCombat;
+
+				// switch combat audio back to game audio
+				if (prevCombatPhaseState && !m_CombatPhase) {
+					SoundPlayer::stopAll();
+					SoundPlayer::GameAudio::getInstance().playLoop();
+					GameScene::combatAudioLoopIsPlaying = false;
+					SceneStagesAudio::loopIsPlaying = true;
+					
+				}
+
 				CombatScene::getInstance().Update(dt);
 				if (!m_CombatPhase)
 				{
 					m_CombatBufferingTime = 0.6f;
 					FadeINBlack();
-					//if(PlayerVictory)
-					m_CompletionStatus += 30; // Increment Progression of level for completing the battle
+					if (CombatScene::getInstance().getWinFlag())
+						m_CompletionStatus += 30; // Increment Progression of level for completing the battle
 
 				}
 					
@@ -674,7 +649,7 @@ void SceneLevelBuilder::Update(double dt)
 				m_PanCloseToGround = true;
 				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? static_cast<int>(LERPING_SPEED) : 0;
 
-				if (!GameScene::combatAudioLoopIsPlaying) {
+				if (!GameScene::combatAudioLoopIsPlaying && m_CombatPhase) {
 					SoundPlayer::stopAll();
 					SoundPlayer::CombatAudio::getInstance().playLoop();
 					GameScene::combatAudioLoopIsPlaying = true;
@@ -891,9 +866,6 @@ void SceneLevelBuilder::Render()
 	{
 		AEGfxSetTransparency(1.0f);
 		//Sky
-		//AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_1"), 0, 0);
-		//AEGfxSetTransform(m_TransformSkyData.m);
-		//AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformSkyData.m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);

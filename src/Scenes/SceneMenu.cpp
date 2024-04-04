@@ -25,12 +25,12 @@ namespace {
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
-SceneMenu::SceneMenu()
+SceneMenu::SceneMenu() : m_SelectedLevel{0}
 {
 
 }
 
-SceneMenu::SceneMenu(SceneManager* _sceneMgr)
+SceneMenu::SceneMenu(SceneManager* _sceneMgr) : m_SelectedLevel{ 0 }
 {
     _sceneMgr->AddScene("SceneMenu", this);
     nextSceneName = "SceneMenu";
@@ -172,7 +172,7 @@ void SceneMenu::Update(double dt)
     my = -my;
     my += AEGfxGetWindowHeight() / 2.0f;
 
-    Point cursorPos = { mx, my };
+    AEVec2 cursorPos = { mx, my };
 
     if (!myMenu.levelSelecting)
     {
@@ -265,6 +265,7 @@ void SceneMenu::Update(double dt)
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        
                         break;
                     case 1:
                         nextSceneName = "SceneStages";
@@ -296,7 +297,10 @@ void SceneMenu::Update(double dt)
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
+                    default:
+                        cout << "Error in selection\n";
                     }
+                    m_SelectedLevel = i;
                 }
             }
 

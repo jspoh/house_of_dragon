@@ -22,17 +22,17 @@ class Enemy : public Mob {
 private:
 	std::string _textureRef = "";
 	// screen pos
-	Point _spos{ 0 };
+	AEVec2 _spos{ 0 };
 	// world pos (rendering only!!!!)
-	Point _wpos{ 0 };
+	AEVec2 _wpos{ 0 };
 	float _size = 50;
-	Point healthpos{ 0 };
+	AEVec2 healthpos{ 0 };
 	float fullhealth = 0;
 	float startingHealth{ 0 };
 	//attack multipler holder
 
-	Point attackPoint{ 0 };
-	Point AttackEnd{ 0};
+	AEVec2 attackPoint{ 0 };
+	AEVec2 AttackEnd{ 0};
 	float attacktime{ 0 };
 	// a flag to help render the shaking
 	bool attacked{0};
@@ -46,6 +46,7 @@ private:
 	float AttackedRenderXprev{ 0 };
 	const float healthRenderTimeMax = 0.75f;
 	float healthRenderTime{ 0 };
+	std::string elementString;
 
 
 
@@ -53,7 +54,7 @@ public:
 	bool isSelected = false;
 
 	std::string getTextureRef() const;
-
+	void elementstringinput(std::string element);
 	const int projectileTravelTimeMs;
 	
 	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50, int _projectileTravelTimeMs = 1000);

@@ -100,10 +100,6 @@ struct Color {
 	f32 r, g, b, a;
 };
 
-struct Point {
-	float x, y;
-};
-
 struct Controls {
 	int UP, DOWN, LEFT, RIGHT;
 };
@@ -114,15 +110,15 @@ struct Controls {
  * 
  * \return 
  */
-Point stow(float x, float y);
+AEVec2 stow(float x, float y);
 
 /* screen coordinates to normalized coordinates */
-Point ston(float x, float y);
+AEVec2 ston(float x, float y);
 
 /**
  * world to screen coordinates.
  */
-Point wtos(float x, float y);
+AEVec2 wtos(float x, float y);
 
 /**
  * rounds a float to a set precision.

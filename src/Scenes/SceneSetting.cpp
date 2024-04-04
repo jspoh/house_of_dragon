@@ -113,8 +113,8 @@ void SceneSetting::Update(double dt)
 	static MOD_STATES modState = MOD_STATES::NONE;
 	if (AEInputCheckCurr(AEVK_LBUTTON)) {
 
-		Point sPos = wtos(soundSliderPos.x, soundSliderPos.y);
-		Point mPos = wtos(musicSliderPos.x, musicSliderPos.y);
+		AEVec2 sPos = wtos(soundSliderPos.x, soundSliderPos.y);
+		AEVec2 mPos = wtos(musicSliderPos.x, musicSliderPos.y);
 		if (modState == MOD_STATES::SFX_AUDIO_VOLUME || CollisionChecker::isMouseInCircle(sPos.x, sPos.y, sliderRadius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			modState = MOD_STATES::SFX_AUDIO_VOLUME;
 			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
@@ -145,6 +145,8 @@ void SceneSetting::Update(double dt)
 	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
 		Point rectScreenPos = wtos(btnPos.x, btnPos.y);
 
+		AEVec2 rectScreenPos = wtos(btnPos.x, btnPos.y);
+		//cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
 		if (CollisionChecker::isMouseInRect(rectScreenPos.x, rectScreenPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			// hover state
 			if (!AEInputCheckTriggered(AEVK_LBUTTON)) {
@@ -190,7 +192,7 @@ void SceneSetting::Render()
 	AEVec2 btnPos = btnStartPos;
 	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
 		RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, 0, Color{ 0.1f, 0.1f, 0.5f, 1 }, 1.f);
-		Point screenPos = wtos(btnPos.x, btnPos.y);
+		AEVec2 screenPos = wtos(btnPos.x, btnPos.y);
 		RenderHelper::getInstance()->text(str, screenPos.x, screenPos.y, 1, 1, 1, 1);
 
 		btnPos.x += DIFFICULTY_BUTTON_WIDTH + DIFFICULTY_BUTTON_GAP;

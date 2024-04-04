@@ -18,10 +18,7 @@ Technology is prohibited.
 
 #include "Vector3.h"
 #include "GameObject.h"
-#include "2DCollider.h"
 
-
-#include "GameObject_AmeTest.h"
 #include "GameObject_Misc_Enemy.h"
 #include "GameObject_Projectiles.h"
 

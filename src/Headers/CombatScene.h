@@ -38,6 +38,8 @@ public:
 	void spawnEnemies(std::vector<std::string> enemyRefs);
 	void cleanup();
 
+	bool getWinFlag();
+
 	static CombatScene& getInstance();
 private:
 
@@ -45,7 +47,7 @@ private:
 };
 struct enemiesGroup {
 	std::vector<bool> activeEnemy;
-	std::vector<Point> coordinates;
+	std::vector<AEVec2> coordinates;
 	std::vector<std::string> names;
 	std::vector<Enemy*> enemies;
 };

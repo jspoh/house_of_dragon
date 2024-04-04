@@ -54,7 +54,7 @@ void GameObject_Misc_Enemy::Update(double _dt)
 		/////////////////////////////////////////////////////////////////////////
 		// Getting Hit
 		{
-			Point pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
+			AEVec2 pos = wtos(m_LocalPos.x - camOffset.x, m_LocalPos.y - camOffset.y);
 			//Check Collision
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{

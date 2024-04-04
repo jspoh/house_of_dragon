@@ -24,24 +24,24 @@ DIFFICULTY_SETTINGS difficulty{};
 /*utility functions*/
 
 /* screen coordinates to world coordinates */
-Point stow(float x, float y) {
+AEVec2 stow(float x, float y) {
 	float wX = x - (AEGfxGetWindowWidth() / 2);
 	float wY = (AEGfxGetWindowHeight() / 2) - y;  // Corrected this line
-	return Point{ wX, wY };
+	return AEVec2{ wX, wY };
 }
 
-Point ston(float x, float y) {
+AEVec2 ston(float x, float y) {
 	float nX = (2.0f * x / AEGfxGetWindowWidth()) - 1.0f;
 	float nY = 1.0f - (2.0f * y / AEGfxGetWindowHeight());
 
-	return Point{ nX, nY };
+	return AEVec2{ nX, nY };
 }
 
-Point wtos(float x, float y) {
+AEVec2 wtos(float x, float y) {
 	x = x + AEGfxGetWindowWidth() / 2.f;
 	y = -y + AEGfxGetWindowHeight() / 2.f;
 
-	return Point{ x, y };
+	return AEVec2{ x, y };
 }
 
 
@@ -89,7 +89,7 @@ void initGlobals() {
 
 void updateGlobals() {
 	AEInputGetCursorPosition(&mouseX, &mouseY);
-	Point wMouse = stow(static_cast<float>(mouseX), static_cast<float>(mouseY));
+	AEVec2 wMouse = stow(static_cast<float>(mouseX), static_cast<float>(mouseY));
 	wMouseX = static_cast<int>(wMouse.x);
 	wMouseY = static_cast<int>(wMouse.y);
 	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);

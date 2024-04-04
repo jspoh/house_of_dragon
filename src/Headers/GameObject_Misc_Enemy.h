@@ -20,9 +20,8 @@ Technology is prohibited.
 // ///////////////////////////////////////////////////////////
 //Basic Entity in game (COPY THIS TO MAKE YOUR PLAYER ENTITY / ENEMY ENTITIES / ETC)
 #include "GameObject.h"
-#include "2DCollider.h"
 #include "Pch.h"
-class GameObject_Misc_Enemy : public GameObject, public CCollider
+class GameObject_Misc_Enemy : public GameObject
 {
 public:
 	enum v_EnemyBehaviour
