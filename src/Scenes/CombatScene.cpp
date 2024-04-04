@@ -46,7 +46,7 @@ namespace {
 	float itemTime;
 	bool winButtonFlag;
 	float itemPanelY;
-	Point ItemPanel;
+	AEVec2 ItemPanel;
 
 
 	//camera coordinates;
@@ -59,11 +59,11 @@ namespace {
 
 
 	//death buttons values
-	Point deathBtnMenuPoint;
-	Point deathBtnRespawnPoint;
+	AEVec2 deathBtnMenuPoint;
+	AEVec2 deathBtnRespawnPoint;
 	float deathBtnWidthEnd;
 	float deathbtnHeightEnd;
-	Point deathBtncurrScale;
+	AEVec2 deathBtncurrScale;
 
 	//blocking variables
 	float blockingRenderTime;
@@ -75,18 +75,18 @@ namespace {
 	//timer for the lerp
 	//const float slideAnimationDuration = 1.0f;
 	// panel rendering
-	Point panelpos;
+	AEVec2 panelpos;
 	float panelfinalY;
 	bool panelflag;
 	float currentTime;
 	float startingPanelY;
 	//world pos
-	Point wpos;
+	AEVec2 wpos;
 
 	//size for the dead player screen
-	Point initalScaleDead;
-	Point FinalScaleDead;
-	Point currScaleDead;
+	AEVec2 initalScaleDead;
+	AEVec2 FinalScaleDead;
+	AEVec2 currScaleDead;
 
 	//padding for the btns
 	float btnWordPadding;
@@ -172,10 +172,10 @@ namespace {
 		btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
 		float lBtnX = padding + btnWidth / 2.f;
 		float bPosX = lBtnX;
-		Point btnText = wtos(bPosX, panelfinalY);
+		AEVec2 btnText = wtos(bPosX, panelfinalY);
 		if (playerAlive) {
 			for (const std::string bv : bvalues) { // bruh wa this got got me too confused
-				Point btnPos = stow(bPosX, btnY);  // button rendering position
+				AEVec2 btnPos = stow(bPosX, btnY);  // button rendering position
 
 				//cout << bPosX << " | " << btnY << "\n";
 				if (CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
@@ -184,7 +184,10 @@ namespace {
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 						/*click while on main menu*/
 						if (currentState == ACTION_BTNS::MAIN) {
-							currentState = stateMap.find(bv)->second;
+							// ignore click to enter items submenu if item already used in this turn
+							if (!(itemUsedSinceLastAttack && bv == "ITEMS")) {
+								currentState = stateMap.find(bv)->second;
+							}
 						}
 						else if (bv == "BACK" || bv == "NO") {
 							currentState = ACTION_BTNS::MAIN;
@@ -232,33 +235,28 @@ namespace {
 								if (bv == "BACON") {
 									int attackChange = rand() % 5 + 1; // Random value between 1-5
 									player->attackMultipler(attackChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								else if (bv == "CHICKEN") {
 									int healthChange = -rand() % 11 - 5; // Random value between -15 and -5
 									player->healthGain(healthChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								else if (bv == "BEEF") {
 									int healthChange = -rand() % 11 - 10; // Random value between -20 and -10
 									player->healthGain(healthChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								else if (bv == "CAT") {
 									int healthChange = rand() % 11 + 10; // Random value between 10 and 20
 									player->healthGain(healthChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								cout << bv << " eaten\n";
 								itemUsed = bv;
+								itemUsedSinceLastAttack = true;
+								dialogueState = DIALOGUE::ITEM;
+								currentState = ACTION_BTNS::MAIN;
 							}
 							else {
 								cout << "Item used since last attack\n";
-								currentState = ACTION_BTNS::MAIN;
+								//currentState = ACTION_BTNS::MAIN;
 							}
 						}
 					}
@@ -284,8 +282,8 @@ namespace {
 		}
 	}
 	void renderDeathBtns() {
-		Point trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
-		Point trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
+		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
+		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
 
 
 		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
@@ -313,8 +311,8 @@ namespace {
 		}
 	}
 	void renderWinBtns() {
-		Point trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
-		Point trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
+		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
+		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
 
 
 		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
@@ -346,19 +344,24 @@ namespace {
 		float bPosX = lBtnX;
 
 		for (const std::string bv : bvalues) { // bruh wa this got got me too confused
-			Point btnPos = stow(bPosX, panelfinalY);  // button rendering position
-			Point btnText = wtos(bPosX, panelfinalY);
+			AEVec2 btnPos = stow(bPosX, panelfinalY);  // button rendering position
+			AEVec2 btnText = wtos(bPosX, panelfinalY);
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
 			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag) {
-				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
+				if (!(itemUsedSinceLastAttack && bv == "ITEMS")) {
+					RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
+				}
+				else {
+					RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding, 1, Color{ 0, 0, 0, 0 }, 0, Color{ 0.5f,0.5f,0.5f,1 });
+				}
 				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
-				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding);
+				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding, 1, Color{ 0,0,0,0 }, 0, itemUsedSinceLastAttack && bv == "ITEMS" ? Color{ 0.5f,0.5f,0.5f,1 } : Color{ 1,1,1,1 });
 
-				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
+				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render normal when no hovering
 			}
 			RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
 			bPosX += btnWidth + spacing;
@@ -721,7 +724,7 @@ void CombatScene::Update(double dt)
 	}
 
 
-	Point p = stow(100, 100);
+	AEVec2 p = stow(100, 100);
 	Event::getInstance()->update(CombatManager::getInstance().qtEventResult, dt);
 
 

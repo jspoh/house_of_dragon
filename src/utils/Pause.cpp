@@ -57,7 +57,7 @@ void Pause::update([[maybe_unused]] double dt) {
 	int btnY = btnYStart;
 
 	for (auto& [b, scale] : btns) {
-		Point pos = wtos(0, static_cast<float>(btnY));
+		AEVec2 pos = wtos(0, static_cast<float>(btnY));
 		if (CollisionChecker::isMouseInRect(pos.x, pos.y, BTN_WIDTH * scale, BTN_HEIGHT * scale, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			
 			scale = HOVER_BTN_SCALE;

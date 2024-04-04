@@ -89,7 +89,7 @@ void Player::_drawHealth(float screenX, float screenY) {
 		std::string level = "  Lv:1";
 	float paddingY = 50;
 	float paddingX = 90;
-	Point panelPos = stow(screenX, screenY);
+	AEVec2 panelPos = stow(screenX, screenY);
 	//panel rendering
 	f32 truex, truey;
 	AEGfxGetCamPosition(&truex, &truey);
