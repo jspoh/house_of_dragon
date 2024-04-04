@@ -60,7 +60,7 @@ void Enemy::update([[maybe_unused]] double dt) {
         isSelected = !isSelected;
     }
     //cout << camOffset.x << ", " << camOffset.y << "\n";
-    if (this->attacked == true && this->healthRenderTime < this->healthRenderTimeMax) {
+    if (this->attacked && this->healthRenderTime < this->healthRenderTimeMax) {
         healthRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
         float percenttime = static_cast<float>(healthRenderTime / healthRenderTimeMax);
         float t = percenttime;
@@ -81,9 +81,9 @@ void Enemy::render() {
 
 
     // shaking motion when enemy is attacked
-    if(this->attacked == true){
+    if(this->attacked){
         if (this->shakeDuration > 0) {
-            // Apply shake effect only when attacked
+            // Apply shake effect only when attacked (so smart to use sin fr thats crazy -js)
             float shakeOffset = sin(this->shakeFrequency * this->shakeDuration) * this->shakeAmplitude * this->shakeDuration;
             RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x + shakeOffset, this->_wpos.y , this->_size, this->_size);
             this->shakeDuration -= static_cast<float>(AEFrameRateControllerGetFrameTime());
@@ -97,7 +97,9 @@ void Enemy::render() {
     else {
         // render the enemy texture static
         RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x, this->_wpos.y, this->_size, this->_size);
+        //cout << "Enemy pos: " << this->_wpos.x << ", " << this->_wpos.y << "\n";
     }
+
     if (isSelected) {
         RenderHelper::getInstance()->texture("border", this->_wpos.x, this->_wpos.y, this->_size + 50, this->_size + 50 ); // size should change
     }
@@ -179,5 +181,9 @@ void Enemy::EnemyAttackStop() {
     //this->attackPoint.x = (_wpos.x);
     //this->attackPoint.y = (_wpos.y);
     return;
+}
+
+AEVec2 Enemy::getWorldPos() const {
+    return _wpos;
 }
 
