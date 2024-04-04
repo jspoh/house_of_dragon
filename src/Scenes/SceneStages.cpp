@@ -152,7 +152,7 @@ void SceneStages::Update(double dt)
 
 	}
 
-	if (m_transparency <= 0 && !SceneStagesAudio::loopIsPlaying) {
+	if (m_transparency <= 0 && !SceneStagesAudio::loopIsPlaying && !GameScene::afterInit) {
 		SoundPlayer::GameAudio::getInstance().playLoop();
 		SceneStagesAudio::loopIsPlaying = true;
 		GameScene::afterInit = true;

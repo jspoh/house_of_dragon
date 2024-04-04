@@ -232,29 +232,23 @@ namespace {
 								if (bv == "BACON") {
 									int attackChange = rand() % 5 + 1; // Random value between 1-5
 									player->attackMultipler(attackChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								else if (bv == "CHICKEN") {
 									int healthChange = -rand() % 11 - 5; // Random value between -15 and -5
 									player->healthGain(healthChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								else if (bv == "BEEF") {
 									int healthChange = -rand() % 11 - 10; // Random value between -20 and -10
 									player->healthGain(healthChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								else if (bv == "CAT") {
 									int healthChange = rand() % 11 + 10; // Random value between 10 and 20
 									player->healthGain(healthChange);
-									dialogueState = DIALOGUE::ITEM;
-									itemUsedSinceLastAttack = true;
 								}
 								cout << bv << " eaten\n";
 								itemUsed = bv;
+								itemUsedSinceLastAttack = true;
+								dialogueState = DIALOGUE::ITEM;
 							}
 							else {
 								cout << "Item used since last attack\n";
@@ -352,11 +346,16 @@ namespace {
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
 			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag) {
-				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
+				if (!(itemUsedSinceLastAttack && bv == "ITEMS")) {
+					RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
+				}
+				else {
+					RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding, 1, Color{ 0, 0, 0, 0.7f }, 0);
+				}
 				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.9f, 0.5f, 0.5f, 1.f });  // render highlight on hover. can consider doing transitions if got time?? but prob no time lel
 			}
 			else {
-				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding);
+				RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding, 1, itemUsedSinceLastAttack && bv == "ITEMS" ? Color{ 0, 0, 0, 0.7f } : Color{ 0,0,0,0.f }, 0);
 
 				RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.3f, 0.3f, 0.3f, 1.f });  // render normal when no hovering
 			}
