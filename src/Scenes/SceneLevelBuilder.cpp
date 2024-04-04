@@ -487,7 +487,7 @@ void SceneLevelBuilder::Update(double dt)
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
 
 		}
-		cout << "Level Done: " << m_CompletionStatus << "%\n";
+		//cout << "Level Done: " << m_CompletionStatus << "%\n";
 		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
 		UpdateClouds(static_cast<float>(dt));

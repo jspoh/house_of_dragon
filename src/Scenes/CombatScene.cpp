@@ -154,7 +154,7 @@ namespace {
 	float btnY = 550;
 	float maxBtnHeight = 100.f;
 
-
+	std::vector<GameObject_Projectiles*> projectiles;
 
 	void resetDialogue() {
 		dialougeTime = 0;
@@ -162,9 +162,6 @@ namespace {
 	}
 
 
-
-
-	/*im so sorry this code very spaghet but time crunch!!*/
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
 		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
@@ -370,6 +367,7 @@ namespace {
 	}
 
 }
+
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
 	itemDrop = enemyRefs;
@@ -559,6 +557,8 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	btnWordPadding = 20.f;
 	btnDecreaseY = 0.f;
 
+	projectiles.clear();
+
 	CombatManager::getInstance().start(startingTurn);
 
 	Event::getInstance()->init();
@@ -571,6 +571,25 @@ void CombatScene::Update(double dt)
 
 	if (!CombatManager::getInstance().isInCombat) {
 		return;
+	}
+
+	// update projectiles 
+	std::vector<int> inactiveProjectileIdxs;
+	inactiveProjectileIdxs.reserve(5);
+	int ipIdx{ -1 };
+	for (GameObject_Projectiles* pp : projectiles) {
+		ipIdx++;
+		if (!pp->m_Active) {
+			inactiveProjectileIdxs.push_back(ipIdx);
+			continue;
+		}
+		pp->Update(dt);
+	}
+
+	// remove inactive projectiles
+	std::sort(inactiveProjectileIdxs.rbegin(), inactiveProjectileIdxs.rend());
+	for (const int i : inactiveProjectileIdxs) {
+		projectiles.erase(projectiles.begin() + i);
 	}
 
 	if (dialogueState != DIALOGUE::NONE) {
@@ -611,22 +630,22 @@ void CombatScene::Update(double dt)
 			winButtonFlag = true;
 		}
 	}
-\
-	//	// kill all enemies
-	//	for (const Enemy* e : groups.enemies) {
-	//		delete e;
-	//	}
+	
+		//	// kill all enemies
+		//	for (const Enemy* e : groups.enemies) {
+		//		delete e;
+		//	}
 
-	//	groups.enemies.clear();
-	//	
-	//	CombatManager::getInstance().end();
-	//	delete player;
-	//	player = nullptr;
-	//	return;
-	//}
-	//updating panel 
+		//	groups.enemies.clear();
+		//	
+		//	CombatManager::getInstance().end();
+		//	delete player;
+		//	player = nullptr;
+		//	return;
+		//}
+		//updating panel 
 
-	AEGfxGetCamPosition(&camX, &camY);
+		AEGfxGetCamPosition(&camX, &camY);
 
 	//death lerp
 	if ((!playerAlive && currentTime < slideAnimationDuration)) {
@@ -796,6 +815,9 @@ void CombatScene::Update(double dt)
 		if (CombatManager::getInstance().enemyNextTurnMs < 0) {
 			blockingRenderTime = 0.f; //reset the rendering time
 			SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
+
+			// fire projectile at player
+
 			//blockNow = false;
 			//Util_Camera_Shake(0.5, 100);
 			player->playerAttacked();
@@ -821,22 +843,32 @@ void CombatScene::Update(double dt)
 			if (groups.enemies.size()) {
 				int randEnemyIndex = rand() % groups.enemies.size();
 				cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
-				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(groups.enemies[randEnemyIndex]->getTextureRef());
-				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
+
+				Enemy* e = groups.enemies[randEnemyIndex];
+
+				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
+				e->attack(*player, multiplier);  // Example: All enemies attack the player
 				CombatManager::getInstance().next();
+
+ 				GameObject_Projectiles* np = Create::Projectiles();
+				//cout << "Projectile pos: " << e->getWorldPos().x << ", " << e->getWorldPos().y << "\n";
+				projectiles.push_back(np);
+				np->FireAtPlayer(e->getWorldPos(), e->getSize(), static_cast<GameObject_Projectiles::ProjectileType>(rand() % GameObject_Projectiles::ProjectileType::NUM_PROJECTILE_TYPES));
 			}
 		}
 
 	}
 	else if (groups.enemies.size() == 0) {
+		CombatManager::getInstance().turn = CombatManager::TURN::NONE_TURN;
+
 		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		cout << "Transition to next level\n";
 		if (!winFlag) {
 			dialogueState = DIALOGUE::WIN;
 			winFlag = true;
 
 		}
 		else if (winFlag && winButtonFlag) {
+			cout << "Transition to next level\n";
 			CombatManager::getInstance().end();
 
 			//delete player;
@@ -881,10 +913,9 @@ void CombatScene::Render()
 
 		// rendering health when player active in the game and dont playing an event
 		if (!CombatManager::getInstance().isPlayingEvent) {
+			// !TODO: kuek no magic numbers pls
 			player->renderHealth(150, 150);
 		}
-
-		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 			if (enemy->isDead()) {
@@ -894,6 +925,9 @@ void CombatScene::Render()
 			//else if (player->isDead()) {
 			//	RenderHelper::getInstance()->text("Player is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); //set pos
 			//}
+
+			enemy->render();
+			RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 			if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 
@@ -967,7 +1001,7 @@ void CombatScene::Render()
 			}
 
 			i++;
-			enemy->render();
+
 		}
 
 	}
@@ -1026,9 +1060,11 @@ void CombatScene::Render()
 	}
 	Event::getInstance()->render();
 
+	for (GameObject_Projectiles* pp : projectiles) {
+		pp->Render();
+	}
+
 	player->render();		// rendering for combat scene. level builder will render while not in combat, else will default to this.
-
-
 }
 
 void CombatScene::cleanup() {

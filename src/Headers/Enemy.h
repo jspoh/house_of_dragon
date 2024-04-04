@@ -65,6 +65,10 @@ public:
 	void enemyAttacked();
 	void enemyAttacking(float timeleft);
 	void EnemyAttackStop();
+
+	AEVec2 getWorldPos() const;
+
+	AEVec2 getSize() const;
 };
 
 
