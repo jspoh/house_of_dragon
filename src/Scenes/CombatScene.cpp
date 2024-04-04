@@ -184,7 +184,10 @@ namespace {
 					if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 						/*click while on main menu*/
 						if (currentState == ACTION_BTNS::MAIN) {
-							currentState = stateMap.find(bv)->second;
+							// ignore click to enter items submenu if item already used in this turn
+							if (!(itemUsedSinceLastAttack && bv == "ITEMS")) {
+								currentState = stateMap.find(bv)->second;
+							}
 						}
 						else if (bv == "BACK" || bv == "NO") {
 							currentState = ACTION_BTNS::MAIN;
@@ -249,10 +252,11 @@ namespace {
 								itemUsed = bv;
 								itemUsedSinceLastAttack = true;
 								dialogueState = DIALOGUE::ITEM;
+								currentState = ACTION_BTNS::MAIN;
 							}
 							else {
 								cout << "Item used since last attack\n";
-								currentState = ACTION_BTNS::MAIN;
+								//currentState = ACTION_BTNS::MAIN;
 							}
 						}
 					}
