@@ -148,7 +148,7 @@ void Event::startRandomEvent() {
 	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
-	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
+	e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
@@ -743,7 +743,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 					next->second = true;
 
 					// finished typing. move on to next state
-					if (next + 1 == &_typed.back()) {
+					if (next == &_typed.back()) {
 						_wordsCompleted++;
 						_typingState = INNER_STATES::ON_NEXT;
 						break;
