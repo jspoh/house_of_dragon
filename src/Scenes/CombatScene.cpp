@@ -506,6 +506,7 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("3item", "./Assets/Combat_UI/3item.png");
 	RenderHelper::getInstance()->registerTexture("4item", "./Assets/Combat_UI/4item.png");
 	RenderHelper::getInstance()->registerTexture("5item", "./Assets/Combat_UI/5item.png");
+	RenderHelper::getInstance()->registerTexture("incomingAttack", "./Assets/Combat_UI/incomingAttack.png");
 
 
 
@@ -782,7 +783,7 @@ void CombatScene::Update(double dt)
 		CombatManager::getInstance().next();
 		enemyattackedRenderTime = 0.f;
 
-		dialogueState = DIALOGUE::PLAYER_ATTACK;
+		//dialogueState = DIALOGUE::PLAYER_ATTACK;
 
 		cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
 		CombatManager::getInstance().isPlayingEvent = false;
@@ -990,32 +991,9 @@ void CombatScene::Render()
 					std::string fulloutput = "You have consumed " + itemUsed + "!";
 					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 				}
-				else if (dialogueState == DIALOGUE::PLAYER_ATTACK) {
-					std::string fulloutput = "You used " + attackUsed + "!";
-					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 
-				}
 				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
-					std::string fulloutput = "Incoming attack!!! ";
-					//std::string multipler;
-					//switch(player->blockingState) {
-					//case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-					//case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-					//	multipler = "x1";
-					//	fulloutput += "Attack not blocked by player at all, receiving " + multipler + " damage !!!\n";
-					//	break;
-					//case PLAYER_BLOCKING_STATES::ON_ENTER:
-					//case PLAYER_BLOCKING_STATES::ON_EXIT:
-					//	multipler = "x0.5";
-					//	fulloutput += "Attack not fully blocked by player, receiving " + multipler + " damage!!!\n";
-					//	break;
-					//case PLAYER_BLOCKING_STATES::ON_UPDATE:
-					//	multipler = "x0.3";
-					//	fulloutput += "Attack blocked by player, receiving " + multipler + " damage !!!\n";
-					//	break;
-					//}
-
-					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+					RenderHelper::getInstance()->texture("incomingAttack", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
 
 
 				}

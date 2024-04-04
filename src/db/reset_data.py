@@ -137,7 +137,9 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 4,
         "enemySpawnWeight": [
             {
-                "dragon": 2
+                "dragon": 2,
+                "snake" : 3
+
             }
         ],
         "SceneOBJSpawnWeight": [
@@ -242,7 +244,8 @@ def constructData() -> dict:
         "maxSceneOBJperTile": 12,
         "enemySpawnWeight": [
             {
-                "dragon": 2
+                "dragon": 2,
+                "snake" : 3
             }
         ],
         "SceneOBJSpawnWeight": [
