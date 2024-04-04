@@ -46,6 +46,7 @@ private:
 	float AttackedRenderXprev{ 0 };
 	const float healthRenderTimeMax = 0.75f;
 	float healthRenderTime{ 0 };
+	std::string elementString;
 
 
 
@@ -53,7 +54,7 @@ public:
 	bool isSelected = false;
 
 	std::string getTextureRef() const;
-
+	void elementstringinput(std::string element);
 	const int projectileTravelTimeMs;
 	
 	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50, int _projectileTravelTimeMs = 1000);

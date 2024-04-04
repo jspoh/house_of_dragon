@@ -413,6 +413,7 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 			groups.coordinates[i].y,
 			texSize
 		);
+		groups.enemies[i]->elementstringinput(Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["element"]);
 	}
 
 
@@ -476,12 +477,27 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("multiClick", "./Assets/Combat_UI/multiClick.png");
 	RenderHelper::getInstance()->registerTexture("orangeThrowing", "./Assets/Combat_UI/orangeThrowing.png");
 	RenderHelper::getInstance()->registerTexture("blockTime", "./Assets/Combat_UI/blockTime.png");
+	RenderHelper::getInstance()->registerTexture("fire", "./Assets/Combat_UI/fire.png");
+	RenderHelper::getInstance()->registerTexture("water", "./Assets/Combat_UI/water.png");
+	RenderHelper::getInstance()->registerTexture("earth", "./Assets/Combat_UI/earth.png");
+	RenderHelper::getInstance()->registerTexture("metal", "./Assets/Combat_UI/metal.png");
+	RenderHelper::getInstance()->registerTexture("wood", "./Assets/Combat_UI/wood.png");
+	RenderHelper::getInstance()->registerTexture("pigname", "./Assets/Combat_UI/pig.png");
+	RenderHelper::getInstance()->registerTexture("goatname", "./Assets/Combat_UI/goat.png");
+	RenderHelper::getInstance()->registerTexture("dragonname", "./Assets/Combat_UI/dragon.png");
+	RenderHelper::getInstance()->registerTexture("cowname", "./Assets/Combat_UI/cow.png");
+	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
+	RenderHelper::getInstance()->registerTexture("snakename", "./Assets/Combat_UI/snake.png");
+	RenderHelper::getInstance()->registerTexture("enemyPanel", "./Assets/Combat_UI/enemyPanel.png");
 
 
 
 
 
-	//player = new Player(100, 20);
+
+
+
+
 
 
 
@@ -587,7 +603,12 @@ void CombatScene::Update(double dt)
 	if (!playerAlive) {
 		updateDeathBtns();
 	}
-	//if (AEInputCheckTriggered(AEVK_K)) {
+	if (winFlag && itemTime > slideAnimationDuration) {
+		if (AEInputCheckTriggered(AEVK_SPACE)) {
+			winButtonFlag = true;
+		}
+	}
+\
 	//	// kill all enemies
 	//	for (const Enemy* e : groups.enemies) {
 	//		delete e;
@@ -812,7 +833,7 @@ void CombatScene::Update(double dt)
 			winFlag = true;
 
 		}
-		else if (dialogueState != DIALOGUE::WIN && !winFlag) {
+		else if (winFlag && winButtonFlag) {
 			CombatManager::getInstance().end();
 
 			//delete player;
@@ -854,13 +875,13 @@ void CombatScene::Render()
 	int i{};
 	// rendering whether enemies is dead
 	if (playerAlive && !winFlag) {
-		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		// rendering health when player active in the game and dont playing an event
 		if (!CombatManager::getInstance().isPlayingEvent) {
 			player->renderHealth(150, 150);
 		}
 
+		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 			if (enemy->isDead()) {
@@ -945,7 +966,9 @@ void CombatScene::Render()
 			i++;
 			enemy->render();
 		}
+
 	}
+
 
 	if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && !winFlag && playerAlive) {
 
@@ -981,7 +1004,12 @@ void CombatScene::Render()
 		// to do: new btns
 		// new panel
 		if (itemTime > slideAnimationDuration) {
+			// panel for the item drop
 			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - 100.f + camOffset.y, 550.f, 350.f);
+
+
+			// item drops 
+
 		}
 	}
 
