@@ -4,7 +4,7 @@
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date 21 Feb 2024
-\brief Handles the update and rendering of the levels
+\brief The 3D engine, the heart of the game and my pain.
 
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
