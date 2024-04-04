@@ -22,7 +22,14 @@ Technology is prohibited.
 #include "SceneManager.h"
 #include "Pch.h"
 
-//#define ScreenTransitionTimer 3.0f
+/**
+ * @class SceneSetting
+ * @brief Manages the user settings within the game.
+ *
+ * This class is responsible for handling the operations required for the
+ * settings scene, which includes loading resources, initializing settings,
+ * updating based on user interactions, and rendering the scene.
+ */
 
 class SceneManager;
 class SceneSetting : public Scene {
@@ -38,46 +45,11 @@ public:
 	virtual void Render();
 	virtual void Exit();
 
-	//struct bar {
-	//	AEVec2 pos;
-	//	AEVec2 size;
-	//};
-
-	//typedef struct {
-		//AEGfxTexture* bg;
-		//AEGfxTexture* bar[2];
-		//AEGfxTexture* barhover[2];
-
-
-		//AEGfxVertexList* mesh;
-		//s8 fontID;
-
-		//float buttonX[4];
-		//float buttonY[4];
-		//AEGfxTexture* button[4];
-
-		//s32 mouseX, mouseY;
-		//float buttonWidth, buttonHeight;
-		//bool hovering[4];
-		//bool levelSelecting;
-		//int levelActived[4];
-
-		//bool transitionEnd;
-		//float transitionTimer;
-		//float transitionElapse;
-		//int nextLevel;
-	//}Setting;
-
-	//void texture1(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency);
 
 
 private:
 
-	//Setting mySetting{ 0 };
 
-	//bar barsound{ 0 };
-
-	//SceneMenu(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
 	static SceneSetting* sInstance; // The pointer to the object that gets registered
 

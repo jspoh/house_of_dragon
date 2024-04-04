@@ -50,6 +50,7 @@ public:
 
 	};
 
+	// particle struct
 	struct Particle {
 		bool isActive;
 		AEVec2 pos;
@@ -64,7 +65,7 @@ public:
 		float transparency;
 	};
 
-
+	// create particle
 	void createParticle(float posX, float posY);
 	void createExplosionParticle(float x, float y);
 	void createFireworkParticle(float x, float y, float explosionRadius);
@@ -72,13 +73,10 @@ public:
 	void updateExplosionParticle(Particle& particle, double dt);
 	void updateFireworkParticle(Particle& particle, double dt);
 
-
-	// YOU SHOULDNT BE USING THIS!! ONLY FOR SINGLETON TEMPLATE!!
 	ParticleManager();
 
 private:
 	//static ParticleManager* instance;
-
 	static constexpr int PROJECTED_MAX_PARTICLES = 2048;
 	static constexpr int particlesCreationRate = 120;		// number of particles to create per second
 	static constexpr float opacityLoss = 1.f;				// 0 to 1, represents percentage opacity lost per second
@@ -90,18 +88,15 @@ private:
 	static constexpr int maxSizeDiff = 10;			// max size difference
 	static constexpr float PARTICLE_MIN_WIDTH = 30.f;
 	static constexpr float PARTICLE_MAX_WIDTH = 50.f;
-	// assuming particle is square-ish..?? not rly
+
 	static constexpr float PARTICLE_MIN_HEIGHT = PARTICLE_MIN_WIDTH;
 	static constexpr float PARTICLE_MAX_HEIGHT = PARTICLE_MAX_WIDTH;
 	static constexpr float GRAVITY = 5.f;
 
 	std::vector<Particle> particles{ 0 };
 
-	// particle spawn locations, use setParticlePos to set
+	// particle position
 	float posX = 0;
 	float posY = 0;
-
-
-
 
 };

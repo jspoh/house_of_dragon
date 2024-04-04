@@ -26,11 +26,21 @@ Technology is prohibited.
 
 class SceneManager;
 
+/**
+ * @class SceneMenu
+ * @brief Handles the main menu scene of the game.
+ *
+ * Responsible for handling the display and interaction within the
+ * main menu. It includes navigation, selection of options,
+ * and other related menu functionalities.
+ */
 class SceneMenu : public Scene {
 public:
     SceneMenu();
     SceneMenu(SceneManager* _sceneMgr);
     ~SceneMenu();
+
+    std::string nextSceneName;
 
     virtual void Load();
     virtual void Init();
@@ -48,8 +58,8 @@ public:
         std::string transitionBG;
         float buttonX[5];
         float buttonY[5];
-        std::string button[5];
-        std::string buttonSelect[5];
+        std::string button[7];
+        std::string buttonSelect[7];
         s32 mouseX, mouseY;
         float buttonWidth, buttonHeight;
         bool hovering[5];
@@ -59,13 +69,13 @@ public:
         float transitionTimer;
         float transitionElapse;
         int nextLevel;
-        float buttonScale[5]; // Add this line
+        float buttonScale[7]; // Add this line
         // Stage selection button variables
         float buttonSelectWidth, buttonSelectHeight;
-        float buttonSelectX[5];
-        float buttonSelectY[5];
+        float buttonSelectX[7];
+        float buttonSelectY[7];
         bool hoveringSelect[5];
-        float buttonSelectScale[5]; // Add this line
+        float buttonSelectScale[7]; // Add this line
 
         std::string back;
         float backButtonX, backButtonY;
@@ -85,8 +95,6 @@ public:
 
 
     } Menu;
-
-
 
 private:
     Menu myMenu{ 0 };

@@ -20,16 +20,13 @@ Technology is prohibited.
 #include "SceneSetting.h"
 #include "ParticleManager.h"
 
-// should put in namespace to avoid cluttering
-//namespace {
-	//static char strBuffer[1024];
-	//static char strBuffer1[1024];
-	//static float speed = 8;
-	//static Point text;
-	//static float scrolling;
-	//static float timef;
-//}
-
+/**
+ * @enum MOD_STATES
+ * @brief Enumeration to identify the modification state in the settings scene.
+ *
+ * This enum is used to manage the state of settings modifications, such as
+ * adjusting audio volume for sound effects and music within the setting's scene.
+ */
 enum class MOD_STATES {
 	NONE,
 	SFX_AUDIO_VOLUME,
@@ -43,9 +40,6 @@ SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::GetInstan
 SceneSetting::SceneSetting(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneSetting", this);
-	//SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);		// tf?? calling this stops sound from working
-
-
 }
 
 SceneSetting::~SceneSetting()
@@ -53,8 +47,12 @@ SceneSetting::~SceneSetting()
 
 }
 
-
-
+/**
+ * @brief Loads the necessary textures for the settings scene.
+ *
+ * Textures such as the background and music note icons are loaded to be
+ * used in the rendering of the scene.
+ */
 void SceneSetting::Load()
 {
 
@@ -63,11 +61,16 @@ void SceneSetting::Load()
 
 }
 
-
+/**
+ * @brief Initializes the settings scene.
+ *
+ * The settings scene is initialized with the default settings for the
+ * difficulty level, sound effects volume, and music volume. The initial
+ * positions for the difficulty selection and audio sliders are also set.
+ */
 void SceneSetting::Init()
 {
 	ParticleManager::GetInstance()->init();
-
 
 	const int btnIndex = static_cast<int>(difficulty);
 
@@ -75,7 +78,16 @@ void SceneSetting::Init()
 	selectionTargetPos.y = selectionPos.y;
 }
 
-
+/**
+ * @brief Updates the settings scene based on user interactions.
+ *
+ * The settings scene is updated based on the user's interactions with the
+ * mouse cursor and keyboard inputs. The user can change the difficulty level
+ * and adjust the audio volume for sound effects and music. The scene will
+ * transition to the menu scene if the user presses the "Escape" button.
+ *
+ * @param dt the delta time for the update
+ */
 void SceneSetting::Update(double dt)
 {
 	//if "Escape" button triggered, go to menu state
@@ -107,13 +119,11 @@ void SceneSetting::Update(double dt)
 			modState = MOD_STATES::SFX_AUDIO_VOLUME;
 			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
 			sfxVolume = (sliderX - minX) / (maxX - minX);
-			//cout << "modifying sfx: " << sfxVolume << "\n";
 		}
 		else if (modState == MOD_STATES::MUSIC_AUDIO_VOLUME || CollisionChecker::isMouseInCircle(mPos.x, mPos.y, sliderRadius, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			modState = MOD_STATES::MUSIC_AUDIO_VOLUME;
 			const float sliderX = AEClamp(static_cast<float>(wMouseX), minX, maxX);
 			musicVolume = (sliderX - minX) / (maxX - minX);
-			//cout << "modifying music: " << musicVolume << "\n";
 		}
 	}
 	else {
@@ -134,7 +144,7 @@ void SceneSetting::Update(double dt)
 	int i{};
 	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
 		Point rectScreenPos = wtos(btnPos.x, btnPos.y);
-		//cout << rectScreenPos.x << ", " << rectScreenPos.y << " | " << mouseX << ", " << mouseY << "\n";
+
 		if (CollisionChecker::isMouseInRect(rectScreenPos.x, rectScreenPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			// hover state
 			if (!AEInputCheckTriggered(AEVK_LBUTTON)) {
@@ -159,19 +169,24 @@ void SceneSetting::Update(double dt)
 	else {
 		lerpElapsedTime = 0;
 	}
-
-	//cout << static_cast<int>(difficulty) << "\n";
 }
 
+/**
+ * @brief Renders the settings scene.
+ *
+ * The settings scene is rendered with the background image, difficulty
+ * selection buttons, and audio sliders. The scene also renders the particle
+ * effects for the user's interactions with the scene.
+ */
 void SceneSetting::Render()
 {
-	//texture1(mySetting.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, mySetting.mesh, 1.f);
+	// render background
 	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
-	//RenderHelper::getInstance()->texture("settingbg", 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, mySetting.mesh, 1.0f);
 
 	/* difficulty */
 	RenderHelper::getInstance()->text("DIFFICULTY	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 3.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 	
+	// draw buttons
 	AEVec2 btnPos = btnStartPos;
 	for (const auto& [setting, str] : DIFFICULTY_OPTIONS) {
 		RenderHelper::getInstance()->rect(btnPos.x, btnPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, 0, Color{ 0.1f, 0.1f, 0.5f, 1 }, 1.f);
@@ -183,9 +198,6 @@ void SceneSetting::Render()
 
 	// draw selected
 	RenderHelper::getInstance()->rect("invis", selectionPos.x, selectionPos.y, DIFFICULTY_BUTTON_WIDTH, DIFFICULTY_BUTTON_HEIGHT, 0.f, Color{ 0.7f, 0.7f, 1, 0.5f }, 0.5f);
-
-
-
 
 	/* audio */
 	RenderHelper::getInstance()->text("SOUND	:", AEGfxGetWindowWidth() / 3.0f, AEGfxGetWindowHeight() / 2.0f, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -201,53 +213,18 @@ void SceneSetting::Render()
 
 }
 
+/**
+ * @brief Exits the settings scene.
+ *
+ * The settings scene is exited, and the user's settings for the difficulty
+ * level and audio volume are saved to the database.
+ */
 void SceneSetting::Exit()
 {
-	//AEGfxMeshFree(mySetting.mesh);
 	Database::getInstance()->data["game"]["difficulty"] = static_cast<int>(difficulty);
 
-	// volume saving done in SoundManager
+	//Image unloading was handle in the render helper
 }
 
 
 
-//void SceneSetting::texture1(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
-//{
-//	UNREFERENCED_PARAMETER(transparency);
-//	UNREFERENCED_PARAMETER(texture);
-//	UNREFERENCED_PARAMETER(scaleY);
-//	UNREFERENCED_PARAMETER(scaleX);
-//	UNREFERENCED_PARAMETER(rotation);
-//	UNREFERENCED_PARAMETER(positionX);
-//	UNREFERENCED_PARAMETER(positionY);
-//	UNREFERENCED_PARAMETER(mesh);
-//	AEGfxSetBackgroundColor(0.0f, 0.2f, 1.0f);
-//	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-//	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-//	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-//	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-//
-//
-//	AEMtx33 scale = { 0 };
-//	AEMtx33Scale(&scale, 1200, 750);
-//
-//	AEMtx33 transform;
-//	AEMtx33Trans(&transform, 0, 0);
-//
-//	AEMtx33 model = { 0 };
-//	AEMtx33Concat(&model, &scale, &transform);
-//
-//	 prepare to draw
-//	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-//	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-//	AEGfxSetColorToAdd(0, 0, 0, 1);
-//	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-//	AEGfxSetTransparency(1);
-//	AEGfxSetTransform(model.m);
-//	AEGfxTextureSet(mySetting.bg, 0, 0);
-//	AEGfxMeshDraw(mySetting.mesh, AE_GFX_MDM_TRIANGLES);
-//
-//
-//
-//
-//}

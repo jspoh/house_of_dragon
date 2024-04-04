@@ -33,15 +33,22 @@ SceneMenu::SceneMenu()
 SceneMenu::SceneMenu(SceneManager* _sceneMgr)
 {
     _sceneMgr->AddScene("SceneMenu", this);
+    nextSceneName = "SceneMenu";
 }
 
 SceneMenu::~SceneMenu()
 {
 }
 
+/**
+ * @brief Loads assets and initializes variables for the menu scene.
+ *
+ * Loads textures and sets up initial values for the main menu scene, such as
+ * background images, button textures, and audio.
+ */
 void SceneMenu::Load()
 {
-
+    // Load textures
     myMenu.bg = "menuBg";
     myMenu.bg1 = "menuBg1";
     myMenu.pointer = "dagger";
@@ -52,14 +59,14 @@ void SceneMenu::Load()
     myMenu.button[4] = "quit";
     myMenu.back = "back";
 
-    myMenu.bg2 = "taichi";
-
-
+    // Level selection buttons
     myMenu.buttonSelect[0] = "level1";
     myMenu.buttonSelect[1] = "level2";
     myMenu.buttonSelect[2] = "level3";
     myMenu.buttonSelect[3] = "level4";
     myMenu.buttonSelect[4] = "level5";
+    myMenu.buttonSelect[5] = "level6";
+    myMenu.buttonSelect[6] = "level7";
 
 
     RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
@@ -78,45 +85,49 @@ void SceneMenu::Load()
     RenderHelper::getInstance()->registerTexture("level3", "Assets/Menu/level3.png");
     RenderHelper::getInstance()->registerTexture("level4", "Assets/Menu/level4.png");
     RenderHelper::getInstance()->registerTexture("level5", "Assets/Menu/level5.png");
+    RenderHelper::getInstance()->registerTexture("level6", "Assets/Menu/level6.png");
+    RenderHelper::getInstance()->registerTexture("level7", "Assets/Menu/level7.png");
 
     RenderHelper::getInstance()->registerTexture("back", "Assets/Menu/back1.png");
 
-    RenderHelper::getInstance()->registerTexture("taichi", "Assets/Menu/download.png");
 }
 
+/**
+ * @brief Initializes variables for the menu scene.
+ *
+ * Initializes variables for the main menu scene, such as camera position,
+ * button positions, and button scales.
+ */
 void SceneMenu::Init()
 {
-     myMenu.cameraX = 0.0f;
+    myMenu.cameraX = 0.0f;
     myMenu.cameraY = 0.0f;
     myMenu.cameraSpeed = 200.0f; // Adjust the camera speed as needed
 
-    myMenu.buttonWidth = 300.0f; // Example initialization
-    myMenu.buttonHeight = 230.0f; // Example initialization
-    myMenu.transitionEnd = false; // Example initialization
-    myMenu.transitionTimer = 0.0f; // Example initialization
-    myMenu.transitionElapse = 0.0f; // Example initialization
-    myMenu.nextLevel = 0; // Example initialization
-    const float buttonGap = 100.0f; // Adjust the value as needed
+    myMenu.buttonWidth = 300.0f; 
+    myMenu.buttonHeight = 230.0f; 
+    myMenu.transitionEnd = false; 
+    myMenu.transitionTimer = 0.0f; 
+    myMenu.transitionElapse = 0.0f; 
+    myMenu.nextLevel = 0; 
+    const float buttonGap = 130.0f; 
     for (int i = 0; i < 5; ++i)
     {
-        myMenu.buttonScale[i] = 1.0f; // Initialize button scales to 1.0f
-
+        myMenu.buttonScale[i] = 1.0f; 
         myMenu.buttonX[i] = 0;
-        myMenu.buttonY[i] = -i * (myMenu.buttonHeight - buttonGap) + 250;
+        myMenu.buttonY[i] = -i * (myMenu.buttonHeight - buttonGap) + 150;
     }
 
     myMenu.buttonSelectWidth = 250.0f;
     myMenu.buttonSelectHeight = 400.0f;
-
-
-    const float buttonSelectGap = 15.0f; // Adjust the value as needed
-    for (int i = 0; i < 5; ++i)
+    const float buttonSelectGap = 100.0f;
+    const float buttonSelectStartX = -((7 - 1) * (myMenu.buttonSelectWidth - buttonSelectGap)) / 2.0f;  // Calculate the starting X position
+    for (int i = 0; i < 7; ++i)
     {
-        myMenu.buttonSelectScale[i] = 1.0f; // Initialize button select scales to 1.0f
+        myMenu.buttonSelectScale[i] = 1.0f;
 
-
-        myMenu.buttonSelectX[i] = -500.0f + i * (myMenu.buttonSelectWidth - buttonSelectGap); // Adjust the x-coordinate calculation
-        myMenu.buttonSelectY[i] = 0.0f; // Adjust the y-coordinate as needed
+        myMenu.buttonSelectX[i] = buttonSelectStartX + i * (myMenu.buttonSelectWidth - buttonSelectGap);  // Adjust the positioning
+        myMenu.buttonSelectY[i] = 0.0f;
         myMenu.hoveringSelect[i] = false;
     }
     ParticleManager::GetInstance()->init();
@@ -126,24 +137,24 @@ void SceneMenu::Init()
         loopIsPlaying = true;
     }
 
-    // Initialize back button variables
     myMenu.backButtonWidth = 100.0f;
     myMenu.backButtonHeight = 50.0f;
     myMenu.backButtonX = -AEGfxGetWindowWidth() / 2.0f + myMenu.backButtonWidth / 2.0f + 20.0f;
     myMenu.backButtonY = AEGfxGetWindowHeight() / 2.0f - myMenu.backButtonHeight / 2.0f - 20.0f;
     myMenu.hoveringBack = false;
 
-    myMenu.taichiRotation = 0.0f;
-    myMenu.taichiScale = 1.0f;
-    myMenu.taichiScaleSpeed = 0.5f;
-    myMenu.taichiMinScale = 0.8f;
-    myMenu.taichiMaxScale = 1.2f;
-
     AEGfxSetCamPosition(0, 0);
 }
 
 
-
+/**
+ * @brief Updates the menu scene.
+ *
+ * Updates the menu scene by handling input, updating the camera position,
+ * and updating the rotation and scale of the taichi symbol.
+ *
+ * @param dt Delta time
+ */
 void SceneMenu::Update(double dt)
 {
     int mX, mY;
@@ -174,12 +185,12 @@ void SceneMenu::Update(double dt)
             if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
             {
                 myMenu.hovering[i] = true;
-                myMenu.buttonScale[i] = 1.2f; // Increase the scale when hovering
+                myMenu.buttonScale[i] = 1.2f; 
             }
             else
             {
                 myMenu.hovering[i] = false;
-                myMenu.buttonScale[i] = 1.0f; // Reset the scale when not hovering
+                myMenu.buttonScale[i] = 1.0f; 
             }
         }
 
@@ -210,6 +221,7 @@ void SceneMenu::Update(double dt)
                     case 4:
                         gGameRunning = false;
                         break;
+
                     }
                 }
             }
@@ -217,25 +229,10 @@ void SceneMenu::Update(double dt)
     }
     else
     {
-        // Handle WASD key input for camera movement
-        if (AEInputCheckCurr(AEVK_W))
-        {
-            myMenu.cameraY += myMenu.cameraSpeed * dt;
-        }
-        if (AEInputCheckCurr(AEVK_S))
-        {
-            myMenu.cameraY -= myMenu.cameraSpeed * dt;
-        }
-        if (AEInputCheckCurr(AEVK_A))
-        {
-            myMenu.cameraX -= myMenu.cameraSpeed * dt;
-        }
-        if (AEInputCheckCurr(AEVK_D))
-        {
-            myMenu.cameraX += myMenu.cameraSpeed * dt;
-        }
+  
+
         // Button hovering logic for level selection buttons
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < 7; ++i)
         {
             AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 4.f };
             AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 4.f };
@@ -243,7 +240,7 @@ void SceneMenu::Update(double dt)
             if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
             {
                 myMenu.hoveringSelect[i] = true;
-                myMenu.buttonSelectScale[i] = 1.2f; // Increase the scale when hovering
+                myMenu.buttonSelectScale[i] = 1.5f; // Increase the scale when hovering
             }
             else
             {
@@ -255,7 +252,7 @@ void SceneMenu::Update(double dt)
         // Button clicking logic for level selection buttons
         if (AEInputCheckTriggered(AEVK_LBUTTON))
         {
-            for (int i = 0; i < 5; ++i)
+            for (int i = 0; i < 7; ++i)
             {
                 AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 4.f };
                 AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 4.f };
@@ -265,27 +262,37 @@ void SceneMenu::Update(double dt)
                     switch (i)
                     {
                     case 0:
-                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
                     case 1:
-                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
                     case 2:
-                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
                     case 3:
-                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
                     case 4:
-                        SceneManager::GetInstance()->SetActiveScene("SceneStages");
+                        nextSceneName = "SceneStages";
+                        SoundPlayer::stopAll();
+                        loopIsPlaying = false;
+                        break;
+                    case 5:
+                        nextSceneName = "SceneStages";
+                        SoundPlayer::stopAll();
+                        loopIsPlaying = false;
+                        break;
+                    case 6:
+                        nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
@@ -307,6 +314,7 @@ void SceneMenu::Update(double dt)
         AEVec2 p1 = { myMenu.backButtonX - myMenu.backButtonWidth / 2.0f, myMenu.backButtonY + myMenu.backButtonHeight / 2.0f };
         AEVec2 p2 = { myMenu.backButtonX + myMenu.backButtonWidth / 2.0f, myMenu.backButtonY - myMenu.backButtonHeight / 2.0f };
 
+        // Check if the cursor is hovering over the back button
         if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my)
         {
             myMenu.hoveringBack = true;
@@ -317,20 +325,13 @@ void SceneMenu::Update(double dt)
         }
     }
 
-    myMenu.taichiRotation += 5.0f * dt; // Adjust the rotation speed as needed
-    if (myMenu.taichiRotation >= 360.0f)
-    {
-        myMenu.taichiRotation -= 360.0f;
-    }
-
-    myMenu.taichiScale += myMenu.taichiScaleSpeed * dt;
-    if (myMenu.taichiScale > myMenu.taichiMaxScale || myMenu.taichiScale < myMenu.taichiMinScale)
-    {
-        myMenu.taichiScaleSpeed = -myMenu.taichiScaleSpeed;
-    }
 }
 
-
+/**
+ * @brief Renders the menu scene.
+ *
+ * Renders the menu scene by rendering the background image, menu buttons,
+ */
 void SceneMenu::Render()
 {
     RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
@@ -349,20 +350,14 @@ void SceneMenu::Render()
     // Render the background image again before rendering buttonSelect
     if (myMenu.levelSelecting)
     { 
-      
-
-        // Apply camera transformation
-        AEGfxSetCamPosition(myMenu.cameraX, myMenu.cameraY);
 
         RenderHelper::getInstance()->texture("menuBg1", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
         // Render the buttonSelect buttons
-        for (int i = 0; i < 5; ++i)
+        for (int i = 0; i < 7; ++i)
         { 
             RenderHelper::getInstance()->texture(myMenu.buttonSelect[i], myMenu.buttonSelectX[i], myMenu.buttonSelectY[i], myMenu.buttonWidth * myMenu.buttonSelectScale[i], myMenu.buttonHeight * myMenu.buttonSelectScale[i]);
         }
-
-
 
         // Render the back button
         RenderHelper::getInstance()->texture(myMenu.back, myMenu.backButtonX, myMenu.backButtonY, myMenu.backButtonWidth, myMenu.backButtonHeight);
@@ -371,24 +366,17 @@ void SceneMenu::Render()
         {
             RenderHelper::getInstance()->texture(myMenu.pointer, myMenu.backButtonX - myMenu.backButtonWidth / 2.0f - 30.0f, myMenu.backButtonY, 40, 40);
         }
-
-    
-   /*     float taichiX = 0.0f;
-        float taichiY = 0.0f;
-        float taichiWidth = 200.0f;
-        float taichiHeight = 200.0f;
-
-        RenderHelper::getInstance()->texture("taichi", taichiX, taichiY, taichiWidth * myMenu.taichiScale, taichiHeight * myMenu.taichiScale, 1.0f, Color{ 1.0f, 1.0f, 1.0f, 1.0f }, myMenu.taichiRotation);*/
-
-
     }
 
     ParticleManager::GetInstance()->render();
 
-    //RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 }
 
-
+/**
+ * @brief Exits the menu scene.
+ *
+ * Exits the menu scene by stopping the menu audio loop.
+ */
 void SceneMenu::Exit()
 {
     cout << "Exiting Scene Menu" << "\n";

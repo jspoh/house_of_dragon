@@ -69,31 +69,40 @@ void SceneCredits::Load()
 
 }
 
+/**
+ * @brief Loads the credit scene assets.
+ *
+ * This method loads the necessary assets for the credit scene, including
+ * the background texture and sets up the mesh for rendering.
+ */
+
+ /**
+  * @brief Initializes the credit scene.
+  *
+  * Sets up the fonts with different sizes and initializes the positions for
+  * text rendering in the credit scene.
+  */
 
 void SceneCredits::Init()
-{
-	//CHECK IF FONT HAS BEEN LOADED BY ANOTHER PERSON
-	pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+{	pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
 	pFontM = AEGfxCreateFont("Assets/Fonts/liberation-mono.ttf", 40);
 	pFontS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 30);
 	pFontxS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 20);
 
-
-
-	//////////////////////////////////////////////////////
 	f32 TextWidth = 0, TextHeight = 0;
 	textPosX = -TextWidth / 2;
 	textPosY = -TextHeight / 2;
 
-
-	//sprintf_s(strBuffer1, "'hello");
-	//AEGfxGetPrintSize(pFont, strBuffer1, 1.0f, &TextWidth, &TextHeight);
-	//textPosX = -TextWidth / 2;
-	//textPosY = -TextHeight / 2;
-
 	m_elapsedTime = 0.0f;
 }
 
+/**
+ * @brief Updates the credit scene.
+ *
+ * Handles the logic for the credit scene's state transitions and text
+ * scrolling effect based on frame time.
+ * @param dt Delta time since the last frame update.
+ */
 
 void SceneCredits::Update(double dt)
 {
@@ -111,6 +120,12 @@ void SceneCredits::Update(double dt)
 
 }
 
+/**
+ * @brief Renders the credit scene.
+ *
+ * Draws the scene elements to the screen, including the scrolling text
+ * and background image.
+ */
 void SceneCredits::Render()
 {
 
@@ -227,16 +242,13 @@ void SceneCredits::Render()
 	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-
-	//float remainingTime = 15.0f - m_elapsedTime;
-	//sprintf_s(strBuffer, "Time remaining: %.1f seconds", remainingTime);
-	//AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	//AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	//textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
-
-
 }
-
+/**
+ * @brief Cleans up resources used by the credit scene.
+ *
+ * Frees up the meshes and textures used by the credit scene and destroys
+ * the fonts that were created.
+ */
 void SceneCredits::Exit()
 {
 	AEGfxMeshFree(credits.mesh);
@@ -245,10 +257,21 @@ void SceneCredits::Exit()
 	AEGfxDestroyFont(pFontM);
 	AEGfxDestroyFont(pFontS);
 	AEGfxDestroyFont(pFontxS);
-
-
-
 }
+
+/**
+ * @brief Renders a texture to the screen.
+ *
+ * Draws a texture to the screen with the specified parameters.
+ * @param texture The texture to render.
+ * @param scaleX The scale factor for the texture on the x-axis.
+ * @param scaleY The scale factor for the texture on the y-axis.
+ * @param rotation The rotation angle for the texture.
+ * @param positionX The x-coordinate for the texture's position.
+ * @param positionY The y-coordinate for the texture's position.
+ * @param mesh The mesh to render the texture on.
+ * @param transparency The transparency value for the texture.
+ */
 
 void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency)
 {

@@ -19,6 +19,14 @@ Technology is prohibited.
 #include "SceneManager.h"
 #include "Pch.h"
 
+/**
+ * @class SceneCredits
+ * @brief Handles the credit scene functionality.
+ *
+ * This class is responsible for handling the operations required for the
+ * credit scene including loading assets, initializing fonts, updating
+ * scrolling text, rendering scene contents, and cleaning up resources.
+ */
 
 class SceneCredits : public Scene
 {
@@ -52,49 +60,12 @@ public:
 
 	Credits credits{ 0 };
 
-
 	void texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency);
-	//{
-
-
-	//	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE); // texture mode
-	//	AEGfxTextureSet(texture, 0, 0); // set the "image" (texture)
-
-	//	// Create a scale matrix
-	//	AEMtx33 scale = { 0 };
-	//	AEMtx33Scale(&scale, scaleX, scaleY);
-
-	//	// Create a rotation matrix
-	//	AEMtx33 rotate = { 0 };
-	//	AEMtx33Rot(&rotate, rotation);
-
-	//	// Create a translation matrix
-	//	AEMtx33 translate = { 0 };
-	//	AEMtx33Trans(&translate, positionX, positionY);
-
-	//	// Concat the matrices (TRS)
-	//	AEMtx33 transform = { 0 };
-	//	AEMtx33Concat(&transform, &translate, &rotate);
-	//	AEMtx33Concat(&transform, &transform, &scale);
-
-	//	// Choose the transform to use
-	//	AEGfxSetTransform(transform.m);
-
-	//	// Change the transparency
-	//	AEGfxSetTransparency(transparency);
-
-	//	// Actually drawing the mesh
-	//	AEGfxMeshDraw(mesh, AE_GFX_MDM_TRIANGLES);
-
-
-
-	//}
-
+	
 
 private:
 
-	//SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
 	float m_elapsedTime;
-	static SceneCredits* sInstance; // The pointer to the object that gets registered
+	static SceneCredits* sInstance; 
 
 };

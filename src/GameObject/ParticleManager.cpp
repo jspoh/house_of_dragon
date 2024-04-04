@@ -7,6 +7,10 @@
 \par jingseng.poh\@digipen.edu
 \date 01 Apr 2024
 \brief particle manager implementation
+ * This file contains the implementation of the particle manager which handles
+ * creation, updating, and rendering of particles in the game. It supports various
+ * types of particles including regular, explosion, and firework.
+ *
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -21,7 +25,13 @@ Technology is prohibited.
 #include "MyMath.h"
 
 
-
+/**
+ * @class ParticleManager
+ * @brief Manages particle effects within the game.
+ *
+ * Responsible for storing and managing the lifecycle and behavior of particles.
+ * It includes functionality to create, update and render particles for visual effects.
+ */
 ParticleManager::ParticleManager() {
 	particles.reserve(PROJECTED_MAX_PARTICLES);
 
@@ -34,9 +44,7 @@ ParticleManager::ParticleManager() {
 }
 
 ParticleManager::~ParticleManager() {
-	//RenderHelper::getInstance()->removeTextureByRef(REGULAR);
-	//RenderHelper::getInstance()->removeTextureByRef(EXPLOSION);
-	//RenderHelper::getInstance()->removeTextureByRef(FIREWORK);
+	
 }
 
 void ParticleManager::init() {
@@ -44,7 +52,14 @@ void ParticleManager::init() {
 }
 
 
-
+/**
+ * @brief Creates and adds a new particle to the manager.
+ *
+ * Adds a new particle with random properties within specified boundaries
+ * to the particle list for rendering and updating.
+ * @param x The x-coordinate where the particle is created.
+ * @param y The y-coordinate where the particle is created.
+ */
 void ParticleManager::createParticle(float x, float y) {
 	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
 	const float randDir = rand() % 360 / Math::m_PI * 180.f;
@@ -75,11 +90,27 @@ void ParticleManager::createParticle(float x, float y) {
 	particles.push_back(newParticle);
 }
 
+/**
+ * @brief Creates and adds a new explosion particle to the manager.
+ *
+ * Adds a new explosion particle with random properties within specified boundaries
+ * to the particle list for rendering and updating.
+ * @param x The x-coordinate where the particle is created.
+ * @param y The y-coordinate where the particle is created.
+ */
 void ParticleManager::setParticlePos(float x, float y) {
 	posX = x;
 	posY = y;
 }
 
+/**
+ * @brief Creates and adds a new explosion particle to the manager.
+ *
+ * Adds a new explosion particle with random properties within specified boundaries
+ * to the particle list for rendering and updating.
+ * @param x The x-coordinate where the particle is created.
+ * @param y The y-coordinate where the particle is created.
+ */
 void ParticleManager::update(double dt)
 {
 	for (ParticleManager::Particle& p : particles) {
@@ -123,7 +154,11 @@ void ParticleManager::update(double dt)
 
 }
 
-
+/**
+ * @brief Renders all particles in the manager.
+ *
+ * Renders all active particles in the particle list using the render helper.
+ */
 void ParticleManager::render() {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 	for (const ParticleManager::Particle& p : particles) {
@@ -190,7 +225,13 @@ void ParticleManager::createFireworkParticle(float x, float y, float explosionRa
 	particles.push_back(newParticle);
 }
 
-
+/**
+ * @brief Updates the state of all particles in the manager.
+ *
+ * Updates each particle's position, size, and transparency,
+ * and removes them if they are inactive.
+ * @param dt Elapsed time since the last update, in seconds.
+ */
 void ParticleManager::updateRegularParticle(Particle& particle, double dt) {
 	particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
 	particle.color.r -= darkenRate;
