@@ -148,7 +148,7 @@ void Event::startRandomEvent() {
 	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
-	e = EVENT_TYPES::TYPING;  // hardcoded for testing
+	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
 	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
 	cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);

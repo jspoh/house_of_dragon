@@ -520,7 +520,7 @@ void SceneLevelBuilder::Update(double dt)
 			////////////////////////////////////////////////////////////////////////////
 			// Player INPUT
 			{
-				if (AEInputCheckCurr(AEVK_LBUTTON))
+				if (AEInputCheckTriggered(AEVK_LBUTTON))
 				{
 					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
