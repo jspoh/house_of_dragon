@@ -1049,3 +1049,7 @@ void CombatScene::Exit()
 }
 
 
+bool CombatScene::getWinFlag()
+{
+	return winButtonFlag;
+}

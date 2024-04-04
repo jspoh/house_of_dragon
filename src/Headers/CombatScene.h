@@ -38,6 +38,8 @@ public:
 	void spawnEnemies(std::vector<std::string> enemyRefs);
 	void cleanup();
 
+	bool getWinFlag();
+
 	static CombatScene& getInstance();
 private:
 

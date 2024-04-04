@@ -25,12 +25,12 @@ namespace {
 
 SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
 
-SceneMenu::SceneMenu()
+SceneMenu::SceneMenu() : m_SelectedLevel{0}
 {
 
 }
 
-SceneMenu::SceneMenu(SceneManager* _sceneMgr)
+SceneMenu::SceneMenu(SceneManager* _sceneMgr) : m_SelectedLevel{ 0 }
 {
     _sceneMgr->AddScene("SceneMenu", this);
 }
@@ -268,6 +268,7 @@ void SceneMenu::Update(double dt)
                         SceneManager::GetInstance()->SetActiveScene("SceneStages");
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        
                         break;
                     case 1:
                         SceneManager::GetInstance()->SetActiveScene("SceneStages");
@@ -289,7 +290,10 @@ void SceneMenu::Update(double dt)
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
                         break;
+                    default:
+                        cout << "Error in selection\n";
                     }
+                    m_SelectedLevel = i;
                 }
             }
 
