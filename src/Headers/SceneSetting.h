@@ -89,8 +89,8 @@ private:
 	const Color soundBarColor{ 1, 0.82f, 0.62f, 1.f };
 
 	const AEVec2 sliderScale{ 20, 30 };
-	AEVec2 soundSliderPos{ 0, -2 };
-	AEVec2 musicSliderPos{ 0, -95 };
+	AEVec2 soundSliderPos{ -999, -2 };		// will be overridden
+	AEVec2 musicSliderPos{ -999, -95 };		// will be overridden
 
 	float sfxVolume{};
 	float musicVolume{};

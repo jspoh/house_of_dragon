@@ -843,27 +843,32 @@ void CombatScene::Update(double dt)
 			if (groups.enemies.size()) {
 				int randEnemyIndex = rand() % groups.enemies.size();
 				cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
-				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(groups.enemies[randEnemyIndex]->getTextureRef());
-				groups.enemies[randEnemyIndex]->attack(*player, multiplier);  // Example: All enemies attack the player
+
+				Enemy* e = groups.enemies[randEnemyIndex];
+
+				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
+				e->attack(*player, multiplier);  // Example: All enemies attack the player
 				CombatManager::getInstance().next();
 
- 				GameObject_Projectiles* np = Create::Projectiles(groups.enemies[randEnemyIndex]->getWorldPos());
-				//cout << "Projectile pos: " << groups.enemies[randEnemyIndex]->getWorldPos().x << ", " << groups.enemies[randEnemyIndex]->getWorldPos().y << "\n";
+ 				GameObject_Projectiles* np = Create::Projectiles();
+				//cout << "Projectile pos: " << e->getWorldPos().x << ", " << e->getWorldPos().y << "\n";
 				projectiles.push_back(np);
-				np->FireAtPlayer(groups.enemies[randEnemyIndex]->getWorldPos());
+				np->FireAtPlayer(e->getWorldPos(), e->getSize(), static_cast<GameObject_Projectiles::ProjectileType>(rand() % GameObject_Projectiles::ProjectileType::NUM_PROJECTILE_TYPES));
 			}
 		}
 
 	}
 	else if (groups.enemies.size() == 0) {
+		CombatManager::getInstance().turn = CombatManager::TURN::NONE_TURN;
+
 		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		cout << "Transition to next level\n";
 		if (!winFlag) {
 			dialogueState = DIALOGUE::WIN;
 			winFlag = true;
 
 		}
 		else if (winFlag && winButtonFlag) {
+			cout << "Transition to next level\n";
 			CombatManager::getInstance().end();
 
 			//delete player;
@@ -908,6 +913,7 @@ void CombatScene::Render()
 
 		// rendering health when player active in the game and dont playing an event
 		if (!CombatManager::getInstance().isPlayingEvent) {
+			// !TODO: kuek no magic numbers pls
 			player->renderHealth(150, 150);
 		}
 

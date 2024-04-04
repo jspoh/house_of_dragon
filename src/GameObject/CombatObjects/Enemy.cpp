@@ -187,3 +187,6 @@ AEVec2 Enemy::getWorldPos() const {
     return _wpos;
 }
 
+AEVec2 Enemy::getSize() const {
+    return { this->_size, this->_size };
+}

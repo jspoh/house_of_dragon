@@ -33,6 +33,7 @@ public:
 		P_EnergyBall_Blue,
 		P_EnergyBall_Dark,
 		P_EnergyBall_Green,
+		NUM_PROJECTILE_TYPES
 	};
 
 	GameObject_Projectiles(/*Maybe put texture here still thinking*/);
