@@ -46,6 +46,10 @@ namespace {
 RenderHelper* RenderHelper::_instance = nullptr;
 
 RenderHelper::RenderHelper() {
+
+}
+
+void RenderHelper::load() {
 	// init reusable mesh
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -199,7 +203,11 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	cout << "Loading texture " << path << " with reference " << reference << "\n";
 
 	if (_textureRef.find(reference) != _textureRef.end()) {
-		std::cerr << "Texture ref " << reference << " already in use!\n";
+		// it is intended behaviour to catch all textures that has already been loaded to mitigate the issue of 
+		// load being called on state reload. we do not want to free assets that has already been loaded to save
+		// resources and load times
+		
+		//std::cerr << "Texture ref " << reference << " already in use!\n";
 		//throw std::exception();
 		return false;
 	}
@@ -222,6 +230,10 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 		return false;
 	}
 	if (_textureIdRefs[reference] != nullptr) {
+		// it is intended behaviour to catch all textures that has already been loaded to mitigate the issue of 
+		// load being called on state reload. we do not want to free assets that has already been loaded to save
+		// resources and load times
+
 		std::cerr << "int reference " << reference << " already used\n";
 		//throw std::exception();
 		return false;
@@ -240,7 +252,7 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 
 AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
 	auto map = _textureRef.find(reference.c_str());
-	if (map == _textureRef.end()) {  // does not exist
+	if (map == _textureRef.end() || map->second == nullptr) {  // does not exist
 		std::cerr << "Reference " << reference << " does not exist!\n";
 		throw std::exception();
 		return nullptr;

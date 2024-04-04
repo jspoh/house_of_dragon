@@ -56,6 +56,13 @@ public:
 	 */
 	bool registerMeshByRef(std::string reference, AEGfxVertexList* mesh);
 
+	void load();
+
+	// these 2 functions are used to remove textures by their references. this function should not be called outside
+	// of this class unless for special cases (eg. splashscreen) to prevent reloading of assets
+	void removeTextureByRef(std::string reference);
+	void removeTextureByRef(int reference);
+
 	/**
 	 * .
 	 * 
@@ -123,9 +130,6 @@ public:
 	 */
 	AEGfxTexture* getTextureByRef(std::string reference);
 	AEGfxTexture* getTextureByRef(int reference);
-
-	void removeTextureByRef(std::string reference);
-	void removeTextureByRef(int reference);
 
 	/**
 	 * Draws a texture.

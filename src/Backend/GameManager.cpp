@@ -28,6 +28,7 @@ Technology is prohibited.
 
 GameManager::GameManager()
 {
+	//loadAllTextures();
 }
 
 GameManager::~GameManager()
@@ -48,6 +49,10 @@ void GameManager::Init()
 	//SoundManager::GetInstance()->Init();
 
 	initGlobals();
+	RenderHelper::getInstance()->load();
+	// cant load opengl textures on a different thread (technically can but no access to opengl, only alpha engine)
+	//std::thread t1(loadAllTextures);
+	//t1.detach();
 }
 
 void GameManager::Run()

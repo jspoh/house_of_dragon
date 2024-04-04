@@ -61,36 +61,111 @@ float lerp(float start, float end, float t) {
 
 
 std::vector<std::string> split(const std::string& str, const char sep) {
-    std::vector<std::string> out;
-    std::string curr = "";
+	std::vector<std::string> out;
+	std::string curr = "";
 
-    for (const char c : str) {
-        if (c == sep && curr.length() > 0) {
-            out.push_back(curr);
-            curr.clear();
-            continue;
-        }
+	for (const char c : str) {
+		if (c == sep && curr.length() > 0) {
+			out.push_back(curr);
+			curr.clear();
+			continue;
+		}
 
-        if (c != sep) {
-            curr += c;
-        }
-    }
-    if (curr.length() > 0) {
-        out.push_back(curr);
-    }
+		if (c != sep) {
+			curr += c;
+		}
+	}
+	if (curr.length() > 0) {
+		out.push_back(curr);
+	}
 
-    return out;
+	return out;
 }
 
 void initGlobals() {
-    updateGlobals();
-    difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance()->data["game"]["difficulty"]);
+	updateGlobals();
+	difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance()->data["game"]["difficulty"]);
 }
 
 void updateGlobals() {
-    AEInputGetCursorPosition(&mouseX, &mouseY);
-    Point wMouse = stow(static_cast<float>(mouseX), static_cast<float>(mouseY));
-    wMouseX = static_cast<int>(wMouse.x);
-    wMouseY = static_cast<int>(wMouse.y);
-    AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+	AEInputGetCursorPosition(&mouseX, &mouseY);
+	Point wMouse = stow(static_cast<float>(mouseX), static_cast<float>(mouseY));
+	wMouseX = static_cast<int>(wMouse.x);
+	wMouseY = static_cast<int>(wMouse.y);
+	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 }
+
+std::string upper(const std::string& text) {
+	constexpr char offset = 'a' - 'A';
+	std::string out;
+	out.reserve(text.size());
+	for (const char c : text) {
+		char u = c;
+		if (c >= 'a' && c <= 'z') {
+			u -= offset;
+		}
+		out += u;
+	}
+	return out;
+}
+
+namespace {
+	namespace fs = std::filesystem;
+	std::vector<std::string> getAllFiles(const std::string& path, const std::vector<std::string>& exclusions) {
+		std::vector<std::string> files;
+		files.reserve(100);         // for better performance, no need to keep reallocating
+
+		for (const auto& dir : fs::directory_iterator(path)) {
+			// stripped file or dir name
+			const std::string filename = dir.path().filename().string();
+
+			// recurse if is directory
+			if (fs::is_directory(dir)) {
+				// ensure directory is not in exclusion list
+				if (std::find_if(
+					exclusions.begin(),
+					exclusions.end(),
+					[filename](const std::string& e) {
+						return upper(filename) == upper(e);
+					})
+					!=
+						exclusions.end()) {
+					continue;
+				}
+
+				// add recursed files to current files
+				std::vector<std::string> recursedFiles;
+				recursedFiles.reserve(20);    // just for better performance lol, no need to keep reallocating
+				recursedFiles = getAllFiles(dir.path().string(), exclusions);
+
+				// recursed file names
+				for (std::string& rfn : recursedFiles) {
+					// prepend relative path to filenames
+					std::stringstream ss;
+					ss << filename << "/" << rfn;
+					rfn = ss.str();
+				}
+
+				// insert nested files to current filelist
+				files.insert(files.end(), recursedFiles.begin(), recursedFiles.end());
+			}
+			else if (fs::is_regular_file(dir)) {
+				// add file to files vector if is file
+				files.push_back(filename);
+			}
+		}
+
+		return files;
+	}
+
+}
+
+void loadAllTextures() {
+	std::vector<std::string> assets = getAllFiles("./Assets/", { "audio", "fonts"});
+	// asset path
+	for (const std::string& ap : assets) {
+		RenderHelper::getInstance()->registerTexture("./Assets/" + ap, "./Assets/" + ap);
+	}
+}
+
+

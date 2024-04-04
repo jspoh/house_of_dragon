@@ -38,39 +38,11 @@ public:
     virtual void Render();
     virtual void Exit();
 
-    //typedef struct {
-    //    s8 fontID;
-    //    std::string bg;
-    //    std::string bg1;
-    //    std::string pointer;
-    //    std::string title;
-    //    std::string transitionBG;
-    //    float buttonX[5];
-    //    float buttonY[5];
-    //    std::string button[5];
-    //    std::string buttonSelect[5];
-    //    s32 mouseX, mouseY;
-    //    float buttonWidth, buttonHeight;
-    //    bool hovering[5];
-    //    bool levelSelecting;
-    //    int levelActived[5];
-    //    bool transitionEnd;
-    //    float transitionTimer;
-    //    float transitionElapse;
-    //    int nextLevel;
-
-    //    // Stage selection button variables
-    //    float buttonSelectWidth, buttonSelectHeight;
-    //    float buttonSelectX[5];
-    //    float buttonSelectY[5];
-    //    bool hoveringSelect[5];
-
-    //} Menu;
-
     typedef struct {
         s8 fontID;
         std::string bg;
         std::string bg1;
+        std::string bg2;
         std::string pointer;
         std::string title;
         std::string transitionBG;
@@ -99,6 +71,19 @@ public:
         float backButtonX, backButtonY;
         float backButtonWidth, backButtonHeight;
         bool hoveringBack;
+        float cameraX, cameraY;
+        float cameraSpeed;
+
+        float daggerRotation;
+
+
+        float taichiRotation;
+        float taichiScale;
+        float taichiScaleSpeed;
+        float taichiMinScale;
+        float taichiMaxScale;
+
+
     } Menu;
 
 

@@ -324,7 +324,7 @@ public:
 	~Event();
 
 	static Event* getInstance();
-
+	EVENT_TYPES getActiveEvent();
 	/**
 	 * used to trigger event.
 	 *

@@ -34,9 +34,9 @@ ParticleManager::ParticleManager() {
 }
 
 ParticleManager::~ParticleManager() {
-	RenderHelper::getInstance()->removeTextureByRef(REGULAR);
-	RenderHelper::getInstance()->removeTextureByRef(EXPLOSION);
-	RenderHelper::getInstance()->removeTextureByRef(FIREWORK);
+	//RenderHelper::getInstance()->removeTextureByRef(REGULAR);
+	//RenderHelper::getInstance()->removeTextureByRef(EXPLOSION);
+	//RenderHelper::getInstance()->removeTextureByRef(FIREWORK);
 }
 
 void ParticleManager::init() {
