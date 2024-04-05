@@ -19,7 +19,7 @@ Technology is prohibited.
 #include "Pch.h"
 
 
-const std::string dbPath = "data.json";
+const std::string dbPath = R"(data.json)";
 
 class Database {
 private:

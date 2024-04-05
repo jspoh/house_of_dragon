@@ -105,8 +105,9 @@
       "maxSceneOBJperTile": 2,
       "enemySpawnWeight": [
         {
-          "cat": 2,
-          "dragon": 1
+          "goat": 2,
+          "bull": 1,
+          "monkey": 5
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -128,8 +129,9 @@
       "maxSceneOBJperTile": 4,
       "enemySpawnWeight": [
         {
-          "dragon": 2,
-          "snake": 3
+          "goat": 2,
+          "bull": 1,
+          "monkey": 5
         }
       ],
       "SceneOBJSpawnWeight": [
