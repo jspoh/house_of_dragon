@@ -43,7 +43,6 @@ private:
 	float transitionUpSpeed;
 	float transitionDownSpeed;
 	int elapsedTimeMs = 0;
-	// !TODO: jspoh json difficulty settinng
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
 	Shield shield;
@@ -71,8 +70,13 @@ private:
 	float healthRenderTime{ 0 };
 	const float healthRenderTimeMax = 0.75f;
 
+	int playerLevel;
 
+	static constexpr float levelHealthIncPercentage = 0.1f;
 
+	// dmgMul is used when player consumes an item that grants a damage boost
+	static constexpr float DEFAULT_DMG_MUL = 1;
+	float dmgMul = DEFAULT_DMG_MUL;
 
 public:
 	enum class HandAnimationType {
@@ -113,6 +117,17 @@ public:
 	 */
 	void healthGain(float healthIncrease);
 
+	/**
+	 * set next attack's damage multiplier.
+	 * to be used when player consumes an item
+	 * 
+	 * damage multiplier will not stick through different
+	 * combats!
+	 * 
+	 * \param mul
+	 */
+	void setNextAttackDmgMul(float mul);
+
 	float attack(Mob& target, Element attackEl, float qtMultiplier);
 
 	void update(double dt);
@@ -122,6 +137,10 @@ public:
 	void playerAttacked();
 
 	void attackMultipler(int turn);
+
+	std::unordered_map<std::string, int> inventory;
+
+	int getLevel() const;
 
 private:
 	HandAnimationType HandStateAnimationType = HandAnimationType::None; //Can use enum

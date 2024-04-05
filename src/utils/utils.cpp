@@ -84,7 +84,7 @@ std::vector<std::string> split(const std::string& str, const char sep) {
 
 void initGlobals() {
 	updateGlobals();
-	difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance()->data["game"]["difficulty"]);
+	difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance().data["game"]["difficulty"]);
 }
 
 void updateGlobals() {
@@ -93,6 +93,20 @@ void updateGlobals() {
 	wMouseX = static_cast<int>(wMouse.x);
 	wMouseY = static_cast<int>(wMouse.y);
 	AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
+}
+
+std::string lower(const std::string& text) {
+	constexpr char offset = 'a' - 'A';
+	std::string out;
+	out.reserve(text.size());
+	for (const char c : text) {
+		char u = c;
+		if (c >= 'A' && c <= 'Z') {
+			u += offset;
+		}
+		out += u;
+	}
+	return out;
 }
 
 std::string upper(const std::string& text) {

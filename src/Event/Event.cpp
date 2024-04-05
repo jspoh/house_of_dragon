@@ -34,16 +34,13 @@ namespace {
 
 // constructor
 Event::Event() {
-	//double time;
-	//AEGetTime(&time);
-	//srand(static_cast<unsigned int>(time));
 
 	for (std::pair<EVENT_KEYS, std::string> map : eKeyToStr) {
 		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + ".png");
 		bool success2 = RenderHelper::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + "_outline.png");
 		if (!success1 || !success2) {
 			std::cerr << "Failed to load asset in Event constructor\n";
-			//exit(2);
+			//throw std::exception();
 		}
 	}
 	RenderHelper::getInstance()->registerTexture("circle", "./Assets/Combat_UI/flair_circle_red_8.png");
@@ -157,7 +154,7 @@ void Event::startRandomEvent() {
 bool Event::setActiveEvent(EVENT_TYPES e) {
 	if (_activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
 		_activeEvent = e;
-		
+
 		return true;
 	}
 	std::cerr << "An event is already running!\n";
@@ -167,44 +164,6 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 
 EVENT_TYPES Event::getActiveEvent() {
 	return _activeEvent;
-}
-void Event::updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_KEYS oTimerKey) {
-	AEInputGetCursorPosition(&_mouseX, &_mouseY);
-	if (_prevMouseX == 0 || _prevMouseY == 0) {
-		_prevMouseX = _mouseX;
-		_prevMouseY = _mouseY;
-	}
-
-	switch (_activeEvent) {
-	case EVENT_TYPES::NONE_EVENT_TYPE:
-		break;
-	case EVENT_TYPES::SPAM_KEY:
-		_spamKeyEventUpdate(result, dt, spamkey);
-		_spamKeyEventRender();
-		break;
-	case EVENT_TYPES::OSCILLATING_TIMER:
-		_oscillatingTimerEventUpdate(result, dt, oTimerKey);
-		_oscillatingTimerEventRender();
-		break;
-	case EVENT_TYPES::MULTI_CLICK:
-		_multiClickEventUpdate(result, dt);
-		_multiClickEventRender();
-		break;
-	case EVENT_TYPES::TYPING:
-		_typingEventUpdate(result, dt);
-		_typingEventRender();
-		break;
-	case EVENT_TYPES::ORANGE_THROWING:
-		_orangeEventUpdate(result, dt);
-		_orangeEventRender();
-		break;
-	default:
-		std::cerr << "Event::updateRenderLoop reached end of switch case\n";
-		break;
-	}
-
-	_prevMouseX = _mouseX;
-	_prevMouseY = _mouseY;
 }
 
 void Event::init() {
@@ -418,7 +377,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 		break;
 	default:
 		std::cerr << "Key was not registered in EVENT_KEYS!\n";
-		//exit(3);
+		//throw std::exception();
 		break;
 	}
 
@@ -454,7 +413,6 @@ void Event::_spamKeyEventRender() {
 	// key in string format
 	std::string skey = eKeyToStr.find(_spamKeyChoice)->second;
 
-	//RenderHelper::getInstance()->texture("keyoutline_" + skey, worldX, worldY, _targetSize, _targetSize);
 	if (_useOutline) {
 		RenderHelper::getInstance()->texture("keyoutline_" + skey, worldX, worldY, _size, _size);
 	}
@@ -595,7 +553,6 @@ void Event::_oscillatingTimerEventRender() {
 
 }
 
-// !TODO: consider changing cursor to crosshair when multiclick event is active
 void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
@@ -640,7 +597,6 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 			i++;
 		}
 
-		// !TODO: consider adding animations
 		if (hit) {
 			_multiClickObjects.erase(_multiClickObjects.begin() + i);
 		}
@@ -693,7 +649,6 @@ void Event::_multiClickEventRender() {
 	}
 }
 
-// !TODO: change to sprite
 void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 	/*update*/
 	_updateTime(dt);
@@ -788,7 +743,7 @@ void Event::_typingEventRender() {
 				col = { 0, 1, 0, 1 };	// green
 			}
 			else {
-				col = {1,1,1, 1 };	// white
+				col = { 1,1,1, 1 };	// white
 			}
 
 			RenderHelper::getInstance()->text(std::string{ static_cast<char>(toupper(c)) }, currXOffset, currYOffset, col.r, col.g, col.b, col.a);
@@ -819,11 +774,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 
 	switch (_orangeState) {
 	case INNER_STATES::ON_ENTER: {
-		//const int dirDeg = rand() % 360;
-		//const float dirRad = degToRad(static_cast<const float>(dirDeg));
 		_orangeObj = Orange{
 			AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f,			// pos
-			//{cosf(dirRad), sinf(dirRad)},				// velocity
 			{0,0},										// velocity
 			_orangeRadius,							// radius
 			false
@@ -839,8 +791,6 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			d.isActive = true;
 		}
 
-		//AEVec2Normalize(&_orangeObj.vel, &_orangeObj.vel);
-		//AEVec2Scale(&_orangeObj.vel, &_orangeObj.vel, _orangeSpeed);
 		_orangeState = INNER_STATES::ON_UPDATE;
 		break;
 	}

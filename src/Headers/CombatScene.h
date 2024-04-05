@@ -51,21 +51,4 @@ struct enemiesGroup {
 	std::vector<std::string> names;
 	std::vector<Enemy*> enemies;
 };
-// !TODO: kuek
-/**
- * @brief 
- * 1. read from json file the attributes and create Enemy objects
- * 2. 
- * @param enemyRefs 
- */
- // void spawnEnemies(std::vector<std::string> enemyRefs);
-
-
-/*defining these functions here to chiong prototype, no time to make nicenice rn*/
-
-//class Cat : public Enemy {
-//public:
-//	Cat(Element element = Element::Water, double health = 100, double dmg = 10, std::string texturePath = "", std::string textureRef = "", float screenX = 100, float screenY = 100, float size = 50);
-//};
-
 

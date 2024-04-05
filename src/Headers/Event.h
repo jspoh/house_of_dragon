@@ -14,7 +14,6 @@ Technology is prohibited.
 /* End Header **************************************************************************/
 
 
-// !TODO: jspoh add difficulty config
 
 #pragma once
 
@@ -153,7 +152,9 @@ private:
 	bool _mcoIsTransitioningOut = false;
 
 	/*typing event vars*/
-	const std::array<std::string, 40> _wordlist{
+	static constexpr int _NUM_TYPING_EVENT_WORDS = 41;
+	// ^[a-z]+$ only (regex)
+	const std::array<std::string, _NUM_TYPING_EVENT_WORDS> _wordlist{
 		"nian",
 		"dragon",
 		"angpao",
@@ -176,7 +177,8 @@ private:
 		"firecrackers",
 		"fullmoon",
 		"gold",
-		"gongfu",
+		"kungfu",
+		"panda",
 		"goodluck",
 		"gratitude",
 		"fatchoy",
@@ -193,9 +195,9 @@ private:
 		"spirits",
 		"season",
 		"tangyuan",
-		"zongzi"
-
+		"zhongzi"
 	};
+
 	// determines whether to get a new word.
 	// when user is done typing current word, then set this to true
 	std::string _currentWord;	// current word used
@@ -343,14 +345,6 @@ public:
 	 *
 	 */
 	void startRandomEvent();
-
-	/**
-	 * put this in update loop. use `setActiveEvent` to trigger events
-	 *
-	 * warning: deprecated. to be removed
-	 *
-	 */
-	void updateRenderLoop(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey = EVENT_KEYS::E, EVENT_KEYS oTimerKey = EVENT_KEYS::SPACE);
 
 	void init();
 

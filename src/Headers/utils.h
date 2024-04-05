@@ -59,6 +59,14 @@ const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_ENEMY_DAMAGE_MUL
 	{DIFFICULTY_SETTINGS::HARD, 1.5f}
 };
 
+// blocking enemy attack blocking allowance time
+// there will be no prompt for hard difficulty
+const std::unordered_map<DIFFICULTY_SETTINGS, int> PLAYER_BLOCKING_REACTION_ALLOWANCE_MS{
+	{DIFFICULTY_SETTINGS::EASY, 750},
+	{DIFFICULTY_SETTINGS::MEDIUM, 500},
+	{DIFFICULTY_SETTINGS::HARD, -1000}
+};
+
 constexpr int AEVK_OFFSET = 'a' - AEVK_A;
 
 // why doesnt it work using std::array w size 26??
@@ -136,6 +144,7 @@ std::vector<std::string> split(const std::string& str, const char sep);
 void initGlobals();
 void updateGlobals();
 
+std::string lower(const std::string& text);
 std::string upper(const std::string& text);
 
 // load all textures

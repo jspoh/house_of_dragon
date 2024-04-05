@@ -16,8 +16,6 @@ Technology is prohibited.
 #include "Pch.h"
 #include "SoundManager.h"
 
-using namespace std;
-
 // Constructor
 SoundManager::SoundManager()
 {
@@ -25,8 +23,8 @@ SoundManager::SoundManager()
 	sfxGroup = AEAudioCreateGroup();
 	musicGroup = AEAudioCreateGroup();
 
-	SFX_VOLUME = Database::getInstance()->data["game"]["audio"]["sfx"];
-	MUSIC_VOLUME = Database::getInstance()->data["game"]["audio"]["music"];
+	SFX_VOLUME = Database::getInstance().data["game"]["audio"]["sfx"];
+	MUSIC_VOLUME = Database::getInstance().data["game"]["audio"]["music"];
 
 	setVolume(SFX_VOLUME, false);
 	setVolume(MUSIC_VOLUME, true);
@@ -50,8 +48,8 @@ SoundManager::~SoundManager()
 	musicMap.clear();
 
 	// save volume
-	Database::getInstance()->data["game"]["audio"]["sfx"] = SFX_VOLUME;
-	Database::getInstance()->data["game"]["audio"]["music"] = MUSIC_VOLUME;
+	Database::getInstance().data["game"]["audio"]["sfx"] = SFX_VOLUME;
+	Database::getInstance().data["game"]["audio"]["music"] = MUSIC_VOLUME;
 }
 
 bool SoundManager::removeAudio(std::string ref, bool isMusic) {
