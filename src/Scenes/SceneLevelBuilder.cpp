@@ -484,18 +484,22 @@ void SceneLevelBuilder::Update(double dt)
 				else {
 					showGameEnd = true;
 					if (AEInputCheckTriggered(AEVK_SPACE)) {
-						SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 						return;			// terminate this scene state early
 					}
+					return;
 				}
-				//else
-				//	m_currLevel; //ALL LEVELS DONE
-				SceneLevelBuilder::SpawnLvlName();
-				m_CompletionStatus = 0.0;
+				
+				if (!showGameEnd) {
+					SceneLevelBuilder::SpawnLvlName();
+					m_CompletionStatus = 0.0;
+				}
 			}
 
 			if (!showGameEnd) {
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+
+				// !TODO: remove this for prod
 				if (AEInputCheckCurr(AEVK_1))
 					m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
 			}
@@ -581,7 +585,7 @@ void SceneLevelBuilder::Update(double dt)
 			/////////////////////////////////////////////////////////////////////////////
 			// Check to start Combat Phase
 			{
-				if (m_SceneEnemy != nullptr)
+				if (m_SceneEnemy != nullptr && !showGameEnd)
 				{
 					if (m_SceneEnemy->m_StartCombat)
 					{
