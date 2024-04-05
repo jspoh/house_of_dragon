@@ -146,7 +146,7 @@ namespace {
 		{"BACON", "BEEF", "CHICKEN", "BACK"},  // items
 		{"YES", "NO"},  // confirmation. only used for flee option
 	};
-	constexpr float padding = 50.f;
+	constexpr float btnPadding = 50.f;
 	constexpr float spacing = 50.f;
 
 
@@ -165,10 +165,10 @@ namespace {
 	// update loop for combat panel buttons
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
-		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (btnPadding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
 		float btnHeight = btnWidth / 3.f;
 		btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-		float lBtnX = padding + btnWidth / 2.f;
+		float lBtnX = btnPadding + btnWidth / 2.f;
 		float bPosX = lBtnX;
 		AEVec2 btnText = wtos(bPosX, panelfinalY);
 		if (playerAlive) {
@@ -283,10 +283,10 @@ namespace {
 		}
 
 		// rendering coordinates 
-		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
+		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (btnPadding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
 		float btnHeight = btnWidth / 3.f;
 		btnHeight = btnHeight > maxBtnHeight ? maxBtnHeight : btnHeight;
-		float lBtnX = padding + btnWidth / 2.f;
+		float lBtnX = btnPadding + btnWidth / 2.f;
 
 		float bPosX = lBtnX;
 
@@ -536,7 +536,7 @@ void CombatScene::Load()
 void CombatScene::Init(CombatManager::TURN startingTurn)
 {
 	// cleanup again just in case
-	cleanup();
+	//cleanup();
 
 	//win variables
 	winFlag = false;
@@ -940,12 +940,24 @@ void CombatScene::Render()
 	// rendering whether enemies is dead
 	if (playerAlive && !winFlag) {
 
+		// render enemies
+		for (Enemy* enemy : groups.enemies) { // check for dead/alive
+			if (enemy->isDead()) {
+				// !TODO: kuek is this still used? 
+				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+				deadEnemies.push_back(i);
+			}
+			enemy->render();
+			i++;
+		}
+
 		// rendering health when player active in the game and dont playing an event
 		if (!CombatManager::getInstance().isPlayingEvent) {
 			// !TODO: kuek no magic numbers pls
 			player->renderHealth(150, 150);
 		}
 
+		// player interact ui
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 
 		if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
@@ -989,8 +1001,6 @@ void CombatScene::Render()
 			default:
 				break;
 			}
-
-
 		}
 		else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && dialogueState == DIALOGUE::NONE) {
 
@@ -1009,20 +1019,6 @@ void CombatScene::Render()
 
 
 			}
-		}
-
-
-		for (Enemy* enemy : groups.enemies) { // check for dead/alive
-			if (enemy->isDead()) {
-				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
-				deadEnemies.push_back(i);
-			}
-
-
-			enemy->render();
-
-			i++;
-
 		}
 
 	}
