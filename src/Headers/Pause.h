@@ -24,13 +24,12 @@ private:
 
 	static constexpr u8 PAUSE_KEY = AEVK_ESCAPE;
 
-	static constexpr int NUM_BTNS = 5;
+	static constexpr int NUM_BTNS = 3;
+	// button content, button scale [0,1]
 	std::array<std::pair<std::string, float>, NUM_BTNS> btns{
 		std::pair{"RESUME", 1.f},
-		{"HOWTOPLAY", 1.f},
 		{"RESTART", 1.f},
 		{"EXIT", 1.f}
-	
 	};
 
 	static constexpr int BTN_WIDTH = 250;

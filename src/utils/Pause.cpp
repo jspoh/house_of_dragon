@@ -53,23 +53,24 @@ void Pause::update([[maybe_unused]] double dt) {
 
 	// check for clicks
 	constexpr int yOffset = BTN_HEIGHT + BTN_Y_GAP;
-	constexpr int btnYStart = 0 + (NUM_BTNS * yOffset - BTN_Y_GAP) / 2;
+	constexpr int btnYStart = (NUM_BTNS * yOffset - BTN_Y_GAP) / 2;
 	int btnY = btnYStart;
 
 	for (auto& [b, scale] : btns) {
 		AEVec2 pos = wtos(0, static_cast<float>(btnY));
 		if (CollisionChecker::isMouseInRect(pos.x, pos.y, BTN_WIDTH * scale, BTN_HEIGHT * scale, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-			
+
 			scale = HOVER_BTN_SCALE;
 
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
 				if (b == "RESUME") {
 					isPaused = false;
 				}
-				else if (b == "HOWTOPLAY") {
-					SceneManager::GetInstance()->SetActiveScene("HowToPlay");
+				// wont implement how to play in pause screen because back button always leads back to main menu
+				//else if (b == "HOWTOPLAY") {
+				//	SceneManager::GetInstance()->SetActiveScene("HowToPlay");
 
-				}
+				//}
 				else if (b == "RESTART") {
 					// !TODO: call state or get scenelevelbuilder to restart combatscene
 					SceneManager::GetInstance()->SetActiveScene("SceneMenu");
@@ -100,7 +101,7 @@ void Pause::render() const {
 
 	constexpr int btnX = 0;
 	constexpr int yOffset = BTN_HEIGHT + BTN_Y_GAP;
-	constexpr int btnYStart = 0 + (NUM_BTNS * yOffset - BTN_Y_GAP) / 2;
+	constexpr int btnYStart = (NUM_BTNS * yOffset - BTN_Y_GAP) / 2;
 	int btnY = btnYStart;
 
 	for (const auto& [b, scale] : btns) {
