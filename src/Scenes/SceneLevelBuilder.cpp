@@ -1454,11 +1454,12 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	// Auto Spawning of enemies
 	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
 	m_TryTimer -= dt;
-	if (m_TryTimer < 0)
+	// !TODO: jspoh consider removing debugging enemy spawner?
+	if (m_TryTimer < 0 || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 	{
 		if (m_SceneEnemy == nullptr && !m_CombatPhase && SceneStages::sInstance->m_StartGame)
 		{
-			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate)
+			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 			{
 				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
 				m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
