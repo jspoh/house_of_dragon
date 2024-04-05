@@ -483,6 +483,7 @@ void SceneLevelBuilder::Update(double dt)
 				}
 				else {
 					showGameEnd = true;
+					SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 					if (AEInputCheckTriggered(AEVK_SPACE)) {
 						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
 						return;			// terminate this scene state early
@@ -499,9 +500,7 @@ void SceneLevelBuilder::Update(double dt)
 			if (!showGameEnd) {
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
 
-				// !TODO: remove this for prod
-				if (AEInputCheckCurr(AEVK_1))
-					m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 50 : 0.0;
+				
 			}
 			cout << "Level Done: " << m_CompletionStatus << "%\n";
 

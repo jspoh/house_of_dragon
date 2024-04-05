@@ -48,6 +48,7 @@ namespace {
 	float itemPanelY;
 	AEVec2 ItemPanel;
 
+	constexpr float panelSizeY = 160.f;
 
 	//camera coordinates;
 	f32 camX, camY;
@@ -70,7 +71,9 @@ namespace {
 	bool blockNow;
 	float enemyattackedRenderTime;
 
-
+	//event size and padding
+	constexpr float eventPadding = 125.f;
+	constexpr float eventYSize = 85.f;
 
 	//timer for the lerp
 	//const float slideAnimationDuration = 1.0f;
@@ -160,7 +163,7 @@ namespace {
 
 
 	void resetDialogue() {
-		dialougeTime = 0;
+		dialougeTime = 0.f;
 		dialogueState = DIALOGUE::NONE;
 	}
 
@@ -641,20 +644,34 @@ void CombatScene::Update(double dt)
 		}
 		else if (dialougeTime >= dialogueMaxTime) {
 			resetDialogue();
-			dialougeTime = 0.f;
 		}
 	}
 
+		for (Enemy* enemy : groups.enemies) { // check for dead/alive
+			if (enemy->isDead()) {
+				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+			}
+			if (player->isDead()) {
+				//Set player to dead
+				if (playerAlive) {
+					playerAlive = false;
+					deadfinalflag = false;
+				}
 
-	//checking for player death and updating playerAlive flag
-	if (player->isDead()) {
-		//Set player to dead
-		if (playerAlive) {
-			playerAlive = false;
-			deadfinalflag = false;
+			}
 		}
-
-	}
+		// player death flag set 
+		if (!playerAlive) {
+			if (extraflagtest == true) {
+				extraflagtest = false;
+				panelflag = true;
+				currentTime = 0.0f; // Reset the time for sliding animation
+			}
+		}
+		// updating the death buttons for lerping 
+		if (!playerAlive) {
+			updateDeathBtns();
+		}
 
 	// player death flag set 
 	if (!playerAlive) {
@@ -958,44 +975,43 @@ void CombatScene::Render()
 			default:
 				break;
 			}
-			//RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
+			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
+				//std::string fulloutput;
+				constexpr float eventPadding = 125.f;
+				constexpr float eventYSize = 85.f;
+				switch (combatEventResult) {
+				case EVENT_TYPES::SPAM_KEY:
+					RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+					break;
+				case EVENT_TYPES::OSCILLATING_TIMER:
+					RenderHelper::getInstance()->texture("timer", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+					break;
+				case EVENT_TYPES::MULTI_CLICK:
+					RenderHelper::getInstance()->texture("multiClick", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+					break;
+				case EVENT_TYPES::ORANGE_THROWING:
+					RenderHelper::getInstance()->texture("orangeThrowing", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+					break;
+				default:
+					break;
+				}
 
 
-		}
-		else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && dialogueState == DIALOGUE::NONE) {
-			//if (blockingRenderTime < 0.5f) {
-			//if (!blockNow) {
-			//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-			//}
-			//else {
-			//	RenderHelper::getInstance()->texture("blockNow", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-			//}
-			//RenderHelper::getInstance()->texture("blockwait1", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-		//}
-		//else if(blockingRenderTime < 1.f){
-		//	RenderHelper::getInstance()->texture("blockwait2", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-
-		//}
-		//else {
-		//	RenderHelper::getInstance()->texture("blockwait3", wpos.x + camOffset.x, wpos.y + camOffset.y, FinalScaleDead.x, FinalScaleDead.y); //start point, but coordinates is centralised so need to take account of the widthw
-
-		//}
-		//blockingRenderTime += AEFrameRateControllerGetFrameTime();
-		//if (blockingRenderTime >= 1.5f) {
-		//	blockingRenderTime = 0.f;
-		//}
-
-		//panel text
-			RenderHelper::getInstance()->texture("blockTime", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
-		}
-		else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent && playerAlive && !winFlag) {
-			if (dialogueState == DIALOGUE::ITEM) {
-				std::string fulloutput = "You have consumed " + itemUsed + "!";
-				RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * 0.85f);
 			}
+			else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY  && dialogueState == DIALOGUE::NONE) {
 
-			else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
-				RenderHelper::getInstance()->texture("incomingAttack", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
+			//panel text
+				RenderHelper::getInstance()->texture("blockTime", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+			}
+			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent && playerAlive && !winFlag) {
+				if (dialogueState == DIALOGUE::ITEM) {
+					constexpr float windowHeightPercentage = 0.85f;
+					std::string fulloutput = "You have consumed " + itemUsed + "!";
+					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * windowHeightPercentage);
+				}
+
+				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
+					RenderHelper::getInstance()->texture("incomingAttack", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
 
 
 			}
@@ -1031,6 +1047,7 @@ void CombatScene::Render()
 		}
 	}
 	else if (!playerAlive) {
+		
 		//rendering out the objects
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 		/*for (Enemy* enemy : groups.enemies) {
@@ -1054,27 +1071,38 @@ void CombatScene::Render()
 		if (itemTime > slideAnimationDuration) {
 			auto it = player->inventory.begin();
 
+			constexpr float itemPanelSizeX = 550.f;
+			constexpr float itemPanelSizeY = 350.f;
+
+			constexpr float itemSizeX = 100.f;
+			constexpr float itemSizeY = 50.f;
+
+			constexpr float itemPadding = 75.f;
+			constexpr float itemNumberPadding = 25.f;
+
 			// panel for the item drop
 			std::string itemnum;
-			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - 100.f + camOffset.y, 550.f, 350.f);
-			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - 150, wpos.y + camOffset.y + 25.f, 150.f, 50.f);
+			// panel rendering
+			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x , wpos.y - itemSizeX + camOffset.y, itemPanelSizeX, itemPanelSizeY);
+			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y + camOffset.y + itemNumberPadding, itemSizeY + itemSizeX, itemSizeY);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - 150, wpos.y - 25.f + camOffset.y, 100.f, 50.f);
-			itemnum = std::to_string(itemdrops[0]) + "item";
-			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 25.f + camOffset.y, 50.f, 50.f);
+			//item rendering
+				RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
+				itemnum = std::to_string(itemdrops[0]) + "item";
+				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x , wpos.y - itemNumberPadding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - 150, wpos.y - 75.f + camOffset.y, 100.f, 50.f);
-			itemnum = std::to_string(itemdrops[1]) + "item";
-			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 75.f + camOffset.y, 50.f, 50.f);
+				RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemPadding + camOffset.y, itemSizeX, itemSizeY);
+				itemnum = std::to_string(itemdrops[1]) + "item";
+				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemPadding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - 150, wpos.y - 125.f + camOffset.y, 100.f, 50.f);
-			itemnum = std::to_string(itemdrops[2]) + "item";
-			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 125.f + camOffset.y, 50.f, 50.f);
+				RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeX, itemSizeY);
+				itemnum = std::to_string(itemdrops[1]) + "item";
+				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeY, itemSizeY);
 
-
-			RenderHelper::getInstance()->texture("winbutton", ItemPanel.x + camOffset.x - 50, wpos.y - 200.f + camOffset.y, 400.f, 75.f);
+			
+			RenderHelper::getInstance()->texture("winbutton", ItemPanel.x + camOffset.x - itemSizeY, wpos.y - itemSizeX * 2 + camOffset.y, itemSizeX * 4, itemPadding);
 
 
 			// item drops 
@@ -1104,11 +1132,9 @@ void CombatScene::cleanup() {
 		delete enemy;
 	}
 	groups.enemies.clear();
-	//delete CombatManager::getInstance();
-	// Clear the vector after deleting the enemies
-	//delete player;
-	//player = nullptr;
+
 	itemUsedSinceLastAttack = false;
+
 }
 
 void CombatScene::Exit()

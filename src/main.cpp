@@ -50,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //#endif
 
     // Changing the window title
-    AESysSetWindowTitle("Version Alpha 0.6.IDK - INCORPARATING AND THE SYSTEM IS MELTING");
+    AESysSetWindowTitle("HOUSE OF DRAGON");
 
 #ifndef NDEBUG
     DEBUG = true;

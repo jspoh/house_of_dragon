@@ -66,9 +66,13 @@ void Pause::update([[maybe_unused]] double dt) {
 				if (b == "RESUME") {
 					isPaused = false;
 				}
+				else if (b == "HOWTOPLAY") {
+					SceneManager::GetInstance()->SetActiveScene("HowToPlay");
+
+				}
 				else if (b == "RESTART") {
 					// !TODO: call state or get scenelevelbuilder to restart combatscene
-
+					SceneManager::GetInstance()->SetActiveScene("SceneMenu");
 				}
 				else if (b == "EXIT") {
 					isPaused = false;
