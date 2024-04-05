@@ -43,7 +43,6 @@ private:
 	float transitionUpSpeed;
 	float transitionDownSpeed;
 	int elapsedTimeMs = 0;
-	// !TODO: jspoh json difficulty settinng
 	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
 
 	Shield shield;

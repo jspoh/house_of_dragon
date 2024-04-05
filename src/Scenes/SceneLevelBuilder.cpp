@@ -300,9 +300,9 @@ SceneLevelBuilder::SceneLevelBuilder() :
 SceneLevelBuilder::~SceneLevelBuilder()
 {
 	Exit(); //Hehe, dont allow sneaky memory leak
+	showGameEnd = false;
 }
 
-// !TODO: jspoh showGameEnd = false; reset this. my visual studio is bugged cant expand
 void SceneLevelBuilder::Init()
 {
 	/////////////////////////////////////////////////////////////

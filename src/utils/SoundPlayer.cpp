@@ -193,7 +193,6 @@ void SoundPlayer::CombatAudio::playSfxDeath() {
 	SoundManager::GetInstance()->playAudio("death_0.wav");
 }
 
-// !TODO: jspoh remove cat audio
 void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
 	int availSounds{};
 	const std::string prefix = animal;

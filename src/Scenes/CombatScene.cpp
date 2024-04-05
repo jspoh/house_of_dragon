@@ -19,7 +19,6 @@ Technology is prohibited.
 #include "Pch.h"
 #include "CombatScene.h"
 
-//#include "../../Backend/GameManager.h" //? Still thinking
 #include "SceneManager.h"
 #include "Event.h"
 #include "CombatManager.h"
@@ -49,10 +48,6 @@ namespace {
 	AEVec2 ItemPanel;
 
 	constexpr float panelSizeY = 160.f;
-
-	//camera coordinates;
-	f32 camX, camY;
-
 
 	// item drop, [0] is bacon, [1] is beef, [2] is chicken
 	std::array<int, 3> itemdrops;
@@ -167,6 +162,7 @@ namespace {
 		dialogueState = DIALOGUE::NONE;
 	}
 
+	// update loop for combat panel buttons
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
 		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (padding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
@@ -276,6 +272,7 @@ namespace {
 		}
 	}
 
+	// render loop for combat panel buttons
 	void renderBtns(std::vector<std::string> bvalues) {
 
 
@@ -422,9 +419,6 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 		);
 		groups.enemies[i]->elementstringinput(Database::getInstance().data["enemyAttributes"][enemyRefs[i]]["element"]);
 	}
-
-
-
 }
 
 CombatScene::CombatScene()
@@ -461,7 +455,7 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("bar2", "./Assets/Health/end.png");
 	RenderHelper::getInstance()->registerTexture("bar3", "./Assets/Health/bar.png");
 
-	//enemy load
+	// dynamic enemy load !TODO: test this! spawn all kinds of animals and ensure no crashes
 	for (const auto& [animalName, details] : Database::getInstance().data["enemyAttributes"].items()) {
 		RenderHelper::getInstance()->registerTexture(animalName, details["texturePath"]);
 	}
@@ -515,7 +509,7 @@ void CombatScene::Load()
 	//enemy panel  for information load 
 	RenderHelper::getInstance()->registerTexture("enemyPanel", "./Assets/Combat_UI/enemyPanel.png");
 
-	//item load
+	// dynamic item load
 	for (const auto& [itemName, details] : Database::getInstance().data["items"].items()) {
 		RenderHelper::getInstance()->registerTexture(itemName, details["texturePath"]);
 	}
@@ -541,6 +535,8 @@ void CombatScene::Load()
 
 void CombatScene::Init(CombatManager::TURN startingTurn)
 {
+	// cleanup again just in case
+	cleanup();
 
 	//win variables
 	winFlag = false;
@@ -564,6 +560,7 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	deathBtnMenuPoint.x = AEGfxGetWindowWidth() / 2 + deathBtnWidthEnd / 2 + 50.f;
 	deathBtnRespawnPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
 	deathBtnMenuPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
+
 	// current values
 	currScaleDead.x = initalScaleDead.x;
 	currScaleDead.y = initalScaleDead.y;
@@ -599,8 +596,6 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	// btn variables
 	btnWordPadding = 20.f;
 	btnDecreaseY = 0.f;
-
-	projectiles.clear();
 
 	CombatManager::getInstance().start(startingTurn);
 
@@ -660,14 +655,17 @@ void CombatScene::Update(double dt)
 
 		}
 	}
+
 	// player death flag set 
 	if (!playerAlive) {
+		// !TODO: kuek no need to `== true` lol, is already a boolean value
 		if (extraflagtest == true) {
 			extraflagtest = false;
 			panelflag = true;
 			currentTime = 0.0f; // Reset the time for sliding animation
 		}
 	}
+
 	// updating the death buttons for lerping 
 	if (!playerAlive) {
 		updateDeathBtns();
@@ -681,12 +679,11 @@ void CombatScene::Update(double dt)
 			currentTime = 0.0f; // Reset the time for sliding animation
 		}
 	}
+
 	// updating the death buttons for lerping 
 	if (!playerAlive) {
 		updateDeathBtns();
 	}
-
-	AEGfxGetCamPosition(&camX, &camY);
 
 	//death lerp
 	if ((!playerAlive && currentTime < slideAnimationDuration)) {
@@ -1135,8 +1132,12 @@ void CombatScene::cleanup() {
 	}
 	groups.enemies.clear();
 
-	itemUsedSinceLastAttack = false;
+	projectiles.clear();
 
+	// reset states
+	resetDialogue();
+	itemUsedSinceLastAttack = false;
+	currentState = ACTION_BTNS::MAIN;
 }
 
 void CombatScene::Exit()
