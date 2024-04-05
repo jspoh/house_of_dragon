@@ -3,7 +3,7 @@
 \file CombatPlayer.cpp
 \author Poh Jing Seng, jingseng.poh, 2301363
 \par jingseng.poh\@digipen.edu
-\author Soh Wei Jie, weijie.soh,
+\author Soh Wei Jie, weijie.soh
 \par weijie.soh\@digipen.edu
 \date 28 feb 2024
 \brief handles player in combat
