@@ -21,14 +21,14 @@ Technology is prohibited.
 #include "CombatScene.h"
 #include "SceneMenu.h"//For getting selected level
 
-#define SIZE_OF_FLOOR 11 //X Axis
-#define NUM_OF_TILES 10 //Z Axis
-#define NUM_OF_TILESPAWNPOINTS 4//Num of Spawnpoints on x & y of each tile
-#define TOP_MOVEMENT_SPEED 1.0f //TOP MOVEMENT SPEED (Don't alter more than 2)
-#define MAX_NUM_SCENEOBJS_TILE 8
-#define MAX_LVLNAMETIMER 4.0
-#define LERPING_SPEED 10.0f
-#define TRY_TO_SPAWN_ENEMY_TIMER 2.0
+constexpr int SIZE_OF_FLOOR = 11;			//X Axis
+constexpr int NUM_OF_TILES = 10 ;			//Z Axis
+constexpr int NUM_OF_TILESPAWNPOINTS = 4;	//Num of Spawnpoints on x & y of each tile
+constexpr float TOP_MOVEMENT_SPEED = 1.0f ;	//TOP MOVEMENT SPEED (Don't alter more than 2)
+constexpr int MAX_NUM_SCENEOBJS_TILE = 8;
+constexpr double MAX_LVLNAMETIMER = 4.0;
+constexpr float LERPING_SPEED = 10.0f;
+constexpr double TRY_TO_SPAWN_ENEMY_TIMER = 2.0;
 
 namespace GameScene {
 	extern bool combatAudioLoopIsPlaying;
