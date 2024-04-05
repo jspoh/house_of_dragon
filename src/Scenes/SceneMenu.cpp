@@ -286,45 +286,16 @@ void SceneMenu::Update(double dt)
                     switch (i)
                     {
                     case 0:
-                        nextSceneName = "SceneStages";
-                        SoundPlayer::stopAll();
-                        loopIsPlaying = false;
-                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
-                        break;
                     case 1:
-                        nextSceneName = "SceneStages";
-                        SoundPlayer::stopAll();
-                        loopIsPlaying = false;
-                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
-                        break;
                     case 2:
-                        nextSceneName = "SceneStages";
-                        SoundPlayer::stopAll();
-                        loopIsPlaying = false;
-                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
-                        break;
                     case 3:
-                        nextSceneName = "SceneStages";
-                        SoundPlayer::stopAll();
-                        loopIsPlaying = false;
-                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
-                        break;
                     case 4:
-                        nextSceneName = "SceneStages";
-                        SoundPlayer::stopAll();
-                        loopIsPlaying = false;
-                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
-                        break;
                     case 5:
-                        nextSceneName = "SceneStages";
-                        SoundPlayer::stopAll();
-                        loopIsPlaying = false;
-                        SceneManager::GetInstance()->SetActiveScene(nextSceneName);
-                        break;
                     case 6:
                         nextSceneName = "SceneStages";
                         SoundPlayer::stopAll();
                         loopIsPlaying = false;
+                        myMenu.levelSelecting = false;
                         SceneManager::GetInstance()->SetActiveScene(nextSceneName);
                         break;
                     default:
