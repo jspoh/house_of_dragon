@@ -56,6 +56,7 @@ public:
         std::string pointer;
         std::string title;
         std::string transitionBG;
+        std::string confirm;
         float buttonX[5];
         float buttonY[5];
         std::string button[7];
@@ -86,13 +87,8 @@ public:
 
         float daggerRotation;
 
-
-        float taichiRotation;
-        float taichiScale;
-        float taichiScaleSpeed;
-        float taichiMinScale;
-        float taichiMaxScale;
-
+        bool quitConfirm;
+        float quitConfirmTimer;
 
     } Menu;
 

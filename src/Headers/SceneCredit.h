@@ -45,6 +45,7 @@ public:
 	s8 pFontS;
 	s8 pFontxS;
 
+
 	f32 textPosX, textPosY;
 
 	struct Point

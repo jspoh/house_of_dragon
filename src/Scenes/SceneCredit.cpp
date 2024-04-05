@@ -66,7 +66,6 @@ void SceneCredits::Load()
 
 
 
-
 }
 
 /**
@@ -112,7 +111,7 @@ void SceneCredits::Update(double dt)
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
 
 	m_elapsedTime += static_cast<float>(dt);
-	if (m_elapsedTime >= 14.0f)
+	if (m_elapsedTime >= 20.0f)
 	{
 		// Close the application
 		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
@@ -241,6 +240,18 @@ void SceneCredits::Render()
 	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+
+	sprintf_s(strBuffer, "FMOD Studio © FireLight Technologies Pty Ltd ");
+	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+
+	sprintf_s(strBuffer, " www.kenney.nl ");
+	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+
+
 
 }
 /**
