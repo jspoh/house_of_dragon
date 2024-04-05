@@ -54,7 +54,7 @@ SoundManager::~SoundManager()
 
 bool SoundManager::removeAudio(std::string ref, bool isMusic) {
 	if (soundMap.find(ref) == soundMap.end() && !isMusic || musicMap.find(ref) == musicMap.end() && isMusic) {
-		std::cerr << "Audio reference " << ref << " does not exist!\n";
+		cerr << "Audio reference " << ref << " does not exist!\n";
 		return false;
 	}
 
@@ -73,7 +73,7 @@ bool SoundManager::removeAudio(std::string ref, bool isMusic) {
 bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic) {
 	// check if ref is already used
 	if (soundMap.find(ref) != soundMap.end() || musicMap.find(ref) != musicMap.end()) {
-		std::cerr << "Audio reference " << ref << " already exists!\n";
+		cerr << "Audio reference " << ref << " already exists!\n";
 		throw std::exception("Audio reference already exists");
 		return false;
 	}
@@ -81,7 +81,7 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 	AEAudio audio = isMusic ? AEAudioLoadMusic(path.c_str()) : AEAudioLoadSound(path.c_str());
 
 	if (!AEAudioIsValidAudio(audio)) {
-		std::cerr << "SoundManager failed to load " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
+		cerr << "SoundManager failed to load " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
 		throw std::exception("Audio failed to load");
 		return false;
 	}
@@ -109,7 +109,7 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 		audio = musicMap[ref];
 	}
 	else {
-		std::cerr << "Audio with ref " << ref << " does not exist!\n";
+		cerr << "Audio with ref " << ref << " does not exist!\n";
 		throw std::exception("Audio does not exist!");
 		return;
 	}

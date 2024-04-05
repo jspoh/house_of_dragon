@@ -39,7 +39,7 @@ Event::Event() {
 		bool success1 = RenderHelper::getInstance()->registerTexture("key_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + ".png");
 		bool success2 = RenderHelper::getInstance()->registerTexture("keyoutline_" + map.second, "./Assets/Combat_UI/keyboard_" + map.second + "_outline.png");
 		if (!success1 || !success2) {
-			std::cerr << "Failed to load asset in Event constructor\n";
+			cerr << "Failed to load asset in Event constructor\n";
 			//throw std::exception();
 		}
 	}
@@ -157,7 +157,7 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 
 		return true;
 	}
-	std::cerr << "An event is already running!\n";
+	cerr << "An event is already running!\n";
 	return false;
 }
 
@@ -221,7 +221,7 @@ void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_K
 		_orangeEventUpdate(result, dt);
 		break;
 	default:
-		std::cerr << "Event::update reached end of switch case\n";
+		cerr << "Event::update reached end of switch case\n";
 		break;
 	}
 
@@ -250,7 +250,7 @@ void Event::render() {
 		_orangeEventRender();
 		break;
 	default:
-		std::cerr << "Event::render reached end of switch case\n";
+		cerr << "Event::render reached end of switch case\n";
 		break;
 	}
 }
@@ -376,7 +376,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 		aevk = AEVK_SPACE;
 		break;
 	default:
-		std::cerr << "Key was not registered in EVENT_KEYS!\n";
+		cerr << "Key was not registered in EVENT_KEYS!\n";
 		//throw std::exception();
 		break;
 	}
@@ -436,7 +436,7 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 		aevk = AEVK_SPACE;
 		break;
 	default:
-		std::cerr << "Key was not registered in EVENT_KEYS!\n";
+		cerr << "Key was not registered in EVENT_KEYS!\n";
 		//exit(3);
 		break;
 	}

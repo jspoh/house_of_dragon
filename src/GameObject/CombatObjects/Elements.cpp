@@ -50,7 +50,7 @@ namespace ElementProperties {
         case Element::Wood:
             return "Wooden Splinter!!";
         default:
-            std::cerr << "bad boy\n";
+            cerr << "bad boy\n";
             return "Unknown Ability?";
     }
 }

@@ -77,8 +77,10 @@ extern NullStream nullstream;
 #ifndef NDEBUG
 #define cout std::cout
 #define endl std::endl
+#define cerr std::cerr    // !TODO: jspoh for submission
 #else
 #define cout nullstream
+#define cerr nullstream
 #endif
 
 #endif //PCH_H

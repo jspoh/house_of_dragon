@@ -250,7 +250,7 @@ namespace {
 								cout << "Player recovered " << healthInc << " health and was granted " << dmgMul << "x damage multiplier\n";
 
 								if (player->inventory[lower(bv)] <= 0) {
-									std::cerr << "Player just ate something that he does not have!\n";
+									cerr << "Player just ate something that he does not have!\n";
 									throw std::exception();
 								}
 

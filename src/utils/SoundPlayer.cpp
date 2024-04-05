@@ -203,7 +203,7 @@ void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
 	}
 
 	if (availSounds == 0) {
-		std::cerr << "Combat animal sound for " << animal << " does not exist!\n";
+		cerr << "Combat animal sound for " << animal << " does not exist!\n";
 		throw std::exception();
 	}
 
