@@ -136,6 +136,7 @@ std::vector<std::string> split(const std::string& str, const char sep);
 void initGlobals();
 void updateGlobals();
 
+std::string lower(const std::string& text);
 std::string upper(const std::string& text);
 
 // load all textures
