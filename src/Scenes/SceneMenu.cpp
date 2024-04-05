@@ -58,6 +58,8 @@ void SceneMenu::Load()
     myMenu.button[3] = "howtoplay";
     myMenu.button[4] = "quit";
     myMenu.back = "back";
+    myMenu.confirm = "confirm";
+
 
     // Level selection buttons
     myMenu.buttonSelect[0] = "level1";
@@ -78,6 +80,7 @@ void SceneMenu::Load()
     RenderHelper::getInstance()->registerTexture("aetting", "Assets/Menu/buttons/settings.png");
     RenderHelper::getInstance()->registerTexture("howtoplay", "Assets/Menu/buttons/howtoplay.png");
     RenderHelper::getInstance()->registerTexture("quit", "Assets/Menu/buttons/exits.png");
+    RenderHelper::getInstance()->registerTexture("confirm", "Assets/Menu/buttons/confirm.png");
 
 
     RenderHelper::getInstance()->registerTexture("level1", "Assets/Menu/level1.png");
@@ -100,9 +103,8 @@ void SceneMenu::Load()
  */
 void SceneMenu::Init()
 {
-    myMenu.cameraX = 0.0f;
-    myMenu.cameraY = 0.0f;
-    myMenu.cameraSpeed = 200.0f; // Adjust the camera speed as needed
+    myMenu.quitConfirm = false;
+    myMenu.quitConfirmTimer = 0.0f;
 
     myMenu.buttonWidth = 300.0f; 
     myMenu.buttonHeight = 230.0f; 
@@ -219,14 +221,36 @@ void SceneMenu::Update(double dt)
                         SceneManager::GetInstance()->SetActiveScene("HowToPlay");
                         break;
                     case 4:
-                        gGameRunning = false;
+                        if (!myMenu.quitConfirm)
+                        {
+                            myMenu.quitConfirm = true;
+                            myMenu.quitConfirmTimer = 0.0f;
+                        }
+                        else
+                        {
+                            gGameRunning = false;
+                        }
                         break;
 
                     }
                 }
             }
         }
+
+
+
+
+        if (myMenu.quitConfirm)
+        {
+			myMenu.quitConfirmTimer += static_cast<float>(dt);
+            if (myMenu.quitConfirmTimer >= 5.0f)
+            {
+				myMenu.quitConfirm = false;
+			}
+		}
     }
+
+
     else
     {
   
@@ -349,9 +373,16 @@ void SceneMenu::Render()
     // Render the menu buttons
     for (int i = 4; i >= 0; --i)
     {
-        RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth * myMenu.buttonScale[i], myMenu.buttonHeight * myMenu.buttonScale[i]);
+        if (i == 4 && myMenu.quitConfirm)
+        {
+            RenderHelper::getInstance()->texture(myMenu.confirm, myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth * myMenu.buttonScale[i], myMenu.buttonHeight * myMenu.buttonScale[i]);
+        }
+        else
+        {
+            RenderHelper::getInstance()->texture(myMenu.button[i], myMenu.buttonX[i], myMenu.buttonY[i], myMenu.buttonWidth * myMenu.buttonScale[i], myMenu.buttonHeight * myMenu.buttonScale[i]);
+        }
 
-        if (myMenu.hovering[i])
+        if (myMenu.hovering[i] && !myMenu.quitConfirm)
         {
             RenderHelper::getInstance()->texture(myMenu.pointer, myMenu.buttonX[i] - myMenu.buttonWidth / 2.0f - 30.0f, myMenu.buttonY[i], 40, 40);
         }
@@ -377,6 +408,9 @@ void SceneMenu::Render()
             RenderHelper::getInstance()->texture(myMenu.pointer, myMenu.backButtonX - myMenu.backButtonWidth / 2.0f - 30.0f, myMenu.backButtonY, 40, 40);
         }*/
     }
+
+
+
 
     ParticleManager::GetInstance()->render();
 
