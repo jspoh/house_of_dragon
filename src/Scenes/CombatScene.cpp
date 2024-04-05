@@ -289,7 +289,12 @@ namespace {
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
 			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag) {
-				if (!(itemUsedSinceLastAttack && bv == "ITEMS")) {
+				if (
+					!(itemUsedSinceLastAttack && bv == "ITEMS")
+					||
+					!(currentState == ACTION_BTNS::ITEMS && lower(bv) != lower("back") && player->inventory[lower(bv)] == 0)
+					)
+				{
 					RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y, btnWidth, btnHeight + btnWordPadding * 2);
 				}
 				else {
@@ -869,6 +874,8 @@ void CombatScene::Update(double dt)
 
 	}
 }
+
+
 void CombatScene::Render()
 {
 	// dont render if no longer in combat
