@@ -77,15 +77,15 @@
   "items": {
     "bacon": {
       "texturePath": "./Assets/Combat_Items/bacon.png",
-      "healthEffect": 0,
+      "healthEffect": 20,
       "dmgMultiplier": 1.15,
-      "description": "Increases attack damage"
+      "description": "Increases attack damage by a small amount and also recovers 20 health"
     },
     "beef": {
       "texturePath": "./Assets/Combat_Items/beef.png",
-      "healthEffect": 20,
+      "healthEffect": 40,
       "dmgMultiplier": 1,
-      "description": "Recovers 20 health"
+      "description": "Recovers 40 health"
     },
     "chicken": {
       "texturePath": "./Assets/Combat_Items/chicken.png",

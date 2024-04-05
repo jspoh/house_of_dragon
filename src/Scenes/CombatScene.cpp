@@ -232,23 +232,22 @@ namespace {
 							// only allow player to consume food if they have it
 							if (player->inventory[lower(bv)] > 0)
 							{
+								float healthInc = static_cast<float>(Database::getInstance().data["items"][lower(bv)]["healthEffect"]);
+								float dmgMul = static_cast<float>(Database::getInstance().data["items"][lower(bv)]["dmgMultiplier"]);
 								if (bv == "BACON") {
-									int attackChange = rand() % 5 + 1; // Random value between 1-5
-									player->healthGain(static_cast<float>(attackChange));
+									player->healthGain(healthInc);
+									player->setNextAttackDmgMul(dmgMul);
 								}
 								else if (bv == "CHICKEN") {
-									int healthChange = -rand() % 11 - 5; // Random value between -15 and -5
-									player->healthGain(static_cast<float>(healthChange));
+									player->healthGain(healthInc);
+									player->setNextAttackDmgMul(dmgMul);
 								}
 								else if (bv == "BEEF") {
-									int healthChange = -rand() % 11 - 10; // Random value between -20 and -10
-									player->healthGain(static_cast<float>(healthChange));
-								}
-								else if (bv == "CAT") {
-									int healthChange = rand() % 11 + 10; // Random value between 10 and 20
-									player->healthGain(static_cast<float>(healthChange));
+									player->healthGain(healthInc);
+									player->setNextAttackDmgMul(dmgMul);
 								}
 								cout << bv << " eaten\n";
+								cout << "Player recovered " << healthInc << " health and was granted " << dmgMul << "x damage multiplier\n";
 
 								if (player->inventory[lower(bv)] <= 0) {
 									std::cerr << "Player just ate something that he does not have!\n";
@@ -1109,6 +1108,7 @@ void CombatScene::cleanup() {
 	// Clear the vector after deleting the enemies
 	//delete player;
 	//player = nullptr;
+	itemUsedSinceLastAttack = false;
 }
 
 void CombatScene::Exit()

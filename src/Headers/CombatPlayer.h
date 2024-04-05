@@ -75,6 +75,10 @@ private:
 
 	static constexpr float levelHealthIncPercentage = 0.1f;
 
+	// dmgMul is used when player consumes an item that grants a damage boost
+	static constexpr float DEFAULT_DMG_MUL = 1;
+	float dmgMul = DEFAULT_DMG_MUL;
+
 public:
 	enum class HandAnimationType {
 		None,
@@ -113,6 +117,17 @@ public:
 	 * \return damage dealt
 	 */
 	void healthGain(float healthIncrease);
+
+	/**
+	 * set next attack's damage multiplier.
+	 * to be used when player consumes an item
+	 * 
+	 * damage multiplier will not stick through different
+	 * combats!
+	 * 
+	 * \param mul
+	 */
+	void setNextAttackDmgMul(float mul);
 
 	float attack(Mob& target, Element attackEl, float qtMultiplier);
 

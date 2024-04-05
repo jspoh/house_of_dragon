@@ -223,8 +223,14 @@ void Player::render() {
 void Player::renderHealth(double x, double y ) {
 	this->_drawHealth(static_cast<float>(x), static_cast<float>(y));
 }
+
+void Player::setNextAttackDmgMul(float mul) {
+	dmgMul = mul;
+}
+
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
+	// !TODO: kuek what is this for ah? -js
 	if (this->attackMultiplerTurn > 0) {
 		if (attackMultiplerTurnStart >= this->attackMultiplerTurn) {
 			//item finished its usage
@@ -243,21 +249,24 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
 
 	DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
-	float multiplier = 1;
+	float elementMul = 1;
 	cout << "attackEl enum: " << attackEl << "\n";
 	cout << "targetEl enum: " << target.element << "\n";
 	cout << "Damage multiplier enum: " << dm << "\n";
 	switch (dm) {
 	case Weak:
-		multiplier = 0.5;
+		elementMul = 0.5;
 		break;
 	case Strong:
-		multiplier = 2;
+		elementMul = 2;
 		break;
 	}
 
-	float damage = this->dmg * multiplier * qtMultiplier;
+	const float effectiveDmgMul = elementMul * qtMultiplier * dmgMul;
+	const float damage = this->dmg * effectiveDmgMul;
+	dmgMul = DEFAULT_DMG_MUL;
 	target.health -= damage;
+	cout << "Attacking enemy with a total dmg multiplier of " << effectiveDmgMul << " (not inclusive of difficulty)\n";
 	return damage;
 }
 
