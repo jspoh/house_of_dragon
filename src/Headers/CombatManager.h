@@ -46,6 +46,7 @@ public:
 	Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
 
 	bool isPlayingEvent = false;
+	bool playerFledLastFight = false;		// used to implement progression penalty if player flees from a fight
 
 	Enemy* selectedEnemy = nullptr;
 

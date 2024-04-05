@@ -29,6 +29,8 @@ bool GameScene::afterInit = false;
 
 namespace {
 	double LerpSpeed = 10.0;
+	constexpr double FLEEING_COMPLETION_PENALTY = 20.0;		// percentage penatly for completion status when fleeing fight [0,100]
+
 	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance().data["player"]["baseHealth"]);
 	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance().data["player"]["baseDamage"]);
 
@@ -498,6 +500,12 @@ void SceneLevelBuilder::Update(double dt)
 			}
 
 			if (!showGameEnd) {
+				if (CombatManager::getInstance().playerFledLastFight) {
+					CombatManager::getInstance().playerFledLastFight = false;		// reset flag
+					m_CompletionStatus -= FLEEING_COMPLETION_PENALTY;		// penalize player for fleeing fight
+					m_CompletionStatus = m_CompletionStatus < 0 ? 0 : m_CompletionStatus;
+				}
+
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
 
 				

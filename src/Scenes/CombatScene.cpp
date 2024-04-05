@@ -226,6 +226,7 @@ namespace {
 							CombatScene::getInstance().cleanup();
 							currentState = ACTION_BTNS::MAIN;
 							CombatManager::getInstance().end();
+							CombatManager::getInstance().playerFledLastFight = true;
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
 							// only allow player to consume food if they have it
@@ -894,7 +895,7 @@ void CombatScene::Update(double dt)
 		else if (winFlag && winButtonFlag) {
 			cout << "Transition to next level\n";
 			CombatManager::getInstance().end();
-
+			CombatManager::getInstance().playerFledLastFight = false;
 		}
 	}
 
