@@ -39,8 +39,8 @@ namespace {
 	bool extraflagtest;
 	bool deadfinalflag;
 	bool winFlag;
-	const float slideAnimationDuration = 1.f;
-	float dialogueMaxTime = 1.2f;
+	constexpr float slideAnimationDuration = 1.f;
+	constexpr float dialogueMaxTime = 1.2f;
 	float dialougeTime;
 	float winTime;
 	float itemTime;
@@ -93,7 +93,7 @@ namespace {
 	float btnDecreaseY;
 	float btnIncreaseY;
 	float btnDecreaseStart = -170.f;
-	float btnFinalY = 170.f;
+	constexpr float btnFinalY = 170.f;
 
 
 	enemiesGroup groups;
@@ -147,20 +147,21 @@ namespace {
 		{"BACON", "BEEF", "CHICKEN", "BACK"},  // items
 		{"YES", "NO"},  // confirmation. only used for flee option
 	};
-	float padding = 50.f;
-	float spacing = 50.f;
+	constexpr float padding = 50.f;
+	constexpr float spacing = 50.f;
 
 
-	float btnY = 550;
-	float maxBtnHeight = 100.f;
+	constexpr float btnY = 550;
+	constexpr float maxBtnHeight = 100.f;
 
 	std::vector<GameObject_Projectiles*> projectiles;
+
+
 
 	void resetDialogue() {
 		dialougeTime = 0;
 		dialogueState = DIALOGUE::NONE;
 	}
-
 
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
@@ -264,65 +265,6 @@ namespace {
 		}
 	}
 
-	void updateDeathBtns() {
-		//main menu
-		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				SceneManager::GetInstance()->SetActiveScene("SceneMenu");
-			}
-		}
-		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				//needs to reset combat scene
-				cout << "does it work" << "\n";
-			}
-		}
-	}
-	void renderDeathBtns() {
-		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
-		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
-
-
-		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
-		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
-
-
-
-
-	}
-
-	void updateWinBtns() {
-		//main menu
-		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				SceneManager::GetInstance()->SetActiveScene("SceneMenu");
-			}
-		}
-		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
-			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				//needs to reset combat scene
-				cout << "does it work" << "\n";
-			}
-		}
-	}
-	void renderWinBtns() {
-		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
-		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
-
-
-		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
-		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
-		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
-
-
-
-
-	}
-
-
 	void renderBtns(std::vector<std::string> bvalues) {
 
 
@@ -368,29 +310,53 @@ namespace {
 
 }
 
+	void updateDeathBtns() {
+		//main menu
+		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+			}
+		}
+		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
+			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
+				//needs to reset combat scene
+				cout << "does it work" << "\n";
+			}
+		}
+	}
+	void renderDeathBtns() {
+		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
+		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
+
+
+		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
+		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+
+
+
+
+	}
+
+
+
+
+	
+
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
 	itemdrops = { 0,0,0 };
 	
-	float Enemypadding = 50.0f;
-	float texSize = 60.f;
-	float newspacing = 225.f;
+	constexpr float Enemypadding = 50.0f;
+	constexpr float texSize = 60.f;
+	constexpr float newspacing = 225.f;
 	int sz = static_cast<int>(enemyRefs.size()); // number of enemies;
 	for (int i = 0; i < sz; i++) {
 		int item = rand() % 3;
 		itemdrops[item]++;
 	}
-	//for (const auto& str : enemyRefs) {
-	//	// Check if the string is already in the map
-	//	if (itemCounts.find(str) != itemCounts.end()) {
-	//		// Increment the count
-	//		itemCounts[str]++;
-	//	}
-	//	else {
-	//		// If not found, add it to the map with count as 1
-	//		itemCounts[str] = 1;
-	//	}
-	//}
+
 	groups.coordinates.resize(sz); // setting the coordinates
 	groups.enemies.resize(sz); // setting up the checking of enemies
 	groups.activeEnemy.resize(sz);
@@ -441,9 +407,11 @@ CombatScene& CombatScene::getInstance() {
 void CombatScene::Load()
 {
 	Event::getInstance();
-	//healthbar load
+	// enemy selection border
 	RenderHelper::getInstance()->registerTexture("border", "./Assets/Combat_Items/Combat/border.png");
 	RenderHelper::getInstance()->registerTexture("panel", "./Assets/Combat_Items/Combat/panel.png");
+
+	//healthbar load
 	RenderHelper::getInstance()->registerTexture("greenbar1", "./Assets/Health/green/start.png");
 	RenderHelper::getInstance()->registerTexture("greenbar2", "./Assets/Health/green/end.png");
 	RenderHelper::getInstance()->registerTexture("greenbar3", "./Assets/Health/green/bar.png");
@@ -456,19 +424,35 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("bar1", "./Assets/Health/start.png");
 	RenderHelper::getInstance()->registerTexture("bar2", "./Assets/Health/end.png");
 	RenderHelper::getInstance()->registerTexture("bar3", "./Assets/Health/bar.png");
-	RenderHelper::getInstance()->registerTexture("cat", "./Assets/Combat_Enemy/cat.png");
+
+	//enemy load
 	RenderHelper::getInstance()->registerTexture("horse", "./Assets/Combat_Enemy/horse.png");
 	RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.png");
+	RenderHelper::getInstance()->registerTexture("goat", "./Assets/Combat_Enemy/goat.png");
+	RenderHelper::getInstance()->registerTexture("monkey", "./Assets/Combat_Enemy/monkey.png");
+	RenderHelper::getInstance()->registerTexture("chicken", "./Assets/Combat_Enemy/chicken.png");
+	RenderHelper::getInstance()->registerTexture("bull", "./Assets/Combat_Enemy/bull.png");
+	RenderHelper::getInstance()->registerTexture("pig", "./Assets/Combat_Enemy/pig.png");
+	RenderHelper::getInstance()->registerTexture("snake", "./Assets/Combat_Enemy/snake.png");
+	RenderHelper::getInstance()->registerTexture("rabbit", "./Assets/Combat_Enemy/rabbit.png");
+
+
+
+
+
+	// textures for when player is dead load
 	RenderHelper::getInstance()->registerTexture("playerdead", "./Assets/Combat_UI/playerdeadscreen.png");
 	RenderHelper::getInstance()->registerTexture("button", "./Assets/Combat_UI/Button.png");
 	RenderHelper::getInstance()->registerTexture("respawn", "./Assets/Combat_UI/respawn.png");
 	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
+
+	// textures for when player wins the combat load
 	RenderHelper::getInstance()->registerTexture("victory", "./Assets/Combat_UI/victory.png");
-	//RenderHelper::getInstance()->registerTexture("blockwait1", "./Assets/Combat_UI/waitingForBlock1.png");
-	//RenderHelper::getInstance()->registerTexture("blockwait2", "./Assets/Combat_UI/waitingForBlock2.png");
 	RenderHelper::getInstance()->registerTexture("blockwait3", "./Assets/Combat_UI/waitingForBlock3.png");
 	RenderHelper::getInstance()->registerTexture("blockNow", "./Assets/Combat_UI/BlockHappens.png");
 	RenderHelper::getInstance()->registerTexture("nian", "./Assets/Combat_UI/nian.png");
+
+	//player fist load
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_01", "Assets/Combat_UI/MyFist_Left_1.png");
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_02", "Assets/Combat_UI/MyFist_Left_2.png");
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Left_03", "Assets/Combat_UI/MyFist_Left_3.png");
@@ -477,35 +461,52 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_02", "Assets/Combat_UI/MyFist_Right_2.png");
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_03", "Assets/Combat_UI/MyFist_Right_3.png");
 	RenderHelper::getInstance()->registerTexture("Player_Fist_Right_04", "Assets/Combat_UI/MyFist_Right_4.png");
+
+	//event text load
 	RenderHelper::getInstance()->registerTexture("spamE", "./Assets/Combat_UI/spamE.png");
 	RenderHelper::getInstance()->registerTexture("timer", "./Assets/Combat_UI/timer.png");
 	RenderHelper::getInstance()->registerTexture("multiClick", "./Assets/Combat_UI/multiClick.png");
 	RenderHelper::getInstance()->registerTexture("orangeThrowing", "./Assets/Combat_UI/orangeThrowing.png");
+
+	// blocking text load
 	RenderHelper::getInstance()->registerTexture("blockTime", "./Assets/Combat_UI/blockTime.png");
+
+	//element ball load
 	RenderHelper::getInstance()->registerTexture("fire", "./Assets/Combat_UI/fire.png");
 	RenderHelper::getInstance()->registerTexture("water", "./Assets/Combat_UI/water.png");
 	RenderHelper::getInstance()->registerTexture("earth", "./Assets/Combat_UI/earth.png");
 	RenderHelper::getInstance()->registerTexture("metal", "./Assets/Combat_UI/metal.png");
 	RenderHelper::getInstance()->registerTexture("wood", "./Assets/Combat_UI/wood.png");
+
+	// enemies name load
 	RenderHelper::getInstance()->registerTexture("pigname", "./Assets/Combat_UI/pig.png");
 	RenderHelper::getInstance()->registerTexture("goatname", "./Assets/Combat_UI/goat.png");
 	RenderHelper::getInstance()->registerTexture("dragonname", "./Assets/Combat_UI/dragon.png");
 	RenderHelper::getInstance()->registerTexture("cowname", "./Assets/Combat_UI/cow.png");
 	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
 	RenderHelper::getInstance()->registerTexture("snakename", "./Assets/Combat_UI/snake.png");
+
+	//enemy panel  for information load 
 	RenderHelper::getInstance()->registerTexture("enemyPanel", "./Assets/Combat_UI/enemyPanel.png");
+
+	//item load
 	RenderHelper::getInstance()->registerTexture("chicken", "./Assets/Combat_UI/chicken.png");
 	RenderHelper::getInstance()->registerTexture("beef", "./Assets/Combat_UI/beef.png");
 	RenderHelper::getInstance()->registerTexture("bacon", "./Assets/Combat_UI/bacon.png");
-	RenderHelper::getInstance()->registerTexture("winbutton", "./Assets/Combat_UI/winbutton.png");
-	RenderHelper::getInstance()->registerTexture("itemdrop", "./Assets/Combat_UI/itemdrop.png");
 
+	// number of items load
 	RenderHelper::getInstance()->registerTexture("0item", "./Assets/Combat_UI/0item.png");
 	RenderHelper::getInstance()->registerTexture("1item", "./Assets/Combat_UI/1item.png");
 	RenderHelper::getInstance()->registerTexture("2item", "./Assets/Combat_UI/2item.png");
 	RenderHelper::getInstance()->registerTexture("3item", "./Assets/Combat_UI/3item.png");
 	RenderHelper::getInstance()->registerTexture("4item", "./Assets/Combat_UI/4item.png");
 	RenderHelper::getInstance()->registerTexture("5item", "./Assets/Combat_UI/5item.png");
+
+	// victory panel load
+	RenderHelper::getInstance()->registerTexture("winbutton", "./Assets/Combat_UI/winbutton.png");
+	RenderHelper::getInstance()->registerTexture("itemdrop", "./Assets/Combat_UI/itemdrop.png");
+
+	// incoming attack load
 	RenderHelper::getInstance()->registerTexture("incomingAttack", "./Assets/Combat_UI/incomingAttack.png");
 
 
@@ -529,51 +530,62 @@ void CombatScene::Load()
 
 void CombatScene::Init(CombatManager::TURN startingTurn)
 {
-	/*Event::getInstance()->setActiveEvent(EVENT_TYPES::SPAM_KEY);*/  // for testing only
-	//player init
+
+	//win variables
 	winFlag = false;
 	winTime = 0.f;
+	winTime = 0.0f;
+	winButtonFlag = false;
+
+
+	// dialogue variables
+	dialougeTime = 0.f;
 	dialogueState = DIALOGUE::NONE;
 	wpos = stow(static_cast<float>(AEGfxGetWindowWidth()) / 2, static_cast<float>(AEGfxGetWindowHeight()) / 2);
+
+	//playerdeath variables
 	playerAlive = true;
 	extraflagtest = true;
 	deadfinalflag = false;
+	deathBtnWidthEnd = 300.f;
+	deathbtnHeightEnd = 150.f;
+	deathBtnRespawnPoint.x = AEGfxGetWindowWidth() / 2 - deathBtnWidthEnd / 2 - 50.f;
+	deathBtnMenuPoint.x = AEGfxGetWindowWidth() / 2 + deathBtnWidthEnd / 2 + 50.f;
+	deathBtnRespawnPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
+	deathBtnMenuPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
+	// current values
+	currScaleDead.x = initalScaleDead.x;
+	currScaleDead.y = initalScaleDead.y;
+
+	//panel variables
 	panelflag = true;
 	panelpos.x = 0; // constant value
 	panelpos.y = -AEGfxGetWindowHeight() / 1.7f; // starting posY for the panel
 	startingPanelY = panelpos.y;
 	panelfinalY = -AEGfxGetWindowHeight() / 2.9f;
 	currentTime = 0;
+
+	// lerping variables for the panel
 	initalScaleDead.x = 250;
 	FinalScaleDead.x = 500;
 	initalScaleDead.y = 50;
 	FinalScaleDead.y = 100;
 
-	dialougeTime = 0.f;
-	winTime = 0.0f;
-	winButtonFlag = false;
-	itemTime = 0.f;
+	//time based variables
 
+	//item variables 
+	itemTime = 0.f;
 	ItemPanel.x = wpos.x;
 	ItemPanel.y = wpos.y;
 	itemPanelY = wpos.y + 150.f;
 	itemPadding = 20.f;
 
+	// blocking variables
 	blockingRenderTime = 0.f;
 	blockNow = false;
 	enemyattackedRenderTime = 0.f;
 
-	deathBtnWidthEnd = 300.f;
-	deathbtnHeightEnd = 150.f;
-
-	deathBtnRespawnPoint.x = AEGfxGetWindowWidth() / 2 - deathBtnWidthEnd / 2 - 50.f;
-	deathBtnMenuPoint.x = AEGfxGetWindowWidth() / 2 + deathBtnWidthEnd / 2 + 50.f;
-	deathBtnRespawnPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
-	deathBtnMenuPoint.y = static_cast<float> (AEGfxGetWindowHeight()) / 2 + 120;
-
-	currScaleDead.x = initalScaleDead.x;
-	currScaleDead.y = initalScaleDead.y;
-
+	// btn variables
 	btnWordPadding = 20.f;
 	btnDecreaseY = 0.f;
 
@@ -612,19 +624,18 @@ void CombatScene::Update(double dt)
 		projectiles.erase(projectiles.begin() + i);
 	}
 
+	//reset dialogue state after enough time pass
 	if (dialogueState != DIALOGUE::NONE) {
 		if (dialougeTime < dialogueMaxTime) {
 			dialougeTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
 		}
 		else if (dialougeTime >= dialogueMaxTime) {
 			resetDialogue();
+			dialougeTime = 0.f;
 		}
-	}
 
-	for (Enemy* enemy : groups.enemies) { // check for dead/alive
-		if (enemy->isDead()) {
-			RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
-		}
+
+		//checking for player death and updating playerAlive flag
 		if (player->isDead()) {
 			//Set player to dead
 			if (playerAlive) {
@@ -633,271 +644,245 @@ void CombatScene::Update(double dt)
 			}
 
 		}
-	}
 
-	if (!playerAlive) {
-		if (extraflagtest == true) {
-			extraflagtest = false;
-			panelflag = true;
-			currentTime = 0.0f; // Reset the time for sliding animation
+		// player death flag set 
+		if (!playerAlive) {
+			if (extraflagtest == true) {
+				extraflagtest = false;
+				panelflag = true;
+				currentTime = 0.0f; // Reset the time for sliding animation
+			}
 		}
-	}
-	if (!playerAlive) {
-		updateDeathBtns();
-	}
-	if (winFlag && itemTime > slideAnimationDuration) {
-		if (AEInputCheckTriggered(AEVK_SPACE)) {
-			winButtonFlag = true;
+		// updating the death buttons for lerping 
+		if (!playerAlive) {
+			updateDeathBtns();
 		}
-	}
-	
-		//	// kill all enemies
-		//	for (const Enemy* e : groups.enemies) {
-		//		delete e;
-		//	}
-
-		//	groups.enemies.clear();
-		//	
-		//	CombatManager::getInstance().end();
-		//	delete player;
-		//	player = nullptr;
-		//	return;
-		//}
-		//updating panel 
 
 		AEGfxGetCamPosition(&camX, &camY);
 
-	//death lerp
-	if ((!playerAlive && currentTime < slideAnimationDuration)) {
-		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
-		float t = percenttime;
-		if (t > slideAnimationDuration) {
-			t = slideAnimationDuration;
+		//death lerp
+		if ((!playerAlive && currentTime < slideAnimationDuration)) {
+			currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
+			float t = percenttime;
+			if (t > slideAnimationDuration) {
+				t = slideAnimationDuration;
+			}
+			currScaleDead.x = lerp(initalScaleDead.x, FinalScaleDead.x, t);
+			currScaleDead.y = lerp(initalScaleDead.y, FinalScaleDead.y, t);
+			btnDecreaseY = lerp(0, btnFinalY, t);
+
+			panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
 		}
-		currScaleDead.x = lerp(initalScaleDead.x, FinalScaleDead.x, t);
-		currScaleDead.y = lerp(initalScaleDead.y, FinalScaleDead.y, t);
-		btnDecreaseY = lerp(0, btnFinalY, t);
-
-		panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
-	}
-	else if (!playerAlive && currentTime >= slideAnimationDuration) {
-		deadfinalflag = true; // Reset panel flag when animation is complete
-	}
-	else {
-		deadfinalflag = false;
-	}
-
-	//win lerp
-	if ((winFlag && winTime < slideAnimationDuration)) {
-		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		float percenttime = static_cast<float>(winTime / slideAnimationDuration);
-		float t = percenttime;
-		if (t > slideAnimationDuration) {
-			t = slideAnimationDuration;
+		else if (!playerAlive && currentTime >= slideAnimationDuration) {
+			deadfinalflag = true; // Reset panel flag when animation is complete
 		}
-		currScaleDead.x = lerp(initalScaleDead.x, FinalScaleDead.x, t);
-		currScaleDead.y = lerp(initalScaleDead.y, FinalScaleDead.y, t);
-		btnDecreaseY = lerp(0, btnFinalY, t);
-
-		panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
-	}
-	if (winFlag && itemTime < slideAnimationDuration && slideAnimationDuration + 0.25f < winTime) {
-		itemTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		float percenttime = static_cast<float>(itemTime / slideAnimationDuration);
-		float t = percenttime;
-		if (t > slideAnimationDuration) {
-			t = slideAnimationDuration;
+		else {
+			deadfinalflag = false;
 		}
-		ItemPanel.y = lerp(wpos.y, itemPanelY, t);
 
-	}
+		//win lerp
+		if ((winFlag && winTime < slideAnimationDuration)) {
+			winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			float percenttime = static_cast<float>(winTime / slideAnimationDuration);
+			float t = percenttime;
+			if (t > slideAnimationDuration) {
+				t = slideAnimationDuration;
+			}
+			currScaleDead.x = lerp(initalScaleDead.x, FinalScaleDead.x, t);
+			currScaleDead.y = lerp(initalScaleDead.y, FinalScaleDead.y, t);
+			btnDecreaseY = lerp(0, btnFinalY, t);
 
-
-	//ini lerp
-	if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
-		currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
-		float t = percenttime;
-		if (t > slideAnimationDuration) {
-			t = slideAnimationDuration;
+			panelpos.y = lerp(panelfinalY, startingPanelY, t); // Reverse direction for sliding down
 		}
-		panelpos.y = lerp(-AEGfxGetWindowHeight() / 1.7f, panelfinalY, t);
-		btnIncreaseY = lerp(btnDecreaseStart, 0, t);
-	}
-	else if (playerAlive) {
-		panelflag = false;
-	}
+		if (winFlag && itemTime < slideAnimationDuration && slideAnimationDuration + 0.25f < winTime) {
+			itemTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			float percenttime = static_cast<float>(itemTime / slideAnimationDuration);
+			float t = percenttime;
+			if (t > slideAnimationDuration) {
+				t = slideAnimationDuration;
+			}
+			ItemPanel.y = lerp(wpos.y, itemPanelY, t);
 
-	//player->update(dt);		// moved to level builder
+		}
 
-	//if (AEInputCheckTriggered(AEVK_RBUTTON)) {
-	//	selectflag = true;
-	//	SelectEnemy = groups.enemies[0];
-	//}
-	combatEventResult = Event::getInstance()->getActiveEvent();
+		//ini lerp
+		if (playerAlive && currentTime < slideAnimationDuration) { // should include this in render.cpp instead
+			currentTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			float percenttime = static_cast<float>(currentTime / slideAnimationDuration);
+			float t = percenttime;
+			if (t > slideAnimationDuration) {
+				t = slideAnimationDuration;
+			}
+			panelpos.y = lerp(-AEGfxGetWindowHeight() / 1.7f, panelfinalY, t);
+			btnIncreaseY = lerp(btnDecreaseStart, 0, t);
+		}
+		else if (playerAlive) {
+			panelflag = false;
+		}
 
-	// select enemy
-	if (!CombatManager::getInstance().isPlayingEvent) {
-		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
-		for (Enemy* e : groups.enemies) {
-			e->update(dt);
+		combatEventResult = Event::getInstance()->getActiveEvent();
 
-			if (e->isSelected) {
-				// deselect all other enemies
-				CombatManager::getInstance().selectedEnemy = e;
+		// select enemy
+		if (!CombatManager::getInstance().isPlayingEvent) {
+			//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
+			for (Enemy* e : groups.enemies) {
+				e->update(dt);
 
-				for (Enemy* e2 : groups.enemies) {
-					if (e != e2) {
-						e2->isSelected = false;
+				if (e->isSelected) {
+					// deselect all other enemies
+					CombatManager::getInstance().selectedEnemy = e;
+
+					for (Enemy* e2 : groups.enemies) {
+						if (e != e2) {
+							e2->isSelected = false;
+						}
+					}
+				}
+				else {
+					if (CombatManager::getInstance().selectedEnemy == e) {
+						// enemy deselected
+						CombatManager::getInstance().selectedEnemy = nullptr;
 					}
 				}
 			}
-			else {
-				if (CombatManager::getInstance().selectedEnemy == e) {
-					// enemy deselected
-					CombatManager::getInstance().selectedEnemy = nullptr;
+		}
+
+
+		AEVec2 p = stow(100, 100);
+		Event::getInstance()->update(CombatManager::getInstance().qtEventResult, dt);
+
+
+
+		// if player has finished quicktime event
+		if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
+			// end player's turn
+			CombatManager::getInstance().selectedEnemy->enemyAttacked();
+			CombatManager::getInstance().next();
+			enemyattackedRenderTime = 0.f;
+
+			//dialogueState = DIALOGUE::PLAYER_ATTACK;
+
+			cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
+			CombatManager::getInstance().isPlayingEvent = false;
+			CombatManager::getInstance().selectedEnemy->enemyAttacked();
+			/*check if success or failure and modify damage accordingly*/
+			switch (CombatManager::getInstance().qtEventResult) {
+			case EVENT_RESULTS::SUCCESS:
+				cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
+
+				break;
+			case EVENT_RESULTS::FAILURE:
+				cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
+
+				break;
+			case EVENT_RESULTS::CUSTOM_MULTIPLIER:
+				cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
+				player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
+
+				break;
+			}
+			SoundPlayer::CombatAudio::getInstance().playSfxAnimal(CombatManager::getInstance().selectedEnemy->getTextureRef());
+			CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
+
+			// reset states
+			CombatManager::getInstance().selectedEnemy = nullptr;
+			for (Enemy* e : groups.enemies) {
+				e->isSelected = false;
+			}
+			CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
+			currentState = ACTION_BTNS::MAIN;
+			itemUsedSinceLastAttack = false; // Reset the flag after each attack
+
+			//}
+		}
+
+		// when is player turn and player is not playing a quicktime event
+		if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
+			updateBtns(btns[currentState]);  // render player action buttons
+			blockNow = false;
+		}
+		else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && groups.enemies.size()) {
+			//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
+			CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
+			if (CombatManager::getInstance().enemyNextTurnMs < CombatManager::PLAYER_BLOCKING_REACTION_ALLOWANCE_MS) {
+				blockNow = true;
+			}
+			if (CombatManager::getInstance().enemyNextTurnMs < 0) {
+				blockingRenderTime = 0.f; //reset the rendering time
+				SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
+
+				// fire projectile at player
+
+				//blockNow = false;
+				//Util_Camera_Shake(0.5, 100);
+				player->playerAttacked();
+				dialogueState = DIALOGUE::ENEMY_ATTACK;
+				float multiplier = 1.f;
+				switch (player->blockingState) {
+				case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
+				case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
+					multiplier = 1.f;
+					cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
+					break;
+				case PLAYER_BLOCKING_STATES::ON_ENTER:
+				case PLAYER_BLOCKING_STATES::ON_EXIT:
+					multiplier = 0.5f;
+					cout << "Attack not fully blocked by player, receiving " << multiplier << " damage multiplier against player\n";
+					break;
+				case PLAYER_BLOCKING_STATES::ON_UPDATE:
+					multiplier = 0.3f;
+					cout << "Attack blocked by player, receiving " << multiplier << " damage multiplier against player\n";
+					break;
+				}
+
+				// enemy to attack player if there are still enemies left
+				if (groups.enemies.size()) {
+					int randEnemyIndex = rand() % groups.enemies.size();
+					cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
+
+					Enemy* e = groups.enemies[randEnemyIndex];
+
+					SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
+					e->attack(*player, multiplier);  // Example: All enemies attack the player
+					CombatManager::getInstance().next();
+
+					GameObject_Projectiles* np = Create::Projectiles();
+					//cout << "Projectile pos: " << e->getWorldPos().x << ", " << e->getWorldPos().y << "\n";
+					projectiles.push_back(np);
+					np->FireAtPlayer(e->getWorldPos(), e->getSize(), static_cast<GameObject_Projectiles::ProjectileType>(rand() % GameObject_Projectiles::ProjectileType::NUM_PROJECTILE_TYPES));
 				}
 			}
+
 		}
-	}
+		else if (groups.enemies.size() == 0) {
+			CombatManager::getInstance().turn = CombatManager::TURN::NONE_TURN;
 
+			winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+			if (!winFlag) {
+				dialogueState = DIALOGUE::WIN;
+				winFlag = true;
 
-	AEVec2 p = stow(100, 100);
-	Event::getInstance()->update(CombatManager::getInstance().qtEventResult, dt);
-
-
-
-	// if player has finished quicktime event
-	if (CombatManager::getInstance().qtEventResult != NONE_EVENT_RESULTS) {
-		// end player's turn
-		CombatManager::getInstance().selectedEnemy->enemyAttacked();
-
-		// before ending, should have a second to display dialogue;
-	/*	if (enemyattackedRenderTime < slideAnimationDuration) {
-			CombatManager::getInstance().selectedEnemy->enemyAttacked();
-			dialogueState = DIALOGUE::ENEMY_ATTACK;
-			enemyattackedRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		}
-		else {*/
-		CombatManager::getInstance().next();
-		enemyattackedRenderTime = 0.f;
-
-		//dialogueState = DIALOGUE::PLAYER_ATTACK;
-
-		cout << "Enemy next turn in " << CombatManager::getInstance().enemyNextTurnMs << "ms\n";
-		CombatManager::getInstance().isPlayingEvent = false;
-		CombatManager::getInstance().selectedEnemy->enemyAttacked();
-		/*check if success or failure and modify damage accordingly*/
-		switch (CombatManager::getInstance().qtEventResult) {
-		case EVENT_RESULTS::SUCCESS:
-			cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->maxMultiplier);
-
-			break;
-		case EVENT_RESULTS::FAILURE:
-			cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->minMultiplier);
-
-			break;
-		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-			cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().selectedEnemy, CombatManager::getInstance().attackElement, Event::getInstance()->eventMultiplier);
-
-			break;
-		}
-		SoundPlayer::CombatAudio::getInstance().playSfxAnimal(CombatManager::getInstance().selectedEnemy->getTextureRef());
-		CombatManager::getInstance().qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
-
-		// reset states
-		CombatManager::getInstance().selectedEnemy = nullptr;
-		for (Enemy* e : groups.enemies) {
-			e->isSelected = false;
-		}
-		CombatManager::getInstance().attackElement = Element::NO_ELEMENT;
-		currentState = ACTION_BTNS::MAIN;
-		itemUsedSinceLastAttack = false; // Reset the flag after each attack
-
-		//}
-	}
-
-	// when is player turn and player is not playing a quicktime event
-	if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
-		updateBtns(btns[currentState]);  // render player action buttons
-		blockNow = false;
-	}
-	else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && groups.enemies.size()) {
-		//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
-		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
-		if (CombatManager::getInstance().enemyNextTurnMs < CombatManager::PLAYER_BLOCKING_REACTION_ALLOWANCE_MS) {
-			blockNow = true;
-		}
-		if (CombatManager::getInstance().enemyNextTurnMs < 0) {
-			blockingRenderTime = 0.f; //reset the rendering time
-			SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
-
-			// fire projectile at player
-
-			//blockNow = false;
-			//Util_Camera_Shake(0.5, 100);
-			player->playerAttacked();
-			dialogueState = DIALOGUE::ENEMY_ATTACK;
-			float multiplier = 1.f;
-			switch (player->blockingState) {
-			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
-			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-				multiplier = 1.f;
-				cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
-				break;
-			case PLAYER_BLOCKING_STATES::ON_ENTER:
-			case PLAYER_BLOCKING_STATES::ON_EXIT:
-				multiplier = 0.5f;
-				cout << "Attack not fully blocked by player, receiving " << multiplier << " damage multiplier against player\n";
-				break;
-			case PLAYER_BLOCKING_STATES::ON_UPDATE:
-				multiplier = 0.3f;
-				cout << "Attack blocked by player, receiving " << multiplier << " damage multiplier against player\n";
-				break;
 			}
+			else if (winFlag && winButtonFlag) {
+				cout << "Transition to next level\n";
+				CombatManager::getInstance().end();
 
-			// enemy to attack player if there are still enemies left
-			if (groups.enemies.size()) {
-				int randEnemyIndex = rand() % groups.enemies.size();
-				cout << "Enemy with index " << randEnemyIndex << " is attacking player\n";
+			}
+			return;
+		}
 
-				Enemy* e = groups.enemies[randEnemyIndex];
-
-				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
-				e->attack(*player, multiplier);  // Example: All enemies attack the player
-				CombatManager::getInstance().next();
-
- 				GameObject_Projectiles* np = Create::Projectiles();
-				//cout << "Projectile pos: " << e->getWorldPos().x << ", " << e->getWorldPos().y << "\n";
-				projectiles.push_back(np);
-				np->FireAtPlayer(e->getWorldPos(), e->getSize(), static_cast<GameObject_Projectiles::ProjectileType>(rand() % GameObject_Projectiles::ProjectileType::NUM_PROJECTILE_TYPES));
+		// victory flag set 
+		if (winFlag && itemTime > slideAnimationDuration) {
+			if (AEInputCheckTriggered(AEVK_SPACE)) {
+				winButtonFlag = true;
 			}
 		}
 
 	}
-	else if (groups.enemies.size() == 0) {
-		CombatManager::getInstance().turn = CombatManager::TURN::NONE_TURN;
-
-		winTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-		if (!winFlag) {
-			dialogueState = DIALOGUE::WIN;
-			winFlag = true;
-
-		}
-		else if (winFlag && winButtonFlag) {
-			cout << "Transition to next level\n";
-			CombatManager::getInstance().end();
-
-		}
-		return;
-	}
-
 }
-
 void CombatScene::Render()
 {
 	// dont render if no longer in combat
@@ -906,10 +891,7 @@ void CombatScene::Render()
 	}
 
 	updateGlobals();
-	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
-	//panel rendering
 
-	//rendering enemies
 
 
 
@@ -940,18 +922,20 @@ void CombatScene::Render()
 			}
 			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
 				//std::string fulloutput;
+				constexpr float eventPadding = 125.f;
+				constexpr float eventYSize = 85.f;
 				switch (combatEventResult) {
 				case EVENT_TYPES::SPAM_KEY:
-					RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
+					RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
 					break;
 				case EVENT_TYPES::OSCILLATING_TIMER:
-					RenderHelper::getInstance()->texture("timer", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
+					RenderHelper::getInstance()->texture("timer", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
 					break;
 				case EVENT_TYPES::MULTI_CLICK:
-					RenderHelper::getInstance()->texture("multiClick", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
+					RenderHelper::getInstance()->texture("multiClick", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
 					break;
 				case EVENT_TYPES::ORANGE_THROWING:
-					RenderHelper::getInstance()->texture("orangeThrowing", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - 125.f, 85.f);
+					RenderHelper::getInstance()->texture("orangeThrowing", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
 					break;
 				default:
 					break;
