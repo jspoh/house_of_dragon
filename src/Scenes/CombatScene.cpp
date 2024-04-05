@@ -835,7 +835,7 @@ void CombatScene::Update(double dt)
 	else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && groups.enemies.size()) {
 		//CombatManager::getInstance().selectedEnemy->enemyAttacking(CombatManager::getInstance().enemyNextTurnMs);
 		CombatManager::getInstance().enemyNextTurnMs -= static_cast<int>(dt * 1000);
-		if (CombatManager::getInstance().enemyNextTurnMs < CombatManager::PLAYER_BLOCKING_REACTION_ALLOWANCE_MS) {
+		if (CombatManager::getInstance().enemyNextTurnMs < PLAYER_BLOCKING_REACTION_ALLOWANCE_MS.at(difficulty)) {
 			blockNow = true;
 		}
 		if (CombatManager::getInstance().enemyNextTurnMs < 0) {

@@ -25,8 +25,8 @@ Technology is prohibited.
 float paddingY = 120.f;
 float paddingInfoY = 110.f;
 
-Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size, int _projectileTravelTimeMs)
-    : Mob(element, health, dmg), _textureRef(textureRef), _size(size), projectileTravelTimeMs(_projectileTravelTimeMs) {
+Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
+    : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
     this->_spos.x = screenX;
     this->_spos.y = screenY;
     this->elementString = element;

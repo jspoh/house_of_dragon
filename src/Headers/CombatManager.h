@@ -40,8 +40,6 @@ public:
 	static CombatManager& getInstance();
 	~CombatManager();
 
-	static constexpr int PLAYER_BLOCKING_REACTION_ALLOWANCE_MS = 750;
-
 	TURN turn = TURN::PLAYER;
 	EVENT_TYPES eventType;
 	EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
