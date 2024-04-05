@@ -307,7 +307,9 @@ void SceneLevelBuilder::Init()
 	/////////////////////////////////////////////////////////////
 	// Basic Setup of all necessary objects in scene
 	{
-		player = std::make_unique<Player>(Player((float)PLAYER_BASE_HEALTH, (float)PLAYER_BASE_DAMAGE));
+		if (!player) {
+			player = std::make_unique<Player>(Player((float)PLAYER_BASE_HEALTH, (float)PLAYER_BASE_DAMAGE));
+		}
 		/////////////////////////////////////////////////////////////
 		//Creating GameObjects
 		Create::MiscEnemy();

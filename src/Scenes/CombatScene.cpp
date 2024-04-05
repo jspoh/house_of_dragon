@@ -647,31 +647,31 @@ void CombatScene::Update(double dt)
 		}
 	}
 
-		for (Enemy* enemy : groups.enemies) { // check for dead/alive
-			if (enemy->isDead()) {
-				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+	for (Enemy* enemy : groups.enemies) { // check for dead/alive
+		if (enemy->isDead()) {
+			RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
+		}
+		if (player->isDead()) {
+			//Set player to dead
+			if (playerAlive) {
+				playerAlive = false;
+				deadfinalflag = false;
 			}
-			if (player->isDead()) {
-				//Set player to dead
-				if (playerAlive) {
-					playerAlive = false;
-					deadfinalflag = false;
-				}
 
-			}
 		}
-		// player death flag set 
-		if (!playerAlive) {
-			if (extraflagtest == true) {
-				extraflagtest = false;
-				panelflag = true;
-				currentTime = 0.0f; // Reset the time for sliding animation
-			}
+	}
+	// player death flag set 
+	if (!playerAlive) {
+		if (extraflagtest == true) {
+			extraflagtest = false;
+			panelflag = true;
+			currentTime = 0.0f; // Reset the time for sliding animation
 		}
-		// updating the death buttons for lerping 
-		if (!playerAlive) {
-			updateDeathBtns();
-		}
+	}
+	// updating the death buttons for lerping 
+	if (!playerAlive) {
+		updateDeathBtns();
+	}
 
 	// player death flag set 
 	if (!playerAlive) {
@@ -975,43 +975,44 @@ void CombatScene::Render()
 			default:
 				break;
 			}
-			else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
-				//std::string fulloutput;
-				constexpr float eventPadding = 125.f;
-				constexpr float eventYSize = 85.f;
-				switch (combatEventResult) {
-				case EVENT_TYPES::SPAM_KEY:
-					RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
-					break;
-				case EVENT_TYPES::OSCILLATING_TIMER:
-					RenderHelper::getInstance()->texture("timer", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
-					break;
-				case EVENT_TYPES::MULTI_CLICK:
-					RenderHelper::getInstance()->texture("multiClick", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
-					break;
-				case EVENT_TYPES::ORANGE_THROWING:
-					RenderHelper::getInstance()->texture("orangeThrowing", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
-					break;
-				default:
-					break;
-				}
-
-
+		}
+		else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
+			//std::string fulloutput;
+			constexpr float eventPadding = 125.f;
+			constexpr float eventYSize = 85.f;
+			switch (combatEventResult) {
+			case EVENT_TYPES::SPAM_KEY:
+				RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+				break;
+			case EVENT_TYPES::OSCILLATING_TIMER:
+				RenderHelper::getInstance()->texture("timer", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+				break;
+			case EVENT_TYPES::MULTI_CLICK:
+				RenderHelper::getInstance()->texture("multiClick", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+				break;
+			case EVENT_TYPES::ORANGE_THROWING:
+				RenderHelper::getInstance()->texture("orangeThrowing", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+				break;
+			default:
+				break;
 			}
-			else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY  && dialogueState == DIALOGUE::NONE) {
+
+
+		}
+		else if (CombatManager::getInstance().turn == CombatManager::TURN::ENEMY && dialogueState == DIALOGUE::NONE) {
 
 			//panel text
-				RenderHelper::getInstance()->texture("blockTime", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+			RenderHelper::getInstance()->texture("blockTime", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+		}
+		else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent && playerAlive && !winFlag) {
+			if (dialogueState == DIALOGUE::ITEM) {
+				constexpr float windowHeightPercentage = 0.85f;
+				std::string fulloutput = "You have consumed " + itemUsed + "!";
+				RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * windowHeightPercentage);
 			}
-			else if (dialogueState != DIALOGUE::NONE && !CombatManager::getInstance().isPlayingEvent && playerAlive && !winFlag) {
-				if (dialogueState == DIALOGUE::ITEM) {
-					constexpr float windowHeightPercentage = 0.85f;
-					std::string fulloutput = "You have consumed " + itemUsed + "!";
-					RenderHelper::getInstance()->text(fulloutput, AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() * windowHeightPercentage);
-				}
 
-				else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
-					RenderHelper::getInstance()->texture("incomingAttack", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
+			else if (dialogueState == DIALOGUE::ENEMY_ATTACK) {
+				RenderHelper::getInstance()->texture("incomingAttack", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
 
 
 			}
@@ -1047,7 +1048,7 @@ void CombatScene::Render()
 		}
 	}
 	else if (!playerAlive) {
-		
+
 		//rendering out the objects
 		RenderHelper::getInstance()->texture("panel", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()), 160.f);
 		/*for (Enemy* enemy : groups.enemies) {
@@ -1083,25 +1084,25 @@ void CombatScene::Render()
 			// panel for the item drop
 			std::string itemnum;
 			// panel rendering
-			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x , wpos.y - itemSizeX + camOffset.y, itemPanelSizeX, itemPanelSizeY);
+			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - itemSizeX + camOffset.y, itemPanelSizeX, itemPanelSizeY);
 			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y + camOffset.y + itemNumberPadding, itemSizeY + itemSizeX, itemSizeY);
 
 			//item rendering
-				RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
-				itemnum = std::to_string(itemdrops[0]) + "item";
-				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x , wpos.y - itemNumberPadding + camOffset.y, itemSizeY, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
+			itemnum = std::to_string(itemdrops[0]) + "item";
+			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemNumberPadding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-				RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemPadding + camOffset.y, itemSizeX, itemSizeY);
-				itemnum = std::to_string(itemdrops[1]) + "item";
-				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemPadding + camOffset.y, itemSizeY, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemPadding + camOffset.y, itemSizeX, itemSizeY);
+			itemnum = std::to_string(itemdrops[1]) + "item";
+			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemPadding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-				RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeX, itemSizeY);
-				itemnum = std::to_string(itemdrops[1]) + "item";
-				RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeY, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeX, itemSizeY);
+			itemnum = std::to_string(itemdrops[2]) + "item";
+			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeY, itemSizeY);
 
-			
+
 			RenderHelper::getInstance()->texture("winbutton", ItemPanel.x + camOffset.x - itemSizeY, wpos.y - itemSizeX * 2 + camOffset.y, itemSizeX * 4, itemPadding);
 
 
@@ -1126,6 +1127,7 @@ void CombatScene::Render()
 
 	player->render();		// rendering for combat scene. level builder will render while not in combat, else will default to this.
 }
+
 
 void CombatScene::cleanup() {
 	for (Enemy* enemy : groups.enemies) {
