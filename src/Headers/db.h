@@ -21,7 +21,6 @@ Technology is prohibited.
 
 const std::string dbPath = "data.json";
 
-// !TODO: imlement all texture references and load them on init in RenderHelper. call from GameManager::Init
 class Database {
 private:
 	Database();

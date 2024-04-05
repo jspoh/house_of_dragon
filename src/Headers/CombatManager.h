@@ -43,7 +43,6 @@ public:
 	TURN turn = TURN::PLAYER;
 	EVENT_TYPES eventType;
 	EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
-	double qtEventMul = 1;  // !TODO: for timer events where multiplier can be altered based on accuracy
 	Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
 
 	bool isPlayingEvent = false;

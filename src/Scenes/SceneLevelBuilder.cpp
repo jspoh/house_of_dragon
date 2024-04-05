@@ -23,28 +23,23 @@ Technology is prohibited.
 // DONT MANUALLY FREE THIS POINTER
 std::unique_ptr<Player> player = nullptr;
 
+// states for audio
+bool GameScene::combatAudioLoopIsPlaying = false;
+bool GameScene::afterInit = false;
+
 namespace {
-	//First data is left, second data is right
-	std::pair<AEMtx33, AEMtx33> Hand1PosData{};
-	std::pair<AEMtx33, AEMtx33> Hand2PosData{};
-	std::pair<AEMtx33, AEMtx33> Hand3PosData{};
-	std::pair<AEMtx33, AEMtx33> Hand4PosData{};
-
-	static int t_AnimationFrame = 0;
-	static double t_AnimationDuration = 0.0;
-	static bool LeftSide = false;
 	double LerpSpeed = 10.0;
-	AEVec2 targetPos{};
-	f32 camX, camY;
-
 	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance().data["player"]["baseHealth"]);
 	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance().data["player"]["baseDamage"]);
 
+	// show game end screen
 	bool showGameEnd = false;
-}
 
-bool GameScene::combatAudioLoopIsPlaying = false;
-bool GameScene::afterInit = false;
+	// cleanup misc states
+	void cleanup() {
+		showGameEnd = false;
+	}
+}
 
 SceneLevelBuilder::v_FloorData::v_FloorData() :
 	m_currFloorNum{ 0 },
@@ -300,11 +295,13 @@ SceneLevelBuilder::SceneLevelBuilder() :
 SceneLevelBuilder::~SceneLevelBuilder()
 {
 	Exit(); //Hehe, dont allow sneaky memory leak
-	showGameEnd = false;
 }
 
 void SceneLevelBuilder::Init()
 {
+	// cleanup again just in case
+	//cleanup();
+
 	/////////////////////////////////////////////////////////////
 	// Basic Setup of all necessary objects in scene
 	{
@@ -1236,6 +1233,8 @@ void SceneLevelBuilder::Exit()
 	AEGfxDestroyFont(pTextFont);
 
 	CombatScene::getInstance().Exit();
+
+	cleanup();
 }
 
 /*********************************************************************************
