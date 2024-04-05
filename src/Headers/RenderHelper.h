@@ -27,17 +27,17 @@ struct Color;
 class RenderHelper : Singleton<RenderHelper> {
 private:
 	static RenderHelper* _instance;
-	AEGfxVertexList* _defaultMesh;
-	AEGfxVertexList* _invisibleMesh;
-	std::unordered_map<std::string, AEGfxVertexList*> _meshRef;
-	s8 _font;
+	AEGfxVertexList* _defaultMesh = nullptr;
+	AEGfxVertexList* _invisibleMesh = nullptr;
+	std::unordered_map<std::string, AEGfxVertexList*> _meshRef{};
+	s8 _font{};
 	int _fontSize = 32;
 
-	std::unordered_map<std::string, AEGfxTexture*> _textureRef;
+	std::unordered_map<std::string, AEGfxTexture*> _textureRef{};
 
 	// use int as reference for speed
 	static const int MAX_TEXTURE_IDS = 120;
-	std::array<AEGfxTexture*, MAX_TEXTURE_IDS> _textureIdRefs;
+	std::array<AEGfxTexture*, MAX_TEXTURE_IDS> _textureIdRefs{};
 
 	RenderHelper();
 

@@ -45,7 +45,8 @@ namespace {
 /*class draw*/
 RenderHelper* RenderHelper::_instance = nullptr;
 
-RenderHelper::RenderHelper() {
+RenderHelper::RenderHelper()
+{
 
 }
 
