@@ -25,7 +25,8 @@ Technology is prohibited.
  * @brief Enumeration to identify the modification state in the settings scene.
  *
  * This enum is used to manage the state of settings modifications, such as
- * adjusting audio volume for sound effects and music within the setting's scene.
+ * adjusting 
+ volume for sound effects and music within the setting's scene.
  */
 enum class MOD_STATES {
 	NONE,
