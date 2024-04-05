@@ -18,6 +18,9 @@ Technology is prohibited.
 #include "GameManager.h"
 #include "MyMath.h"
 #include "CombatScene.h"
+#include "CombatPlayer.h"
+
+extern std::unique_ptr<Player> player;
 
 ////Define an error callback
 //static void error_callback(int error, const char* description)
@@ -110,8 +113,15 @@ void GameManager::Exit()
 
 	delete Event::getInstance();
 	//delete CombatManager::getInstance();
-	delete Database::getInstance();
+	//delete Database::getInstance();
 
 	delete ParticleManager::GetInstance();
 	delete RenderHelper::getInstance();
+
+	// ensure that player destructor is called
+	// before program ends as order of destruction
+	// is not well defined in c++. the static database
+	// instance could be being deleted before player destructor
+	// is called, resulting in a read access violation
+	player.reset();
 }

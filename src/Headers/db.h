@@ -26,20 +26,19 @@ class Database {
 private:
 	Database();
 
-	static Database* _instance;
 	std::ifstream ifs;
 
 
 public:
 	~Database();
 
-	static Database* getInstance();
+	static Database& getInstance();
 
 	/**
 	 * Warning: All data stored in this file will be updated on instance deletion.
 	 * 
 	 * usage:
-	 * Database::getInstance()->data[<column name>]...
+	 * Database::getInstance().data[<column name>]...
 	 * 
 	 * Force update data at anytime with the `forceUpdate` function.
 	 */

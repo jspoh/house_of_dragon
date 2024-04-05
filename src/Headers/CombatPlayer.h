@@ -71,8 +71,9 @@ private:
 	float healthRenderTime{ 0 };
 	const float healthRenderTimeMax = 0.75f;
 
+	int playerLevel;
 
-
+	static constexpr float levelHealthIncPercentage = 0.1f;
 
 public:
 	enum class HandAnimationType {
@@ -122,6 +123,10 @@ public:
 	void playerAttacked();
 
 	void attackMultipler(int turn);
+
+	std::unordered_map<std::string, int> inventory;
+
+	int getLevel() const;
 
 private:
 	HandAnimationType HandStateAnimationType = HandAnimationType::None; //Can use enum

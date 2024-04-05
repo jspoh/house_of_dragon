@@ -37,8 +37,8 @@ namespace {
 	AEVec2 targetPos{};
 	f32 camX, camY;
 
-	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance()->data["player"]["baseHealth"]);
-	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance()->data["player"]["baseDamage"]);
+	int PLAYER_BASE_HEALTH = static_cast<int>(Database::getInstance().data["player"]["baseHealth"]);
+	int PLAYER_BASE_DAMAGE = static_cast<int>(Database::getInstance().data["player"]["baseDamage"]);
 
 	bool showGameEnd = false;
 }
@@ -245,22 +245,22 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	*/
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	{
-		if (Database::getInstance()->data["levels"].size() > 0)
+		if (Database::getInstance().data["levels"].size() > 0)
 		{
-			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance()->data["levels"].size()];
-			m_MAXLevel = static_cast<int>(Database::getInstance()->data["levels"].size()) - 1;
-			for (int i = 0; i < Database::getInstance()->data["levels"].size(); i++)
+			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance().data["levels"].size()];
+			m_MAXLevel = static_cast<int>(Database::getInstance().data["levels"].size()) - 1;
+			for (int i = 0; i < Database::getInstance().data["levels"].size(); i++)
 			{
 				v_SceneLevelData t_curr{};
-				t_curr.m_LevelName = Database::getInstance()->data["levels"][i]["levelName"];
-				t_curr.m_LevelCompletionRate = Database::getInstance()->data["levels"][i]["levelCompletionRate"];
-				t_curr.m_Completed = Database::getInstance()->data["levels"][i]["completed"];
-				t_curr.m_EnemySpawnRate = Database::getInstance()->data["levels"][i]["enemySpawnRate"];
-				t_curr.m_Unlocked = Database::getInstance()->data["levels"][i]["unlocked"]; 
-				t_curr.m_MaxEnemies = Database::getInstance()->data["levels"][i]["maxEnemies"];
-				t_curr.m_DayTime = Database::getInstance()->data["levels"][i]["DayTime"];
+				t_curr.m_LevelName = Database::getInstance().data["levels"][i]["levelName"];
+				t_curr.m_LevelCompletionRate = Database::getInstance().data["levels"][i]["levelCompletionRate"];
+				t_curr.m_Completed = Database::getInstance().data["levels"][i]["completed"];
+				t_curr.m_EnemySpawnRate = Database::getInstance().data["levels"][i]["enemySpawnRate"];
+				t_curr.m_Unlocked = Database::getInstance().data["levels"][i]["unlocked"]; 
+				t_curr.m_MaxEnemies = Database::getInstance().data["levels"][i]["maxEnemies"];
+				t_curr.m_DayTime = Database::getInstance().data["levels"][i]["DayTime"];
 
-				for (auto& map : Database::getInstance()->data["levels"][i]["enemySpawnWeight"].items())
+				for (auto& map : Database::getInstance().data["levels"][i]["enemySpawnWeight"].items())
 				{
 					for (auto type = map.value().begin(); type != map.value().end(); type++)
 					{
@@ -269,7 +269,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 					}
 				}
 
-				for (auto& map : Database::getInstance()->data["levels"][i]["SceneOBJSpawnWeight"].items())
+				for (auto& map : Database::getInstance().data["levels"][i]["SceneOBJSpawnWeight"].items())
 				{
 					for (auto type = map.value().begin(); type != map.value().end(); type++)
 					{
@@ -281,7 +281,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 				*m_SceneLevelDataList = t_curr;
 				m_SceneLevelDataList++;
 			}
-			m_SceneLevelDataList -= Database::getInstance()->data["levels"].size();
+			m_SceneLevelDataList -= Database::getInstance().data["levels"].size();
 		}
 	}
 	

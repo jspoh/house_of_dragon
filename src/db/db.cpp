@@ -24,9 +24,6 @@ namespace {
 }
 
 
-Database* Database::_instance = nullptr;
-
-
 Database::Database() {
 	ifs = std::ifstream{ dbPath };
 
@@ -45,11 +42,9 @@ Database::~Database() {
 }
 
 
-Database* Database::getInstance() {
-	if (!_instance) {
-		_instance = new Database();
-	}
-	return _instance;
+Database& Database::getInstance() {
+	static Database instance;
+	return instance;
 }
 
 

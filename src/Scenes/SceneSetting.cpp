@@ -259,7 +259,7 @@ void SceneSetting::Render()
  */
 void SceneSetting::Exit()
 {
-	Database::getInstance()->data["game"]["difficulty"] = static_cast<int>(difficulty);
+	Database::getInstance().data["game"]["difficulty"] = static_cast<int>(difficulty);
 
 	//Image unloading was handle in the render helper
 }

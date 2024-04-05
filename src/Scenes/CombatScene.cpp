@@ -308,8 +308,6 @@ namespace {
 
 	}
 
-}
-
 	void updateDeathBtns() {
 		//main menu
 		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
@@ -324,6 +322,7 @@ namespace {
 			}
 		}
 	}
+
 	void renderDeathBtns() {
 		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
 		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
@@ -339,10 +338,7 @@ namespace {
 
 	}
 
-
-
-
-	
+}
 
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
@@ -375,16 +371,16 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 		groups.coordinates[i].y = AEGfxGetWindowHeight() / 2.f - 25.f;
 		// obtaining the infomation from json file
 		groups.enemies[i] = new Enemy(
-			elementMap.find(Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["element"])->second,
-			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["health"],
-			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["damage"] * DIFFICULTY_ENEMY_DAMAGE_MULTIPLIER.at(difficulty),
-			Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["texturePath"],
+			elementMap.find(Database::getInstance().data["enemyAttributes"][enemyRefs[i]]["element"])->second,
+			Database::getInstance().data["enemyAttributes"][enemyRefs[i]]["health"],
+			Database::getInstance().data["enemyAttributes"][enemyRefs[i]]["damage"] * DIFFICULTY_ENEMY_DAMAGE_MULTIPLIER.at(difficulty),
+			Database::getInstance().data["enemyAttributes"][enemyRefs[i]]["texturePath"],
 			enemyRefs[i],		// dont change this, using this for audio too
 			groups.coordinates[i].x,
 			groups.coordinates[i].y,
 			texSize
 		);
-		groups.enemies[i]->elementstringinput(Database::getInstance()->data["enemyAttributes"][enemyRefs[i]]["element"]);
+		groups.enemies[i]->elementstringinput(Database::getInstance().data["enemyAttributes"][enemyRefs[i]]["element"]);
 	}
 
 
@@ -426,19 +422,9 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("bar3", "./Assets/Health/bar.png");
 
 	//enemy load
-	RenderHelper::getInstance()->registerTexture("horse", "./Assets/Combat_Enemy/horse.png");
-	RenderHelper::getInstance()->registerTexture("dragon", "./Assets/Combat_Enemy/dragon.png");
-	RenderHelper::getInstance()->registerTexture("goat", "./Assets/Combat_Enemy/goat.png");
-	RenderHelper::getInstance()->registerTexture("monkey", "./Assets/Combat_Enemy/monkey.png");
-	RenderHelper::getInstance()->registerTexture("chicken", "./Assets/Combat_Enemy/chicken.png");
-	RenderHelper::getInstance()->registerTexture("bull", "./Assets/Combat_Enemy/bull.png");
-	RenderHelper::getInstance()->registerTexture("pig", "./Assets/Combat_Enemy/pig.png");
-	RenderHelper::getInstance()->registerTexture("snake", "./Assets/Combat_Enemy/snake.png");
-	RenderHelper::getInstance()->registerTexture("rabbit", "./Assets/Combat_Enemy/rabbit.png");
-
-
-
-
+	for (const auto& [animalName, details] : Database::getInstance().data["enemyAttributes"].items()) {
+		RenderHelper::getInstance()->registerTexture(animalName, details["texturePath"]);
+	}
 
 	// textures for when player is dead load
 	RenderHelper::getInstance()->registerTexture("playerdead", "./Assets/Combat_UI/playerdeadscreen.png");
@@ -490,9 +476,9 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("enemyPanel", "./Assets/Combat_UI/enemyPanel.png");
 
 	//item load
-	RenderHelper::getInstance()->registerTexture("chicken", "./Assets/Combat_UI/chicken.png");
-	RenderHelper::getInstance()->registerTexture("beef", "./Assets/Combat_UI/beef.png");
-	RenderHelper::getInstance()->registerTexture("bacon", "./Assets/Combat_UI/bacon.png");
+	for (const auto& [itemName, details] : Database::getInstance().data["items"].items()) {
+		RenderHelper::getInstance()->registerTexture(itemName, details["texturePath"]);
+	}
 
 	// number of items load
 	RenderHelper::getInstance()->registerTexture("0item", "./Assets/Combat_UI/0item.png");

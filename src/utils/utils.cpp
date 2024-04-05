@@ -84,7 +84,7 @@ std::vector<std::string> split(const std::string& str, const char sep) {
 
 void initGlobals() {
 	updateGlobals();
-	difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance()->data["game"]["difficulty"]);
+	difficulty = static_cast<DIFFICULTY_SETTINGS>(Database::getInstance().data["game"]["difficulty"]);
 }
 
 void updateGlobals() {
