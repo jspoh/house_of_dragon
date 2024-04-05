@@ -228,7 +228,8 @@ namespace {
 							CombatManager::getInstance().end();
 						}
 						else if (currentState == ACTION_BTNS::ITEMS) {
-							if (!itemUsedSinceLastAttack)
+							// only allow player to consume food if they have it
+							if (player->inventory[lower(bv)] > 0)
 							{
 								if (bv == "BACON") {
 									int attackChange = rand() % 5 + 1; // Random value between 1-5
@@ -253,7 +254,7 @@ namespace {
 								currentState = ACTION_BTNS::MAIN;
 							}
 							else {
-								cout << "Item used since last attack\n";
+								cout << "Does not have any of " << bv << " in inventory\n";
 								//currentState = ACTION_BTNS::MAIN;
 							}
 						}
