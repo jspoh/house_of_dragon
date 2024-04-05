@@ -1053,21 +1053,25 @@ void CombatScene::Render()
 		// to do: new btns
 		// new panel
 		if (itemTime > slideAnimationDuration) {
+			auto it = player->inventory.begin();
+
 			// panel for the item drop
 			std::string itemnum;
 			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - 100.f + camOffset.y, 550.f, 350.f);
 			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - 150, wpos.y + camOffset.y + 25.f, 150.f, 50.f);
 
-			RenderHelper::getInstance()->texture("bacon", ItemPanel.x + camOffset.x - 150, wpos.y - 25.f + camOffset.y, 100.f, 50.f);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - 150, wpos.y - 25.f + camOffset.y, 100.f, 50.f);
 			itemnum = std::to_string(itemdrops[0]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 25.f + camOffset.y, 50.f, 50.f);
+			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture("beef", ItemPanel.x + camOffset.x - 150, wpos.y - 75.f + camOffset.y, 100.f, 50.f);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - 150, wpos.y - 75.f + camOffset.y, 100.f, 50.f);
 			itemnum = std::to_string(itemdrops[1]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 75.f + camOffset.y, 50.f, 50.f);
+			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture("chicken", ItemPanel.x + camOffset.x - 150, wpos.y - 125.f + camOffset.y, 100.f, 50.f);
-			itemnum = std::to_string(itemdrops[1]) + "item";
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - 150, wpos.y - 125.f + camOffset.y, 100.f, 50.f);
+			itemnum = std::to_string(itemdrops[2]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 125.f + camOffset.y, 50.f, 50.f);
 
 
