@@ -500,8 +500,10 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("wood", "./Assets/Combat_UI/wood.png");
 
 	// enemies name load
+	// !TODO: kuek, missing bull (might have more, im not sure, currently json only have 10(?) animals)
 	RenderHelper::getInstance()->registerTexture("pigname", "./Assets/Combat_UI/pig.png");
 	RenderHelper::getInstance()->registerTexture("goatname", "./Assets/Combat_UI/goat.png");
+	RenderHelper::getInstance()->registerTexture("chickenname", "./Assets/Combat_UI/chicken.png");
 	RenderHelper::getInstance()->registerTexture("dragonname", "./Assets/Combat_UI/dragon.png");
 	RenderHelper::getInstance()->registerTexture("cowname", "./Assets/Combat_UI/cow.png");
 	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
@@ -512,7 +514,9 @@ void CombatScene::Load()
 
 	// dynamic item load
 	for (const auto& [itemName, details] : Database::getInstance().data["items"].items()) {
-		RenderHelper::getInstance()->registerTexture(itemName, details["texturePath"]);
+		// append _food string to avoid conflict with animal
+		cout << ";";
+		RenderHelper::getInstance()->registerTexture(itemName + "_food", details["texturePath"]);
 	}
 
 	// number of items load
@@ -1078,17 +1082,17 @@ void CombatScene::Render()
 			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - padding * 2, wpos.y + camOffset.y + itemNumberPadding, itemSizeY + itemSizeX, itemSizeY);
 
 			//item rendering
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - padding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first + "_food", ItemPanel.x + camOffset.x - padding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
 			itemnum = std::to_string(itemdrops[0]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemNumberPadding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - padding * 2, wpos.y - padding + camOffset.y, itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first + "_food", ItemPanel.x + camOffset.x - padding * 2, wpos.y - padding + camOffset.y, itemSizeX, itemSizeY);
 			itemnum = std::to_string(itemdrops[1]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - padding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - padding * 2, wpos.y - itemSizeY - padding + camOffset.y, itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first + "_food", ItemPanel.x + camOffset.x - padding * 2, wpos.y - itemSizeY - padding + camOffset.y, itemSizeX, itemSizeY);
 			itemnum = std::to_string(itemdrops[2]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemSizeY - padding + camOffset.y, itemSizeY, itemSizeY);
 
