@@ -355,8 +355,7 @@ namespace {
 		}
 		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				//needs to reset combat scene
-				cout << "does it work" << "\n";
+				SceneManager::GetInstance()->restartScene();
 			}
 		}
 	}
@@ -515,7 +514,6 @@ void CombatScene::Load()
 	// dynamic item load
 	for (const auto& [itemName, details] : Database::getInstance().data["items"].items()) {
 		// append _food string to avoid conflict with animal
-		cout << ";";
 		RenderHelper::getInstance()->registerTexture(itemName + "_food", details["texturePath"]);
 	}
 
@@ -663,7 +661,7 @@ void CombatScene::Update(double dt)
 
 	// player death flag set 
 	if (!playerAlive) {
-		// !TODO: kuek no need to `== true` lol, is already a boolean value
+		// !TODO: kuek no need to `== true` lol, is already a boolean value but not a big deal
 		if (extraflagtest == true) {
 			extraflagtest = false;
 			panelflag = true;

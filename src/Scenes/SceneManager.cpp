@@ -31,7 +31,7 @@ SceneManager::~SceneManager()
 void SceneManager::Update(double _dt)
 {
 	// Check for change of scene
-	if (nextScene != activeScene)
+	if (nextScene != activeScene || restart)
 	{
 		if (activeScene)
 		{
@@ -43,6 +43,10 @@ void SceneManager::Update(double _dt)
 		//Change this for restart function
 		activeScene->Load();
 		activeScene->Init();
+
+		if (restart) {
+			restart = !restart;
+		}
 	}
 
 	if (activeScene) {
@@ -127,3 +131,8 @@ bool SceneManager::CheckSceneExist(const std::string& _name)
 //	static Scene scene;
 //	return scene;
 //}
+
+void SceneManager::restartScene() {
+	restart = true;
+}
+

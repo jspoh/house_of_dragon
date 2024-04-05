@@ -58,7 +58,7 @@ void Pause::update([[maybe_unused]] double dt) {
         if (CollisionChecker::isMouseInRect(pos.x, pos.y, BTN_WIDTH * scale, BTN_HEIGHT * scale, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
             scale = HOVER_BTN_SCALE;
             if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-                if (b == "RESTART" || b == "EXIT" || b == "HOWTOPLAY") {
+                if (b == "RESTART" || b == "EXIT") {// || b == "HOWTOPLAY") {
                     if (!isConfirming) {
                         isConfirming = true;
                         confirmingButton = b;
@@ -67,16 +67,18 @@ void Pause::update([[maybe_unused]] double dt) {
                     else if (confirmingButton == b) {
                         if (b == "RESTART") {
                             // !TODO: call state or get scenelevelbuilder to restart combatscene
-                            SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+                            //SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+                            isPaused = false;
+                            SceneManager::GetInstance()->restartScene();
                         }
                         else if (b == "EXIT") {
                             isPaused = false;
                             AEGfxSetCamPosition(0, 0);
                             SceneManager::GetInstance()->SetActiveScene("SceneMenu");
                         }
-                        else if (b == "HOWTOPLAY") {
-                            SceneManager::GetInstance()->SetActiveScene("HowToPlay");
-                        }
+                        //else if (b == "HOWTOPLAY") {
+                        //    SceneManager::GetInstance()->SetActiveScene("HowToPlay");
+                        //}
                         isConfirming = false;
                     }
                 }
