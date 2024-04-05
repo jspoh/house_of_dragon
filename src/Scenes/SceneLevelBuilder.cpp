@@ -1157,20 +1157,18 @@ void SceneLevelBuilder::Render()
 		RenderLvlName();
 
 		//Border
-		f32 camX, camY;
-		AEGfxGetCamPosition(&camX, &camY);
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 		AEGfxSetTransparency(1.0);
 		AEMtx33 t_curr;
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
-		AEMtx33TransApply(&t_curr, &t_curr, camX, -AEGfxGetWindowHeight() / 2 + camY);
+		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, -AEGfxGetWindowHeight() / 2 + camOffset.y);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
-		AEMtx33TransApply(&t_curr, &t_curr, camX, AEGfxGetWindowHeight() / 2 + camY);
+		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, AEGfxGetWindowHeight() / 2 + camOffset.y);
 		AEGfxSetTransform(t_curr.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 

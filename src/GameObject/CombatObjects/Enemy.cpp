@@ -29,7 +29,7 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     : Mob(element, health, dmg), _textureRef(textureRef), _size(size) {
     this->_spos.x = screenX;
     this->_spos.y = screenY;
-    this->elementString = element;
+    this->elementString = element;      // !TODO: kuek, element is of type Element, elementString is of type string, there is a type mismatch here
     this->fullhealth = health;
     this->_textureRef = textureRef;
     _spos = AEVec2{ screenX, screenY};
@@ -48,8 +48,8 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
 }
 
 
-void Enemy::elementstringinput(std::string element) {
-    this->elementString = element;
+void Enemy::elementstringinput(std::string el) {
+    this->elementString = el;
 }
 void Enemy::update([[maybe_unused]] double dt) {
 

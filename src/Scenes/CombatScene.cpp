@@ -954,8 +954,6 @@ void CombatScene::Render()
 		}
 		else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
 			//std::string fulloutput;
-			constexpr float eventPadding = 125.f;
-			constexpr float eventYSize = 85.f;
 			switch (combatEventResult) {
 			case EVENT_TYPES::SPAM_KEY:
 				RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
@@ -975,8 +973,6 @@ void CombatScene::Render()
 		}
 		else if (CombatManager::getInstance().turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
 			//std::string fulloutput;
-			constexpr float eventPadding = 125.f;
-			constexpr float eventYSize = 85.f;
 			switch (combatEventResult) {
 			case EVENT_TYPES::SPAM_KEY:
 				RenderHelper::getInstance()->texture("spamE", panelpos.x + camOffset.x, panelpos.y + camOffset.y, static_cast<float>(AEGfxGetWindowWidth()) - eventPadding, eventYSize);
@@ -1075,32 +1071,32 @@ void CombatScene::Render()
 			constexpr float itemSizeX = 100.f;
 			constexpr float itemSizeY = 50.f;
 
-			constexpr float itemPadding = 75.f;
+			constexpr float padding = 75.f;
 			constexpr float itemNumberPadding = 25.f;
 
 			// panel for the item drop
 			std::string itemnum;
 			// panel rendering
 			RenderHelper::getInstance()->texture("panel", ItemPanel.x + camOffset.x, wpos.y - itemSizeX + camOffset.y, itemPanelSizeX, itemPanelSizeY);
-			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y + camOffset.y + itemNumberPadding, itemSizeY + itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture("itemdrop", ItemPanel.x + camOffset.x - padding * 2, wpos.y + camOffset.y + itemNumberPadding, itemSizeY + itemSizeX, itemSizeY);
 
 			//item rendering
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - padding * 2, wpos.y - itemNumberPadding + camOffset.y, itemSizeX, itemSizeY);
 			itemnum = std::to_string(itemdrops[0]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemNumberPadding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemPadding + camOffset.y, itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - padding * 2, wpos.y - padding + camOffset.y, itemSizeX, itemSizeY);
 			itemnum = std::to_string(itemdrops[1]) + "item";
-			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemPadding + camOffset.y, itemSizeY, itemSizeY);
+			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - padding + camOffset.y, itemSizeY, itemSizeY);
 			std::advance(it, 1);
 
-			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - itemPadding * 2, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeX, itemSizeY);
+			RenderHelper::getInstance()->texture(it->first, ItemPanel.x + camOffset.x - padding * 2, wpos.y - itemSizeY - padding + camOffset.y, itemSizeX, itemSizeY);
 			itemnum = std::to_string(itemdrops[2]) + "item";
-			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemSizeY - itemPadding + camOffset.y, itemSizeY, itemSizeY);
+			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - itemSizeY - padding + camOffset.y, itemSizeY, itemSizeY);
 
 
-			RenderHelper::getInstance()->texture("winbutton", ItemPanel.x + camOffset.x - itemSizeY, wpos.y - itemSizeX * 2 + camOffset.y, itemSizeX * 4, itemPadding);
+			RenderHelper::getInstance()->texture("winbutton", ItemPanel.x + camOffset.x - itemSizeY, wpos.y - itemSizeX * 2 + camOffset.y, itemSizeX * 4, padding);
 
 
 			// item drops 
