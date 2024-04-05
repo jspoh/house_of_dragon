@@ -43,6 +43,7 @@ Technology is prohibited.
 #include <sstream>
 #include <memory>
 #include <thread>
+#include <iterator>
 #include "AEEngine.h"
 #include "json.hpp"
 

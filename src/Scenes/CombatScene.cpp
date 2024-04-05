@@ -141,6 +141,7 @@ namespace {
 		{"FLEE", CONFIRMATION},
 	};
 
+	// TODO: jspoh populate vector with data from json
 	std::vector<std::vector<std::string>> btns = {
 		{"ATTACK", "ITEMS", "FLEE"},  // main buttons. the rest are submenu
 		{"FIRE", "WATER", "METAL", "WOOD", "EARTH", "BACK"},  // attack elements
@@ -248,6 +249,13 @@ namespace {
 									player->healthGain(static_cast<float>(healthChange));
 								}
 								cout << bv << " eaten\n";
+
+								if (player->inventory[lower(bv)] <= 0) {
+									std::cerr << "Player just ate something that he does not have!\n";
+									throw std::exception();
+								}
+
+								player->inventory[lower(bv)]--;
 								itemUsed = bv;
 								itemUsedSinceLastAttack = true;
 								dialogueState = DIALOGUE::ITEM;
@@ -326,7 +334,13 @@ namespace {
 
 				//RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render normal when no hovering
 			}
-			RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
+			if (currentState != ACTION_BTNS::ITEMS || lower(bv) == lower("back")) {
+				RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
+			}
+			else {
+				// render item count too for items
+				RenderHelper::getInstance()->text(bv + " x" + std::to_string(player->inventory[lower(bv)]), bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
+			}
 			bPosX += btnWidth + spacing;
 		}
 
@@ -373,8 +387,8 @@ void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	constexpr float newspacing = 225.f;
 	int sz = static_cast<int>(enemyRefs.size()); // number of enemies;
 	for (int i = 0; i < sz; i++) {
-		int item = rand() % 3;
-		itemdrops[item]++;
+		int randItemIdx = rand() % player->inventory.size();
+		itemdrops[randItemIdx]++;
 	}
 
 	groups.coordinates.resize(sz); // setting the coordinates
@@ -518,21 +532,6 @@ void CombatScene::Load()
 
 	// incoming attack load
 	RenderHelper::getInstance()->registerTexture("incomingAttack", "./Assets/Combat_UI/incomingAttack.png");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	cout << "CombatScene loaded\n";
 }
@@ -884,14 +883,29 @@ void CombatScene::Update(double dt)
 			CombatManager::getInstance().end();
 
 		}
-		return;
 	}
 
 	// victory flag set 
 	if (winFlag && itemTime > slideAnimationDuration) {
 		if (AEInputCheckTriggered(AEVK_SPACE)) {
 			winButtonFlag = true;
+
+			// update player inventory
+			int itemIdx{};
+			for (const int itemQty : itemdrops) {
+				auto it = player->inventory.begin();
+				// advancing the iterator using std::advance. although the order
+				// is not preserved (since it is a hashtable), it does not matter
+				// here as we are trying to get a random food item anyways
+				std::advance(it, itemIdx);
+				std::string itemName = it->first;
+
+				player->inventory[itemName] += itemQty;
+				itemIdx++;
+			}
 		}
+
+
 	}
 }
 
@@ -1047,8 +1061,6 @@ void CombatScene::Render()
 			RenderHelper::getInstance()->texture("bacon", ItemPanel.x + camOffset.x - 150, wpos.y - 25.f + camOffset.y, 100.f, 50.f);
 			itemnum = std::to_string(itemdrops[0]) + "item";
 			RenderHelper::getInstance()->texture(itemnum, ItemPanel.x + camOffset.x, wpos.y - 25.f + camOffset.y, 50.f, 50.f);
-
-
 
 			RenderHelper::getInstance()->texture("beef", ItemPanel.x + camOffset.x - 150, wpos.y - 75.f + camOffset.y, 100.f, 50.f);
 			itemnum = std::to_string(itemdrops[1]) + "item";
