@@ -47,6 +47,8 @@ namespace {
 	// cleanup misc states
 	void cleanup() {
 		showGameEnd = false;
+		GameScene::combatAudioLoopIsPlaying = false;
+		SceneStagesAudio::loopIsPlaying = true;
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////
