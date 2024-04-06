@@ -13,9 +13,9 @@
     "currentXp": 0,
     "level": 1,
     "inventory": {
-      "bacon": 0,
-      "beef": 0,
-      "chicken": 0
+      "bacon": 3,
+      "beef": 3,
+      "chicken": 3
     },
     "baseHealth": 100,
     "baseDamage": 100

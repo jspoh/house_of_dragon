@@ -56,11 +56,11 @@ private:
 	void _renderShield();
 
 	float m_healthRenderTime{ 0 };
-	static constexpr float m_HEALTH_RENDER_TIME_MAX = 0.75f;
+	static constexpr float m_HEALTH_RENDER_TIME_MAX = 1.f;
 
 	float m_renderX{ 0 };
 	float m_renderXprev{ 0 };
-	bool m_hasAttacked{ 0 };
+	bool m_hasBeenAttacked{ 0 };
 	bool m_healthIncrease{ 0 };
 
 	int m_playerLevel;
@@ -105,7 +105,7 @@ public:
 	 * .
 	 *
 	 * \param target
-	 * \param attackEl element player m_hasAttacked with
+	 * \param attackEl element player m_hasBeenAttacked with
 	 * \param qtMultiplier quicktime event multiplier
 	 * \return damage dealt
 	 */

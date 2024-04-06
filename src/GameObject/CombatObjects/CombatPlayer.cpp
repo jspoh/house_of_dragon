@@ -63,7 +63,7 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 	//m_health += m_health * ((m_playerLevel - 1) * levelHealthIncPercentage);
 	m_dmg += m_dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
 
-	m_hasAttacked = false;
+	m_hasBeenAttacked = false;
 	m_healthIncrease = false;
 	m_renderX = m_health / m_maxHealth;
 
@@ -90,7 +90,7 @@ Player::~Player() {
 }
 
 void Player::playerAttacked() {
-	this->m_hasAttacked = true;
+	this->m_hasBeenAttacked = true;
 	this->m_renderXprev = m_renderX;
 	m_healthRenderTime = 0.f;
 
@@ -125,20 +125,23 @@ void Player::_drawHealth(float screenX, float screenY) {
 	AEGfxGetCamPosition(&truex, &truey);
 	RenderHelper::getInstance()->texture("panel", panelPos.x + truex, panelPos.y + truey + paddingY, 270, 100);
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
+
+	const float widthMultiplier = m_renderX / 100.f;
+
 	if (this->m_health / m_maxHealth > 0.66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + m_renderX * 50, panelPos.y + truey + paddingY - 20, m_renderX * 100, 15);
-		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + m_renderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * 50, panelPos.y + truey + paddingY - 20, widthMultiplier * 100, 15);
+		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + widthMultiplier * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
-	else if (this->m_health/ m_maxHealth > 0.33) {
+	else if (this->m_health / m_maxHealth > 0.33) {
 		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + m_renderX * 50, panelPos.y + truey + paddingY - 20, m_renderX * 100, 15);
-		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + m_renderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * 50, panelPos.y + truey + paddingY - 20, widthMultiplier * 100, 15);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + widthMultiplier * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else {
 		RenderHelper::getInstance()->texture("redbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + m_renderX * 50, panelPos.y + truey + paddingY - 20, m_renderX * 100, 15);
-		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + m_renderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * 50, panelPos.y + truey + paddingY - 20, widthMultiplier * 100, 15);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + widthMultiplier * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 
 	}
 }
@@ -152,22 +155,27 @@ void Player::update(double dt) {
 	//cout << camOffset.x << " | " << camOffset.y << "\n";
 
 	// for player healthbar
-	if (this->m_hasAttacked && this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX && !m_healthIncrease) {
+	if (m_renderX != m_health) {
 		m_healthRenderTime += static_cast<float>(dt);
-		float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
-		float t = percenttime;
+		float t = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
 		//if (t > m_HEALTH_RENDER_TIME_MAX) {
 		//	t = m_HEALTH_RENDER_TIME_MAX;
 		//}
-		this->m_renderX = lerp(this->m_renderXprev, m_health / m_maxHealth, t);
+		this->m_renderX = lerp(this->m_renderXprev, m_health, t);
+
+		// snap health value when lerp time is over
+		if (t > m_HEALTH_RENDER_TIME_MAX || t < 0) {
+			m_renderX = m_health;
+			m_healthRenderTime = 0;
+		}
 	}
 	else {
-		this->m_hasAttacked = false;
+		this->m_hasBeenAttacked = false;
 		this->m_healthRenderTime = 0.f;
 	}
 
 
-	//if (!this->m_hasAttacked && (this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) && this->m_healthIncrease ) {
+	//if (!this->m_hasBeenAttacked && (this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) && this->m_healthIncrease ) {
 	//	m_healthRenderTime += static_cast<float>(dt);
 	//	float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
 	//	float t = percenttime;
@@ -698,8 +706,8 @@ int Player::getLevel() const {
 
 void Player::resetHealth() {
 	m_health = m_maxHealth;
-	m_renderX = m_health / m_maxHealth;
-	m_renderXprev = m_health / m_maxHealth;
+	m_renderX = m_health;
+	m_renderXprev = m_health;
 }
 
 void Player::giveXpForEnemyKilled(int enemiesKilled) {
