@@ -39,7 +39,7 @@ namespace {
 
 Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg* DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
 	//RenderHelper::getInstance()->registerTexture("m_shield", "./Assets/Combat_UI/m_shield.png");
-	//float StartHealth = m_health;		// what is this for?
+
 	// set m_shield properties
 	AEVec2Set(&m_shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
 	AEVec2Set(&m_shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
@@ -144,8 +144,6 @@ void Player::update(double dt) {
 	//cout << mouseX << " | " << mouseY << "\n";
 	//cout << camOffset.x << " | " << camOffset.y << "\n";
 
-	/* blocking stuff */
-	//HandStateAnimationType;
 	if (this->m_hasAttacked && this->m_healthRenderTime < this->m_healthRenderTimeMax) {
 		m_healthRenderTime += static_cast<float>(dt);
 		float percenttime = static_cast<float>(m_healthRenderTime / m_healthRenderTimeMax);
@@ -160,6 +158,8 @@ void Player::update(double dt) {
 		this->m_healthRenderTime = 0.f;
 	}
 
+	/* blocking stuff */
+	//HandStateAnimationType;
 	if (
 		AEInputCheckTriggered(AEVK_SPACE)
 		&& m_blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING
