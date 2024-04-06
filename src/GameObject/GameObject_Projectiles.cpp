@@ -78,8 +78,8 @@ void GameObject_Projectiles::update(double _dt)
 			if (m_LocalPos.y > PLAYERSCREENPOSY)
 				m_LocalPos.y -= static_cast<float>(_dt / (m_Lifetime * 1000));
 
-			m_Scale.x += lerp(m_Scale.x, 400.f, static_cast<float>(_dt / (m_Lifetime * 1000.0))) * static_cast<float>(m_Speed);
-			m_Scale.y += lerp(m_Scale.y, 400.f, static_cast<float>(_dt / (m_Lifetime * 1000.0))) * static_cast<float>(m_Speed);
+			m_scale.x += lerp(m_scale.x, 400.f, static_cast<float>(_dt / (m_Lifetime * 1000.0))) * static_cast<float>(m_Speed);
+			m_scale.y += lerp(m_scale.y, 400.f, static_cast<float>(_dt / (m_Lifetime * 1000.0))) * static_cast<float>(m_Speed);
 		}
 		else
 		{
@@ -135,7 +135,7 @@ void GameObject_Projectiles::render()
 		// Set the texture to pTex
 		AEMtx33 transform = { 0 };
 		AEMtx33 scale;
-		AEMtx33Scale(&scale, m_Scale.x, m_Scale.y);
+		AEMtx33Scale(&scale, m_scale.x, m_scale.y);
 		AEMtx33 trans;
 		AEMtx33Trans(&trans, m_LocalPos.x, m_LocalPos.y);
 		AEMtx33 rotate;
@@ -192,7 +192,7 @@ void GameObject_Projectiles::fireAtPlayer(const AEVec2& _startpos,
 	double _MovTimer)
 {
 	m_LocalPos = _startpos;
-	m_Scale = _startscale;
+	m_scale = _startscale;
 	m_Lifetime = _MovTimer;
 	m_Speed = _speed;
 	m_type = _type;
@@ -203,7 +203,7 @@ GameObject_Projectiles* Create::projectiles(const AEVec2& _position, const AEVec
 {
 	GameObject_Projectiles* result = new GameObject_Projectiles();
 	result->m_LocalPos = _position;
-	result->m_Scale = _scale;
+	result->m_scale = _scale;
 	result->m_Active = false;
 	result->m_RefName = "Projectiles";
 	result->m_type = _type;

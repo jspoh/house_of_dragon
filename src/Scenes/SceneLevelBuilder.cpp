@@ -57,29 +57,29 @@ Struct Constructor Area
 */
 SceneLevelBuilder::v_FloorData::v_FloorData() :
 	m_currFloorNum{ 0 },
-	m_FloorNum{ 0 },
+	m_floorNum{ 0 },
 	m_currFloorTimer{ 0.0 },
-	m_FloorSpeedTimer{ 0.5 },
-	m_IsRender{ true },
-	m_Type{0}
+	m_floorSpeedTimer{ 0.5 },
+	m_isRender{ true },
+	m_type{0}
 {
-	AEMtx33Identity(&m_TransformFloorData);
-	AEMtx33Identity(&m_TransformFloorCurr);
+	AEMtx33Identity(&m_transformFloorData);
+	AEMtx33Identity(&m_transformFloorCurr);
 	AEMtx33Identity(&m_currFloorSpeed);
-	AEMtx33Identity(&m_Scale);
-	AEMtx33Identity(&m_Trans);
-	AEMtx33Identity(&m_OriginalTrans);
+	AEMtx33Identity(&m_scale);
+	AEMtx33Identity(&m_trans);
+	AEMtx33Identity(&m_originalTrans);
 }
 SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	:m_TexRef{ "" },
 	m_RenderOrder{ 0 },
 	m_Transparency{ -1.5f },
-	m_Type{ v_SceneObjectTypes::EType_Grass_Foliage_1 },
+	m_type{ v_SceneObjectTypes::EType_Grass_Foliage_1 },
 	m_tobeCentered {false}
 {
 	AEMtx33Identity(&m_TransformData);
-	AEMtx33Identity(&m_Scale);
-	AEMtx33Identity(&m_Trans);
+	AEMtx33Identity(&m_scale);
+	AEMtx33Identity(&m_trans);
 }
 SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	:m_LevelName{ "" },
@@ -122,19 +122,19 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 ***************************************************************************************************************************************/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 SceneLevelBuilder::SceneLevelBuilder() :
-	m_StopMovement{ false },
-	m_PanCloseToGround{ false },
-	m_CompletionStatus{ 98 },
+	m_stopMovement{ false },
+	m_panCloseToGround{ false },
+	m_completionStatus{ 98 },
 	m_currLevel{ 0 },
-	m_LvlNameTimer{ 0.0 },
-	m_LvlNameTransparency{ 0.0 },
+	m_lvlNameTimer{ 0.0 },
+	m_lvlNameTransparency{ 0.0 },
 	m_currTransitionTransparency{ 1.0 },
 	m_setTransitionTransparency{ -1.0 },
-	m_SceneEnemy{ nullptr },
-	m_CombatPhase{ false },
-	m_CombatAnimationComp{ false },
-	m_CombatBufferingTime{ 0.0 },
-	m_Lighting {1.0f,1.0f,1.0f,1.0f}
+	m_sceneEnemy{ nullptr },
+	m_combatPhase{ false },
+	m_combatAnimationComp{ false },
+	m_combatBufferingTime{ 0.0 },
+	m_lighting {1.0f,1.0f,1.0f,1.0f}
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////
     //                       Loading of ALL Scene Textures
@@ -147,7 +147,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		//Level Header
 		**********************************************/
 		RenderHelper::getInstance()->registerTexture("LVL_HEADER", "Assets/SceneObjects/LvlHeader.png");
-		pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+		m_pTextFont = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
 
 		/*********************************************
 		//Floor
@@ -251,12 +251,12 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	*/
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	{
-		m_Floor = new v_FloorData * [SIZE_OF_FLOOR];
-		m_FloorOBJs = new std::list<v_SceneObject>*[SIZE_OF_FLOOR];
+		m_floor = new v_FloorData * [SIZE_OF_FLOOR];
+		m_floorOBJs = new std::list<v_SceneObject>*[SIZE_OF_FLOOR];
 		for (int i = 0; i < SIZE_OF_FLOOR; i++)
 		{
-			m_Floor[i] = new v_FloorData[NUM_OF_TILES];
-			m_FloorOBJs[i] = new std::list<v_SceneObject>[NUM_OF_TILES];
+			m_floor[i] = new v_FloorData[NUM_OF_TILES];
+			m_floorOBJs[i] = new std::list<v_SceneObject>[NUM_OF_TILES];
 		}
 
 		m_tileSP = new v_TileSpawnPoint * [NUM_OF_TILESPAWNPOINTS];
@@ -270,7 +270,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 			}
 		}
 		//Set the Center floor num - the one the player is traversing on
-		t_CenterFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
+		t_centerFloorNum = static_cast<int>(SIZE_OF_FLOOR / 2);
 	}
 
 
@@ -283,8 +283,8 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	{
 		if (Database::getInstance().data["levels"].size() > 0)
 		{
-			m_SceneLevelDataList = new v_SceneLevelData[Database::getInstance().data["levels"].size()];
-			m_MAXLevel = static_cast<int>(Database::getInstance().data["levels"].size()) - 1;
+			m_sceneLevelDataList = new v_SceneLevelData[Database::getInstance().data["levels"].size()];
+			m_maxLevel = static_cast<int>(Database::getInstance().data["levels"].size()) - 1;
 			for (int i = 0; i < Database::getInstance().data["levels"].size(); i++)
 			{
 				v_SceneLevelData t_curr{};
@@ -316,10 +316,10 @@ SceneLevelBuilder::SceneLevelBuilder() :
 					}
 				}
 
-				*m_SceneLevelDataList = t_curr;
-				m_SceneLevelDataList++;
+				*m_sceneLevelDataList = t_curr;
+				m_sceneLevelDataList++;
 			}
-			m_SceneLevelDataList -= Database::getInstance().data["levels"].size();
+			m_sceneLevelDataList -= Database::getInstance().data["levels"].size();
 		}
 	}
 	
@@ -361,9 +361,9 @@ void SceneLevelBuilder::init()
 			Create::projectiles();
 		}
 
-		m_CompletionStatus = 98;
+		m_completionStatus = 98;
 		m_currLevel = SceneMenu::m_sInstance->m_SelectedLevel;
-		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
+		m_lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
@@ -391,62 +391,62 @@ void SceneLevelBuilder::init()
 				{
 					//Out of Screen Floor
 				case 0:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 8000.f, 1262.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 16000.0f * static_cast<f32>(j - t_CenterFloorNum), -2829.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 8000.f, 1262.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 16000.0f * static_cast<f32>(j - t_centerFloorNum), -2829.0f);
 					break;
 				case 1:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 7000.f, 1262.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 5750.0f * static_cast<f32>(j - t_CenterFloorNum), -2229.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 7000.f, 1262.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 5750.0f * static_cast<f32>(j - t_centerFloorNum), -2229.0f);
 					break;
 				case 2:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 6000.f, 1262.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 4350.0f * static_cast<f32>(j - t_CenterFloorNum), -1629.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 6000.f, 1262.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 4350.0f * static_cast<f32>(j - t_centerFloorNum), -1629.0f);
 					break;
 					//First Floor
 				case 3:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 2940.f, 616.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 2150.0f * static_cast<f32>(j - t_CenterFloorNum), -696.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 2940.f, 616.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 2150.0f * static_cast<f32>(j - t_centerFloorNum), -696.0f);
 					break;
 					//Second Floor
 				case 4:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 1593.0f, 339.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 1150.0f * static_cast<f32>(j - t_CenterFloorNum), -282.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 1593.0f, 339.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 1150.0f * static_cast<f32>(j - t_centerFloorNum), -282.0f);
 					break;
 					//Third floor
 				case 5:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 779.0f, 133.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 555.0f * static_cast<f32>(j - t_CenterFloorNum), -50.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 779.0f, 133.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 555.0f * static_cast<f32>(j - t_centerFloorNum), -50.0f);
 					break;
 					//Fourth floor
 				case 6:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 381.0f, 47.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 270.0f * static_cast<f32>(j - t_CenterFloorNum), 39.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 381.0f, 47.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 270.0f * static_cast<f32>(j - t_centerFloorNum), 39.0f);
 					break;
 					//Fifth floor
 				case 7:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 181.0f, 14.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 130.0f * static_cast<f32>(j - t_CenterFloorNum), 69.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 181.0f, 14.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 130.0f * static_cast<f32>(j - t_centerFloorNum), 69.0f);
 					break;
 					//Sixth floor
 				case 8:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 85.0f, 4.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 59.0f * static_cast<f32>(j - t_CenterFloorNum), 78.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 85.0f, 4.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 59.0f * static_cast<f32>(j - t_centerFloorNum), 78.0f);
 					break;
 					//Seventh floor
 				case 9:
-					AEMtx33Scale(&m_Floor[j][i].m_Scale, 33.0f, 1.f);
-					AEMtx33Trans(&m_Floor[j][i].m_Trans, 25.0f * static_cast<f32>(j - t_CenterFloorNum), 80.0f);
+					AEMtx33Scale(&m_floor[j][i].m_scale, 33.0f, 1.f);
+					AEMtx33Trans(&m_floor[j][i].m_trans, 25.0f * static_cast<f32>(j - t_centerFloorNum), 80.0f);
 					break;
 				default:
 					cout << "Error pls check floor" << "\n";
 					break;
 				}
-				m_Floor[j][i].m_FloorNum = i;
-				m_Floor[j][i].m_OriginalTrans = m_Floor[j][i].m_Trans;
-				AEMtx33Concat(&m_Floor[j][i].m_TransformFloorData, &m_Floor[j][i].m_Trans, &m_Floor[j][i].m_Scale);
-				m_Floor[j][i].m_currFloorNum = i;
+				m_floor[j][i].m_floorNum = i;
+				m_floor[j][i].m_originalTrans = m_floor[j][i].m_trans;
+				AEMtx33Concat(&m_floor[j][i].m_transformFloorData, &m_floor[j][i].m_trans, &m_floor[j][i].m_scale);
+				m_floor[j][i].m_currFloorNum = i;
 				//Setting Movement Point To
-				m_Floor[j][i].m_TransformFloorCurr = m_Floor[j][i].m_TransformFloorData;
+				m_floor[j][i].m_transformFloorCurr = m_floor[j][i].m_transformFloorData;
 			}
 		}
 
@@ -463,12 +463,12 @@ void SceneLevelBuilder::init()
 		//DO SKY DATA
 		AEMtx33Scale(&scale, 1700.0f, 600.f);
 		AEMtx33Trans(&trans, 0, 220);
-		AEMtx33Concat(&m_TransformSkyData, &trans, &scale);
+		AEMtx33Concat(&m_transformSkyData, &trans, &scale);
 		for (int i = 0; i < 9; i++)
 		{
-			m_TransformCloudsData.push_back(m_temp);
-			AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
-			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
+			m_transformCloudsData.push_back(m_temp);
+			AEMtx33ScaleApply(&m_transformCloudsData[i], &m_transformCloudsData[i], 1700.0f, 600.f);
+			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], (i % 3 - 1) * 1700.0f, 220.f);
 		}
 
 		////////////////////////////////////////////////////////////////////////
@@ -476,9 +476,9 @@ void SceneLevelBuilder::init()
 		//A Quick fix for retaining the previous transform of the backdrops
 		for (int i = 0; i < 9; i++)
 		{
-			m_TransformBackDrops1Data.push_back(m_temp);
-			m_TransformBackDrops2Data.push_back(m_temp);
-			m_TransformBackDrops3Data.push_back(m_temp);
+			m_transformBackDrops1Data.push_back(m_temp);
+			m_transformBackDrops2Data.push_back(m_temp);
+			m_transformBackDrops3Data.push_back(m_temp);
 		}
 
 		////////////////////////////////////////////////////////////////////////
@@ -487,18 +487,18 @@ void SceneLevelBuilder::init()
 		m_sunPos = { 350, 350 };
 		AEMtx33Scale(&scale, 50.0f, 50.f);
 		AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
-		AEMtx33Concat(&m_TransformSunData, &trans, &scale);
+		AEMtx33Concat(&m_transformSunData, &trans, &scale);
 		AEMtx33Scale(&scale, m_sunOverlayScale.x, m_sunOverlayScale.y);
 		AEMtx33Trans(&trans, m_sunPos.x, m_sunPos.y);
-		AEMtx33Concat(&m_TransformSunOverlayData, &trans, &scale);
+		AEMtx33Concat(&m_transformSunOverlayData, &trans, &scale);
 		for (int i = 0; i < 8; i++)
-			m_TransformSunLensData.push_back(m_temp);
+			m_transformSunLensData.push_back(m_temp);
 
 		////////////////////////////////////////////////////////////////////////
 		//Fog
 		AEMtx33Scale(&scale, 2000.0f, 70.f);
 		AEMtx33Trans(&trans, 0, 80);
-		AEMtx33Concat(&m_TransformFogData, &trans, &scale);
+		AEMtx33Concat(&m_transformFogData, &trans, &scale);
 	}
 }
 
@@ -546,11 +546,11 @@ void SceneLevelBuilder::update(double dt)
 		UpdateLvlName(static_cast<f32>(dt));//Level Name Animation
 		///////////////////////////////////////////////////////////////////////////////
 		//Level Progression Update
-		if(!m_CombatPhase)
+		if(!m_combatPhase)
 		{
-			if (m_CompletionStatus > 100.0 && SceneStages::m_sInstance->m_StartGame)
+			if (m_completionStatus > 100.0 && SceneStages::m_sInstance->m_StartGame)
 			{
-				if (m_currLevel < m_MAXLevel) {
+				if (m_currLevel < m_maxLevel) {
 					++m_currLevel;
 
 					// mark next level as unlocked
@@ -568,25 +568,25 @@ void SceneLevelBuilder::update(double dt)
 				
 				if (!showGameEnd) {
 					SceneLevelBuilder::SpawnLvlName();
-					m_CompletionStatus = 0.0;
+					m_completionStatus = 0.0;
 				}
 			}
 
 			if (!showGameEnd) {
 				if (CombatManager::getInstance().m_playerFledLastFight) {
 					CombatManager::getInstance().m_playerFledLastFight = false;		// reset flag
-					m_CompletionStatus -= FLEEING_COMPLETION_PENALTY;		// penalize player for fleeing fight
-					m_CompletionStatus = m_CompletionStatus < 0 ? 0 : m_CompletionStatus;
+					m_completionStatus -= FLEEING_COMPLETION_PENALTY;		// penalize player for fleeing fight
+					m_completionStatus = m_completionStatus < 0 ? 0 : m_completionStatus;
 				}
 
-				m_CompletionStatus += SceneStages::m_sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+				m_completionStatus += SceneStages::m_sInstance->m_StartGame ? dt * m_sceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 			// This is a way to speed up playtesting, uncomment this if you would like to progress and unlock the 
 		    // levels faster.
 			//if (AEInputCheckCurr(AEVK_TAB))
-			//	m_CompletionStatus += dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 10;
+			//	m_completionStatus += dt * m_sceneLevelDataList[m_currLevel].m_LevelCompletionRate * 10;
 		}
 		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
@@ -603,7 +603,7 @@ void SceneLevelBuilder::update(double dt)
 	// Combat & Player with Scene Interaction
 	{
 		static int t_whoseTurn = 0;
-		if (!m_CombatPhase)
+		if (!m_combatPhase)
 		{
 			////////////////////////////////////////////////////////////////////////////
 			// Player INPUT
@@ -619,16 +619,16 @@ void SceneLevelBuilder::update(double dt)
 			{
 				if (m_currTransitionTransparency >= 0.5f)
 				{
-					m_CombatBufferingTime -= m_CombatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
-					if (m_CombatBufferingTime > 0.2f)
+					m_combatBufferingTime -= m_combatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
+					if (m_combatBufferingTime > 0.2f)
 					{
 						dt *= 15; //SPEEDUP SPECIFICALLY TO FIT THE TRANSITION WITHIN THE SMALL TIMEFRAME
-						m_StopMovement = false;
-						m_PanCloseToGround = false;
-						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? static_cast<int>(LERPING_SPEED) : 0;
+						m_stopMovement = false;
+						m_panCloseToGround = false;
+						m_panCloseToGroundValue += m_panCloseToGroundValue < 80 ? static_cast<int>(LERPING_SPEED) : 0;
 					}
 				}
-				if (m_CombatBufferingTime <= 0.0f)
+				if (m_combatBufferingTime <= 0.0f)
 				{
 					////////////////////////////////////////////////////////////////////////
 					// Fade out after combat
@@ -651,31 +651,31 @@ void SceneLevelBuilder::update(double dt)
 				// Two scenarios in which combat starts : Your turn or OUR TURN ( Insert R*****N Flag meme here )
 				// 1) Player turn starts first
 				// 2) Enemy turn starts first
-				if (m_SceneEnemy != nullptr && !showGameEnd)
+				if (m_sceneEnemy != nullptr && !showGameEnd)
 				{
-					if (m_SceneEnemy->m_StartCombat)
+					if (m_sceneEnemy->m_StartCombat)
 					{
-						switch (m_SceneEnemy->m_StartCombat)
+						switch (m_sceneEnemy->m_StartCombat)
 						{
 						case 1:
-							m_SceneEnemy->m_Active = false;
-							m_SceneEnemy = nullptr;
-							m_CombatBufferingTime = 2.0f;
+							m_sceneEnemy->m_Active = false;
+							m_sceneEnemy = nullptr;
+							m_combatBufferingTime = 2.0f;
 							CombatScene::getInstance().spawnEnemies(GenerateEnemyToSpawn());
 							t_whoseTurn = CombatManager::PLAYER;
-							m_CombatPhase = true;
-							m_CombatAnimationComp = false;
+							m_combatPhase = true;
+							m_combatAnimationComp = false;
 							break;
 						case 2:
-							m_SceneEnemy->m_Active = false;
-							m_SceneEnemy = nullptr;
+							m_sceneEnemy->m_Active = false;
+							m_sceneEnemy = nullptr;
 							m_currTransitionTransparency = 1.0f;
 							m_setTransitionTransparency = 1.0f;
-							m_CombatBufferingTime = 0.8f;
+							m_combatBufferingTime = 0.8f;
 							CombatScene::getInstance().spawnEnemies(GenerateEnemyToSpawn());
 							t_whoseTurn = CombatManager::ENEMY;
-							m_CombatPhase = true;
-							m_CombatAnimationComp = false;
+							m_combatPhase = true;
+							m_combatAnimationComp = false;
 							break;
 						}
 					}
@@ -686,14 +686,14 @@ void SceneLevelBuilder::update(double dt)
 		{
 			//////////////////////////////////////////////////////////////////
 			// Combat Update
-			if (m_CombatAnimationComp)
+			if (m_combatAnimationComp)
 			{
 				// check if combat is over and update accordingly
-				bool prevCombatPhaseState = m_CombatPhase;
-				m_CombatPhase = CombatManager::getInstance().m_isInCombat;
+				bool prevCombatPhaseState = m_combatPhase;
+				m_combatPhase = CombatManager::getInstance().m_isInCombat;
 
 				// switch combat audio back to game audio
-				if (prevCombatPhaseState && !m_CombatPhase) {
+				if (prevCombatPhaseState && !m_combatPhase) {
 					SoundPlayer::stopAll();
 					SoundPlayer::GameAudio::getInstance().playLoop();
 					GameScene::combatAudioLoopIsPlaying = false;
@@ -705,12 +705,12 @@ void SceneLevelBuilder::update(double dt)
 
 				/////////////////////////////////////////////////////////////////////////////////
 				// 
-				if (!m_CombatPhase)
+				if (!m_combatPhase)
 				{
-					m_CombatBufferingTime = 0.6f;
+					m_combatBufferingTime = 0.6f;
 					FadeINBlack();
 					if (CombatScene::getInstance().getWinFlag())
-						m_CompletionStatus += 30; // Increment Progression of level for completing the battle
+						m_completionStatus += 30; // Increment Progression of level for completing the battle
 
 				}
 					
@@ -719,24 +719,24 @@ void SceneLevelBuilder::update(double dt)
 			/////////////////////////////////////////////////////////////////////
 			// Settings to lerp to the combat view
 			{
-				m_CombatBufferingTime -= m_CombatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
-				if (m_CombatBufferingTime < 0.0f && !m_CombatAnimationComp)
+				m_combatBufferingTime -= m_combatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
+				if (m_combatBufferingTime < 0.0f && !m_combatAnimationComp)
 				{
-					m_CombatAnimationComp = true;
-					m_StopMovement = true;
+					m_combatAnimationComp = true;
+					m_stopMovement = true;
 					CombatScene::getInstance().init((CombatManager::TURN)t_whoseTurn);
 					FadeOutBlack();
 				}
 				//For faster setup
-				if (m_CombatBufferingTime > 0.4f && !m_CombatAnimationComp)
+				if (m_combatBufferingTime > 0.4f && !m_combatAnimationComp)
 				{
 					if ((CombatManager::TURN)t_whoseTurn - 1) dt *= 5; //SPEEDUP SPECIFICALLY TO FIT THE TRANSITION WITHIN THE SMALL TIMEFRAME
 				}
 
-				m_PanCloseToGround = true;
-				m_PanCloseToGroundValue -= m_PanCloseToGroundValue > 30 ? static_cast<int>(LERPING_SPEED) : 0;
+				m_panCloseToGround = true;
+				m_panCloseToGroundValue -= m_panCloseToGroundValue > 30 ? static_cast<int>(LERPING_SPEED) : 0;
 
-				if (!GameScene::combatAudioLoopIsPlaying && m_CombatPhase) {
+				if (!GameScene::combatAudioLoopIsPlaying && m_combatPhase) {
 					SoundPlayer::stopAll();
 					SoundPlayer::CombatAudio::getInstance().playLoop();
 					GameScene::combatAudioLoopIsPlaying = true;
@@ -748,7 +748,7 @@ void SceneLevelBuilder::update(double dt)
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Game 3D Environment Update Cycle
-	if (!m_StopMovement)
+	if (!m_stopMovement)
 	{
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE FLOOR MOVEMENT
@@ -759,20 +759,20 @@ void SceneLevelBuilder::update(double dt)
 		for (int j = 0; j < SIZE_OF_FLOOR; j++)
 		{
 			std::list<int> t_ShiftRow{};
-			AEMtx33 m_LastFloorData = m_Floor[j][8].m_TransformFloorData;
+			AEMtx33 m_LastFloorData = m_floor[j][8].m_transformFloorData;
 			///////////////////////////////////////////////////////////////////////////
 			// Checks from Up to Down
 			///////////////////////////////////////////////////////////////////////////
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				AEMtx33 m_NextFloorData = m_Floor[j][i].m_currFloorNum != 0 ? m_Floor[j][m_Floor[j][i].m_currFloorNum - 1].m_TransformFloorData : m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
-				AEMtx33 m_CurrFloorData = m_Floor[j][m_Floor[j][i].m_currFloorNum].m_TransformFloorData;
+				AEMtx33 m_NextFloorData = m_floor[j][i].m_currFloorNum != 0 ? m_floor[j][m_floor[j][i].m_currFloorNum - 1].m_transformFloorData : m_floor[j][i].m_transformFloorCurr = m_LastFloorData;
+				AEMtx33 m_CurrFloorData = m_floor[j][m_floor[j][i].m_currFloorNum].m_transformFloorData;
 
 				//Minimum Speed of next floor
 				AEMtx33 m_MinimumNextFloorSpeed = {
-				(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / m_PanCloseToGroundValue,
+				(m_NextFloorData.m[0][0] - m_CurrFloorData.m[0][0]) / m_panCloseToGroundValue,
 				(m_NextFloorData.m[0][1] - m_CurrFloorData.m[0][1]) / 80,
-				(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / m_PanCloseToGroundValue,
+				(m_NextFloorData.m[0][2] - m_CurrFloorData.m[0][2]) / m_panCloseToGroundValue,
 				(m_NextFloorData.m[1][0] - m_CurrFloorData.m[1][0]) / 80,
 				(m_NextFloorData.m[1][1] - m_CurrFloorData.m[1][1]) / 80,
 				(m_NextFloorData.m[1][2] - m_CurrFloorData.m[1][2]) / 80,
@@ -782,65 +782,65 @@ void SceneLevelBuilder::update(double dt)
 				};
 
 				//Incrementing speed
-				m_Floor[j][i].m_currFloorSpeed.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * TOP_MOVEMENT_SPEED : 0;
-				m_Floor[j][i].m_currFloorSpeed.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * TOP_MOVEMENT_SPEED : m_Floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[0][0] += m_floor[j][i].m_currFloorSpeed.m[0][0] < m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[0][0] > m_MinimumNextFloorSpeed.m[0][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][0] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[0][1] += m_floor[j][i].m_currFloorSpeed.m[0][1] < m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[0][1] > m_MinimumNextFloorSpeed.m[0][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][1] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[0][2] += m_floor[j][i].m_currFloorSpeed.m[0][2] < m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[0][2] > m_MinimumNextFloorSpeed.m[0][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[0][2] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[1][0] += m_floor[j][i].m_currFloorSpeed.m[1][0] < m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[1][0] > m_MinimumNextFloorSpeed.m[1][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][0] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[1][1] += m_floor[j][i].m_currFloorSpeed.m[1][1] < m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[1][1] > m_MinimumNextFloorSpeed.m[1][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][1] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[1][2] += m_floor[j][i].m_currFloorSpeed.m[1][2] < m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[1][2] > m_MinimumNextFloorSpeed.m[1][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[1][2] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[2][0] += m_floor[j][i].m_currFloorSpeed.m[2][0] < m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[2][0] > m_MinimumNextFloorSpeed.m[2][0] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][0] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[2][1] += m_floor[j][i].m_currFloorSpeed.m[2][1] < m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[2][1] > m_MinimumNextFloorSpeed.m[2][1] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][1] * TOP_MOVEMENT_SPEED : 0;
+				m_floor[j][i].m_currFloorSpeed.m[2][2] += m_floor[j][i].m_currFloorSpeed.m[2][2] < m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * TOP_MOVEMENT_SPEED : m_floor[j][i].m_currFloorSpeed.m[2][2] > m_MinimumNextFloorSpeed.m[2][2] ? static_cast<f32>(dt) * m_MinimumNextFloorSpeed.m[2][2] * TOP_MOVEMENT_SPEED : 0;
 				//Adding to floor
-				m_Floor[j][i].m_TransformFloorCurr.m[0][0] += m_Floor[j][i].m_currFloorSpeed.m[0][0];
-				m_Floor[j][i].m_TransformFloorCurr.m[0][1] += m_Floor[j][i].m_currFloorSpeed.m[0][1];
-				m_Floor[j][i].m_TransformFloorCurr.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
-				m_Floor[j][i].m_TransformFloorCurr.m[1][0] += m_Floor[j][i].m_currFloorSpeed.m[1][0];
-				m_Floor[j][i].m_TransformFloorCurr.m[1][1] += m_Floor[j][i].m_currFloorSpeed.m[1][1];
-				m_Floor[j][i].m_TransformFloorCurr.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
-				m_Floor[j][i].m_TransformFloorCurr.m[2][0] += m_Floor[j][i].m_currFloorSpeed.m[2][0];
-				m_Floor[j][i].m_TransformFloorCurr.m[2][1] += m_Floor[j][i].m_currFloorSpeed.m[2][1];
-				m_Floor[j][i].m_TransformFloorCurr.m[2][2] += m_Floor[j][i].m_currFloorSpeed.m[2][2];
+				m_floor[j][i].m_transformFloorCurr.m[0][0] += m_floor[j][i].m_currFloorSpeed.m[0][0];
+				m_floor[j][i].m_transformFloorCurr.m[0][1] += m_floor[j][i].m_currFloorSpeed.m[0][1];
+				m_floor[j][i].m_transformFloorCurr.m[0][2] += m_floor[j][i].m_currFloorSpeed.m[0][2];
+				m_floor[j][i].m_transformFloorCurr.m[1][0] += m_floor[j][i].m_currFloorSpeed.m[1][0];
+				m_floor[j][i].m_transformFloorCurr.m[1][1] += m_floor[j][i].m_currFloorSpeed.m[1][1];
+				m_floor[j][i].m_transformFloorCurr.m[1][2] += m_floor[j][i].m_currFloorSpeed.m[1][2];
+				m_floor[j][i].m_transformFloorCurr.m[2][0] += m_floor[j][i].m_currFloorSpeed.m[2][0];
+				m_floor[j][i].m_transformFloorCurr.m[2][1] += m_floor[j][i].m_currFloorSpeed.m[2][1];
+				m_floor[j][i].m_transformFloorCurr.m[2][2] += m_floor[j][i].m_currFloorSpeed.m[2][2];
 
 				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				m_Floor[j][i].m_Trans.m[0][2] += m_Floor[j][i].m_currFloorSpeed.m[0][2];
-				m_Floor[j][i].m_Trans.m[1][2] += m_Floor[j][i].m_currFloorSpeed.m[1][2];
+				m_floor[j][i].m_trans.m[0][2] += m_floor[j][i].m_currFloorSpeed.m[0][2];
+				m_floor[j][i].m_trans.m[1][2] += m_floor[j][i].m_currFloorSpeed.m[1][2];
 
-				if (!m_StopMovement)
+				if (!m_stopMovement)
 				{
-					if (m_Floor[j][i].m_currFloorTimer > m_Floor[j][i].m_FloorSpeedTimer)
+					if (m_floor[j][i].m_currFloorTimer > m_floor[j][i].m_floorSpeedTimer)
 					{
-						m_Floor[j][i].m_currFloorTimer = 0.0;
-						if (m_Floor[j][i].m_currFloorNum > 1)
+						m_floor[j][i].m_currFloorTimer = 0.0;
+						if (m_floor[j][i].m_currFloorNum > 1)
 						{
-							m_Floor[j][i].m_currFloorNum--;
-							m_Floor[j][i].m_IsRender = true;
+							m_floor[j][i].m_currFloorNum--;
+							m_floor[j][i].m_isRender = true;
 						}
 						else
 						{
 							//Loop to the top
-							m_Floor[j][i].m_currFloorNum = 8;
-							m_Floor[j][i].m_currFloorSpeed = { 0 };
-							m_Floor[j][i].m_TransformFloorCurr = m_LastFloorData;
-							m_Floor[j][i].m_IsRender = false;
+							m_floor[j][i].m_currFloorNum = 8;
+							m_floor[j][i].m_currFloorSpeed = { 0 };
+							m_floor[j][i].m_transformFloorCurr = m_LastFloorData;
+							m_floor[j][i].m_isRender = false;
 
-							m_Floor[j][i].m_Trans.m[0][2] = m_Floor[j][8].m_OriginalTrans.m[0][2];
-							m_Floor[j][i].m_Trans.m[1][2] = m_Floor[j][8].m_OriginalTrans.m[1][2];
+							m_floor[j][i].m_trans.m[0][2] = m_floor[j][8].m_originalTrans.m[0][2];
+							m_floor[j][i].m_trans.m[1][2] = m_floor[j][8].m_originalTrans.m[1][2];
 
-							m_CurrentTileNumFurthest = m_Floor[j][i].m_FloorNum;
+							m_currentTileNumFurthest = m_floor[j][i].m_floorNum;
 
-							t_ShiftRow.push_back(m_Floor[j][i].m_FloorNum);
+							t_ShiftRow.push_back(m_floor[j][i].m_floorNum);
 
 							//FORCE CHANGE OF FLOORING TYPE
 							//Change of flooring at Stage 6
 							if (m_currLevel >= 6 && m_currLevel <= 7)
-								m_Floor[j][i].m_Type = 1;
+								m_floor[j][i].m_type = 1;
 							else
-								m_Floor[j][i].m_Type = 0;
+								m_floor[j][i].m_type = 0;
 						}
 					}
 					else
-						m_Floor[j][i].m_currFloorTimer += static_cast<f32>(dt);
+						m_floor[j][i].m_currFloorTimer += static_cast<f32>(dt);
 				}
 			}
 
@@ -852,7 +852,7 @@ void SceneLevelBuilder::update(double dt)
 					DestroyRowOBJs(*i);
 
 					//Only spawn on tile 0, 2->8 (1 & 9 tiles are hidden below another tile, so visual error)
-					if (m_Floor[j][*i].m_FloorNum > -1 && m_Floor[j][*i].m_FloorNum < 9 && m_Floor[j][*i].m_FloorNum != 1)
+					if (m_floor[j][*i].m_floorNum > -1 && m_floor[j][*i].m_floorNum < 9 && m_floor[j][*i].m_floorNum != 1)
 						CreateRowOBJs(*i);
 				}
 				t_ShiftRow.clear();
@@ -870,14 +870,14 @@ void SceneLevelBuilder::update(double dt)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
-					it != m_FloorOBJs[j][i].end();
+				for (std::list<v_SceneObject>::iterator it = m_floorOBJs[j][i].begin();
+					it != m_floorOBJs[j][i].end();
 					it++)
 				{
 					//Reset Transform data
 					AEMtx33Identity(&(*it).m_TransformData);
 					
-					if (!m_PanCloseToGround)
+					if (!m_panCloseToGround)
 					{
 						t_XModifier = t_XModifier > 2.0 ? t_XModifier - dt : t_XModifier;
 						t_YModifier = t_YModifier > 225 ? t_YModifier - dt * LerpSpeed : t_YModifier;
@@ -893,17 +893,17 @@ void SceneLevelBuilder::update(double dt)
 					}
 
 					//Scale with the tile
-					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_Floor[j][i].m_TransformFloorCurr.m[0][0] * 2, m_Floor[j][i].m_TransformFloorCurr.m[0][0] * 2);
+					AEMtx33ScaleApply(&(*it).m_TransformData, &(*it).m_TransformData, m_floor[j][i].m_transformFloorCurr.m[0][0] * 2, m_floor[j][i].m_transformFloorCurr.m[0][0] * 2);
 
 					//Translate with the tile
-					if (j < t_CenterFloorNum)
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, static_cast<float>(m_Floor[j][i].m_Trans.m[0][2] * t_XModifier + t_MXModifier), static_cast<float>(t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier));
+					if (j < t_centerFloorNum)
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, static_cast<float>(m_floor[j][i].m_trans.m[0][2] * t_XModifier + t_MXModifier), static_cast<float>(t_YModifier - m_floor[j][i].m_trans.m[1][2] * t_MYModifier));
 					else
-						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, static_cast<float>(m_Floor[j][i].m_Trans.m[0][2] * t_XModifier - t_MXModifier), static_cast<float>(t_YModifier - m_Floor[j][i].m_Trans.m[1][2] * t_MYModifier));
+						AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData, static_cast<float>(m_floor[j][i].m_trans.m[0][2] * t_XModifier - t_MXModifier), static_cast<float>(t_YModifier - m_floor[j][i].m_trans.m[1][2] * t_MYModifier));
 
 
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData,
-						(*it).m_Trans.m[0][2] * m_Floor[j][i].m_TransformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_Scale.m[0][0]),
+						(*it).m_trans.m[0][2] * m_floor[j][i].m_transformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_scale.m[0][0]),
 						0);
 					 
 					//Adjusting Transparency
@@ -920,8 +920,8 @@ void SceneLevelBuilder::update(double dt)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][i].begin();
-					it != m_FloorOBJs[j][i].end();
+				for (std::list<v_SceneObject>::iterator it = m_floorOBJs[j][i].begin();
+					it != m_floorOBJs[j][i].end();
 					it++)
 				{
 					(*it).m_Transparency += static_cast<f32>(dt) * 1.5f;
@@ -967,7 +967,7 @@ void SceneLevelBuilder::render()
 
 	// Set the the color to multiply to white, so that the sprite can 
 	// display the full range of colors (default is black).
-	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+	AEGfxSetColorToMultiply(m_lighting.r, m_lighting.g, m_lighting.b, m_lighting.a);
 
 	// Set the color to add to nothing, so that we don't alter the sprite's color
 	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
@@ -981,7 +981,7 @@ void SceneLevelBuilder::render()
 	{
 		AEGfxSetTransparency(1.0f);
 		//Sky
-		AEGfxSetTransform(m_TransformSkyData.m);
+		AEGfxSetTransform(m_transformSkyData.m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
@@ -990,44 +990,44 @@ void SceneLevelBuilder::render()
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
 		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetTransparency(1.0f);
-		AEGfxSetTransform(m_TransformSunData.m);
+		AEGfxSetTransform(m_transformSunData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransparency(1.0f);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
-		AEGfxSetTransform(m_TransformSunOverlayData.m);
+		AEGfxSetTransform(m_transformSunOverlayData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		//Cloud
 		//First Layer
-		AEGfxSetTransform(m_TransformCloudsData[0].m);
+		AEGfxSetTransform(m_transformCloudsData[0].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[1].m);
+		AEGfxSetTransform(m_transformCloudsData[1].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[2].m);
+		AEGfxSetTransform(m_transformCloudsData[2].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		//Second Layer
-		AEGfxSetTransform(m_TransformCloudsData[3].m);
+		AEGfxSetTransform(m_transformCloudsData[3].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[4].m);
+		AEGfxSetTransform(m_transformCloudsData[4].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[5].m);
+		AEGfxSetTransform(m_transformCloudsData[5].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		//Third Layer
-		AEGfxSetTransform(m_TransformCloudsData[6].m);
+		AEGfxSetTransform(m_transformCloudsData[6].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[7].m);
+		AEGfxSetTransform(m_transformCloudsData[7].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[8].m);
+		AEGfxSetTransform(m_transformCloudsData[8].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
@@ -1037,19 +1037,19 @@ void SceneLevelBuilder::render()
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
 		for (int i = 0; i < 9; i++)
 		{
-			AEGfxSetTransform(m_TransformBackDrops1Data[i].m);
+			AEGfxSetTransform(m_transformBackDrops1Data[i].m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
 		for (int i = 0; i < 5; i++)
 		{
-			AEGfxSetTransform(m_TransformBackDrops2Data[i].m);
+			AEGfxSetTransform(m_transformBackDrops2Data[i].m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
 		for (int i = 0; i < 5; i++)
 		{
-			AEGfxSetTransform(m_TransformBackDrops3Data[i].m);
+			AEGfxSetTransform(m_transformBackDrops3Data[i].m);
 			AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 
@@ -1063,48 +1063,48 @@ void SceneLevelBuilder::render()
 
 		for (int i = NUM_OF_TILES - 1; i > -1; i--)
 		{
-			if (m_Floor[t_CenterFloorNum][i].m_Type == 0)
+			if (m_floor[t_centerFloorNum][i].m_type == 0)
 				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
 			else
 				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_2"), 0, 0);
 
-			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
+			if (m_floor[t_centerFloorNum][i].m_isRender)
 			{
-				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
+				AEGfxSetTransform(m_floor[t_centerFloorNum][i].m_transformFloorCurr.m);
 				AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 
 		////Left Floor
-		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
+		for (int j = 0; j < SIZE_OF_FLOOR - (t_centerFloorNum + 1); j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				if (m_Floor[j][i].m_Type == 0)
+				if (m_floor[j][i].m_type == 0)
 					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
 				else
 					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_2"), 0, 0);
 
-				if (m_Floor[j][i].m_IsRender)
+				if (m_floor[j][i].m_isRender)
 				{
-					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxSetTransform(m_floor[j][i].m_transformFloorCurr.m);
 					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 				}
 			}
 		}
 		//Right Floor
-		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
+		for (int j = (t_centerFloorNum + 1); j < SIZE_OF_FLOOR; j++)
 		{
 			for (int i = NUM_OF_TILES - 1; i > -1; i--)
 			{
-				if (m_Floor[j][i].m_Type == 0)
+				if (m_floor[j][i].m_type == 0)
 					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
 				else
 					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_2"), 0, 0);
 
-				if (m_Floor[j][i].m_IsRender)
+				if (m_floor[j][i].m_isRender)
 				{
-					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxSetTransform(m_floor[j][i].m_transformFloorCurr.m);
 					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 				}
 			}
@@ -1115,7 +1115,7 @@ void SceneLevelBuilder::render()
 	// FOG RENDER
 	{
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
-		AEGfxSetTransform(m_TransformFogData.m);
+		AEGfxSetTransform(m_transformFogData.m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1127,18 +1127,18 @@ void SceneLevelBuilder::render()
 			for (int i = 0; i < NUM_OF_TILES - 1; i++)
 			{
 				////////////////////////////////////////////////
-				// m_CurrentTileNumFurthest = 4
+				// m_currentTileNumFurthest = 4
 				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
 				////////////////////////////////////////////////
-				int tempTileNum = m_CurrentTileNumFurthest - i;
+				int tempTileNum = m_currentTileNumFurthest - i;
 				if (tempTileNum < 0)
 					tempTileNum += NUM_OF_TILES - 1;
 
-				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-					it != m_FloorOBJs[j][tempTileNum].end();
+				for (std::list<v_SceneObject>::iterator it = m_floorOBJs[j][tempTileNum].begin();
+					it != m_floorOBJs[j][tempTileNum].end();
 					it++)
 				{
-					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_Type), 0, 0);
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_type), 0, 0);
 					AEGfxSetTransparency((*it).m_Transparency);
 					AEGfxSetTransform((*it).m_TransformData.m);
 					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -1151,18 +1151,18 @@ void SceneLevelBuilder::render()
 			for (int i = 0; i < NUM_OF_TILES - 1; i++)
 			{
 				////////////////////////////////////////////////
-				// m_CurrentTileNumFurthest = 4
+				// m_currentTileNumFurthest = 4
 				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
 				////////////////////////////////////////////////
-				int tempTileNum = m_CurrentTileNumFurthest - i;
+				int tempTileNum = m_currentTileNumFurthest - i;
 				if (tempTileNum < 0)
 					tempTileNum += NUM_OF_TILES - 1;
 
-				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-					it != m_FloorOBJs[j][tempTileNum].end();
+				for (std::list<v_SceneObject>::iterator it = m_floorOBJs[j][tempTileNum].begin();
+					it != m_floorOBJs[j][tempTileNum].end();
 					it++)
 				{
-					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_Type), 0, 0);
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_type), 0, 0);
 					AEGfxSetTransparency((*it).m_Transparency);
 					AEGfxSetTransform((*it).m_TransformData.m);
 					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
@@ -1172,42 +1172,42 @@ void SceneLevelBuilder::render()
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Light Flare
-	if (m_SceneLevelDataList[m_currLevel].m_DayTime)
+	if (m_sceneLevelDataList[m_currLevel].m_DayTime)
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
 		//Lens Flare
 		AEGfxSetTransparency(transparency[7]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[7].m);
+		AEGfxSetTransform(m_transformSunLensData[7].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[6]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[6].m);
+		AEGfxSetTransform(m_transformSunLensData[6].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[5]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[5].m);
+		AEGfxSetTransform(m_transformSunLensData[5].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[4]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[4].m);
+		AEGfxSetTransform(m_transformSunLensData[4].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[3]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[3].m);
+		AEGfxSetTransform(m_transformSunLensData[3].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[2]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[2].m);
+		AEGfxSetTransform(m_transformSunLensData[2].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[1]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[1].m);
+		AEGfxSetTransform(m_transformSunLensData[1].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[0]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[0].m);
+		AEGfxSetTransform(m_transformSunLensData[0].m);
 		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 
@@ -1220,7 +1220,7 @@ void SceneLevelBuilder::render()
 	// 		/////////////////////////////////////////////////////////////////////////
 	//   // RESET SETTINGS
 	//   	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//   	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+	//   	AEGfxSetColorToMultiply(m_lighting.r, m_lighting.g, m_lighting.b, m_lighting.a);
 	//   	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
 	//   	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	//		static double t_Transparency = -1.1;
@@ -1240,7 +1240,7 @@ void SceneLevelBuilder::render()
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
-	if (m_CombatPhase)
+	if (m_combatPhase)
 		CombatScene::getInstance().render();
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER
@@ -1284,7 +1284,7 @@ void SceneLevelBuilder::render()
 	// UI / MISC RENDER PART 2
 	{
 		// down here because player should be drawn on top of everything else, save pause screen
-		if (!m_CombatPhase) {
+		if (!m_combatPhase) {
 			player->render();
 		}
 	}
@@ -1334,11 +1334,11 @@ void SceneLevelBuilder::exit()
 	//Clear Floor
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
 	{
-		delete[] m_Floor[i];
-		delete[] m_FloorOBJs[i];
+		delete[] m_floor[i];
+		delete[] m_floorOBJs[i];
 	}
-	delete[] m_Floor;
-	delete[] m_FloorOBJs;
+	delete[] m_floor;
+	delete[] m_floorOBJs;
 
 	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
 	{
@@ -1350,10 +1350,10 @@ void SceneLevelBuilder::exit()
 	GameObjectManager::getInstance()->exit();
 	GameObjectManager::getInstance()->destroy();
 
-	delete[] m_SceneLevelDataList;
+	delete[] m_sceneLevelDataList;
 
 	//Destroy Font
-	AEGfxDestroyFont(pTextFont);
+	AEGfxDestroyFont(m_pTextFont);
 
 	CombatScene::getInstance().exit();
 
@@ -1372,7 +1372,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
 		//Skip centre
-		if (j == t_CenterFloorNum)
+		if (j == t_centerFloorNum)
 			continue;
 
 		//Spawn objs based on MAX_NUM_SCENEOBJS_TILE
@@ -1382,19 +1382,19 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 
 			//Selecting Entity Group to Spawn
 			int TotalProb = 0; //Get total probability
-			for (int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			for (int curr : m_sceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
 			{
 				TotalProb += curr;
 			}
 			std::string Ref = "";
 			int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
 			int temp = 0;//Disregard this: for loop below
-			for (int curr : m_SceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			for (int curr : m_sceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
 			{
 				randnum -= curr;
 				if (randnum < 0)
 				{
-					Ref = m_SceneLevelDataList[m_currLevel].m_SceneObjTypes[temp];
+					Ref = m_sceneLevelDataList[m_currLevel].m_SceneObjTypes[temp];
 					break;
 				}
 				temp++;
@@ -1403,21 +1403,21 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			//Selecting Entity from entity group to spawn
 			if (Ref == "Grass")
 			{
-				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Grass - v_SceneObjectTypes::TYPE_Grass) + v_SceneObjectTypes::TYPE_Grass),
+				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Grass - v_SceneObjectTypes::TYPE_Grass) + v_SceneObjectTypes::TYPE_Grass),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_Grass + 1),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Grass - 1)));
 				newObj.m_tobeCentered = true;
 			}
 			else if (Ref == "Tree")
 			{
-				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Tree - v_SceneObjectTypes::TYPE_Tree) + v_SceneObjectTypes::TYPE_Tree),
+				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Tree - v_SceneObjectTypes::TYPE_Tree) + v_SceneObjectTypes::TYPE_Tree),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_Tree + 1),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Tree - 1)));
 				newObj.m_tobeCentered = false;
 			}
 			else if (Ref == "Rock")
 			{
-				newObj.m_Type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Rock - v_SceneObjectTypes::TYPE_Rock) + v_SceneObjectTypes::TYPE_Rock),
+				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Rock - v_SceneObjectTypes::TYPE_Rock) + v_SceneObjectTypes::TYPE_Rock),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_Rock + 1),
 					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Rock - 1)));
 				newObj.m_tobeCentered = true;
@@ -1427,7 +1427,7 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			int t_RandX, t_RandY;
 			if (!newObj.m_tobeCentered)
 			{
-				if (j == t_CenterFloorNum - 1 || j == t_CenterFloorNum + 1)
+				if (j == t_centerFloorNum - 1 || j == t_centerFloorNum + 1)
 				{
 					t_RandX = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
 					t_RandY = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
@@ -1444,27 +1444,27 @@ void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
 			}
 
 
-			if (j < t_CenterFloorNum)//Left Side
+			if (j < t_centerFloorNum)//Left Side
 			{
-				AEMtx33Trans(&newObj.m_Trans, m_tileSP[t_RandY][t_RandX].m_X + m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
+				AEMtx33Trans(&newObj.m_trans, m_tileSP[t_RandY][t_RandX].m_X + m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 			else//Right Side
 			{
-				AEMtx33Trans(&newObj.m_Trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
+				AEMtx33Trans(&newObj.m_trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
 			}
 
 			//Scaling (Uniform Scaling)
-			AEMtx33Scale(&newObj.m_Scale, 2.5f, 2.5f);
+			AEMtx33Scale(&newObj.m_scale, 2.5f, 2.5f);
 
 			//Push into OBJlist in tile (Determine which to render first based on Spawnpoint m_Y
-			std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][t_tileNum].begin();
+			std::list<v_SceneObject>::iterator it = m_floorOBJs[j][t_tileNum].begin();
 			newObj.m_RenderOrder = t_RandY; //Spawnpoint m_y
-			for (; it != m_FloorOBJs[j][t_tileNum].end(); it++)
+			for (; it != m_floorOBJs[j][t_tileNum].end(); it++)
 			{
 				if (newObj.m_RenderOrder <= (*it).m_RenderOrder)
 					break;
 			}
-			m_FloorOBJs[j][t_tileNum].insert(it, newObj);
+			m_floorOBJs[j][t_tileNum].insert(it, newObj);
 		}
 	}
 }
@@ -1472,7 +1472,7 @@ void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
 {
 	for (int j = 0; j < SIZE_OF_FLOOR; j++)
 	{
-		m_FloorOBJs[j][t_tileNum].clear();
+		m_floorOBJs[j][t_tileNum].clear();
 	}
 }
 
@@ -1482,20 +1482,20 @@ Level Name
 **********************************************************************************/
 void SceneLevelBuilder::SpawnLvlName()
 {
-	m_LvlNameTimer = MAX_LVLNAMETIMER;
-	m_LvlNameTransparency = -1.2f;
+	m_lvlNameTimer = MAX_LVLNAMETIMER;
+	m_lvlNameTransparency = -1.2f;
 }
 void SceneLevelBuilder::UpdateLvlName(f32 t_dt)
 {
-	if (m_LvlNameTimer > MAX_LVLNAMETIMER - 1.0)
+	if (m_lvlNameTimer > MAX_LVLNAMETIMER - 1.0)
 	{
-		m_LvlNameTransparency += m_LvlNameTransparency > 1.0f ? 0.0f : 0.08f;
+		m_lvlNameTransparency += m_lvlNameTransparency > 1.0f ? 0.0f : 0.08f;
 	}
-	else if (m_LvlNameTimer < 1.0)
+	else if (m_lvlNameTimer < 1.0)
 	{
-		m_LvlNameTransparency -= m_LvlNameTransparency < -1.0f ? 0.0f : 0.08f;
+		m_lvlNameTransparency -= m_lvlNameTransparency < -1.0f ? 0.0f : 0.08f;
 	}
-	m_LvlNameTimer -= t_dt;
+	m_lvlNameTimer -= t_dt;
 }
 void SceneLevelBuilder::RenderLvlName()
 {
@@ -1504,27 +1504,27 @@ void SceneLevelBuilder::RenderLvlName()
 
 	AEVec2 RightOriginalHeaderPos{ 27.5f, 205.7f };
 	AEVec2 LeftOriginalHeaderPos{ -27.5f, 205.7f };
-	AEVec2 RightMaxHeaderPos{ -15.0f + m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
-	AEVec2 LeftMaxHeaderPos{ 15.0f - m_SceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
+	AEVec2 RightMaxHeaderPos{ -15.0f + m_sceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
+	AEVec2 LeftMaxHeaderPos{ 15.0f - m_sceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
 	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
 	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
 	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;
 	currLeftHeaderPos.x += currLeftHeaderPos.x > LeftMaxHeaderPos.x ? (LeftMaxHeaderPos.x - currLeftHeaderPos.x) / 30 : 0;
 
-	if (m_LvlNameTimer > 0.0 && m_currLevel > -1)
+	if (m_lvlNameTimer > 0.0 && m_currLevel > -1)
 	{
 		AEGfxTextureSet(NULL, 0, 0);
 		f32 TextWidth = 0, TextHeight = 0;
 		char strBuffer[1024];
-		sprintf_s(strBuffer, m_SceneLevelDataList[m_currLevel].m_LevelName.c_str());
-		AEGfxGetPrintSize(pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
-		AEGfxPrint(pTextFont, strBuffer, -TextWidth / 2.0f - 0.01f, 0.61f, 0.8f, 0.f, 0.f, 0.f, m_LvlNameTransparency);
-		AEGfxPrint(pTextFont, strBuffer, -TextWidth / 2.0f, 0.6f, 0.8f, 1.0f, 0.75f, 0.0f, m_LvlNameTransparency);
+		sprintf_s(strBuffer, m_sceneLevelDataList[m_currLevel].m_LevelName.c_str());
+		AEGfxGetPrintSize(m_pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
+		AEGfxPrint(m_pTextFont, strBuffer, -TextWidth / 2.0f - 0.01f, 0.61f, 0.8f, 0.f, 0.f, 0.f, m_lvlNameTransparency);
+		AEGfxPrint(m_pTextFont, strBuffer, -TextWidth / 2.0f, 0.6f, 0.8f, 1.0f, 0.75f, 0.0f, m_lvlNameTransparency);
 
 
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
-		if (m_LvlNameTimer < 1.0) AEGfxSetTransparency(m_LvlNameTransparency - 0.9f);
-		else AEGfxSetTransparency(m_LvlNameTransparency + 0.2f);
+		if (m_lvlNameTimer < 1.0) AEGfxSetTransparency(m_lvlNameTransparency - 0.9f);
+		else AEGfxSetTransparency(m_lvlNameTransparency + 0.2f);
 
 		AEMtx33 trans{};
 		AEMtx33Identity(&trans);
@@ -1580,12 +1580,12 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	// !TODO: jspoh consider removing debugging enemy spawner?
 	if (m_TryTimer < 0 || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 	{
-		if (m_SceneEnemy == nullptr && !m_CombatPhase && SceneStages::m_sInstance->m_StartGame)
+		if (m_sceneEnemy == nullptr && !m_combatPhase && SceneStages::m_sInstance->m_StartGame)
 		{
-			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
+			if (rand() % 100 < m_sceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 			{
-				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->findObjectByReference("MiscEnemy"));
-				m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
+				m_sceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->findObjectByReference("MiscEnemy"));
+				m_sceneEnemy->ActivateEnemy(m_floor[t_centerFloorNum][m_currentTileNumFurthest].m_transformFloorCurr);
 			}
 		}
 		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
@@ -1601,23 +1601,23 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	// Update backdrop main position or light filter 
 	// betweem each level to seamlessly transit
 	static double t_r, t_g, t_b;
-	if (m_currLevel < m_MAXLevel) //Check the stats for next level
+	if (m_currLevel < m_maxLevel) //Check the stats for next level
 	{
 		/////////////////////////////////////////////////////////////////////
 		//Change to nighttime
-		if (!m_SceneLevelDataList[m_currLevel].m_DayTime)
+		if (!m_sceneLevelDataList[m_currLevel].m_DayTime)
 		{
 			t_r = -0.39; t_g = 0.06; t_b = 0.3;
 		}
 		/////////////////////////////////////////////////////////////////////
 		//Change to Dawn
-		else if (!m_SceneLevelDataList[m_currLevel - 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
+		else if (!m_sceneLevelDataList[m_currLevel - 1].m_DayTime && m_sceneLevelDataList[m_currLevel].m_DayTime)
 		{
 			t_r = 1.0; t_g = 0.7; t_b = 1.0;
 		}
 		/////////////////////////////////////////////////////////////////////
 		//Change to Dusk
-		else if (!m_SceneLevelDataList[m_currLevel + 1].m_DayTime && m_SceneLevelDataList[m_currLevel].m_DayTime)
+		else if (!m_sceneLevelDataList[m_currLevel + 1].m_DayTime && m_sceneLevelDataList[m_currLevel].m_DayTime)
 		{
 			t_r = 1.0; t_g = 0.34; t_b = 0.3;
 		}
@@ -1635,9 +1635,9 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		t_r = 1.0; t_g = 1.0; t_b = 1.0;
 	}
 
-	m_Lighting.r += m_Lighting.r > static_cast<float>(t_r) && abs(t_r - m_Lighting.r) > dt ? -dt / LERPING_SPEED : m_Lighting.r < static_cast<float>(t_r) && abs(m_Lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
-	m_Lighting.g += m_Lighting.g > static_cast<float>(t_g) && abs(t_g - m_Lighting.g) > dt ? -dt / LERPING_SPEED : m_Lighting.g < static_cast<float>(t_g) && abs(m_Lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
-	m_Lighting.b += m_Lighting.b > static_cast<float>(t_b) && abs(t_b - m_Lighting.b) > dt ? -dt / LERPING_SPEED : m_Lighting.b < static_cast<float>(t_b) && abs(m_Lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
+	m_lighting.r += m_lighting.r > static_cast<float>(t_r) && abs(t_r - m_lighting.r) > dt ? -dt / LERPING_SPEED : m_lighting.r < static_cast<float>(t_r) && abs(m_lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
+	m_lighting.g += m_lighting.g > static_cast<float>(t_g) && abs(t_g - m_lighting.g) > dt ? -dt / LERPING_SPEED : m_lighting.g < static_cast<float>(t_g) && abs(m_lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
+	m_lighting.b += m_lighting.b > static_cast<float>(t_b) && abs(t_b - m_lighting.b) > dt ? -dt / LERPING_SPEED : m_lighting.b < static_cast<float>(t_b) && abs(m_lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
 
 	/////////////////////////////////////////////////////////////////////
 	/*
@@ -1665,22 +1665,22 @@ void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
 	//Furthest from sun -> Closest to sun
 	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
 	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
-	for (int i = 0; i < m_TransformSunLensData.size(); i++)
+	for (int i = 0; i < m_transformSunLensData.size(); i++)
 	{
-		AEMtx33Identity(&m_TransformSunLensData[i]);
-		AEMtx33ScaleApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], m_sunOverlayScale.x + scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
-		AEMtx33TransApply(&m_TransformSunLensData[i], &m_TransformSunLensData[i], mX + (m_sunPos.x - mX) * (i + varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
+		AEMtx33Identity(&m_transformSunLensData[i]);
+		AEMtx33ScaleApply(&m_transformSunLensData[i], &m_transformSunLensData[i], m_sunOverlayScale.x + scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
+		AEMtx33TransApply(&m_transformSunLensData[i], &m_transformSunLensData[i], mX + (m_sunPos.x - mX) * (i + varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
 	}
 }
 void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 {
 	float t_CloudMaxSpeed = 10.0f;// - to go left, + to go right
-	for (int i = 0; i < m_TransformCloudsData.size(); i++)
+	for (int i = 0; i < m_transformCloudsData.size(); i++)
 	{
 		if (i / 3 != 1)//Special case for this texture pack
 		{
-			AEMtx33Identity(&m_TransformCloudsData[i]);
-			AEMtx33ScaleApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], 1700.0f, 600.f);
+			AEMtx33Identity(&m_transformCloudsData[i]);
+			AEMtx33ScaleApply(&m_transformCloudsData[i], &m_transformCloudsData[i], 1700.0f, 600.f);
 			/***********************************************************************************************************************
 			The Clouds interpolation works by having three different tiles for each layer.
 
@@ -1695,19 +1695,19 @@ void SceneLevelBuilder::UpdateClouds(f32 t_dt)
 			in the clouds, creating depth.
 			************************************************************************************************************************/
 			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
-			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
+			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
 				305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
 		}
 		else
 		{
-			AEMtx33TransApply(&m_TransformCloudsData[i], &m_TransformCloudsData[i], t_CloudMaxSpeed * t_dt, 0.0f);;
+			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], t_CloudMaxSpeed * t_dt, 0.0f);;
 		}
 
 		//To do infinite Interpolation
-		if (m_TransformCloudsData[i].m[0][2] > m_TransformCloudsData[i].m[0][0])
-			m_TransformCloudsData[i].m[0][2] -= m_TransformCloudsData[i].m[0][0] * 2;
-		if (m_TransformCloudsData[i].m[0][2] < -m_TransformCloudsData[i].m[0][0])
-			m_TransformCloudsData[i].m[0][2] += m_TransformCloudsData[i].m[0][0] * 2;
+		if (m_transformCloudsData[i].m[0][2] > m_transformCloudsData[i].m[0][0])
+			m_transformCloudsData[i].m[0][2] -= m_transformCloudsData[i].m[0][0] * 2;
+		if (m_transformCloudsData[i].m[0][2] < -m_transformCloudsData[i].m[0][0])
+			m_transformCloudsData[i].m[0][2] += m_transformCloudsData[i].m[0][0] * 2;
 	}
 }
 void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
@@ -1715,18 +1715,18 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 	UNREFERENCED_PARAMETER(t_dt);
 	for (int i = 0; i < 9; i++)
 	{
-		AEMtx33Identity(&m_TransformBackDrops1Data[i]);
-		AEMtx33ScaleApply(&m_TransformBackDrops1Data[i], &m_TransformBackDrops1Data[i], 240.0f, 360.f);
-		AEMtx33TransApply(&m_TransformBackDrops1Data[i], &m_TransformBackDrops1Data[i], (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
+		AEMtx33Identity(&m_transformBackDrops1Data[i]);
+		AEMtx33ScaleApply(&m_transformBackDrops1Data[i], &m_transformBackDrops1Data[i], 240.0f, 360.f);
+		AEMtx33TransApply(&m_transformBackDrops1Data[i], &m_transformBackDrops1Data[i], (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
 			205.f + static_cast<f32>(mouseY / 90.0f));
 
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		AEMtx33Identity(&m_TransformBackDrops2Data[i]);
-		AEMtx33ScaleApply(&m_TransformBackDrops2Data[i], &m_TransformBackDrops2Data[i], 640.0f, 360.0f);
-		AEMtx33TransApply(&m_TransformBackDrops2Data[i], &m_TransformBackDrops2Data[i], (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
+		AEMtx33Identity(&m_transformBackDrops2Data[i]);
+		AEMtx33ScaleApply(&m_transformBackDrops2Data[i], &m_transformBackDrops2Data[i], 640.0f, 360.0f);
+		AEMtx33TransApply(&m_transformBackDrops2Data[i], &m_transformBackDrops2Data[i], (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
 			205.f + static_cast<f32>(mouseY / 70.0f));
 	}
 
@@ -1735,35 +1735,35 @@ void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
 	{
 		for (int i = 0; i < 5; i++)
 		{
-			AEMtx33Identity(&m_TransformBackDrops3Data[i]);
-			AEMtx33ScaleApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], 480.0f, 360.f);
-			AEMtx33TransApply(&m_TransformBackDrops3Data[i], &m_TransformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
+			AEMtx33Identity(&m_transformBackDrops3Data[i]);
+			AEMtx33ScaleApply(&m_transformBackDrops3Data[i], &m_transformBackDrops3Data[i], 480.0f, 360.f);
+			AEMtx33TransApply(&m_transformBackDrops3Data[i], &m_transformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
 				205.f + static_cast<f32>(mouseY / 50.0f));
 		}
 	}
 	else
-		for (int i = 0; i < 5; i++) AEMtx33Identity(&m_TransformBackDrops3Data[i]);
+		for (int i = 0; i < 5; i++) AEMtx33Identity(&m_transformBackDrops3Data[i]);
 }
 
 std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 {
-	m_CombatNames.clear();
+	m_combatNames.clear();
 	int TotalProb = 0; //Get total probability
-	for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+	for (int curr : m_sceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
 	{
 		TotalProb += curr;
 	}
-	for (int i = 0; i < m_SceneLevelDataList[m_currLevel].m_MaxEnemies; i++)
+	for (int i = 0; i < m_sceneLevelDataList[m_currLevel].m_MaxEnemies; i++)
 	{
 		std::string Ref = "";
 		int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
 		int temp = 0;//Disregard this: for loop below
-		for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+		for (int curr : m_sceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
 		{
 			randnum -= curr;
 			if (randnum <= 0)
 			{
-				Ref = m_SceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
+				Ref = m_sceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
 				break;
 			}
 			temp++;
@@ -1773,7 +1773,7 @@ std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 			throw std::exception();
 		}
 
-		m_CombatNames.push_back(Ref);
+		m_combatNames.push_back(Ref);
 
 		if (rand() % 100 < 10)
 		{
@@ -1782,7 +1782,7 @@ std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 	}
 
 
-	return m_CombatNames;
+	return m_combatNames;
 }
 
 

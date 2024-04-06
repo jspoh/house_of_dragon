@@ -29,7 +29,7 @@ public:
 	virtual void exit();
 
 	AEVec2 m_LocalPos, m_WorldPos; //World Pos for Game Logic Calculation, Local Pos for Graphic Calculation
-	AEVec2 m_Scale;
+	AEVec2 m_scale;
 	double m_Lifetime;
 	bool m_Active; //True if alive, false if dead
 	std::string m_RefName;

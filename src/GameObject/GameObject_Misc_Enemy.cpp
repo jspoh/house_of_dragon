@@ -58,7 +58,7 @@ void GameObject_Misc_Enemy::update(double _dt)
 			//Check Collision
 			if (AEInputCheckTriggered(AEVK_LBUTTON))
 			{
-				if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_Scale.x, m_Scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY))
+				if (CollisionChecker::isMouseInRect(pos.x, pos.y, m_scale.x, m_scale.y, static_cast<float>(mouseX), static_cast<float>(mouseY))
 					&& !m_AttackPlayer)
 				{
 					m_Health -= 1; //Just a simple subtraction
@@ -121,7 +121,7 @@ void GameObject_Misc_Enemy::ActivateEnemy(AEMtx33& m_transform, v_EnemyBehaviour
 	AEMtx33Identity(&m_TransformData);
 	m_AttackPlayer = false;
 	m_StartCombat = false; // i know should put 0 but i like it this way since makes more sense
-	m_Scale.x = m_Scale.y = 1.0f;
+	m_scale.x = m_scale.y = 1.0f;
 	m_Lifetime = 1.0;
 	m_Health = rand() % 5 + 5;
 	m_Transparency = 1.0;
@@ -152,10 +152,10 @@ void GameObject_Misc_Enemy::UpdateEnemyMov(double _dt)
 	m_TransformData.m[0][2] = m_AttachedFloorTransform->m[0][2];
 	m_TransformData.m[1][2] = m_AttachedFloorTransform->m[1][2];
 
-	m_Scale.x = m_TransformData.m[0][0];
-	m_Scale.y = m_TransformData.m[1][1];
-	m_LocalPos.x = m_TransformData.m[0][2] / m_Scale.x;
-	m_LocalPos.y = m_TransformData.m[1][2] / (m_Scale.y * 2);
+	m_scale.x = m_TransformData.m[0][0];
+	m_scale.y = m_TransformData.m[1][1];
+	m_LocalPos.x = m_TransformData.m[0][2] / m_scale.x;
+	m_LocalPos.y = m_TransformData.m[1][2] / (m_scale.y * 2);
 
 }
 
@@ -184,8 +184,8 @@ void GameObject_Misc_Enemy::UpdateCombatTransition(double _dt)
 			if (m_LocalPos.y > camY)
 				m_LocalPos.y -= static_cast<float>(_dt / (m_Lifetime * 1000));
 
-			m_Scale.x += lerp(m_Scale.x, 3.f, static_cast<float>(_dt / (m_Lifetime * 1000))) * static_cast<float>(m_Speed);
-			m_Scale.y += lerp(m_Scale.y, 3.f, static_cast<float>(_dt / (m_Lifetime * 1000))) * static_cast<float>(m_Speed);
+			m_scale.x += lerp(m_scale.x, 3.f, static_cast<float>(_dt / (m_Lifetime * 1000))) * static_cast<float>(m_Speed);
+			m_scale.y += lerp(m_scale.y, 3.f, static_cast<float>(_dt / (m_Lifetime * 1000))) * static_cast<float>(m_Speed);
 		}
 		else
 		{
@@ -197,7 +197,7 @@ void GameObject_Misc_Enemy::UpdateCombatTransition(double _dt)
 	//Transform Update (DONT CHANGE)
 	{
 		AEMtx33Identity(&m_TransformData);
-		AEMtx33ScaleApply(&m_TransformData, &m_TransformData, m_Scale.x, m_Scale.y);
+		AEMtx33ScaleApply(&m_TransformData, &m_TransformData, m_scale.x, m_scale.y);
 		AEMtx33TransApply(&m_TransformData, &m_TransformData, m_LocalPos.x, m_LocalPos.y);
 	}
 
@@ -207,7 +207,7 @@ GameObject_Misc_Enemy* Create::miscEnemy(const AEVec2& _position, const AEVec2& 
 {
 	GameObject_Misc_Enemy* result = new GameObject_Misc_Enemy();
 	result->m_LocalPos = _position;
-	result->m_Scale = _scale;
+	result->m_scale = _scale;
 	result->m_Active = false;
 	result->m_RefName = "MiscEnemy";
 	result->init();

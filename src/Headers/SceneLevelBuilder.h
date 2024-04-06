@@ -72,8 +72,8 @@ private:
 		////////////////////////////////////////////////////////////////////////
 		/*
 		There are two different transforms that each floor tile stores.
-		- m_TransformFloorData -> the Original Floor Tile transform data(example: Floor[6][8] transform data)
-		- m_TransformFloorCurr -> the Current Floor Tile transform data that is incremented
+		- m_transformFloorData -> the Original Floor Tile transform data(example: Floor[6][8] transform data)
+		- m_transformFloorCurr -> the Current Floor Tile transform data that is incremented
 		                        to the Original Floor Tile transform data
 
 		And the other variables does the following:
@@ -81,10 +81,10 @@ private:
 		- m_currFloorSpeed -> determines the value to increment for each value in the transform matrix.
 		*/
 		////////////////////////////////////////////////////////////////////////
-		AEMtx33 m_TransformFloorData;
-		AEMtx33 m_TransformFloorCurr;
+		AEMtx33 m_transformFloorData;
+		AEMtx33 m_transformFloorCurr;
 		int m_currFloorNum;
-		int m_FloorNum;
+		int m_floorNum;
 		AEMtx33 m_currFloorSpeed;
 
 		////////////////////////////////////////////////////////////////////////
@@ -95,12 +95,12 @@ private:
         */
         ////////////////////////////////////////////////////////////////////////
 		f32 m_currFloorTimer;
-		f32 m_FloorSpeedTimer;
+		f32 m_floorSpeedTimer;
 
 		//And this is basically Render or Not
-		bool m_IsRender;
-		AEMtx33 m_Scale, m_Trans, m_OriginalTrans;
-		int m_Type; //0 for grass, 1 for rocky
+		bool m_isRender;
+		AEMtx33 m_scale, m_trans, m_originalTrans;
+		int m_type; //0 for grass, 1 for rocky
 	};
 
 	struct v_TileSpawnPoint
@@ -178,10 +178,10 @@ private:
 	{
 		v_SceneObject();
 		AEMtx33 m_TransformData;
-		AEMtx33 m_Scale, m_Trans;
+		AEMtx33 m_scale, m_trans;
 		int m_RenderOrder;
 		float m_Transparency;
-		v_SceneObjectTypes m_Type;
+		v_SceneObjectTypes m_type;
 		std::string m_TexRef; //Used with draw
 		bool m_tobeCentered;
 	};
@@ -211,23 +211,23 @@ private:
 		bool m_DayTime;
 	};					  
 
-	v_FloorData** m_Floor;
+	v_FloorData** m_floor;
 	v_TileSpawnPoint** m_tileSP; //0 
-	std::list<v_SceneObject>** m_FloorOBJs;
-	int t_CenterFloorNum;
+	std::list<v_SceneObject>** m_floorOBJs;
+	int t_centerFloorNum;
 
-	v_SceneLevelData* m_SceneLevelDataList;
-	double m_CompletionStatus; //0 - 100%
+	v_SceneLevelData* m_sceneLevelDataList;
+	double m_completionStatus; //0 - 100%
 	int m_currLevel;
-	int m_MAXLevel;
+	int m_maxLevel;
 
-	Color m_Lighting;
+	Color m_lighting;
 
 	///////////////////////////////////////////////////////
 	//LEVEL NAME DISPLAY
-	f32 m_LvlNameTimer;
-	f32 m_LvlNameTransparency;
-	s8 pTextFont;
+	f32 m_lvlNameTimer;
+	f32 m_lvlNameTransparency;
+	s8 m_pTextFont;
 	
 	///////////////////////////////////////////////////////
 	//Screen Transition
@@ -236,26 +236,26 @@ private:
 
 	///////////////////////////////////////////////////////
 	//TRANSFORM DATA
-	AEMtx33 m_TransformSkyData;
-	std::vector<AEMtx33> m_TransformCloudsData;
-	std::vector<AEMtx33> m_TransformBackDrops1Data;
-	std::vector<AEMtx33> m_TransformBackDrops2Data;
-	std::vector<AEMtx33> m_TransformBackDrops3Data;
-	AEMtx33 m_TransformSunData;
-	AEMtx33 m_TransformSunOverlayData;
-	std::vector<AEMtx33> m_TransformSunLensData;
+	AEMtx33 m_transformSkyData;
+	std::vector<AEMtx33> m_transformCloudsData;
+	std::vector<AEMtx33> m_transformBackDrops1Data;
+	std::vector<AEMtx33> m_transformBackDrops2Data;
+	std::vector<AEMtx33> m_transformBackDrops3Data;
+	AEMtx33 m_transformSunData;
+	AEMtx33 m_transformSunOverlayData;
+	std::vector<AEMtx33> m_transformSunLensData;
 	AEVec2 m_sunPos, m_sunOverlayScale;
-	AEMtx33 m_TransformFogData;
+	AEMtx33 m_transformFogData;
 
 	///////////////////////////////////////////////////////
 	//Combat 
-	bool m_StopMovement;
-	bool m_PanCloseToGround;
-	int m_PanCloseToGroundValue = 80;
-	int m_CurrentTileNumFurthest;
-	bool m_CombatPhase;
-	bool m_CombatAnimationComp;
-	double m_CombatBufferingTime;
-	GameObject_Misc_Enemy* m_SceneEnemy; // Just as a reference to easily start the combat
-	std::vector<std::string> m_CombatNames;
+	bool m_stopMovement;
+	bool m_panCloseToGround;
+	int m_panCloseToGroundValue = 80;
+	int m_currentTileNumFurthest;
+	bool m_combatPhase;
+	bool m_combatAnimationComp;
+	double m_combatBufferingTime;
+	GameObject_Misc_Enemy* m_sceneEnemy; // Just as a reference to easily start the combat
+	std::vector<std::string> m_combatNames;
 };
