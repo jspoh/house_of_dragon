@@ -58,9 +58,10 @@ private:
 	float m_healthRenderTime{ 0 };
 	const float m_healthRenderTimeMax = 0.75f;
 
-	float m_attackedRenderX{ 0 };
-	float m_attackedRenderXprev{ 0 };
+	float m_renderX{ 0 };
+	float m_renderXprev{ 0 };
 	bool m_hasAttacked{ 0 };
+	bool m_healthIncrease{ 0 };
 
 	int m_playerLevel;
 
