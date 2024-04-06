@@ -129,7 +129,10 @@
       "maxSceneOBJperTile": 4,
       "enemySpawnWeight": [
         {
-          "pig": 1
+          "rabbit": 2,
+          "pig": 2,
+          "goat": 1,
+          "chicken": 2
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -150,7 +153,12 @@
       "maxSceneOBJperTile": 8,
       "enemySpawnWeight": [
         {
-          "dragon": 2
+          "rabbit": 1,
+          "pig": 1,
+          "goat": 1,
+          "monkey": 1,
+          "snake": 1,
+          "chicken": 2
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -171,7 +179,14 @@
       "maxSceneOBJperTile": 20,
       "enemySpawnWeight": [
         {
-          "dragon": 2
+          "rabbit": 1,
+          "pig": 1,
+          "chicken": 1,
+          "goat": 3,
+          "monkey": 3,
+          "snake": 3,
+          "horse": 2,
+          "bull": 2
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -192,7 +207,14 @@
       "maxSceneOBJperTile": 20,
       "enemySpawnWeight": [
         {
-          "dragon": 2
+          "rabbit": 1,
+          "pig": 1,
+          "chicken": 1,
+          "goat": 2,
+          "monkey": 2,
+          "snake": 3,
+          "horse": 3,
+          "bull": 3
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -213,6 +235,14 @@
       "maxSceneOBJperTile": 20,
       "enemySpawnWeight": [
         {
+          "rabbit": 1,
+          "pig": 1,
+          "chicken": 1,
+          "goat": 3,
+          "monkey": 3,
+          "snake": 3,
+          "horse": 5,
+          "bull": 5,
           "dragon": 2
         }
       ],
@@ -234,8 +264,15 @@
       "maxSceneOBJperTile": 12,
       "enemySpawnWeight": [
         {
-          "dragon": 2,
-          "snake": 3
+          "rabbit": 1,
+          "pig": 1,
+          "chicken": 1,
+          "goat": 1,
+          "monkey": 1,
+          "snake": 1,
+          "horse": 5,
+          "bull": 5,
+          "dragon": 5
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -256,7 +293,15 @@
       "maxSceneOBJperTile": 30,
       "enemySpawnWeight": [
         {
-          "dragon": 2
+          "rabbit": 1,
+          "pig": 1,
+          "chicken": 1,
+          "goat": 1,
+          "monkey": 1,
+          "snake": 1,
+          "horse": 5,
+          "bull": 5,
+          "dragon": 10
         }
       ],
       "SceneOBJSpawnWeight": [
