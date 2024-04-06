@@ -847,19 +847,23 @@ void CombatScene::Update(double dt)
 			player->playerAttacked();
 			dialogueState = DIALOGUE::ENEMY_ATTACK;
 			float multiplier = 1.f;
+			static constexpr float NOT_BLOCKED_DMG_MULTIPLIER = 1.f;
+			static constexpr float HALF_BLOCKED_DMG_MULTIPLIER = 0.5f;
+			static constexpr float FULLY_BLOCKED_DMG_MULTIPLIER = 0.2f;
+
 			switch (player->blockingState) {
 			case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 			case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-				multiplier = 1.f;
+				multiplier = NOT_BLOCKED_DMG_MULTIPLIER;
 				cout << "Attack not blocked by player at all, receiving " << multiplier << " damage multiplier against player\n";
 				break;
 			case PLAYER_BLOCKING_STATES::ON_ENTER:
 			case PLAYER_BLOCKING_STATES::ON_EXIT:
-				multiplier = 0.5f;
+				multiplier = HALF_BLOCKED_DMG_MULTIPLIER;
 				cout << "Attack not fully blocked by player, receiving " << multiplier << " damage multiplier against player\n";
 				break;
 			case PLAYER_BLOCKING_STATES::ON_UPDATE:
-				multiplier = 0.3f;
+				multiplier = FULLY_BLOCKED_DMG_MULTIPLIER;
 				cout << "Attack blocked by player, receiving " << multiplier << " damage multiplier against player\n";
 				break;
 			}
@@ -872,7 +876,7 @@ void CombatScene::Update(double dt)
 				Enemy* e = groups.enemies[randEnemyIndex];
 
 				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
-				e->attack(*player, multiplier);  // Example: All enemies attack the player
+				e->attack(*player, multiplier);
 				CombatManager::getInstance().next();
 
 				GameObject_Projectiles* np = Create::Projectiles();
@@ -945,6 +949,7 @@ void CombatScene::Render()
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 			if (enemy->isDead()) {
 				deadEnemies.push_back(i);
+				player->giveXpForEnemyKilled();
 			}
 			enemy->render();
 			i++;

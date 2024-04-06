@@ -67,7 +67,8 @@ private:
 
 	int playerLevel;
 
-	static constexpr float levelHealthIncPercentage = 0.1f;
+	// for every level increment, increase dmg by percentage
+	static constexpr float levelDmgIncPercentage = 0.1f;
 
 	// dmgMul is used when player consumes an item that grants a damage boost
 	static constexpr float DEFAULT_DMG_MUL = 1;
@@ -136,6 +137,8 @@ public:
 	int getLevel() const;
 
 	void resetHealth();
+
+	void giveXpForEnemyKilled(int enemiesKilled = 1);
 
 private:
 	HandAnimationType HandStateAnimationType = HandAnimationType::None; //Can use enum

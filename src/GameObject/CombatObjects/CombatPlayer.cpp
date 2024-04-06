@@ -37,7 +37,7 @@ namespace {
 }
 
 
-Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg * DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
+Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg* DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
 	//RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
 	//float StartHealth = health;		// what is this for?
 	// set shield properties
@@ -59,9 +59,9 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 	// init level
 	playerLevel = Database::getInstance().data["player"]["level"];
 
-	// init health based on player level
-	// increase player health by percentages
-	health += health * ((playerLevel - 1) * levelHealthIncPercentage);
+	// increase player damage by percentages
+	//health += health * ((playerLevel - 1) * levelHealthIncPercentage);
+	dmg += dmg * ((playerLevel - 1) * levelDmgIncPercentage);
 
 	attacked = false;
 	startingHealth = health;
@@ -80,7 +80,7 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 
 Player::~Player() {
 	//RenderHelper::getInstance()->removeTextureByRef("shield");	// let renderhelper manage
-	
+
 	for (const auto& [itemName, itemQty] : inventory) {
 		Database::getInstance().data["player"]["inventory"][itemName] = itemQty;
 	}
@@ -99,7 +99,7 @@ void Player::playerAttacked() {
 
 void Player::healthGain(float healthIncrease) {
 	float newhealth = this->health + healthIncrease;
-	if (newhealth < 100.f ) {
+	if (newhealth < 100.f) {
 		this->health = newhealth;
 	}
 	else {
@@ -109,18 +109,18 @@ void Player::healthGain(float healthIncrease) {
 }
 
 void Player::_drawHealth(float screenX, float screenY) {
-	std::string name = "Jackie";
-		std::string level = "  Lv:1";
+	std::string name = "Player";
+	std::string level = "  Lv: " + std::to_string(playerLevel);
 	float paddingY = 50;
 	float paddingX = 90;
 	AEVec2 panelPos = stow(screenX, screenY);
 	//panel rendering
 	f32 truex, truey;
 	AEGfxGetCamPosition(&truex, &truey);
-	RenderHelper::getInstance()->texture("panel", panelPos.x + truex  , panelPos.y   + truey + paddingY, 270, 100);
+	RenderHelper::getInstance()->texture("panel", panelPos.x + truex, panelPos.y + truey + paddingY, 270, 100);
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 	if (this->health > 66) {
-		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20  , 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
+		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
 		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
 		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
@@ -162,8 +162,8 @@ void Player::update(double dt) {
 	}
 
 	if (
-		AEInputCheckTriggered(AEVK_SPACE) 
-		&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING 
+		AEInputCheckTriggered(AEVK_SPACE)
+		&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING
 		&& CombatManager::getInstance().turn == CombatManager::TURN::ENEMY
 		) {
 		setHandStateAnimationType(HandAnimationType::Block);
@@ -219,7 +219,7 @@ void Player::render() {
 	//_renderShield();
 	_renderHands();
 }
-void Player::renderHealth(double x, double y ) {
+void Player::renderHealth(double x, double y) {
 	this->_drawHealth(static_cast<float>(x), static_cast<float>(y));
 }
 
@@ -277,7 +277,7 @@ void Player::updateHands(float t_dt)
 	switch (HandStateAnimationType)
 	{
 	case HandAnimationType::Punch:
-		
+
 		if (!LeftSide) //Left Hand Punch
 			switch (t_AnimationFrame)
 			{
@@ -433,7 +433,7 @@ void Player::_updateBlockingHands() {
 
 	if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
 		LeftSide = rand() % 2 - 1;
- 		if (!LeftSide) {
+		if (!LeftSide) {
 			AEMtx33Identity(&Hand3PosData.second);
 			Hand1PosData.first = Hand3PosData.second;
 			AEMtx33ScaleApply(&Hand1PosData.first, &Hand1PosData.first, 200, 318);
@@ -663,4 +663,28 @@ void Player::resetHealth() {
 	health = startingHealth;
 	AttackedRenderX = health / 80;
 	AttackedRenderXprev = 0;
+}
+
+void Player::giveXpForEnemyKilled(int enemiesKilled) {
+	auto& data = Database::getInstance().data;
+
+	const int xpToGive = data["player"]["xpPerEnemyKilled"] * enemiesKilled * DIFFUCLTY_XP_MULTIPLIER.at(difficulty);
+	cout << "Giving player " << xpToGive << "xp\n";
+	data["player"]["currentXp"] = data["player"]["currentXp"] + xpToGive;
+
+	// calculate xp needed for player to get to next level
+	// formula:
+	// level^2 + base
+	//
+	//	so it will get quadratically harder to level up
+	const int xpNeeded = playerLevel * playerLevel + data["player"]["baseXpToLevelUp"];
+
+	if (data["player"]["currentXp"] >= xpNeeded) {
+		data["player"]["currentXp"] = data["player"]["currentXp"] - xpNeeded;
+		playerLevel++;
+		cout << "Player level up! Current level: " << playerLevel << "\n";
+
+		// update damage
+		dmg += dmg * ((playerLevel - 1) * levelDmgIncPercentage);
+	}
 }

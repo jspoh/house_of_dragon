@@ -67,6 +67,13 @@ const std::unordered_map<DIFFICULTY_SETTINGS, int> PLAYER_BLOCKING_REACTION_ALLO
 	{DIFFICULTY_SETTINGS::HARD, -1000}
 };
 
+// levelup xp multiplier for difficulty settings
+const std::unordered_map<DIFFICULTY_SETTINGS, int> DIFFUCLTY_XP_MULTIPLIER{
+	{DIFFICULTY_SETTINGS::EASY, 1},
+	{DIFFICULTY_SETTINGS::MEDIUM, 2},
+	{DIFFICULTY_SETTINGS::HARD, 3}
+};
+
 constexpr int AEVK_OFFSET = 'a' - AEVK_A;
 
 // why doesnt it work using std::array w size 26??
