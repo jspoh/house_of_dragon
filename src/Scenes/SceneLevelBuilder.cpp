@@ -44,11 +44,15 @@ namespace {
 	// show game end screen
 	bool showGameEnd = false;
 
+	float elapsedTime = 0;
+	constexpr float SHOW_GAME_END_DURATION = 3.f;
+
 	// cleanup misc states
 	void cleanupSlb() {
 		showGameEnd = false;
 		GameScene::combatAudioLoopIsPlaying = false;
 		SceneStagesAudio::loopIsPlaying = true;
+		elapsedTime = 0;
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -560,8 +564,8 @@ void SceneLevelBuilder::update(double dt)
 				}
 				else {
 					showGameEnd = true;
-					SceneManager::getInstance()->SetActiveScene("SceneCredits");
-					if (AEInputCheckTriggered(AEVK_SPACE)) {
+					elapsedTime += static_cast<float>(dt);
+					if (elapsedTime >= SHOW_GAME_END_DURATION) {
 						SceneManager::getInstance()->SetActiveScene("SceneCredits");
 						return;			// terminate this scene state early
 					}
@@ -582,6 +586,10 @@ void SceneLevelBuilder::update(double dt)
 				}
 
 				m_completionStatus += SceneStages::m_sInstance->m_StartGame ? dt * m_sceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+
+				if (DEBUG && AEInputCheckTriggered(AEVK_1)) {
+					m_completionStatus = 99.0;		// skip to completion when debugging
+				}
 			}
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1295,7 +1303,12 @@ void SceneLevelBuilder::render()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// show game end screen if no more levels
 	if (showGameEnd) {
-		cout << "show game end screen\n";
+		//cout << "show game end screen\n";
+
+		float opacity = elapsedTime / SHOW_GAME_END_DURATION;
+		// cover screen with very large rect
+		RenderHelper::getInstance()->rect("invis", 0, 0, 9999, 9999, 0, Color{ 0,0,0, opacity }, opacity);
+		RenderHelper::getInstance()->text("Thanks for playing!", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
