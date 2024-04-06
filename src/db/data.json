@@ -23,54 +23,54 @@
   "enemyAttributes": {
     "bull": {
       "damage": 25,
-      "element": "water",
+      "element": "fire",
       "health": 150,
       "texturePath": "./Assets/Combat_Enemy/bull.png"
     },
     "chicken": {
       "damage": 25,
-      "element": "earth",
+      "element": "wood",
       "health": 90,
       "texturePath": "./Assets/Combat_Enemy/chicken.png"
     },
     "dragon": {
       "damage": 30,
-      "element": "earth",
-      "health": 150,
+      "element": "metal",
+      "health": 200,
       "texturePath": "./Assets/Combat_Enemy/dragon.png"
     },
     "goat": {
-      "damage": 25,
-      "element": "wood",
+      "damage": 20,
+      "element": "water",
       "health": 90,
       "texturePath": "./Assets/Combat_Enemy/goat.png"
     },
     "horse": {
-      "damage": 12,
+      "damage": 25,
       "element": "water",
       "health": 120,
       "texturePath": "./Assets/Combat_Enemy/horse.png"
     },
     "monkey": {
-      "damage": 15,
-      "element": "fire",
+      "damage": 20,
+      "element": "wood",
       "health": 110,
       "texturePath": "./Assets/Combat_Enemy/monkey.png"
     },
     "pig": {
       "damage": 5,
-      "element": "wood",
+      "element": "fire",
       "health": 200,
       "texturePath": "./Assets/Combat_Enemy/pig.png"
     },
     "rabbit": {
-      "damage": 25,
-      "element": "water",
+      "damage": 15,
+      "element": "earth",
       "health": 90,
       "texturePath": "./Assets/Combat_Enemy/rabbit.png"
     },
     "snake": {
-      "damage": 15,
+      "damage": 25,
       "element": "metal",
       "health": 110,
       "texturePath": "./Assets/Combat_Enemy/snake.png"
