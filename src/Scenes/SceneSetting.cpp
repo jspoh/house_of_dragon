@@ -36,7 +36,7 @@ enum class MOD_STATES {
 };
 
 
-SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::getInstance());
+SceneSetting* SceneSetting::m_sInstance = new SceneSetting(SceneManager::getInstance());
 
 SceneSetting::SceneSetting(SceneManager* _sceneMgr)
 {

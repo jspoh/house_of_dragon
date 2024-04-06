@@ -105,11 +105,11 @@ void GameManager::exit()
 	////Free Textures
 	////End Scene Manager
 	SceneManager::getInstance()->exit();
-	////GameObjectManager::GetInstance()->Destroy();
+	////GameObjectManager::GetInstance()->destroy();
 	////Sound Manager will destroy itself when program ends
 	
-	SceneManager::Destroy();
-	SoundManager::Destroy();
+	SceneManager::destroy();
+	SoundManager::destroy();
 
 	delete Event::getInstance();
 	//delete CombatManager::getInstance();

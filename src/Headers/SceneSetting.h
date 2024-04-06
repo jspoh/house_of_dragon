@@ -59,7 +59,7 @@ private:
 
 	BackButton myBackButton{ 0 };
 
-	static SceneSetting* sInstance; // The pointer to the object that gets registered
+	static SceneSetting* m_sInstance; // The pointer to the object that gets registered
 
 	/* audio */
 

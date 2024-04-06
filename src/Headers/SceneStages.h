@@ -44,7 +44,7 @@ public:
 	virtual void exit();
 
 	void Util_Camera_Shake(float duration, float strength);
-	static SceneStages* sInstance; // The pointer to the object that gets registered
+	static SceneStages* m_sInstance; // The pointer to the object that gets registered
 	bool m_StartGame;
 
 private:

@@ -93,7 +93,7 @@ public:
     } Menu;
 
     int m_SelectedLevel;
-    static SceneMenu* sInstance;
+    static SceneMenu* m_sInstance;
 private:
     Menu myMenu{ 0 };
 

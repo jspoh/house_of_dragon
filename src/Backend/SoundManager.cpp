@@ -20,51 +20,51 @@ Technology is prohibited.
 SoundManager::SoundManager()
 {
 	cout << "Initializing SoundManager..\n";
-	sfxGroup = AEAudioCreateGroup();
-	musicGroup = AEAudioCreateGroup();
+	m_sfxGroup = AEAudioCreateGroup();
+	m_musicGroup = AEAudioCreateGroup();
 
-	SFX_VOLUME = Database::getInstance().data["game"]["audio"]["sfx"];
-	MUSIC_VOLUME = Database::getInstance().data["game"]["audio"]["music"];
+	m_sfxVolume = Database::getInstance().data["game"]["audio"]["sfx"];
+	m_musicVolume = Database::getInstance().data["game"]["audio"]["music"];
 
-	setVolume(SFX_VOLUME, false);
-	setVolume(MUSIC_VOLUME, true);
+	setVolume(m_sfxVolume, false);
+	setVolume(m_musicVolume, true);
 }
 
 // Destructor
 SoundManager::~SoundManager()
 {
-	for (const auto& map : soundMap) {
+	for (const auto& map : m_soundMap) {
 		AEAudioUnloadAudio(map.second);
 	}
-	for (const auto& map : musicMap) {
+	for (const auto& map : m_musicMap) {
 		AEAudioUnloadAudio(map.second);
 	}
 
-	AEAudioUnloadAudioGroup(sfxGroup);
-	AEAudioUnloadAudioGroup(musicGroup);
+	AEAudioUnloadAudioGroup(m_sfxGroup);
+	AEAudioUnloadAudioGroup(m_musicGroup);
 
 	// Clear out the maps
-	soundMap.clear();
-	musicMap.clear();
+	m_soundMap.clear();
+	m_musicMap.clear();
 
 	// save volume
-	Database::getInstance().data["game"]["audio"]["sfx"] = SFX_VOLUME;
-	Database::getInstance().data["game"]["audio"]["music"] = MUSIC_VOLUME;
+	Database::getInstance().data["game"]["audio"]["sfx"] = m_sfxVolume;
+	Database::getInstance().data["game"]["audio"]["music"] = m_musicVolume;
 }
 
 bool SoundManager::removeAudio(std::string ref, bool isMusic) {
-	if (soundMap.find(ref) == soundMap.end() && !isMusic || musicMap.find(ref) == musicMap.end() && isMusic) {
+	if (m_soundMap.find(ref) == m_soundMap.end() && !isMusic || m_musicMap.find(ref) == m_musicMap.end() && isMusic) {
 		cerr << "Audio reference " << ref << " does not exist!\n";
 		return false;
 	}
 
 	if (!isMusic) {
-		AEAudioUnloadAudio(soundMap.find(ref)->second);
-		soundMap.erase(ref);
+		AEAudioUnloadAudio(m_soundMap.find(ref)->second);
+		m_soundMap.erase(ref);
 	}
 	else {
-		AEAudioUnloadAudio(musicMap.find(ref)->second);
-		musicMap.erase(ref);
+		AEAudioUnloadAudio(m_musicMap.find(ref)->second);
+		m_musicMap.erase(ref);
 	}
 
 	return true;
@@ -72,7 +72,7 @@ bool SoundManager::removeAudio(std::string ref, bool isMusic) {
 
 bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic) {
 	// check if ref is already used
-	if (soundMap.find(ref) != soundMap.end() || musicMap.find(ref) != musicMap.end()) {
+	if (m_soundMap.find(ref) != m_soundMap.end() || m_musicMap.find(ref) != m_musicMap.end()) {
 		cerr << "Audio reference " << ref << " already exists!\n";
 		throw std::exception("Audio reference already exists");
 		return false;
@@ -87,10 +87,10 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 	}
 
 	if (isMusic) {
-		musicMap[ref] = audio;
+		m_musicMap[ref] = audio;
 	}
 	else {
-		soundMap[ref] = audio;
+		m_soundMap[ref] = audio;
 	}
 
 	cout << "SoundManager loaded " << (isMusic ? "music" : "sound") << " with ref " << ref << " using path " << path << "\n";
@@ -102,11 +102,11 @@ bool SoundManager::registerAudio(std::string ref, std::string path, bool isMusic
 void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMusic) {
 	AEAudio audio;
 
-	if (soundMap.find(ref) != soundMap.end()) {
-		audio = soundMap[ref];
+	if (m_soundMap.find(ref) != m_soundMap.end()) {
+		audio = m_soundMap[ref];
 	}
-	else if (musicMap.find(ref) != musicMap.end()) {
-		audio = musicMap[ref];
+	else if (m_musicMap.find(ref) != m_musicMap.end()) {
+		audio = m_musicMap[ref];
 	}
 	else {
 		cerr << "Audio with ref " << ref << " does not exist!\n";
@@ -114,56 +114,56 @@ void SoundManager::playAudio(std::string ref, float volume, int loop, bool isMus
 		return;
 	}
 
-	//volume *= isMusic ? MUSIC_VOLUME : SFX_VOLUME;
+	//volume *= isMusic ? m_musicVolume : m_sfxVolume;
 
-	AEAudioPlay(audio, isMusic ? musicGroup : sfxGroup, volume, 1.f, loop);
+	AEAudioPlay(audio, isMusic ? m_musicGroup : m_sfxGroup, volume, 1.f, loop);
 }
 
 
 float SoundManager::getSfxVolume() const {
-	return SFX_VOLUME;
+	return m_sfxVolume;
 }
 
 float SoundManager::getMusicVolume() const {
-	return MUSIC_VOLUME;
+	return m_musicVolume;
 }
 
 
 void SoundManager::setVolume(float volume, bool setMusic) {
 	if (setMusic) {
-		MUSIC_VOLUME = volume;
+		m_musicVolume = volume;
 	}
 	else {
-		SFX_VOLUME = volume;
+		m_sfxVolume = volume;
 	}
 
-	AEAudioSetGroupVolume(setMusic ? musicGroup : sfxGroup, volume);
+	AEAudioSetGroupVolume(setMusic ? m_musicGroup : m_sfxGroup, volume);
 }
 
 void SoundManager::stopAll() {
-	AEAudioStopGroup(sfxGroup);
-	AEAudioStopGroup(musicGroup);
+	AEAudioStopGroup(m_sfxGroup);
+	AEAudioStopGroup(m_musicGroup);
 }
 
 void SoundManager::getVolume(float& sfx, float& music) {
-	sfx = SFX_VOLUME;
-	music = MUSIC_VOLUME;
+	sfx = m_sfxVolume;
+	music = m_musicVolume;
 }
 
 void SoundManager::pauseGroup(bool isMusic) {
 	if (isMusic) {
-		AEAudioPauseGroup(musicGroup);
+		AEAudioPauseGroup(m_musicGroup);
 	}
 	else {
-		AEAudioPauseGroup(sfxGroup);
+		AEAudioPauseGroup(m_sfxGroup);
 	}
 }
 
 void SoundManager::resumeGroup(bool isMusic) {
 	if (isMusic) {
-		AEAudioResumeGroup(musicGroup);
+		AEAudioResumeGroup(m_musicGroup);
 	}
 	else {
-		AEAudioResumeGroup(sfxGroup);
+		AEAudioResumeGroup(m_sfxGroup);
 	}
 }

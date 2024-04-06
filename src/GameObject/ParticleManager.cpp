@@ -164,7 +164,7 @@ void ParticleManager::render() {
 	for (const ParticleManager::Particle& p : m_particles) {
 		const AEVec2 pos = stow(p.pos.x, p.pos.y);
 		//RenderHelper::getInstance()->rect(pos.x, pos.y, p.size.x, p.size.y, 0, p.color, p.color.a);
-		AEGfxTextureSet(RenderHelper::getInstance()->GetTexture(p.type), 0, 0);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef(p.type), 0, 0);
 		AEGfxSetTransparency(p.transparency);
 		AEGfxSetColorToMultiply(p.color.r, p.color.g, p.color.b, p.color.a);
 		/*Create Transform data*/
@@ -175,7 +175,7 @@ void ParticleManager::render() {
 		AEMtx33Concat(&m_TransformData, &scale, &rot);
 		AEMtx33Concat(&m_TransformData, &trans, &m_TransformData);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 }
 

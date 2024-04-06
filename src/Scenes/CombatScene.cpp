@@ -838,7 +838,7 @@ void CombatScene::update(double dt)
 		}
 		if (CombatManager::getInstance().m_enemyNextTurnMs < 0) {
 			blockingRenderTime = 0.f; //reset the rendering time
-			SceneStages::sInstance->Util_Camera_Shake(0.5f, 100);
+			SceneStages::m_sInstance->Util_Camera_Shake(0.5f, 100);
 
 			// fire projectile at player
 

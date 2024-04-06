@@ -25,8 +25,8 @@ namespace fs = std::filesystem;
 SoundPlayer SoundPlayer::instance;
 
 void __getPath(std::string subpath, std::string& sfxPath, std::string& musicPath) {
-	sfxPath = SoundPlayer::instance.SFX_PATH + subpath;
-	musicPath = SoundPlayer::instance.MUSIC_PATH + subpath;
+	sfxPath = SoundPlayer::instance.m_SFX_PATH + subpath;
+	musicPath = SoundPlayer::instance.m_MUSIC_PATH + subpath;
 }
 
 void __loadAudio(const std::string& subpath) {
@@ -64,7 +64,7 @@ void SoundPlayer::stopAll() {
 /* global audio */
 
 SoundPlayer::GlobalAudio::GlobalAudio() {
-	__loadAudio(subpath);
+	__loadAudio(m_subpath);
 }
 
 SoundPlayer::GlobalAudio::~GlobalAudio() {
@@ -72,8 +72,8 @@ SoundPlayer::GlobalAudio::~GlobalAudio() {
 }
 
 SoundPlayer::GlobalAudio& SoundPlayer::GlobalAudio::getInstance() {
-	static GlobalAudio _instance;
-	return _instance;
+	static GlobalAudio m_instance;
+	return m_instance;
 }
 
 void SoundPlayer::GlobalAudio::playSfxClick() {
@@ -84,7 +84,7 @@ void SoundPlayer::GlobalAudio::playSfxClick() {
 /* menu audio */
 
 SoundPlayer::MenuAudio::MenuAudio() {
-	__loadAudio(subpath);
+	__loadAudio(m_subpath);
 }
 
 SoundPlayer::MenuAudio::~MenuAudio() {
@@ -92,8 +92,8 @@ SoundPlayer::MenuAudio::~MenuAudio() {
 }
 
 SoundPlayer::MenuAudio& SoundPlayer::MenuAudio::getInstance() {
-	static MenuAudio _instance;
-	return _instance;
+	static MenuAudio m_instance;
+	return m_instance;
 }
 
 void SoundPlayer::MenuAudio::playLoopMenu() {
@@ -108,7 +108,7 @@ void SoundPlayer::MenuAudio::playLoopLevelSelect() {
 /* game audio */
 
 SoundPlayer::GameAudio::GameAudio() {
-	__loadAudio(subpath);
+	__loadAudio(m_subpath);
 }
 
 SoundPlayer::GameAudio::~GameAudio() {
@@ -116,8 +116,8 @@ SoundPlayer::GameAudio::~GameAudio() {
 }
 
 SoundPlayer::GameAudio& SoundPlayer::GameAudio::getInstance() {
-	static GameAudio _instance;
-	return _instance;
+	static GameAudio m_instance;
+	return m_instance;
 }
 
 void SoundPlayer::GameAudio::playLoop() {
@@ -130,17 +130,17 @@ void SoundPlayer::GameAudio::playLoop() {
 
 
 SoundPlayer::CombatAudio::CombatAudio() {
-	__loadAudio(subpath);
+	__loadAudio(m_subpath);
 
-	battleLoopRefs.reserve(NUM_BATTLE_LOOPS);
-	hurtSfxRefs.reserve(NUM_HURT_SFX);
-	knifeSfxRefs.reserve(NUM_KNIFE_SFX);
-	punchSfxRefs.reserve(NUM_PUNCH_SFX);
+	m_battleLoopRefs.reserve(m_NUM_BATTLE_LOOPS);
+	m_hurtSfxRefs.reserve(m_NUM_HURT_SFX);
+	m_knifeSfxRefs.reserve(m_NUM_KNIFE_SFX);
+	m_punchSfxRefs.reserve(m_NUM_PUNCH_SFX);
 
-	animalSfxRef.reserve(NUM_ANIMALS);
+	m_animalSfxRef.reserve(m_NUM_ANIMALS);
 
 	std::string sfxPath, musicPath;
-	__getPath(subpath, sfxPath, musicPath);
+	__getPath(m_subpath, sfxPath, musicPath);
 
 	for (const auto& item : fs::directory_iterator(sfxPath)) {
 		std::string filename = item.path().filename().string();
@@ -148,17 +148,17 @@ SoundPlayer::CombatAudio::CombatAudio() {
 		// add animal sounds to map, based on animal type
 		if (filename.find("animal") == 0) {
 			const std::vector<std::string> tokens = split(filename, '_');
-			animalSfxRef[tokens[1]].push_back(filename);
+			m_animalSfxRef[tokens[1]].push_back(filename);
 		}
 		// add sounds to relevant vector, based on sound type
 		else if (filename.find("hurt") == 0) {
-			hurtSfxRefs.push_back(filename);
+			m_hurtSfxRefs.push_back(filename);
 		}
 		else if (filename.find("knife") == 0) {
-			knifeSfxRefs.push_back(filename);
+			m_knifeSfxRefs.push_back(filename);
 		}
 		else if (filename.find("punch") == 0) {
-			punchSfxRefs.push_back(filename);
+			m_punchSfxRefs.push_back(filename);
 		}
 	}
 
@@ -166,7 +166,7 @@ SoundPlayer::CombatAudio::CombatAudio() {
 		std::string filename = item.path().filename().string();
 
 		if (filename.find("battle") == 0) {
-			battleLoopRefs.push_back(filename);
+			m_battleLoopRefs.push_back(filename);
 		}
 	}
 }
@@ -176,13 +176,13 @@ SoundPlayer::CombatAudio::~CombatAudio() {
 }
 
 SoundPlayer::CombatAudio& SoundPlayer::CombatAudio::getInstance() {
-	static CombatAudio _instance;
-	return _instance;
+	static CombatAudio m_instance;
+	return m_instance;
 }
 
 void SoundPlayer::CombatAudio::playLoop() {
-	int randNum = rand() % NUM_BATTLE_LOOPS;
-	SoundManager::getInstance()->playAudio(battleLoopRefs[randNum], 1, -1, true);
+	int randNum = rand() % m_NUM_BATTLE_LOOPS;
+	SoundManager::getInstance()->playAudio(m_battleLoopRefs[randNum], 1, -1, true);
 }
 
 void SoundPlayer::CombatAudio::playSfxVictory() {
@@ -196,7 +196,7 @@ void SoundPlayer::CombatAudio::playSfxDeath() {
 void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
 	int availSounds{};
 	const std::string prefix = animal;
-	for (const auto& [mapKey, refs] : animalSfxRef) {
+	for (const auto& [mapKey, refs] : m_animalSfxRef) {
 		if (mapKey.substr(0, prefix.size()) == prefix) {
 			availSounds = static_cast<int>(refs.size());
 		}
@@ -223,13 +223,13 @@ void SoundPlayer::CombatAudio::playSfxHeartbeat() {
 }
 
 void SoundPlayer::CombatAudio::playSfxHurt() {
-	int randNum = rand() % NUM_HURT_SFX;
-	SoundManager::getInstance()->playAudio(hurtSfxRefs[randNum]);
+	int randNum = rand() % m_NUM_HURT_SFX;
+	SoundManager::getInstance()->playAudio(m_hurtSfxRefs[randNum]);
 }
 
 void SoundPlayer::CombatAudio::playSfxKnife() {
-	int randNum = rand() % NUM_KNIFE_SFX;
-	SoundManager::getInstance()->playAudio(knifeSfxRefs[randNum]);
+	int randNum = rand() % m_NUM_KNIFE_SFX;
+	SoundManager::getInstance()->playAudio(m_knifeSfxRefs[randNum]);
 }
 
 void SoundPlayer::CombatAudio::playSfxPowerup() {
@@ -237,8 +237,8 @@ void SoundPlayer::CombatAudio::playSfxPowerup() {
 }
 
 void SoundPlayer::CombatAudio::playSfxPunch() {
-	int randNum = rand() % NUM_PUNCH_SFX;
-	SoundManager::getInstance()->playAudio(punchSfxRefs[randNum]);
+	int randNum = rand() % m_NUM_PUNCH_SFX;
+	SoundManager::getInstance()->playAudio(m_punchSfxRefs[randNum]);
 }
 
 void SoundPlayer::CombatAudio::playSfxInvalid() {

@@ -17,7 +17,7 @@ Technology is prohibited.
 #include "Pch.h"
 #include "SceneSplashScreen.h"
 
-SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::getInstance());
+SceneSplashScreen* SceneSplashScreen::m_sInstance = new SceneSplashScreen(SceneManager::getInstance());
 
 SceneSplashScreen::SceneSplashScreen() 
 	: m_Mesh(nullptr),

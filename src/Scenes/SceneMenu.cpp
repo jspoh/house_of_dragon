@@ -23,7 +23,7 @@ namespace {
 	bool loopIsPlaying = false;
 }
 
-SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::getInstance());
+SceneMenu* SceneMenu::m_sInstance = new SceneMenu(SceneManager::getInstance());
 
 SceneMenu::SceneMenu() : m_SelectedLevel{ 0 }
 {

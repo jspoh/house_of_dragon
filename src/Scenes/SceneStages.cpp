@@ -19,7 +19,7 @@ Technology is prohibited.
 
 bool SceneStagesAudio::loopIsPlaying = false;
 
-SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::getInstance());
+SceneStages* SceneStages::m_sInstance = new SceneStages(SceneManager::getInstance());
 
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
@@ -176,7 +176,7 @@ void SceneStages::render()
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 		AEGfxTextureSet(NULL, 0, 0);
 		f32 TextWidth = 0, TextHeight = 0;

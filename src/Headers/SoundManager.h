@@ -23,15 +23,15 @@ Technology is prohibited.
 class SoundManager : public Singleton<SoundManager>
 {
 private:
-	AEAudioGroup sfxGroup;
-	AEAudioGroup musicGroup;
+	AEAudioGroup m_sfxGroup;
+	AEAudioGroup m_musicGroup;
 
-	float SFX_VOLUME;
-	float MUSIC_VOLUME;
+	float m_sfxVolume;
+	float m_musicVolume;
 
 protected:
-	std::unordered_map<std::string, AEAudio> soundMap;
-	std::unordered_map<std::string, AEAudio> musicMap;
+	std::unordered_map<std::string, AEAudio> m_soundMap;
+	std::unordered_map<std::string, AEAudio> m_musicMap;
 
 public:
 	// Constructor

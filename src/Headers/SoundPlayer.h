@@ -32,9 +32,9 @@ private:
 	SoundPlayer();
 	~SoundPlayer();
 
-	const std::string BASE_PATH = "./Assets/Audio/";
-	const std::string SFX_PATH = BASE_PATH + "SFX/";
-	const std::string MUSIC_PATH = BASE_PATH + "Music/";
+	const std::string m_BASE_PATH = "./Assets/Audio/";
+	const std::string m_SFX_PATH = m_BASE_PATH + "SFX/";
+	const std::string m_MUSIC_PATH = m_BASE_PATH + "Music/";
 
 public:
 	static SoundPlayer instance;
@@ -43,7 +43,7 @@ public:
 
 	/**
 	*
-	* @param subpath
+	* @param m_subpath
 	 * @param sfxPath [out]
 	 * @param musicPath [out].
 	 */
@@ -61,7 +61,7 @@ public:
 		GlobalAudio();
 		~GlobalAudio();
 
-		const std::string subpath = "ui/";
+		const std::string m_subpath = "ui/";
 
 	public:
 		static GlobalAudio& getInstance();
@@ -77,7 +77,7 @@ public:
 		MenuAudio();
 		~MenuAudio();
 
-		const std::string subpath = "menu/";
+		const std::string m_subpath = "menu/";
 
 		std::vector<std::string> menuLoopRefs;
 		std::vector<std::string> levelSelectLoopRefs;
@@ -96,7 +96,7 @@ public:
 		GameAudio();
 		~GameAudio();
 
-		const std::string subpath = "gameplay/";
+		const std::string m_subpath = "gameplay/";
 
 	public:
 		static GameAudio& getInstance();
@@ -110,22 +110,22 @@ public:
 		CombatAudio();
 		~CombatAudio();
 
-		const std::string subpath = "combat/";
+		const std::string m_subpath = "combat/";
 
-		static constexpr int NUM_BATTLE_LOOPS = 3;
-		std::vector<std::string> battleLoopRefs{};
+		static constexpr int m_NUM_BATTLE_LOOPS = 3;
+		std::vector<std::string> m_battleLoopRefs{};
 
-		static constexpr int NUM_HURT_SFX = 13;
-		std::vector<std::string> hurtSfxRefs{};
+		static constexpr int m_NUM_HURT_SFX = 13;
+		std::vector<std::string> m_hurtSfxRefs{};
 
-		static constexpr int NUM_KNIFE_SFX = 2;
-		std::vector<std::string> knifeSfxRefs{};
+		static constexpr int m_NUM_KNIFE_SFX = 2;
+		std::vector<std::string> m_knifeSfxRefs{};
 
-		static constexpr int NUM_PUNCH_SFX = 4;
-		std::vector<std::string> punchSfxRefs{};
+		static constexpr int m_NUM_PUNCH_SFX = 4;
+		std::vector<std::string> m_punchSfxRefs{};
 
-		static constexpr int NUM_ANIMALS = 13;		// 12 zodiac animals + nian
-		std::unordered_map<std::string, std::vector<std::string>> animalSfxRef{};
+		static constexpr int m_NUM_ANIMALS = 13;		// 12 zodiac animals + nian
+		std::unordered_map<std::string, std::vector<std::string>> m_animalSfxRef{};
 
 	public:
 		static CombatAudio& getInstance();

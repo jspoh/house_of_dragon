@@ -325,7 +325,7 @@ void SceneLevelBuilder::init()
 		}
 
 		m_CompletionStatus = 98;
-		m_currLevel = SceneMenu::sInstance->m_SelectedLevel;
+		m_currLevel = SceneMenu::m_sInstance->m_SelectedLevel;
 		m_Lighting = { 1.0f,1.0f,1.0f,1.0f };
 	}
 
@@ -467,7 +467,7 @@ void SceneLevelBuilder::init()
 
 void SceneLevelBuilder::update(double dt)
 {
-	if (!SceneStages::sInstance->m_StartGame) dt *= 3; //JUST A SPEED UP TO WARM UP THE ENGINE BEFORE GAMEPLAY
+	if (!SceneStages::m_sInstance->m_StartGame) dt *= 3; //JUST A SPEED UP TO WARM UP THE ENGINE BEFORE GAMEPLAY
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Generic Update calls can be placed here
@@ -484,7 +484,7 @@ void SceneLevelBuilder::update(double dt)
 		//Level Progression Update
 		if(!m_CombatPhase)
 		{
-			if (m_CompletionStatus > 100.0 && SceneStages::sInstance->m_StartGame)
+			if (m_CompletionStatus > 100.0 && SceneStages::m_sInstance->m_StartGame)
 			{
 				if (m_currLevel < m_MAXLevel) {
 					++m_currLevel;
@@ -515,7 +515,7 @@ void SceneLevelBuilder::update(double dt)
 					m_CompletionStatus = m_CompletionStatus < 0 ? 0 : m_CompletionStatus;
 				}
 
-				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
+				m_CompletionStatus += SceneStages::m_sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
 
 				
 			}
@@ -903,7 +903,7 @@ void SceneLevelBuilder::render()
 		//Sky
 		AEGfxSetTransform(m_TransformSkyData.m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 		/////////////////////////////////////////////////////////////////////////////////
 		//Sun
@@ -911,45 +911,45 @@ void SceneLevelBuilder::render()
 		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetTransparency(1.0f);
 		AEGfxSetTransform(m_TransformSunData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetTransparency(1.0f);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
 		AEGfxSetTransform(m_TransformSunOverlayData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 		//////////////////////////////////////////////////////////////////////////////////////
 		//Cloud
 		//First Layer
 		AEGfxSetTransform(m_TransformCloudsData[0].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformCloudsData[1].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformCloudsData[2].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		//Second Layer
 		AEGfxSetTransform(m_TransformCloudsData[3].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformCloudsData[4].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformCloudsData[5].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		//Third Layer
 		AEGfxSetTransform(m_TransformCloudsData[6].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformCloudsData[7].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransform(m_TransformCloudsData[8].m);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// BACKDROP RENDER
@@ -958,19 +958,19 @@ void SceneLevelBuilder::render()
 		for (int i = 0; i < 9; i++)
 		{
 			AEGfxSetTransform(m_TransformBackDrops1Data[i].m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
 		for (int i = 0; i < 5; i++)
 		{
 			AEGfxSetTransform(m_TransformBackDrops2Data[i].m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
 		for (int i = 0; i < 5; i++)
 		{
 			AEGfxSetTransform(m_TransformBackDrops3Data[i].m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+			AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		}
 
 	}
@@ -993,7 +993,7 @@ void SceneLevelBuilder::render()
 			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
 			{
 				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 			}
 		}
 
@@ -1010,7 +1010,7 @@ void SceneLevelBuilder::render()
 				if (m_Floor[j][i].m_IsRender)
 				{
 					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 				}
 			}
 		}
@@ -1027,7 +1027,7 @@ void SceneLevelBuilder::render()
 				if (m_Floor[j][i].m_IsRender)
 				{
 					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 				}
 			}
 		}
@@ -1038,7 +1038,7 @@ void SceneLevelBuilder::render()
 	{
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
 		AEGfxSetTransform(m_TransformFogData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// SCENEOBJ RENDER
@@ -1060,10 +1060,10 @@ void SceneLevelBuilder::render()
 					it != m_FloorOBJs[j][tempTileNum].end();
 					it++)
 				{
-					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_Type), 0, 0);
 					AEGfxSetTransparency((*it).m_Transparency);
 					AEGfxSetTransform((*it).m_TransformData.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 				}
 			}
 		}
@@ -1084,10 +1084,10 @@ void SceneLevelBuilder::render()
 					it != m_FloorOBJs[j][tempTileNum].end();
 					it++)
 				{
-					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef((*it).m_Type), 0, 0);
 					AEGfxSetTransparency((*it).m_Transparency);
 					AEGfxSetTransform((*it).m_TransformData.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+					AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 				}
 			}
 		}
@@ -1102,35 +1102,35 @@ void SceneLevelBuilder::render()
 		AEGfxSetTransparency(transparency[7]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[7].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[6]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[6].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[5]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[5].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[4]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[4].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[3]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[3].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[2]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[2].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[1]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[1].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxSetTransparency(transparency[0]);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
 		AEGfxSetTransform(m_TransformSunLensData[0].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -1154,7 +1154,7 @@ void SceneLevelBuilder::render()
 	//		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_2"), 0, 0);
 	//		AEGfxSetTransparency(t_Transparency);
 	//		AEGfxSetTransform(transform.m);
-	//		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	//	}
 	//	else
 	//		t_Transparency = -1.1;
@@ -1179,12 +1179,12 @@ void SceneLevelBuilder::render()
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
 		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, -AEGfxGetWindowHeight() / 2 + camOffset.y);
 		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
 		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, AEGfxGetWindowHeight() / 2 + camOffset.y);
 		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 		//Screen Transition
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -1193,7 +1193,7 @@ void SceneLevelBuilder::render()
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1242,7 +1242,7 @@ void SceneLevelBuilder::exit()
 
 	//Clear Object in scene
 	GameObjectManager::getInstance()->exit();
-	GameObjectManager::getInstance()->Destroy();
+	GameObjectManager::getInstance()->destroy();
 
 	delete[] m_SceneLevelDataList;
 
@@ -1425,11 +1425,11 @@ void SceneLevelBuilder::RenderLvlName()
 		AEMtx33TransApply(&trans, &trans, currRightHeaderPos.x + t_camX - 3.75f, currRightHeaderPos.y + t_camY + 4.0f);
 		AEGfxSetTransform(trans.m);
 		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
 		AEGfxSetTransform(trans.m);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 
 		AEMtx33Identity(&trans);
@@ -1438,11 +1438,11 @@ void SceneLevelBuilder::RenderLvlName()
 		AEMtx33TransApply(&trans, &trans, currLeftHeaderPos.x + t_camX - 3.75f, currLeftHeaderPos.y + t_camY + 4.0f);
 		AEGfxSetTransform(trans.m);
 		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
 		AEGfxSetTransform(trans.m);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 	else
 	{
@@ -1473,7 +1473,7 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	// !TODO: jspoh consider removing debugging enemy spawner?
 	if (m_TryTimer < 0 || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 	{
-		if (m_SceneEnemy == nullptr && !m_CombatPhase && SceneStages::sInstance->m_StartGame)
+		if (m_SceneEnemy == nullptr && !m_CombatPhase && SceneStages::m_sInstance->m_StartGame)
 		{
 			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 			{

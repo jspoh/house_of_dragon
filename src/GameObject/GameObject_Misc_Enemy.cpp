@@ -99,13 +99,13 @@ void GameObject_Misc_Enemy::render()
 		AEGfxSetTransparency(m_Transparency);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMY_STRONG"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMYJAW_UPPER"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMYJAW_LOWER"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 }
 

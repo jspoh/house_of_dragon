@@ -40,7 +40,7 @@ public:
 		return s_mInstance;
 	}
 
-	static void Destroy()
+	static void destroy()
 	{
 		if (s_mInstance)
 		{

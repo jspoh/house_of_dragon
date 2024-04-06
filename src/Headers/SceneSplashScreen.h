@@ -41,7 +41,7 @@ public:
 private:
 	SceneSplashScreen(SceneManager* _sceneMgr); // This is used to register to SceneManager
 
-	static SceneSplashScreen* sInstance; // The pointer to the object that gets registered
+	static SceneSplashScreen* m_sInstance; // The pointer to the object that gets registered
 
 	AEGfxVertexList* m_Mesh;
 
