@@ -6,7 +6,8 @@
 \author Poh Jing Seng, jingseng.poh, 2301363 (10%, integration, bugfixes)
 \par jingseng.poh\@digipen.edu
 \date 21 Feb 2024
-\brief The 3D engine, the heart of the game and my pain.
+\brief The 3D engine, the heart of the game and my pain. Read the comments I have written
+       for indepth description of the files. 
 
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
@@ -29,6 +30,10 @@ std::unique_ptr<Player> player = nullptr;
 bool GameScene::combatAudioLoopIsPlaying = false;
 bool GameScene::afterInit = false;
 
+////////////////////////////////////////////////////////////////////////////////////////
+/*
+Global Variables Init
+*/
 namespace {
 	double LerpSpeed = 10.0;
 	constexpr double FLEEING_COMPLETION_PENALTY = 20.0;		// percentage penatly for completion status when fleeing fight [0,100]
@@ -44,7 +49,12 @@ namespace {
 		showGameEnd = false;
 	}
 }
+////////////////////////////////////////////////////////////////////////////////////////
 
+////////////////////////////////////////////////////////////////////////////////////////
+/*
+Struct Constructor Area
+*/
 SceneLevelBuilder::v_FloorData::v_FloorData() :
 	m_currFloorNum{ 0 },
 	m_FloorNum{ 0 },
@@ -83,7 +93,34 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	m_LevelCompletionRate{ 0.0 },
 	m_Unlocked{ false },
 	m_EnemySpawnRate{0}{}
+////////////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/***************************************************************************************************************************************
+		  _____             _____                    _____                    _____             _____
+		 /\    \           /\    \                  /\    \                  /\    \           /\    \
+		/::\    \         /::\    \                /::\    \                /::\    \         /::\    \
+	   /::::\    \        \:::\    \              /::::\    \              /::::\    \        \:::\    \
+	  /::::::\    \        \:::\    \            /::::::\    \            /::::::\    \        \:::\    \
+	 /:::/\:::\    \        \:::\    \          /:::/\:::\    \          /:::/\:::\    \        \:::\    \
+	/:::/__\:::\    \        \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \        \:::\    \
+	\:::\   \:::\    \       /::::\    \      /::::\   \:::\    \      /::::\   \:::\    \       /::::\    \
+  ___\:::\   \:::\    \     /::::::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \     /::::::\    \
+ /\   \:::\   \:::\    \   /:::/\:::\    \  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\   /:::/\:::\    \
+/::\   \:::\   \:::\____\ /:::/  \:::\____\/:::/  \:::\   \:::\____\/:::/  \:::\   \:::|    | /:::/  \:::\____\
+\:::\   \:::\   \::/    //:::/    \::/    /\::/    \:::\  /:::/    /\::/   |::::\  /:::|____|/:::/    \::/    /
+ \:::\   \:::\   \/____//:::/    / \/____/  \/____/ \:::\/:::/    /  \/____|:::::\/:::/    //:::/    / \/____/
+  \:::\   \:::\    \   /:::/    /                    \::::::/    /         |:::::::::/    //:::/    /
+   \:::\   \:::\____\ /:::/    /                      \::::/    /          |::|\::::/    //:::/    /
+	\:::\  /:::/    / \::/    /                       /:::/    /           |::| \::/____/ \::/    /
+	 \:::\/:::/    /   \/____/                       /:::/    /            |::|  ~|        \/____/
+	  \::::::/    /                                 /:::/    /             |::|   |
+	   \::::/    /                                 /:::/    /              \::|   |
+		\::/    /                                  \::/    /                \:|   |
+		 \/____/                                    \/____/                  \|___|
+
+***************************************************************************************************************************************/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 SceneLevelBuilder::SceneLevelBuilder() :
 	m_StopMovement{ false },
 	m_PanCloseToGround{ false },
@@ -465,9 +502,36 @@ void SceneLevelBuilder::Init()
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/***************************************************************************************************************************************
+
+		  _____                    _____                    _____                    _____             _____                    _____
+		 /\    \                  /\    \                  /\    \                  /\    \           /\    \                  /\    \
+		/::\____\                /::\    \                /::\    \                /::\    \         /::\    \                /::\    \
+	   /:::/    /               /::::\    \              /::::\    \              /::::\    \        \:::\    \              /::::\    \
+	  /:::/    /               /::::::\    \            /::::::\    \            /::::::\    \        \:::\    \            /::::::\    \
+	 /:::/    /               /:::/\:::\    \          /:::/\:::\    \          /:::/\:::\    \        \:::\    \          /:::/\:::\    \
+	/:::/    /               /:::/__\:::\    \        /:::/  \:::\    \        /:::/__\:::\    \        \:::\    \        /:::/__\:::\    \
+   /:::/    /               /::::\   \:::\    \      /:::/    \:::\    \      /::::\   \:::\    \       /::::\    \      /::::\   \:::\    \
+  /:::/    /      _____    /::::::\   \:::\    \    /:::/    / \:::\    \    /::::::\   \:::\    \     /::::::\    \    /::::::\   \:::\    \
+ /:::/____/      /\    \  /:::/\:::\   \:::\____\  /:::/    /   \:::\ ___\  /:::/\:::\   \:::\    \   /:::/\:::\    \  /:::/\:::\   \:::\    \
+|:::|    /      /::\____\/:::/  \:::\   \:::|    |/:::/____/     \:::|    |/:::/  \:::\   \:::\____\ /:::/  \:::\____\/:::/__\:::\   \:::\____\
+|:::|____\     /:::/    /\::/    \:::\  /:::|____|\:::\    \     /:::|____|\::/    \:::\  /:::/    //:::/    \::/    /\:::\   \:::\   \::/    /
+ \:::\    \   /:::/    /  \/_____/\:::\/:::/    /  \:::\    \   /:::/    /  \/____/ \:::\/:::/    //:::/    / \/____/  \:::\   \:::\   \/____/
+  \:::\    \ /:::/    /            \::::::/    /    \:::\    \ /:::/    /            \::::::/    //:::/    /            \:::\   \:::\    \
+   \:::\    /:::/    /              \::::/    /      \:::\    /:::/    /              \::::/    //:::/    /              \:::\   \:::\____\
+	\:::\__/:::/    /                \::/____/        \:::\  /:::/    /               /:::/    / \::/    /                \:::\   \::/    /
+	 \::::::::/    /                  ~~               \:::\/:::/    /               /:::/    /   \/____/                  \:::\   \/____/
+	  \::::::/    /                                     \::::::/    /               /:::/    /                              \:::\    \
+	   \::::/    /                                       \::::/    /               /:::/    /                                \:::\____\
+		\::/____/                                         \::/____/                \::/    /                                  \::/    /
+		 ~~                                                ~~                       \/____/                                    \/____/
+
+***************************************************************************************************************************************/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void SceneLevelBuilder::Update(double dt)
 {
-	if (!SceneStages::sInstance->m_StartGame) dt *= 3; //JUST A SPEED UP TO WARM UP THE ENGINE BEFORE GAMEPLAY
+	if (!SceneStages::sInstance->m_StartGame) dt *= 3; //SPEEDUP SPECIFICALLY TO FIT THE TRANSITION WITHIN THE SMALL TIMEFRAME
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// Generic Update calls can be placed here
@@ -517,8 +581,11 @@ void SceneLevelBuilder::Update(double dt)
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
 			}
 
-			if (AEInputCheckCurr(AEVK_1))
-				m_CompletionStatus += dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 10;
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+			// This is a way to speed up playtesting, uncomment this if you would like to progress and unlock the 
+		    // levels faster.
+			//if (AEInputCheckCurr(AEVK_TAB))
+			//	m_CompletionStatus += dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 10;
 		}
 		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
@@ -544,14 +611,6 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
-				//Not planning to implement for now
-				//else if (AEInputCheckCurr(AEVK_RBUTTON)) {
-				//	player->setHandStateAnimationType(Player::HandAnimationType::Ready);
-				//}
-				//else if (AEInputCheckTriggered(AEVK_SPACE))
-				//{
-				//	player->setHandStateAnimationType(Player::HandAnimationType::Block);
-				//}
 			}
 
 			/////////////////////////////////////////////////////////////////////////////
@@ -562,7 +621,7 @@ void SceneLevelBuilder::Update(double dt)
 					m_CombatBufferingTime -= m_CombatBufferingTime > 0.0 ? static_cast<f32>(dt) : 0;
 					if (m_CombatBufferingTime > 0.2f)
 					{
-						dt *= 15; //SPEEDUP SPECIFICALLY
+						dt *= 15; //SPEEDUP SPECIFICALLY TO FIT THE TRANSITION WITHIN THE SMALL TIMEFRAME
 						m_StopMovement = false;
 						m_PanCloseToGround = false;
 						m_PanCloseToGroundValue += m_PanCloseToGroundValue < 80 ? static_cast<int>(LERPING_SPEED) : 0;
@@ -587,6 +646,10 @@ void SceneLevelBuilder::Update(double dt)
 			/////////////////////////////////////////////////////////////////////////////
 			// Check to start Combat Phase
 			{
+				/////////////////////////////////////////////////////////////////////////////////
+				// Two scenarios in which combat starts : Your turn or OUR TURN ( Insert R*****N Flag meme here )
+				// 1) Player turn starts first
+				// 2) Enemy turn starts first
 				if (m_SceneEnemy != nullptr && !showGameEnd)
 				{
 					if (m_SceneEnemy->m_StartCombat)
@@ -638,6 +701,9 @@ void SceneLevelBuilder::Update(double dt)
 				}
 
 				CombatScene::getInstance().Update(dt);
+
+				/////////////////////////////////////////////////////////////////////////////////
+				// 
 				if (!m_CombatPhase)
 				{
 					m_CombatBufferingTime = 0.6f;
@@ -663,7 +729,7 @@ void SceneLevelBuilder::Update(double dt)
 				//For faster setup
 				if (m_CombatBufferingTime > 0.4f && !m_CombatAnimationComp)
 				{
-					if ((CombatManager::TURN)t_whoseTurn - 1) dt *= 5; //SPEEDUP SPECIFICALLY FOR ENEMY START TURN
+					if ((CombatManager::TURN)t_whoseTurn - 1) dt *= 5; //SPEEDUP SPECIFICALLY TO FIT THE TRANSITION WITHIN THE SMALL TIMEFRAME
 				}
 
 				m_PanCloseToGround = true;
@@ -862,383 +928,6 @@ void SceneLevelBuilder::Update(double dt)
 			}
 		}
 	}
-}
-
-void SceneLevelBuilder::Render()
-{
-	// Set the background to black.
-	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
-
-	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-
-	// Set the the color to multiply to white, so that the sprite can 
-	// display the full range of colors (default is black).
-	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-
-	// Set the color to add to nothing, so that we don't alter the sprite's color
-	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Set blend mode to AE_GFX_BM_BLEND
-	// This will allow transparency.
-	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	//SKY RENDER
-	{
-		AEGfxSetTransparency(1.0f);
-		//Sky
-		AEGfxSetTransform(m_TransformSkyData.m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-		/////////////////////////////////////////////////////////////////////////////////
-		//Sun
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxSetTransparency(1.0f);
-		AEGfxSetTransform(m_TransformSunData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		AEGfxSetTransparency(1.0f);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
-		AEGfxSetTransform(m_TransformSunOverlayData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-		//////////////////////////////////////////////////////////////////////////////////////
-		//Cloud
-		//First Layer
-		AEGfxSetTransform(m_TransformCloudsData[0].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[1].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[2].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		//Second Layer
-		AEGfxSetTransform(m_TransformCloudsData[3].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[4].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[5].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		//Third Layer
-		AEGfxSetTransform(m_TransformCloudsData[6].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[7].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransform(m_TransformCloudsData[8].m);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// BACKDROP RENDER
-	{
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
-		for (int i = 0; i < 9; i++)
-		{
-			AEGfxSetTransform(m_TransformBackDrops1Data[i].m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		}
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
-		for (int i = 0; i < 5; i++)
-		{
-			AEGfxSetTransform(m_TransformBackDrops2Data[i].m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		}
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
-		for (int i = 0; i < 5; i++)
-		{
-			AEGfxSetTransform(m_TransformBackDrops3Data[i].m);
-			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		}
-
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// FLOOR RENDER
-	{
-		//// Tell the engine to get ready to draw something with texture.
-		//// Set the color to add to nothing, so that we don't alter the sprite's color
-		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-
-		//Main Floor
-		
-		for (int i = NUM_OF_TILES - 1; i > -1; i--)
-		{
-			if(m_Floor[t_CenterFloorNum][i].m_Type ==0)
-				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
-			else
-				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_2"), 0, 0);
-
-			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
-			{
-				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
-				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-			}
-		}
-
-		////Left Floor
-		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
-		{
-			for (int i = NUM_OF_TILES - 1; i > -1; i--)
-			{
-				if (m_Floor[j][i].m_Type == 0)
-					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
-				else
-					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_2"), 0, 0);
-
-				if (m_Floor[j][i].m_IsRender)
-				{
-					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-				}
-			}
-		}
-		//Right Floor
-		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
-		{
-			for (int i = NUM_OF_TILES - 1; i > -1; i--)
-			{
-				if (m_Floor[j][i].m_Type == 0)
-					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
-				else
-					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_2"), 0, 0);
-
-				if (m_Floor[j][i].m_IsRender)
-				{
-					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-				}
-			}
-		}
-
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// FOG RENDER
-	{
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
-		AEGfxSetTransform(m_TransformFogData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// SCENEOBJ RENDER
-	{
-		//Render Left Side
-		for (int j = 0; j < SIZE_OF_FLOOR / 2; j++)
-		{
-			for (int i = 0; i < NUM_OF_TILES - 1; i++)
-			{
-				////////////////////////////////////////////////
-				// m_CurrentTileNumFurthest = 4
-				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-				////////////////////////////////////////////////
-				int tempTileNum = m_CurrentTileNumFurthest - i;
-				if (tempTileNum < 0)
-					tempTileNum += NUM_OF_TILES - 1;
-
-				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-					it != m_FloorOBJs[j][tempTileNum].end();
-					it++)
-				{
-					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
-					AEGfxSetTransparency((*it).m_Transparency);
-					AEGfxSetTransform((*it).m_TransformData.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-				}
-			}
-		}
-		//Render Right Side
-		for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR / 2; j--)
-		{
-			for (int i = 0; i < NUM_OF_TILES - 1; i++)
-			{
-				////////////////////////////////////////////////
-				// m_CurrentTileNumFurthest = 4
-				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
-				////////////////////////////////////////////////
-				int tempTileNum = m_CurrentTileNumFurthest - i;
-				if (tempTileNum < 0)
-					tempTileNum += NUM_OF_TILES - 1;
-
-				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
-					it != m_FloorOBJs[j][tempTileNum].end();
-					it++)
-				{
-					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
-					AEGfxSetTransparency((*it).m_Transparency);
-					AEGfxSetTransform((*it).m_TransformData.m);
-					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-				}
-			}
-		}
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Light Flare
-	if(m_SceneLevelDataList[m_currLevel].m_DayTime)
-	{
-		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
-		//Lens Flare
-		AEGfxSetTransparency(transparency[7]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[7].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[6]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[6].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[5]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[5].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[4]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[4].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[3]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[3].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[2]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[2].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[1]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[1].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEGfxSetTransparency(transparency[0]);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
-		AEGfxSetTransform(m_TransformSunLensData[0].m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////
-	//MASSIVE FOG AT LEVEL 7 (REMOVED FROM FINAL PRODUCT DUE TO PROBLEMS WITH RENDERING)
-	//{
-	//	static double t_Transparency = -1.1;
-	//	if (m_currLevel == 7)
-	//	{
-	// 		/////////////////////////////////////////////////////////////////////////
-	//   // RESET SETTINGS
-	//   	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	//   	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
-	//   	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-	//   	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
-	//		static double t_Transparency = -1.1;
-	//		t_Transparency += AEFrameRateControllerGetFrameTime() / LERPING_SPEED;
-	//		AEMtx33 transform;
-	//		AEMtx33Identity(&transform);
-	//		AEMtx33ScaleApply(&transform, &transform, 1800, 1440);
-	//		AEMtx33TransApply(&transform, &transform, 0, 315);
-	//		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_2"), 0, 0);
-	//		AEGfxSetTransparency(t_Transparency);
-	//		AEGfxSetTransform(transform.m);
-	//		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	//	}
-	//	else
-	//		t_Transparency = -1.1;
-	//}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Combat Render
-	if (m_CombatPhase)
-		CombatScene::getInstance().Render();
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// UI / MISC RENDER
-	{
-		updateGlobals();
-		//Lvl Name
-		RenderLvlName();
-
-		//Border
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxSetTransparency(1.0);
-		AEMtx33 t_curr;
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
-		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, -AEGfxGetWindowHeight() / 2 + camOffset.y);
-		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
-		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, AEGfxGetWindowHeight() / 2 + camOffset.y);
-		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-		//Screen Transition
-		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
-		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxSetTransparency(m_currTransitionTransparency);
-		AEMtx33Identity(&t_curr);
-		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
-		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// GAMEOBJ RENDER
-	GameObjectManager::GetInstance()->Render();
-
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	// UI / MISC RENDER PART 2
-	{
-		// down here because player should be drawn on top of everything else, save pause screen
-		if (!m_CombatPhase) {
-			player->render();
-		}
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// show game end screen if no more levels
-	if (showGameEnd) {
-		cout << "show game end screen\n";
-	}
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// UI / MISC RENDER PART 3
-	{
-		Pause::getInstance().render();
-	}
-
-}
-
-void SceneLevelBuilder::Exit()
-{
-	//Clear Floor
-	for (int i = 0; i < SIZE_OF_FLOOR; i++)
-	{
-		delete[] m_Floor[i];
-		delete[] m_FloorOBJs[i];
-	}
-	delete[] m_Floor;
-	delete[] m_FloorOBJs;
-
-	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
-	{
-		delete[] m_tileSP[i];
-	}
-	delete[] m_tileSP;
-
-	//Clear Object in scene
-	GameObjectManager::GetInstance()->Exit();
-	GameObjectManager::GetInstance()->Destroy();
-
-	delete[] m_SceneLevelDataList;
-
-	//Destroy Font
-	AEGfxDestroyFont(pTextFont);
-
-	CombatScene::getInstance().Exit();
-
-	cleanup();
 }
 
 /*********************************************************************************
@@ -1660,52 +1349,443 @@ std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 			break;
 		}
 	}
-	
+
 
 	return m_CombatNames;
 }
 
-////////////////////////////////////////////////////////////////////////////
-/* TO BE DELETED
-//Placement Tool (Remove once done)
-static double x = 1, y = 1;
-if (AEInputCheckCurr(AEVK_W))
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/***************************************************************************************************************************************
+
+		  _____                    _____                    _____                    _____                    _____                    _____
+		 /\    \                  /\    \                  /\    \                  /\    \                  /\    \                  /\    \
+		/::\    \                /::\    \                /::\____\                /::\    \                /::\    \                /::\    \
+	   /::::\    \              /::::\    \              /::::|   |               /::::\    \              /::::\    \              /::::\    \
+	  /::::::\    \            /::::::\    \            /:::::|   |              /::::::\    \            /::::::\    \            /::::::\    \
+	 /:::/\:::\    \          /:::/\:::\    \          /::::::|   |             /:::/\:::\    \          /:::/\:::\    \          /:::/\:::\    \
+	/:::/__\:::\    \        /:::/__\:::\    \        /:::/|::|   |            /:::/  \:::\    \        /:::/__\:::\    \        /:::/__\:::\    \
+   /::::\   \:::\    \      /::::\   \:::\    \      /:::/ |::|   |           /:::/    \:::\    \      /::::\   \:::\    \      /::::\   \:::\    \
+  /::::::\   \:::\    \    /::::::\   \:::\    \    /:::/  |::|   | _____    /:::/    / \:::\    \    /::::::\   \:::\    \    /::::::\   \:::\    \
+ /:::/\:::\   \:::\____\  /:::/\:::\   \:::\    \  /:::/   |::|   |/\    \  /:::/    /   \:::\ ___\  /:::/\:::\   \:::\    \  /:::/\:::\   \:::\____\
+/:::/  \:::\   \:::|    |/:::/__\:::\   \:::\____\/:: /    |::|   /::\____\/:::/____/     \:::|    |/:::/__\:::\   \:::\____\/:::/  \:::\   \:::|    |
+\::/   |::::\  /:::|____|\:::\   \:::\   \::/    /\::/    /|::|  /:::/    /\:::\    \     /:::|____|\:::\   \:::\   \::/    /\::/   |::::\  /:::|____|
+ \/____|:::::\/:::/    /  \:::\   \:::\   \/____/  \/____/ |::| /:::/    /  \:::\    \   /:::/    /  \:::\   \:::\   \/____/  \/____|:::::\/:::/    /
+	   |:::::::::/    /    \:::\   \:::\    \              |::|/:::/    /    \:::\    \ /:::/    /    \:::\   \:::\    \            |:::::::::/    /
+	   |::|\::::/    /      \:::\   \:::\____\             |::::::/    /      \:::\    /:::/    /      \:::\   \:::\____\           |::|\::::/    /
+	   |::| \::/____/        \:::\   \::/    /             |:::::/    /        \:::\  /:::/    /        \:::\   \::/    /           |::| \::/____/
+	   |::|  ~|               \:::\   \/____/              |::::/    /          \:::\/:::/    /          \:::\   \/____/            |::|  ~|
+	   |::|   |                \:::\    \                  /:::/    /            \::::::/    /            \:::\    \                |::|   |
+	   \::|   |                 \:::\____\                /:::/    /              \::::/    /              \:::\____\               \::|   |
+		\:|   |                  \::/    /                \::/    /                \::/____/                \::/    /                \:|   |
+		 \|___|                   \/____/                  \/____/                  ~~                       \/____/                  \|___|
+
+***************************************************************************************************************************************/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void SceneLevelBuilder::Render()
 {
-	y += 0.5;
+	// Set the background to black.
+	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
+
+	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+
+	// Set the the color to multiply to white, so that the sprite can 
+	// display the full range of colors (default is black).
+	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+
+	// Set the color to add to nothing, so that we don't alter the sprite's color
+	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Set blend mode to AE_GFX_BM_BLEND
+	// This will allow transparency.
+	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	//SKY RENDER
+	{
+		AEGfxSetTransparency(1.0f);
+		//Sky
+		AEGfxSetTransform(m_TransformSkyData.m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_1"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		/////////////////////////////////////////////////////////////////////////////////
+		//Sun
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxSetTransparency(1.0f);
+		AEGfxSetTransform(m_TransformSunData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		AEGfxSetTransparency(1.0f);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_OVERLAY_1"), 0, 0);
+		AEGfxSetTransform(m_TransformSunOverlayData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//////////////////////////////////////////////////////////////////////////////////////
+		//Cloud
+		//First Layer
+		AEGfxSetTransform(m_TransformCloudsData[0].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[1].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[2].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_2"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//Second Layer
+		AEGfxSetTransform(m_TransformCloudsData[3].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[4].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[5].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_3"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		//Third Layer
+		AEGfxSetTransform(m_TransformCloudsData[6].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[7].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransform(m_TransformCloudsData[8].m);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SKY_TEST_4"), 0, 0);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// BACKDROP RENDER
+	{
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_1"), 0, 0);
+		for (int i = 0; i < 9; i++)
+		{
+			AEGfxSetTransform(m_TransformBackDrops1Data[i].m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_2"), 0, 0);
+		for (int i = 0; i < 5; i++)
+		{
+			AEGfxSetTransform(m_TransformBackDrops2Data[i].m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("BACKDROP_3"), 0, 0);
+		for (int i = 0; i < 5; i++)
+		{
+			AEGfxSetTransform(m_TransformBackDrops3Data[i].m);
+			AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		}
+
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// FLOOR RENDER
+	{
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+
+		//Main Floor
+		
+		for (int i = NUM_OF_TILES - 1; i > -1; i--)
+		{
+			if(m_Floor[t_CenterFloorNum][i].m_Type ==0)
+				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_1"), 0, 0);
+			else
+				AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_CENTER_2"), 0, 0);
+
+			if (m_Floor[t_CenterFloorNum][i].m_IsRender)
+			{
+				AEGfxSetTransform(m_Floor[t_CenterFloorNum][i].m_TransformFloorCurr.m);
+				AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+			}
+		}
+
+		////Left Floor
+		for (int j = 0; j < SIZE_OF_FLOOR - (t_CenterFloorNum + 1); j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				if (m_Floor[j][i].m_Type == 0)
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_1"), 0, 0);
+				else
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_LEFT_2"), 0, 0);
+
+				if (m_Floor[j][i].m_IsRender)
+				{
+					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+		//Right Floor
+		for (int j = (t_CenterFloorNum + 1); j < SIZE_OF_FLOOR; j++)
+		{
+			for (int i = NUM_OF_TILES - 1; i > -1; i--)
+			{
+				if (m_Floor[j][i].m_Type == 0)
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_1"), 0, 0);
+				else
+					AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FLOOR_RIGHT_2"), 0, 0);
+
+				if (m_Floor[j][i].m_IsRender)
+				{
+					AEGfxSetTransform(m_Floor[j][i].m_TransformFloorCurr.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// FOG RENDER
+	{
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_1"), 0, 0);
+		AEGfxSetTransform(m_TransformFogData.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// SCENEOBJ RENDER
+	{
+		//Render Left Side
+		for (int j = 0; j < SIZE_OF_FLOOR / 2; j++)
+		{
+			for (int i = 0; i < NUM_OF_TILES - 1; i++)
+			{
+				////////////////////////////////////////////////
+				// m_CurrentTileNumFurthest = 4
+				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+				////////////////////////////////////////////////
+				int tempTileNum = m_CurrentTileNumFurthest - i;
+				if (tempTileNum < 0)
+					tempTileNum += NUM_OF_TILES - 1;
+
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+					it != m_FloorOBJs[j][tempTileNum].end();
+					it++)
+				{
+					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxSetTransparency((*it).m_Transparency);
+					AEGfxSetTransform((*it).m_TransformData.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+		//Render Right Side
+		for (int j = SIZE_OF_FLOOR - 1; j >= SIZE_OF_FLOOR / 2; j--)
+		{
+			for (int i = 0; i < NUM_OF_TILES - 1; i++)
+			{
+				////////////////////////////////////////////////
+				// m_CurrentTileNumFurthest = 4
+				// -> 4 3 2 1 0 9 8 7 6 5 -> Render in this way
+				////////////////////////////////////////////////
+				int tempTileNum = m_CurrentTileNumFurthest - i;
+				if (tempTileNum < 0)
+					tempTileNum += NUM_OF_TILES - 1;
+
+				for (std::list<v_SceneObject>::iterator it = m_FloorOBJs[j][tempTileNum].begin();
+					it != m_FloorOBJs[j][tempTileNum].end();
+					it++)
+				{
+					AEGfxTextureSet(RenderHelper::getInstance()->GetTexture((*it).m_Type), 0, 0);
+					AEGfxSetTransparency((*it).m_Transparency);
+					AEGfxSetTransform((*it).m_TransformData.m);
+					AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+				}
+			}
+		}
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Light Flare
+	if(m_SceneLevelDataList[m_currLevel].m_DayTime)
+	{
+		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+		static f32 transparency[8] = { 1.07f, -0.75f, 0.2f, -0.05f , -0.36f, 0.9f ,1.1f,2.2f };
+		//Lens Flare
+		AEGfxSetTransparency(transparency[7]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_1"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[7].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[6]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[6].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[5]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[5].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[4]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[4].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[3]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_2"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[3].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[2]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_3"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[2].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[1]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_4"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[1].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxSetTransparency(transparency[0]);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("SUN_LENS_5"), 0, 0);
+		AEGfxSetTransform(m_TransformSunLensData[0].m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////
+	//MASSIVE FOG AT LEVEL 7 (REMOVED FROM FINAL PRODUCT DUE TO PROBLEMS WITH RENDERING)
+	//{
+	//	static double t_Transparency = -1.1;
+	//	if (m_currLevel == 7)
+	//	{
+	// 		/////////////////////////////////////////////////////////////////////////
+	//   // RESET SETTINGS
+	//   	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
+	//   	AEGfxSetColorToMultiply(m_Lighting.r, m_Lighting.g, m_Lighting.b, m_Lighting.a);
+	//   	AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+	//   	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
+	//		static double t_Transparency = -1.1;
+	//		t_Transparency += AEFrameRateControllerGetFrameTime() / LERPING_SPEED;
+	//		AEMtx33 transform;
+	//		AEMtx33Identity(&transform);
+	//		AEMtx33ScaleApply(&transform, &transform, 1800, 1440);
+	//		AEMtx33TransApply(&transform, &transform, 0, 315);
+	//		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FOG_2"), 0, 0);
+	//		AEGfxSetTransparency(t_Transparency);
+	//		AEGfxSetTransform(transform.m);
+	//		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	//	}
+	//	else
+	//		t_Transparency = -1.1;
+	//}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Combat Render
+	if (m_CombatPhase)
+		CombatScene::getInstance().Render();
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER
+	{
+		updateGlobals();//Had to force update to update the positions to as correct as possible
+
+		//Lvl Name
+		RenderLvlName();
+
+		//Border
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxSetTransparency(1.0);
+		AEMtx33 t_curr;
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
+		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, -AEGfxGetWindowHeight() / 2 + camOffset.y);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 90);
+		AEMtx33TransApply(&t_curr, &t_curr, camOffset.x, AEGfxGetWindowHeight() / 2 + camOffset.y);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+		//Screen Transition
+		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
+		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxSetTransparency(m_currTransitionTransparency);
+		AEMtx33Identity(&t_curr);
+		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
+		AEGfxSetTransform(t_curr.m);
+		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+	}
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// GAMEOBJ RENDER
+	GameObjectManager::GetInstance()->Render();
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 2
+	{
+		// down here because player should be drawn on top of everything else, save pause screen
+		if (!m_CombatPhase) {
+			player->render();
+		}
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// show game end screen if no more levels
+	if (showGameEnd) {
+		cout << "show game end screen\n";
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// UI / MISC RENDER PART 3
+	{
+		Pause::getInstance().render();
+	}
+
 }
-if (AEInputCheckCurr(AEVK_S))
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/***************************************************************************************************************************************
+	  _____                    _____                    _____                            _____                    _____                    _____
+	 /\    \                  /\    \                  /\    \                          /\    \                  /\    \                  /\    \
+	/::\    \                /::\____\                /::\    \                        /::\    \                /::\____\                /::\    \
+	\:::\    \              /:::/    /               /::::\    \                      /::::\    \              /::::|   |               /::::\    \
+	 \:::\    \            /:::/    /               /::::::\    \                    /::::::\    \            /:::::|   |              /::::::\    \
+	  \:::\    \          /:::/    /               /:::/\:::\    \                  /:::/\:::\    \          /::::::|   |             /:::/\:::\    \
+	   \:::\    \        /:::/____/               /:::/__\:::\    \                /:::/__\:::\    \        /:::/|::|   |            /:::/  \:::\    \
+	   /::::\    \      /::::\    \              /::::\   \:::\    \              /::::\   \:::\    \      /:::/ |::|   |           /:::/    \:::\    \
+	  /::::::\    \    /::::::\    \   _____    /::::::\   \:::\    \            /::::::\   \:::\    \    /:::/  |::|   | _____    /:::/    / \:::\    \
+	 /:::/\:::\    \  /:::/\:::\    \ /\    \  /:::/\:::\   \:::\    \          /:::/\:::\   \:::\    \  /:::/   |::|   |/\    \  /:::/    /   \:::\ ___\
+	/:::/  \:::\____\/:::/  \:::\    /::\____\/:::/__\:::\   \:::\____\        /:::/__\:::\   \:::\____\/:: /    |::|   /::\____\/:::/____/     \:::|    |
+   /:::/    \::/    /\::/    \:::\  /:::/    /\:::\   \:::\   \::/    /        \:::\   \:::\   \::/    /\::/    /|::|  /:::/    /\:::\    \     /:::|____|
+  /:::/    / \/____/  \/____/ \:::\/:::/    /  \:::\   \:::\   \/____/          \:::\   \:::\   \/____/  \/____/ |::| /:::/    /  \:::\    \   /:::/    /
+ /:::/    /                    \::::::/    /    \:::\   \:::\    \               \:::\   \:::\    \              |::|/:::/    /    \:::\    \ /:::/    /
+/:::/    /                      \::::/    /      \:::\   \:::\____\               \:::\   \:::\____\             |::::::/    /      \:::\    /:::/    /
+\::/    /                       /:::/    /        \:::\   \::/    /                \:::\   \::/    /             |:::::/    /        \:::\  /:::/    /
+ \/____/                       /:::/    /          \:::\   \/____/                  \:::\   \/____/              |::::/    /          \:::\/:::/    /
+							  /:::/    /            \:::\    \                       \:::\    \                  /:::/    /            \::::::/    /
+							 /:::/    /              \:::\____\                       \:::\____\                /:::/    /              \::::/    /
+							 \::/    /                \::/    /                        \::/    /                \::/    /                \::/____/
+							  \/____/                  \/____/                          \/____/                  \/____/                  ~~
+
+***************************************************************************************************************************************/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void SceneLevelBuilder::Exit()
 {
-	y -= 0.5;
+	//Clear Floor
+	for (int i = 0; i < SIZE_OF_FLOOR; i++)
+	{
+		delete[] m_Floor[i];
+		delete[] m_FloorOBJs[i];
+	}
+	delete[] m_Floor;
+	delete[] m_FloorOBJs;
+
+	for (int i = 0; i < NUM_OF_TILESPAWNPOINTS; i++)
+	{
+		delete[] m_tileSP[i];
+	}
+	delete[] m_tileSP;
+
+	//Clear Object in scene
+	GameObjectManager::GetInstance()->Exit();
+	GameObjectManager::GetInstance()->Destroy();
+
+	delete[] m_SceneLevelDataList;
+
+	//Destroy Font
+	AEGfxDestroyFont(pTextFont);
+
+	CombatScene::getInstance().Exit();
+
+	cleanup();
 }
-if (AEInputCheckCurr(AEVK_A))
-{
-	x -= 0.55;
-}
-if (AEInputCheckCurr(AEVK_D))
-{
-	x += 0.55;
-}
-static double mx = 0, my = 0;
-if (AEInputCheckCurr(AEVK_UP))
-{
-	mx += 0.55;
-}
-if (AEInputCheckCurr(AEVK_DOWN))
-{
-	mx -= 0.55;
-}
-if (AEInputCheckCurr(AEVK_RIGHT))
-{
-	my += 12.55;
-}
-if (AEInputCheckCurr(AEVK_LEFT))
-{
-	my -= 12.55;
-}
-//AEMtx33 scale = { 0 }, trans = { 0 };
-//AEMtx33Scale(&scale, x, y);
-//AEMtx33Trans(&trans, mx, my);
-//AEMtx33Concat(&m_TransformFogData, &trans, &scale);
-//
-//cout << x << " " << y << " " << mx << endl;
-*/
+
+
+
+/*******************************************************************************************************************************************
+*                                                THE END OF THE FILE ;)
+*                  Good morning, and in case I don't see ya, good afternoon, good evening, and good night!
+*******************************************************************************************************************************************/
