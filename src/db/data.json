@@ -18,7 +18,7 @@
       "chicken": 3
     },
     "baseHealth": 100,
-    "baseDamage": 100
+    "baseDamage": 40
   },
   "enemyAttributes": {
     "bull": {
