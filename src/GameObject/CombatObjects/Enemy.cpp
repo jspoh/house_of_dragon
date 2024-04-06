@@ -60,12 +60,12 @@ void Enemy::update([[maybe_unused]] double dt) {
         m_isSelected = !m_isSelected;
     }
     //cout << camOffset.x << ", " << camOffset.y << "\n";
-    if (this->m_attacked && this->m_healthRenderTime < this->m_healthRenderTimeMax) {
+    if (this->m_attacked && this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) {
         m_healthRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
-        float percenttime = static_cast<float>(m_healthRenderTime / m_healthRenderTimeMax);
+        float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
         float t = percenttime;
-        if (t > m_healthRenderTimeMax) {
-            t = m_healthRenderTimeMax;
+        if (t > m_HEALTH_RENDER_TIME_MAX) {
+            t = m_HEALTH_RENDER_TIME_MAX;
         }
         this->m_attackedRenderX = lerp(this->m_attackedRenderXprev, m_health / m_maxHealth,t);
     }

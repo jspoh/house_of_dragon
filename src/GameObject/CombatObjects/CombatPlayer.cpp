@@ -151,13 +151,14 @@ void Player::update(double dt) {
 	//cout << mouseX << " | " << mouseY << "\n";
 	//cout << camOffset.x << " | " << camOffset.y << "\n";
 
-	if (this->m_hasAttacked && this->m_healthRenderTime < this->m_healthRenderTimeMax && !m_healthIncrease) {
+	// for player healthbar
+	if (this->m_hasAttacked && this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX && !m_healthIncrease) {
 		m_healthRenderTime += static_cast<float>(dt);
-		float percenttime = static_cast<float>(m_healthRenderTime / m_healthRenderTimeMax);
+		float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
 		float t = percenttime;
-		if (t > m_healthRenderTimeMax) {
-			t = m_healthRenderTimeMax;
-		}
+		//if (t > m_HEALTH_RENDER_TIME_MAX) {
+		//	t = m_HEALTH_RENDER_TIME_MAX;
+		//}
 		this->m_renderX = lerp(this->m_renderXprev, m_health / m_maxHealth, t);
 	}
 	else {
@@ -166,12 +167,12 @@ void Player::update(double dt) {
 	}
 
 
-	//if (!this->m_hasAttacked && (this->m_healthRenderTime < this->m_healthRenderTimeMax) && this->m_healthIncrease ) {
+	//if (!this->m_hasAttacked && (this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) && this->m_healthIncrease ) {
 	//	m_healthRenderTime += static_cast<float>(dt);
-	//	float percenttime = static_cast<float>(m_healthRenderTime / m_healthRenderTimeMax);
+	//	float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
 	//	float t = percenttime;
-	//	if (t > m_healthRenderTimeMax) {
-	//		t = m_healthRenderTimeMax;
+	//	if (t > m_HEALTH_RENDER_TIME_MAX) {
+	//		t = m_HEALTH_RENDER_TIME_MAX;
 	//	}
 	//	this->m_renderX = lerp(this->m_renderXprev, m_health / m_maxHealth, t);
 	//}
@@ -180,12 +181,12 @@ void Player::update(double dt) {
 	//	this->m_healthRenderTime = 0.f;
 	//}
 
-	//if (this->m_healthIncrease && this->m_healthRenderTime < this->m_healthRenderTimeMax) {
+	//if (this->m_healthIncrease && this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) {
 	//	m_healthRenderTime += static_cast<float>(dt);
-	//	float percenttime = static_cast<float>(m_healthRenderTime / m_healthRenderTimeMax);
+	//	float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
 	//	float t = percenttime;
-	//	if (t > m_healthRenderTimeMax) {
-	//		t = m_healthRenderTimeMax;
+	//	if (t > m_HEALTH_RENDER_TIME_MAX) {
+	//		t = m_HEALTH_RENDER_TIME_MAX;
 	//	}
 	//	this->m_renderX = lerp(this->m_renderXprev, m_health / m_maxHealth, t);
 	//}

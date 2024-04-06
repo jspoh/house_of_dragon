@@ -56,7 +56,7 @@ private:
 	void _renderShield();
 
 	float m_healthRenderTime{ 0 };
-	const float m_healthRenderTimeMax = 0.75f;
+	static constexpr float m_HEALTH_RENDER_TIME_MAX = 0.75f;
 
 	float m_renderX{ 0 };
 	float m_renderXprev{ 0 };
