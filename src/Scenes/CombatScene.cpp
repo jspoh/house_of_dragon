@@ -433,7 +433,7 @@ CombatScene& CombatScene::getInstance() {
 	return instance;
 }
 
-void CombatScene::Load()
+void CombatScene::load()
 {
 	Event::getInstance();
 	// enemy selection border
@@ -537,7 +537,7 @@ void CombatScene::Load()
 }
 
 
-void CombatScene::Init(CombatManager::TURN startingTurn)
+void CombatScene::init(CombatManager::TURN startingTurn)
 {
 	// cleanup again just in case
 	//cleanup();
@@ -606,7 +606,7 @@ void CombatScene::Init(CombatManager::TURN startingTurn)
 	Event::getInstance()->init();
 }
 
-void CombatScene::Update(double dt)
+void CombatScene::update(double dt)
 {
 	updateGlobals();
 	//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
@@ -625,7 +625,7 @@ void CombatScene::Update(double dt)
 			inactiveProjectileIdxs.push_back(ipIdx);
 			continue;
 		}
-		pp->Update(dt);
+		pp->update(dt);
 	}
 
 	// remove inactive projectiles
@@ -928,7 +928,7 @@ void CombatScene::Update(double dt)
 }
 
 
-void CombatScene::Render()
+void CombatScene::render()
 {
 	// dont render if no longer in combat
 	if (!CombatManager::getInstance().m_isInCombat) {
@@ -1114,7 +1114,7 @@ void CombatScene::Render()
 	Event::getInstance()->render();
 
 	for (GameObject_Projectiles* pp : projectiles) {
-		pp->Render();
+		pp->render();
 	}
 
 	player->render();		// rendering for combat scene. level builder will render while not in combat, else will default to this.
@@ -1135,7 +1135,7 @@ void CombatScene::cleanup() {
 	currentState = ACTION_BTNS::MAIN;
 }
 
-void CombatScene::Exit()
+void CombatScene::exit()
 {
 	cout << "Exiting CombatScene\n";
 	cleanup();

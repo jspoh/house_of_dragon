@@ -35,11 +35,11 @@ public:
 	SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
 	~SceneCredits();
 
-	virtual void Load();
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void load();
+	virtual void init();
+	virtual void update(double dt);
+	virtual void render();
+	virtual void exit();
 	s8 pFontL;
 	s8 pFontM;
 	s8 pFontS;

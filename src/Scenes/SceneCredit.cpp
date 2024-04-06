@@ -49,7 +49,7 @@ SceneCredits::~SceneCredits()
 
 
 
-void SceneCredits::Load()
+void SceneCredits::load()
 {
 	credits.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
 	//credits.mesh = 0; 
@@ -82,7 +82,7 @@ void SceneCredits::Load()
   * text rendering in the credit scene.
   */
 
-void SceneCredits::Init()
+void SceneCredits::init()
 {	pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
 	pFontM = AEGfxCreateFont("Assets/Fonts/liberation-mono.ttf", 40);
 	pFontS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 30);
@@ -103,7 +103,7 @@ void SceneCredits::Init()
  * @param dt Delta time since the last frame update.
  */
 
-void SceneCredits::Update(double dt)
+void SceneCredits::update(double dt)
 {
 	UNREFERENCED_PARAMETER(dt);
 	//if "Escape" button triggered, go to menu state
@@ -125,7 +125,7 @@ void SceneCredits::Update(double dt)
  * Draws the scene elements to the screen, including the scrolling text
  * and background image.
  */
-void SceneCredits::Render()
+void SceneCredits::render()
 {
 
 	scrolling += timef * speed;
@@ -260,7 +260,7 @@ void SceneCredits::Render()
  * Frees up the meshes and textures used by the credit scene and destroys
  * the fonts that were created.
  */
-void SceneCredits::Exit()
+void SceneCredits::exit()
 {
 	AEGfxMeshFree(credits.mesh);
 	AEGfxTextureUnload(credits.bg);

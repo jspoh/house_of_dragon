@@ -28,14 +28,14 @@ GameObjectManager::~GameObjectManager()
 }
 
 // Update all entities
-void GameObjectManager::Update(double _dt)
+void GameObjectManager::update(double _dt)
 {
 	// Update all entities
 	std::list<GameObject*>::iterator it, end;
 	end = entityList.end();
 	for (it = entityList.begin(); it != end; ++it)
 	{
-		(*it)->Update(_dt);
+		(*it)->update(_dt);
 	}
 
 	//Dont clean up during update 
@@ -58,14 +58,14 @@ void GameObjectManager::Update(double _dt)
 }
 
 // Render all entities
-void GameObjectManager::Render()
+void GameObjectManager::render()
 {
 	// Render all entities
 	for (std::list<GameObject*>::iterator it = entityList.begin();
 		it != entityList.end();
 		it++)
 	{
-		(*it)->Render();
+		(*it)->render();
 	}
 }
 
@@ -99,14 +99,14 @@ std::list<GameObject*> GameObjectManager::GetEntityList()
 	return entityList;
 }
 
-void GameObjectManager::Exit()
+void GameObjectManager::exit()
 {
 	// Delete all scenes stored and empty the entire map
 	for (std::list<GameObject*>::iterator it = entityList.begin(); 
 		it != entityList.end(); 
 		it++)
 	{
-		(*it)->Exit();
+		(*it)->exit();
 		delete (*it);
 	}
 	entityList.clear();

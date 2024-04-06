@@ -647,7 +647,7 @@ AE_API void				AEGfxMeshFree	(AEGfxVertexList* pVertexList);
 /*!
 \fn		    AEGfxTexture* AEGfxTextureLoad(const char *pFileName)
 
-\brief      Load a texture file into memory.
+\brief      load a texture file into memory.
 
 \param      [in] pFileName
             Pointer to a null-terminated string containing the
@@ -700,7 +700,7 @@ AE_API void				AEGfxTextureUnload(AEGfxTexture *pTexture);
                                                      u32 Width, 
                                                      u32 Height)
 
-\brief      Load a texture from data in memory.
+\brief      load a texture from data in memory.
 
 \param      [in] pColors
             Pointer to an array containing the data.
@@ -782,7 +782,7 @@ AE_API u32				AEGfxColInterp	(u32 c0, u32 c1, f32 t);
 /*!
 \fn         s8  AEGfxCreateFont(const char * fontName, int fontHeight);
 
-\brief      Load a Font in memory, and prepares it for usage in the AlphaEngine
+\brief      load a Font in memory, and prepares it for usage in the AlphaEngine
 
 \param      [in] fontName
             Full Path to the font ( accept .ttf, .ttc, .cff, .otf, .otc, .fnt ...)

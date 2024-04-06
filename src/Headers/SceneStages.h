@@ -37,11 +37,11 @@ public:
 	SceneStages();
 	~SceneStages();
 
-	virtual void Load();
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void load();
+	virtual void init();
+	virtual void update(double dt);
+	virtual void render();
+	virtual void exit();
 
 	void Util_Camera_Shake(float duration, float strength);
 	static SceneStages* sInstance; // The pointer to the object that gets registered

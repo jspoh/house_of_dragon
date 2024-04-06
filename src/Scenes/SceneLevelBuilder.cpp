@@ -238,9 +238,9 @@ SceneLevelBuilder::SceneLevelBuilder() :
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	//                       Load data from Json
+	//                       load data from Json
 	/*
-	*     Load All Level Data from Json, for instance, enemies to spawn and title name and objs
+	*     load All Level Data from Json, for instance, enemies to spawn and title name and objs
 	*/
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	{
@@ -288,22 +288,22 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	//                       Load Combat elements
+	//                       load Combat elements
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	CombatScene::getInstance().Load();
+	CombatScene::getInstance().load();
 	SoundPlayer::CombatAudio::getInstance();
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	//                       Initialise 3D engine & relevant values
 	//////////////////////////////////////////////////////////////////////////////////////////////// 
-	Init();
+	init();
 }
 SceneLevelBuilder::~SceneLevelBuilder()
 {
-	Exit(); //Hehe, dont allow sneaky memory leak
+	exit(); //Hehe, dont allow sneaky memory leak
 }
 
-void SceneLevelBuilder::Init()
+void SceneLevelBuilder::init()
 {
 	// cleanup again just in case
 	//cleanup();
@@ -465,7 +465,7 @@ void SceneLevelBuilder::Init()
 	}
 }
 
-void SceneLevelBuilder::Update(double dt)
+void SceneLevelBuilder::update(double dt)
 {
 	if (!SceneStages::sInstance->m_StartGame) dt *= 3; //JUST A SPEED UP TO WARM UP THE ENGINE BEFORE GAMEPLAY
 
@@ -651,7 +651,7 @@ void SceneLevelBuilder::Update(double dt)
 					
 				}
 
-				CombatScene::getInstance().Update(dt);
+				CombatScene::getInstance().update(dt);
 				if (!m_CombatPhase)
 				{
 					m_CombatBufferingTime = 0.6f;
@@ -671,7 +671,7 @@ void SceneLevelBuilder::Update(double dt)
 				{
 					m_CombatAnimationComp = true;
 					m_StopMovement = true;
-					CombatScene::getInstance().Init((CombatManager::TURN)t_whoseTurn);
+					CombatScene::getInstance().init((CombatManager::TURN)t_whoseTurn);
 					FadeOutBlack();
 				}
 				//For faster setup
@@ -809,7 +809,7 @@ void SceneLevelBuilder::Update(double dt)
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE SCENEOBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
-		GameObjectManager::GetInstance()->Update(dt);
+		GameObjectManager::GetInstance()->update(dt);
 		v_SceneObject temp;
 		std::pair<int, int> t_TransScaleModifier = { 60, 48 }; //For rand on tile pos
 		static double t_XModifier = 2, t_YModifier = 225, t_MXModifier = 45, t_MYModifier = 1;
@@ -878,7 +878,7 @@ void SceneLevelBuilder::Update(double dt)
 	}
 }
 
-void SceneLevelBuilder::Render()
+void SceneLevelBuilder::render()
 {
 	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
@@ -1163,7 +1163,7 @@ void SceneLevelBuilder::Render()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Combat Render
 	if (m_CombatPhase)
-		CombatScene::getInstance().Render();
+		CombatScene::getInstance().render();
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER
 	{
@@ -1198,7 +1198,7 @@ void SceneLevelBuilder::Render()
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// GAMEOBJ RENDER
-	GameObjectManager::GetInstance()->Render();
+	GameObjectManager::GetInstance()->render();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER PART 2
@@ -1223,7 +1223,7 @@ void SceneLevelBuilder::Render()
 
 }
 
-void SceneLevelBuilder::Exit()
+void SceneLevelBuilder::exit()
 {
 	//Clear Floor
 	for (int i = 0; i < SIZE_OF_FLOOR; i++)
@@ -1241,7 +1241,7 @@ void SceneLevelBuilder::Exit()
 	delete[] m_tileSP;
 
 	//Clear Object in scene
-	GameObjectManager::GetInstance()->Exit();
+	GameObjectManager::GetInstance()->exit();
 	GameObjectManager::GetInstance()->Destroy();
 
 	delete[] m_SceneLevelDataList;
@@ -1249,7 +1249,7 @@ void SceneLevelBuilder::Exit()
 	//Destroy Font
 	AEGfxDestroyFont(pTextFont);
 
-	CombatScene::getInstance().Exit();
+	CombatScene::getInstance().exit();
 
 	cleanup();
 }

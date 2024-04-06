@@ -41,11 +41,11 @@ public:
 	SceneLevelBuilder();
 	~SceneLevelBuilder();
 
-	void Update(double dt);
-	void Render();
+	void update(double dt);
+	void render();
 private:
-	void Init(); //Init relevant values like floor translation
-	void Exit();
+	void init(); //Init relevant values like floor translation
+	void exit();
 
 	void CreateRowOBJs(int t_tileNum);
 	void DestroyRowOBJs(int t_tileNum);

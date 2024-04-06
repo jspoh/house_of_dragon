@@ -35,10 +35,10 @@ public:
 	GameObject_Misc_Enemy(/*Maybe put texture here still thinking*/);
 	virtual ~GameObject_Misc_Enemy();
 
-	virtual void Init();
-	virtual void Update(double _dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double _dt);
+	virtual void render();
+	virtual void exit();
 
 	void ActivateEnemy(AEMtx33& m_transform, v_EnemyBehaviour _type = Normal);
 	void UpdateEnemyMov(double _dt);

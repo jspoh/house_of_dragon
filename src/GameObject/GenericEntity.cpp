@@ -25,23 +25,23 @@ GenericEntity::~GenericEntity()
 {
 }
 
-void GenericEntity::Init()
+void GenericEntity::init()
 {
 
 }
 
-void GenericEntity::Update(double _dt)
+void GenericEntity::update(double _dt)
 {
 	UNREFERENCED_PARAMETER(_dt);
 	// Does nothing here, can inherit & override or create your own version of this class :D
 }
 
-void GenericEntity::Render()
+void GenericEntity::render()
 {
 	// Does nothing here, can inherit & override or create your own version of this class :D
 }
 
-void GenericEntity::Exit()
+void GenericEntity::exit()
 {
 }
 

@@ -59,9 +59,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //Show Cursor - Disable when have custom cursor
     AEInputShowCursor(1);
     
-    //Load & Initialise Game System
+    //load & Initialise Game System
     GameManager& Game = GameManager::GetInstance();
-    Game.Init();
+    Game.init();
     
     // Game System Loop
     while (gGameRunning)
@@ -88,7 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
     
     //Free & Unload Game System
-    Game.Exit();
+    Game.exit();
 	// free the system
 	AESysExit();
 }

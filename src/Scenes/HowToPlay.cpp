@@ -42,7 +42,7 @@ HowToPlay& HowToPlay::getInstance() {
     return instance;
 }
 
-void HowToPlay::Load() {
+void HowToPlay::load() {
     slideshow.background = "menuBg";
     slideshow.leftButton = "leftButton";
     slideshow.rightButton = "rightButton";
@@ -81,13 +81,13 @@ void HowToPlay::Load() {
     RenderHelper::getInstance()->registerTexture("image12", "Assets/Menu/12.png");
 }
 
-void HowToPlay::Init() {
+void HowToPlay::init() {
     AEGfxSetCamPosition(0, 0);
 }
 
-void HowToPlay::Update([[maybe_unused]] double dt) {
+void HowToPlay::update([[maybe_unused]] double dt) {
     if (isActive && !prevIsActive) {
-        Init();
+        init();
         slideshow.currentImageIndex = 0;
     }
 
@@ -125,7 +125,7 @@ void HowToPlay::Update([[maybe_unused]] double dt) {
     prevIsActive = isActive;
 }
 
-void HowToPlay::Render() {
+void HowToPlay::render() {
     RenderHelper::getInstance()->texture(slideshow.background, 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
     RenderHelper::getInstance()->texture(slideshow.images[slideshow.currentImageIndex], 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
@@ -135,6 +135,6 @@ void HowToPlay::Render() {
     RenderHelper::getInstance()->texture(slideshow.backButton, slideshow.backButtonX, slideshow.backButtonY, slideshow.buttonWidth, slideshow.buttonHeight);
 }
 
-void HowToPlay::Exit() {
+void HowToPlay::exit() {
     cout << "Exiting Scene Slideshow" << "\n";
 }

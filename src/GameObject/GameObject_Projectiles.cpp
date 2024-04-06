@@ -54,11 +54,11 @@ GameObject_Projectiles::~GameObject_Projectiles()
 {
 }
 
-void GameObject_Projectiles::Init()
+void GameObject_Projectiles::init()
 {
 }
 
-void GameObject_Projectiles::Update(double _dt)
+void GameObject_Projectiles::update(double _dt)
 {
 	UNREFERENCED_PARAMETER(_dt);
 	if (m_Active)
@@ -124,7 +124,7 @@ void GameObject_Projectiles::Update(double _dt)
 	}
 }
 
-void GameObject_Projectiles::Render()
+void GameObject_Projectiles::render()
 {
 	if (m_Active)
 	{
@@ -179,7 +179,7 @@ void GameObject_Projectiles::Render()
 
 }
 
-void GameObject_Projectiles::Exit()
+void GameObject_Projectiles::exit()
 {
 	AEGfxMeshFree(pFireBallMesh);
 	AEGfxMeshFree(pEnergyBallMesh);
@@ -207,7 +207,7 @@ GameObject_Projectiles* Create::Projectiles(const AEVec2& _position, const AEVec
 	result->m_Active = false;
 	result->m_RefName = "Projectiles";
 	result->m_type = _type;
-	result->Init();
+	result->init();
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
 	return result;

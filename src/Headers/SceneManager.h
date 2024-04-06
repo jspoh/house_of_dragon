@@ -29,9 +29,9 @@ class SceneManager : public Singleton<SceneManager>
 	friend Singleton<SceneManager>;
 public:
 	// System Interface
-	void Update(double _dt);
-	void Render();
-	void Exit();
+	void update(double _dt);
+	void render();
+	void exit();
 
 	// User Interface
 	void AddScene(const std::string& _name, Scene* _scene);

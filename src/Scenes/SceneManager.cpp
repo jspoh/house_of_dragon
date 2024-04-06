@@ -28,7 +28,7 @@ SceneManager::~SceneManager()
 {
 }
 
-void SceneManager::Update(double _dt)
+void SceneManager::update(double _dt)
 {
 	// Check for change of scene
 	if (nextScene != activeScene || restart)
@@ -36,13 +36,13 @@ void SceneManager::Update(double _dt)
 		if (activeScene)
 		{
 			// Scene is valid, need to call appropriate function to exit
-			activeScene->Exit();
+			activeScene->exit();
 		}
 		
 		activeScene = nextScene;
 		//Change this for restart function
-		activeScene->Load();
-		activeScene->Init();
+		activeScene->load();
+		activeScene->init();
 
 		if (restart) {
 			restart = !restart;
@@ -50,21 +50,21 @@ void SceneManager::Update(double _dt)
 	}
 
 	if (activeScene) {
-		activeScene->Update(_dt);
+		activeScene->update(_dt);
 	}
 }
 
-void SceneManager::Render()
+void SceneManager::render()
 {
 	if (activeScene) {
-		activeScene->Render();
+		activeScene->render();
 	}
 }
 
-void SceneManager::Exit()
+void SceneManager::exit()
 {
 	// Delete all scenes stored and empty the entire map
-	activeScene->Exit();
+	activeScene->exit();
 	activeScene = nullptr;
 	std::map<std::string, Scene*>::iterator it, end;
 	end = sceneMap.end();

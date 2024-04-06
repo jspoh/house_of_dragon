@@ -33,11 +33,11 @@ GameObject_Misc_Enemy::~GameObject_Misc_Enemy()
 {
 }
 
-void GameObject_Misc_Enemy::Init()
+void GameObject_Misc_Enemy::init()
 {
 }
 
-void GameObject_Misc_Enemy::Update(double _dt)
+void GameObject_Misc_Enemy::update(double _dt)
 {
 	if (m_Active && m_Health > 0)
 	{
@@ -88,7 +88,7 @@ void GameObject_Misc_Enemy::Update(double _dt)
 		m_StartCombat = 1;
 }
 
-void GameObject_Misc_Enemy::Render()
+void GameObject_Misc_Enemy::render()
 {
 	if (m_Active)
 	{
@@ -109,7 +109,7 @@ void GameObject_Misc_Enemy::Render()
 	}
 }
 
-void GameObject_Misc_Enemy::Exit()
+void GameObject_Misc_Enemy::exit()
 {
 }
 
@@ -210,7 +210,7 @@ GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& 
 	result->m_Scale = _scale;
 	result->m_Active = false;
 	result->m_RefName = "MiscEnemy";
-	result->Init();
+	result->init();
 	//result->bool m_bCollider(false);
 	GameObjectManager::GetInstance()->AddEntity(result);
 	return result;

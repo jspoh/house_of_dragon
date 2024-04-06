@@ -28,9 +28,9 @@ class GameObjectManager : public Singleton<GameObjectManager>
 {
 	friend Singleton<GameObjectManager>;
 public:
-	void Update(double _dt);
-	void Render();
-	void Exit();
+	void update(double _dt);
+	void render();
+	void exit();
 
 	void AddEntity(GameObject* _newEntity);
 	bool RemoveEntity(GameObject* _existingEntity);

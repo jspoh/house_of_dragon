@@ -38,12 +38,12 @@ GameManager::~GameManager()
 {
 }
 
-void GameManager::Init()
+void GameManager::init()
 {
 	// seed PRNG
 	Math::InitRNG();
 
-	//Load Textures
+	//load Textures
 
 	//Init Scene Manager
 	SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
@@ -92,19 +92,19 @@ void GameManager::Run()
 
 	updateGlobals();
 
-	SceneManager::GetInstance()->Update((f32)AEFrameRateControllerGetFrameTime());
+	SceneManager::GetInstance()->update((f32)AEFrameRateControllerGetFrameTime());
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 
 	//Render
-	SceneManager::GetInstance()->Render();
+	SceneManager::GetInstance()->render();
 	//GameObjectManager::GetInstance()->Render();
 }
 
-void GameManager::Exit()
+void GameManager::exit()
 {
 	////Free Textures
 	////End Scene Manager
-	SceneManager::GetInstance()->Exit();
+	SceneManager::GetInstance()->exit();
 	////GameObjectManager::GetInstance()->Destroy();
 	////Sound Manager will destroy itself when program ends
 	

@@ -48,11 +48,11 @@ SceneStages::~SceneStages()
 {
 }
 
-void SceneStages::Load()
+void SceneStages::load()
 {
 }
 
-void SceneStages::Init()
+void SceneStages::init()
 {
 	cout << "Loading Scene Stages" << "\n";
 
@@ -90,7 +90,7 @@ void SceneStages::Init()
 	m_transparency = 1.8f;
 }
 
-void SceneStages::Update(double dt)
+void SceneStages::update(double dt)
 {	
 	m_LoadScreenTimer -= dt;
 	//This is to ensure that the game is on loading screen 
@@ -107,7 +107,7 @@ void SceneStages::Update(double dt)
 	//When level builder is created
 	if (m_LevelBuilder != nullptr)
 	{
-		m_LevelBuilder->Update(dt);
+		m_LevelBuilder->update(dt);
 
 		//Start the camera movement
 		AEInputGetCursorPosition(&mouseX, &mouseY);
@@ -160,13 +160,13 @@ void SceneStages::Update(double dt)
 }
 
 
-void SceneStages::Render()
+void SceneStages::render()
 {
 	if (m_LoadScreenTimer <= 1.0 && m_LevelBuilder != nullptr && m_StartGame)
-		m_LevelBuilder->Render();
+		m_LevelBuilder->render();
 
 	/////////////////////////////////////////////////////
-	// Render Load Screen
+	// Render load Screen
 	if (m_LoadScreenTimer >= -1.0 || !m_StartGame || (m_StartGame && m_transparency >= -2.0f))
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -196,7 +196,7 @@ void SceneStages::Render()
 
 		}
 			
-		//Load animation
+		//load animation
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
@@ -211,7 +211,7 @@ void SceneStages::Render()
 	}
 }
 
-void SceneStages::Exit()
+void SceneStages::exit()
 {
 	cout << "Exiting Scene SplashScreen" << "\n";
 

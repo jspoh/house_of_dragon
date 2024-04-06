@@ -34,7 +34,7 @@ void Pause::init() {
 
 void Pause::update([[maybe_unused]] double dt) {
     if (HowToPlay::getInstance().isActive) {
-        HowToPlay::getInstance().Update(dt);
+        HowToPlay::getInstance().update(dt);
         return;
     }
 
@@ -116,7 +116,7 @@ void Pause::render() const {
     }
 
     if (HowToPlay::getInstance().isActive) {
-        HowToPlay::getInstance().Render();
+        HowToPlay::getInstance().render();
         return;
     }
 

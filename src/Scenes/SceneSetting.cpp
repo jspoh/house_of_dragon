@@ -54,7 +54,7 @@ SceneSetting::~SceneSetting()
  * Textures such as the background and music note icons are loaded to be
  * used in the rendering of the scene.
  */
-void SceneSetting::Load()
+void SceneSetting::load()
 {
 	myBackButton.back = "back";
 
@@ -73,7 +73,7 @@ void SceneSetting::Load()
  * difficulty level, sound effects volume, and music volume. The initial
  * positions for the difficulty selection and audio sliders are also set.
  */
-void SceneSetting::Init()
+void SceneSetting::init()
 {
 	ParticleManager::GetInstance()->init();
 
@@ -99,7 +99,7 @@ void SceneSetting::Init()
  *
  * @param dt the delta time for the update
  */
-void SceneSetting::Update(double dt)
+void SceneSetting::update(double dt)
 {
 	// Button hovering logic for back button
 	AEVec2 p1 = { myBackButton.backButtonX - myBackButton.backButtonWidth / 2.0f, myBackButton.backButtonY + myBackButton.backButtonHeight / 2.0f };
@@ -215,7 +215,7 @@ void SceneSetting::Update(double dt)
  * selection buttons, and audio sliders. The scene also renders the particle
  * effects for the user's interactions with the scene.
  */
-void SceneSetting::Render()
+void SceneSetting::render()
 {
 	// render background
 	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
@@ -258,7 +258,7 @@ void SceneSetting::Render()
  * The settings scene is exited, and the user's settings for the difficulty
  * level and audio volume are saved to the database.
  */
-void SceneSetting::Exit()
+void SceneSetting::exit()
 {
 	Database::getInstance().data["game"]["difficulty"] = static_cast<int>(difficulty);
 

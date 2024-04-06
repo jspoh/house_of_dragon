@@ -29,11 +29,11 @@ public:
 
     static HowToPlay& getInstance();
 
-    void Load();
-    void Init();
-    void Update(double dt);
-    void Render();
-    void Exit();
+    void load();
+    void init();
+    void update(double dt);
+    void render();
+    void exit();
 
     typedef struct {
         s8 fontID;

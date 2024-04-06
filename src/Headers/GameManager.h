@@ -34,9 +34,9 @@ public:
 		static GameManager game;
 		return game;
 	}
-	void Init();
+	void init();
 	void Run();
-	void Exit();
+	void exit();
 private:
 	GameManager();
 	~GameManager();

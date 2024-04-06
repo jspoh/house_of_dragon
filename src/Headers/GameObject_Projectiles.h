@@ -39,10 +39,10 @@ public:
 	GameObject_Projectiles(/*Maybe put texture here still thinking*/);
 	virtual ~GameObject_Projectiles();
 
-	virtual void Init();
-	virtual void Update(double _dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double _dt);
+	virtual void render();
+	virtual void exit();
 
 	void FireAtPlayer(const AEVec2& _startpos = { -100.0f, -100.0f }, const AEVec2& _startscale = { 50.0f, 50.0f }, ProjectileType _type = ProjectileType::P_FireBall_Red, double _speed = 0.2f, double _MovTimer = 1.0f);
 

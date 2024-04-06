@@ -25,10 +25,10 @@ public:
 	GenericEntity(/*Maybe put texture here still thinking*/);
 	virtual ~GenericEntity();
 
-	virtual void Init();
-	virtual void Update(double _dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double _dt);
+	virtual void render();
+	virtual void exit();
 private:
 
 };
