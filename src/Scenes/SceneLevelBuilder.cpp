@@ -476,7 +476,7 @@ void SceneLevelBuilder::update(double dt)
 		player->update(dt);
 		UpdateScreenTransition(static_cast<f32>(dt)); // Screen Basic Transition
 		Pause::getInstance().update(dt); //Pause
-		if (Pause::getInstance().isPaused) {
+		if (Pause::getInstance().m_isPaused) {
 			return;
 		}
 		UpdateLvlName(static_cast<f32>(dt));//Level Name Animation
@@ -1477,7 +1477,7 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		{
 			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 			{
-				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->FindObjectByReference("MiscEnemy"));
+				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->findObjectByReference("MiscEnemy"));
 				m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
 			}
 		}

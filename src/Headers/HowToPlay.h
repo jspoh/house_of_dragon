@@ -25,7 +25,7 @@ private:
 
 public:
     // used to control if tutorial overlay is shown
-    bool isActive = false;
+    bool m_isActive = false;
 
     static HowToPlay& getInstance();
 
@@ -52,6 +52,6 @@ public:
     } Slideshow;
 
 private:
-    Slideshow slideshow{ 0 };
-    bool prevIsActive = isActive;
+    Slideshow m_slideshow{ 0 };
+    bool m_prevIsActive = m_isActive;
 };

@@ -16,7 +16,7 @@ Technology is prohibited.
 #include "Pch.h"
 #include "Mob.h"
 
-Mob::Mob(Element element, float health, float dmg) : health(health), dmg(dmg), element(element), maxHealth(health) {
+Mob::Mob(Element element, float health, float dmg) : m_health(health), m_dmg(dmg), element(element), m_maxHealth(health) {
 
 }
 
@@ -32,8 +32,8 @@ double Mob::attack(Mob& target) {
         break;
     }
 
-    float damage = this->dmg * elementMultiplier;
-    target.health -= damage;
+    float damage = this->m_dmg * elementMultiplier;
+    target.m_health -= damage;
     return damage;
 }
 
@@ -49,16 +49,16 @@ double Mob::attack(Mob& target, float multiplier) {
         break;
     }
 
-    float damage = this->dmg * elementMultiplier * multiplier;
-    target.health -= damage;
+    float damage = this->m_dmg * elementMultiplier * multiplier;
+    target.m_health -= damage;
     return damage;
 }
 
 void Mob::reset() {
-    this->health = maxHealth;
+    this->m_health = m_maxHealth;
 }
 
 
 bool Mob::isDead() {
-    return this->health <= 0;
+    return this->m_health <= 0;
 }

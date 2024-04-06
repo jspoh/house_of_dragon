@@ -788,7 +788,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			d.y = AEGfxGetWindowHeight() * 0.15f;
 			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);
 			d.radius = m_DEMON_RADIUS;
-			d.isActive = true;
+			d.m_isActive = true;
 		}
 
 		m_orangeState = INNER_STATES::ON_UPDATE;
@@ -798,7 +798,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 	case INNER_STATES::ON_UPDATE: {
 		int activeDemons{};
 		for (const Demon& d : m_demons) {
-			if (!d.isActive) {
+			if (!d.m_isActive) {
 				continue;
 			}
 			activeDemons++;
@@ -808,7 +808,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		if (m_elapsedTimeMs >= m_orangeEventTimeoutMs || activeDemons == 0) {
 			int hits{};
 			for (const Demon& d : m_demons) {
-				if (!d.isActive) {
+				if (!d.m_isActive) {
 					hits++;
 				}
 			}
@@ -922,7 +922,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 
 		// update demon
 		for (Demon& d : m_demons) {
-			if (!d.isActive) {
+			if (!d.m_isActive) {
 				continue;
 			}
 
@@ -936,7 +936,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			// check for collision with ball (orange?)
 			if (CollisionChecker::areCirclesIntersecting(d.x, d.y, d.radius, m_orangeObj.x, m_orangeObj.y, m_orangeObj.radius)) {
 				//cout << "collided\n";
-				d.isActive = false;
+				d.m_isActive = false;
 			}
 		}
 
@@ -965,7 +965,7 @@ void Event::_orangeEventRender() {
 		AEVec2 pos = stow(m_orangeObj.x, m_orangeObj.y);
 		RenderHelper::getInstance()->texture("ball", pos.x + camOffset.x, pos.y + camOffset.y, m_orangeObj.radius, m_orangeObj.radius, 1.f, Color{ 1.f, 0, 0, 1.f }, 0);
 		for (const Demon& d : m_demons) {
-			if (!d.isActive) {
+			if (!d.m_isActive) {
 				continue;
 			}
 

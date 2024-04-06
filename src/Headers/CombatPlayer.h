@@ -55,7 +55,6 @@ private:
 	void _updateShield(double dt);
 	void _renderShield();
 
-	float m_startingHealth{ 0 };
 	float m_healthRenderTime{ 0 };
 	const float m_healthRenderTimeMax = 0.75f;
 
@@ -93,7 +92,7 @@ public:
 	void setHandStateAnimationType(HandAnimationType t);
 
 
-	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
+	Player(float m_health = 100, float m_dmg = 10, Element element = Element::NO_ELEMENT);
 	~Player();
 
 	static constexpr int m_BLOCKING_TIMEOUT_MS = 2000;

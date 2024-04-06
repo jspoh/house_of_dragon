@@ -45,7 +45,7 @@ void GenericEntity::exit()
 {
 }
 
-GenericEntity* Create::Entity(const std::string& _meshName,
+GenericEntity* Create::entity(const std::string& _meshName,
 	const AEVec2& _position,
 	const AEVec2& _scale)
 {
@@ -57,6 +57,6 @@ GenericEntity* Create::Entity(const std::string& _meshName,
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
 	//result->bool m_bCollider(false);
-	GameObjectManager::getInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->addEntity(result);
 	return result;
 }

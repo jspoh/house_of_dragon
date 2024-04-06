@@ -32,15 +32,15 @@ public:
 	void render();
 	void exit();
 
-	void AddEntity(GameObject* _newEntity);
-	bool RemoveEntity(GameObject* _existingEntity);
+	void addEntity(GameObject* _newEntity);
+	bool removeEntity(GameObject* _existingEntity);
 	std::list<GameObject*> GetEntityList();
 	
-	GameObject* FindObjectByReference(const std::string& _RefName);
-	GameObject* FindInactiveObjectByReference(const std::string& _RefName);
+	GameObject* findObjectByReference(const std::string& _RefName);
+	GameObject* findInactiveObjectByReference(const std::string& _RefName);
 private:
 	GameObjectManager();
 	virtual ~GameObjectManager();
 
-	std::list<GameObject*> entityList;
+	std::list<GameObject*> m_entityList;
 };

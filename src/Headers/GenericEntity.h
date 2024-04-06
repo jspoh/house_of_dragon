@@ -35,7 +35,7 @@ private:
 
 namespace Create
 {
-	GenericEntity* Entity(const std::string& _meshName,
+	GenericEntity* entity(const std::string& _meshName,
 		const AEVec2& _position,
 		const AEVec2& _scale = { 1.0f, 1.0f });
 

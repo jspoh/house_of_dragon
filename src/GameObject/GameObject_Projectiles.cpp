@@ -209,6 +209,6 @@ GameObject_Projectiles* Create::projectiles(const AEVec2& _position, const AEVec
 	result->m_type = _type;
 	result->init();
 	//result->bool m_bCollider(false);
-	GameObjectManager::getInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->addEntity(result);
 	return result;
 }

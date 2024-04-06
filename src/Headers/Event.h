@@ -243,7 +243,7 @@ private:
 		float y;
 		AEVec2 vel;
 		float radius;
-		bool isActive;
+		bool m_isActive;
 	};
 
 	Orange m_orangeObj{ 0 };

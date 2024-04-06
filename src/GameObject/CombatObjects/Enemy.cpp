@@ -27,11 +27,11 @@ Technology is prohibited.
 float paddingY = 120.f;
 float paddingInfoY = 110.f;
 
-Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
-    : Mob(element, health, dmg), m_textureRef(textureRef), m_size(size) {
+Enemy::Enemy(Element element, float m_health, float m_dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
+    : Mob(element, m_health, m_dmg), m_textureRef(textureRef), m_size(size) {
     this->m_spos.x = screenX;
     this->m_spos.y = screenY;
-    this->m_fullhealth = health;
+    this->m_fullhealth = m_health;
     this->m_textureRef = textureRef;
     m_spos = AEVec2{ screenX, screenY};
     this->m_wpos = stow(m_spos.x, m_spos.y);
@@ -43,8 +43,7 @@ Enemy::Enemy(Element element, float health, float dmg, std::string texturePath, 
     this->m_attackEnd.x = 0;
     this->m_isAttacking = false;
     this->m_attacked = false;
-    this->m_startingHealth = health;
-    this->m_attackedRenderX = health / m_startingHealth;
+    this->m_attackedRenderX = m_health / m_maxHealth;
     //RenderHelper::getInstance()->texture(m_textureRef, m_wpos.x, m_wpos.y, m_size, m_size);
 }
 
@@ -68,7 +67,7 @@ void Enemy::update([[maybe_unused]] double dt) {
         if (t > m_healthRenderTimeMax) {
             t = m_healthRenderTimeMax;
         }
-        this->m_attackedRenderX = lerp(this->m_attackedRenderXprev, health / m_startingHealth,t);
+        this->m_attackedRenderX = lerp(this->m_attackedRenderXprev, m_health / m_maxHealth,t);
     }
     else {
         this->m_attacked = false;
@@ -112,13 +111,13 @@ void Enemy::render() {
     RenderHelper::getInstance()->texture((m_textureRef + "name"), this->m_wpos.x -10.f, this->m_healthpos.y - paddingInfoY + 5.f, 70, 20); //start point, but coordinates is centralised so need to take account of the widthw
 
     //  health over 2/3, green bar
-    if (this->health > 66) {
+    if (this->m_health > 66) {
         RenderHelper::getInstance()->texture("greenbar1", this->m_wpos.x - 50, this->m_healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("greenbar3", this->m_wpos.x - 45 + m_attackedRenderX * 50 , this->m_healthpos.y - paddingY, m_attackedRenderX * 100, 10);
         RenderHelper::getInstance()->texture("greenbar2", this->m_wpos.x + m_attackedRenderX * 100 - 40, this->m_healthpos.y - paddingY, 10, 10);
     }
      // health between 1/3 and 2/3 , bar turns to orange/yellow
-    else if (this->health > 33) {
+    else if (this->m_health > 33) {
         RenderHelper::getInstance()->texture("yellowbar1", this->m_wpos.x - 50, this->m_healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("yellowbar3", this->m_wpos.x - 45 + m_attackedRenderX * 50, this->m_healthpos.y - paddingY, m_attackedRenderX * 100, 10);
         RenderHelper::getInstance()->texture("yellowbar2", this->m_wpos.x + m_attackedRenderX * 100 - 40, this->m_healthpos.y - paddingY, 10, 10);

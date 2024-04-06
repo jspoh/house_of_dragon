@@ -140,7 +140,7 @@ namespace {
 	};
 
 	// TODO: jspoh populate vector with data from json
-	std::vector<std::vector<std::string>> btns = {
+	std::vector<std::vector<std::string>> m_btns = {
 		{"ATTACK", "ITEMS", "FLEE"},  // main buttons. the rest are submenu
 		{"FIRE", "WATER", "METAL", "WOOD", "EARTH", "BACK"},  // attack elements
 		{"BACON", "BEEF", "CHICKEN", "BACK"},  // items
@@ -297,7 +297,7 @@ namespace {
 
 			int mX, mY;
 			AEInputGetCursorPosition(&mX, &mY);
-			if (!Pause::getInstance().isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag) {
+			if (!Pause::getInstance().m_isPaused && CollisionChecker::isMouseInRect(bPosX, btnText.y, btnWidth, btnHeight, static_cast<float>(mX), static_cast<float>(mY)) && playerAlive && !panelflag) {
 				// hover state				
 				if (
 					(itemUsedSinceLastAttack && bv == "ITEMS")
@@ -827,7 +827,7 @@ void CombatScene::update(double dt)
 
 	// when is player turn and player is not playing a quicktime event
 	if (CombatManager::getInstance().m_turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().m_isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
-		updateBtns(btns[currentState]);  // render player action buttons
+		updateBtns(m_btns[currentState]);  // render player action buttons
 		blockNow = false;
 	}
 	else if (CombatManager::getInstance().m_turn == CombatManager::TURN::ENEMY && groups.enemies.size()) {
@@ -966,7 +966,7 @@ void CombatScene::render()
 
 		if (CombatManager::getInstance().m_turn == CombatManager::TURN::PLAYER && !CombatManager::getInstance().m_isPlayingEvent && panelflag == false && dialogueState == DIALOGUE::NONE) {
 
-			renderBtns(btns[currentState]);  // render player action buttons
+			renderBtns(m_btns[currentState]);  // render player action buttons
 		}
 		else if (CombatManager::getInstance().m_turn == CombatManager::TURN::PLAYER && CombatManager::getInstance().m_isPlayingEvent && dialogueState == DIALOGUE::NONE) { // playing event, render the text on the panel!
 			//std::string fulloutput;

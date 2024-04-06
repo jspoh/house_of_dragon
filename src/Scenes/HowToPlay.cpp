@@ -21,18 +21,18 @@ Technology is prohibited.
 
 
 HowToPlay::HowToPlay() {
-    slideshow.buttonWidth = 100.0f;
-    slideshow.buttonHeight = 50.0f;
-    slideshow.leftButtonX = -AEGfxGetWindowWidth() / 2.0f + slideshow.buttonWidth / 2.0f + 20.0f;
-    slideshow.leftButtonY = 0.0f;
-    slideshow.rightButtonX = AEGfxGetWindowWidth() / 2.0f - slideshow.buttonWidth / 2.0f - 20.0f;
-    slideshow.rightButtonY = 0.0f;
-    slideshow.backButtonX = -AEGfxGetWindowWidth() / 2.0f + slideshow.buttonWidth / 2.0f + 20.0f;
-    slideshow.backButtonY = AEGfxGetWindowHeight() / 2.0f - slideshow.buttonHeight / 2.0f - 20.0f;
-    slideshow.hoveringLeft = false;
-    slideshow.hoveringRight = false;
-    slideshow.hoveringBack = false;
-    slideshow.currentImageIndex = 0;
+    m_slideshow.buttonWidth = 100.0f;
+    m_slideshow.buttonHeight = 50.0f;
+    m_slideshow.leftButtonX = -AEGfxGetWindowWidth() / 2.0f + m_slideshow.buttonWidth / 2.0f + 20.0f;
+    m_slideshow.leftButtonY = 0.0f;
+    m_slideshow.rightButtonX = AEGfxGetWindowWidth() / 2.0f - m_slideshow.buttonWidth / 2.0f - 20.0f;
+    m_slideshow.rightButtonY = 0.0f;
+    m_slideshow.backButtonX = -AEGfxGetWindowWidth() / 2.0f + m_slideshow.buttonWidth / 2.0f + 20.0f;
+    m_slideshow.backButtonY = AEGfxGetWindowHeight() / 2.0f - m_slideshow.buttonHeight / 2.0f - 20.0f;
+    m_slideshow.hoveringLeft = false;
+    m_slideshow.hoveringRight = false;
+    m_slideshow.hoveringBack = false;
+    m_slideshow.currentImageIndex = 0;
 }
 
 HowToPlay::~HowToPlay() {}
@@ -43,22 +43,22 @@ HowToPlay& HowToPlay::getInstance() {
 }
 
 void HowToPlay::load() {
-    slideshow.background = "menuBg";
-    slideshow.leftButton = "leftButton";
-    slideshow.rightButton = "rightButton";
-    slideshow.backButton = "backButton";
-    slideshow.images[0] = "image1";
-    slideshow.images[1] = "image2";
-    slideshow.images[2] = "image3";
-    slideshow.images[3] = "image4";
-    slideshow.images[4] = "image5";
-    slideshow.images[5] = "image6";
-    slideshow.images[6] = "image7";
-    slideshow.images[7] = "image8";
-    slideshow.images[8] = "image9";
-    slideshow.images[9] = "image10";
-    slideshow.images[10] = "image11";
-    slideshow.images[11] = "image12";
+    m_slideshow.background = "menuBg";
+    m_slideshow.leftButton = "leftButton";
+    m_slideshow.rightButton = "rightButton";
+    m_slideshow.backButton = "backButton";
+    m_slideshow.images[0] = "image1";
+    m_slideshow.images[1] = "image2";
+    m_slideshow.images[2] = "image3";
+    m_slideshow.images[3] = "image4";
+    m_slideshow.images[4] = "image5";
+    m_slideshow.images[5] = "image6";
+    m_slideshow.images[6] = "image7";
+    m_slideshow.images[7] = "image8";
+    m_slideshow.images[8] = "image9";
+    m_slideshow.images[9] = "image10";
+    m_slideshow.images[10] = "image11";
+    m_slideshow.images[11] = "image12";
 
 
 
@@ -86,9 +86,9 @@ void HowToPlay::init() {
 }
 
 void HowToPlay::update([[maybe_unused]] double dt) {
-    if (isActive && !prevIsActive) {
+    if (m_isActive && !m_prevIsActive) {
         init();
-        slideshow.currentImageIndex = 0;
+        m_slideshow.currentImageIndex = 0;
     }
 
     float mx = static_cast<float>(mouseX);
@@ -100,39 +100,39 @@ void HowToPlay::update([[maybe_unused]] double dt) {
     my += AEGfxGetWindowHeight() / 2.f;
 
     if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-        AEVec2 leftP1 = { slideshow.leftButtonX - slideshow.buttonWidth / 2.0f, slideshow.leftButtonY + slideshow.buttonHeight / 2.0f };
-        AEVec2 leftP2 = { slideshow.leftButtonX + slideshow.buttonWidth / 2.0f, slideshow.leftButtonY - slideshow.buttonHeight / 2.0f };
+        AEVec2 leftP1 = { m_slideshow.leftButtonX - m_slideshow.buttonWidth / 2.0f, m_slideshow.leftButtonY + m_slideshow.buttonHeight / 2.0f };
+        AEVec2 leftP2 = { m_slideshow.leftButtonX + m_slideshow.buttonWidth / 2.0f, m_slideshow.leftButtonY - m_slideshow.buttonHeight / 2.0f };
 
         if (leftP1.x < mx && leftP1.y > my && leftP2.x > mx && leftP2.y < my) {
-            slideshow.currentImageIndex = (slideshow.currentImageIndex - 1 + 12) % 12;
+            m_slideshow.currentImageIndex = (m_slideshow.currentImageIndex - 1 + 12) % 12;
         }
 
-        AEVec2 rightP1 = { slideshow.rightButtonX - slideshow.buttonWidth / 2.0f, slideshow.rightButtonY + slideshow.buttonHeight / 2.0f };
-        AEVec2 rightP2 = { slideshow.rightButtonX + slideshow.buttonWidth / 2.0f, slideshow.rightButtonY - slideshow.buttonHeight / 2.0f };
+        AEVec2 rightP1 = { m_slideshow.rightButtonX - m_slideshow.buttonWidth / 2.0f, m_slideshow.rightButtonY + m_slideshow.buttonHeight / 2.0f };
+        AEVec2 rightP2 = { m_slideshow.rightButtonX + m_slideshow.buttonWidth / 2.0f, m_slideshow.rightButtonY - m_slideshow.buttonHeight / 2.0f };
 
         if (rightP1.x < mx && rightP1.y > my && rightP2.x > mx && rightP2.y < my) {
-            slideshow.currentImageIndex = (slideshow.currentImageIndex + 1) % 12;
+            m_slideshow.currentImageIndex = (m_slideshow.currentImageIndex + 1) % 12;
         }
 
-        AEVec2 backP1 = { slideshow.backButtonX - slideshow.buttonWidth / 2.0f, slideshow.backButtonY + slideshow.buttonHeight / 2.0f };
-        AEVec2 backP2 = { slideshow.backButtonX + slideshow.buttonWidth / 2.0f, slideshow.backButtonY - slideshow.buttonHeight / 2.0f };
+        AEVec2 backP1 = { m_slideshow.backButtonX - m_slideshow.buttonWidth / 2.0f, m_slideshow.backButtonY + m_slideshow.buttonHeight / 2.0f };
+        AEVec2 backP2 = { m_slideshow.backButtonX + m_slideshow.buttonWidth / 2.0f, m_slideshow.backButtonY - m_slideshow.buttonHeight / 2.0f };
 
         if (backP1.x < mx && backP1.y > my && backP2.x > mx && backP2.y < my) {
-            isActive = false;
+            m_isActive = false;
         }
     }
 
-    prevIsActive = isActive;
+    m_prevIsActive = m_isActive;
 }
 
 void HowToPlay::render() {
-    RenderHelper::getInstance()->texture(slideshow.background, 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
+    RenderHelper::getInstance()->texture(m_slideshow.background, 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
-    RenderHelper::getInstance()->texture(slideshow.images[slideshow.currentImageIndex], 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
+    RenderHelper::getInstance()->texture(m_slideshow.images[m_slideshow.currentImageIndex], 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
-    RenderHelper::getInstance()->texture(slideshow.leftButton, slideshow.leftButtonX, slideshow.leftButtonY, slideshow.buttonWidth, slideshow.buttonHeight);
-    RenderHelper::getInstance()->texture(slideshow.rightButton, slideshow.rightButtonX, slideshow.rightButtonY, slideshow.buttonWidth, slideshow.buttonHeight);
-    RenderHelper::getInstance()->texture(slideshow.backButton, slideshow.backButtonX, slideshow.backButtonY, slideshow.buttonWidth, slideshow.buttonHeight);
+    RenderHelper::getInstance()->texture(m_slideshow.leftButton, m_slideshow.leftButtonX, m_slideshow.leftButtonY, m_slideshow.buttonWidth, m_slideshow.buttonHeight);
+    RenderHelper::getInstance()->texture(m_slideshow.rightButton, m_slideshow.rightButtonX, m_slideshow.rightButtonY, m_slideshow.buttonWidth, m_slideshow.buttonHeight);
+    RenderHelper::getInstance()->texture(m_slideshow.backButton, m_slideshow.backButtonX, m_slideshow.backButtonY, m_slideshow.buttonWidth, m_slideshow.buttonHeight);
 }
 
 void HowToPlay::exit() {

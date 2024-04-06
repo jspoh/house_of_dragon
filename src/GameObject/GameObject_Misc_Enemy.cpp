@@ -212,6 +212,6 @@ GameObject_Misc_Enemy* Create::miscEnemy(const AEVec2& _position, const AEVec2& 
 	result->m_RefName = "MiscEnemy";
 	result->init();
 	//result->bool m_bCollider(false);
-	GameObjectManager::getInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->addEntity(result);
 	return result;
 }

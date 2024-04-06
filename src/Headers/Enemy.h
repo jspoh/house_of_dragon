@@ -28,7 +28,6 @@ private:
 	float m_size = 50;
 	AEVec2 m_healthpos{ 0 };
 	float m_fullhealth = 0;
-	float m_startingHealth{ 0 };
 	//attack multipler holder
 
 	AEVec2 m_attackPoint{ 0 };
@@ -57,7 +56,7 @@ public:
 	void elementstringinput(std::string el);
 	static constexpr int m_PROJECTILE_TRAVEL_TIME_MS = 1000;
 	
-	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+	Enemy(Element element, float m_health, float m_dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
 	~Enemy();
 
 	void update([[maybe_unused]] double dt);

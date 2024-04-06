@@ -33,7 +33,7 @@ Technology is prohibited.
  * It includes functionality to create, update and render particles for visual effects.
  */
 ParticleManager::ParticleManager() {
-	particles.reserve(PROJECTED_MAX_PARTICLES);
+	m_particles.reserve(m_PROJECTED_MAX_PARTICLES);
 
 	/*********************************************
 	//PARTICLE TEXTURES REGISTRATION
@@ -61,12 +61,12 @@ void ParticleManager::init() {
  * @param y The y-coordinate where the particle is created.
  */
 void ParticleManager::createParticle(float x, float y) {
-	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH;
+	const float randSize = rand() % static_cast<int>(m_PARTICLE_MAX_WIDTH - m_PARTICLE_MIN_WIDTH) + m_PARTICLE_MIN_WIDTH;
 	const float randDir = rand() % 360 / Math::m_PI * 180.f;
 
-	float speed = rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed;
+	float speed = rand() % static_cast<int>(m_MAX_PARTICLE_SPEED - m_MIN_PARTICLE_SPEED) + m_MIN_PARTICLE_SPEED;
 
-	int sizeDiff = rand() % maxSizeDiff;
+	int sizeDiff = rand() % m_MAX_SIZE_DIFF;
 	sizeDiff = rand() % 2 ? sizeDiff : -sizeDiff;
 
 	if (AEInputCheckCurr(AEVK_LBUTTON)) {
@@ -87,7 +87,7 @@ void ParticleManager::createParticle(float x, float y) {
 		1.f														// transparency
 	};
 
-	particles.push_back(newParticle);
+	m_particles.push_back(newParticle);
 }
 
 /**
@@ -99,8 +99,8 @@ void ParticleManager::createParticle(float x, float y) {
  * @param y The y-coordinate where the particle is created.
  */
 void ParticleManager::setParticlePos(float x, float y) {
-	posX = x;
-	posY = y;
+	m_posX = x;
+	m_posY = y;
 }
 
 /**
@@ -113,7 +113,7 @@ void ParticleManager::setParticlePos(float x, float y) {
  */
 void ParticleManager::update(double dt)
 {
-	for (ParticleManager::Particle& p : particles) {
+	for (ParticleManager::Particle& p : m_particles) {
 		switch (p.type) {
 		case ParticleType::REGULAR:
 			updateRegularParticle(p, dt);
@@ -129,13 +129,13 @@ void ParticleManager::update(double dt)
 
 		// update flag of inactive instances
 		if (p.color.a <= 0 || p.size.x <= 0 || p.size.y <= 0) {
-			p.isActive = false;
+			p.m_isActive = false;
 		}
 	}
 
 	std::vector<int> indexes;
-	for (int i = 0; i < particles.size(); i++) {
-		if (!particles[i].isActive) {
+	for (int i = 0; i < m_particles.size(); i++) {
+		if (!m_particles[i].m_isActive) {
 			indexes.push_back(i);
 		}
 	}
@@ -143,12 +143,12 @@ void ParticleManager::update(double dt)
 	std::sort(indexes.rbegin(), indexes.rend());
 
 	for (const int i : indexes) {
-		particles.erase(particles.begin() + i);
+		m_particles.erase(m_particles.begin() + i);
 	}
 
-	int toCreate = static_cast<int>(particlesCreationRate / AEFrameRateControllerGetFrameRate());
+	int toCreate = static_cast<int>(m_PARTICLES_CREATION_RATE / AEFrameRateControllerGetFrameRate());
 	for (int i = 0; i < toCreate; i++) {
-		createParticle(posX, posY);
+		createParticle(m_posX, m_posY);
 	}
 
 
@@ -161,7 +161,7 @@ void ParticleManager::update(double dt)
  */
 void ParticleManager::render() {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
-	for (const ParticleManager::Particle& p : particles) {
+	for (const ParticleManager::Particle& p : m_particles) {
 		const AEVec2 pos = stow(p.pos.x, p.pos.y);
 		//RenderHelper::getInstance()->rect(pos.x, pos.y, p.size.x, p.size.y, 0, p.color, p.color.a);
 		AEGfxTextureSet(RenderHelper::getInstance()->GetTexture(p.type), 0, 0);
@@ -181,9 +181,9 @@ void ParticleManager::render() {
 
 
 void ParticleManager::createExplosionParticle(float x, float y) {
-	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH * 10;
+	const float randSize = rand() % static_cast<int>(m_PARTICLE_MAX_WIDTH - m_PARTICLE_MIN_WIDTH) + m_PARTICLE_MIN_WIDTH * 10;
 	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
-	const float randDistance = static_cast<float>(rand() % maxPosOffset);
+	const float randDistance = static_cast<float>(rand() % m_MAX_POS_OFFSET);
 
 	const ParticleManager::Particle newParticle = ParticleManager::Particle{
 		true,
@@ -192,16 +192,16 @@ void ParticleManager::createExplosionParticle(float x, float y) {
 		{randSize, randSize},
 		1.f,
 		{cosf(randAngle), sinf(randAngle)},
-		rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed,
+		rand() % static_cast<int>(m_MAX_PARTICLE_SPEED - m_MIN_PARTICLE_SPEED) + m_MIN_PARTICLE_SPEED,
 		{1.f, 0.5f, 0.f, 1},
 		ParticleType::EXPLOSION
 	};
 
-	particles.push_back(newParticle);
+	m_particles.push_back(newParticle);
 }
 
 void ParticleManager::createFireworkParticle(float x, float y, float explosionRadius) {
-	const float randSize = rand() % static_cast<int>(PARTICLE_MAX_WIDTH - PARTICLE_MIN_WIDTH) + PARTICLE_MIN_WIDTH * 20;
+	const float randSize = rand() % static_cast<int>(m_PARTICLE_MAX_WIDTH - m_PARTICLE_MIN_WIDTH) + m_PARTICLE_MIN_WIDTH * 20;
 	const float randAngle = rand() % 360 * Math::m_PI / 180.f;
 	const float randRadius = static_cast<float>(rand() % static_cast<int>(explosionRadius));
 
@@ -217,12 +217,12 @@ void ParticleManager::createFireworkParticle(float x, float y, float explosionRa
 		{1.f, randSize},
 		1.f,
 		{cosf(randAngle), sinf(randAngle)},
-		rand() % static_cast<int>(maxParticleSpeed - minParticleSpeed) + minParticleSpeed,
+		rand() % static_cast<int>(m_MAX_PARTICLE_SPEED - m_MIN_PARTICLE_SPEED) + m_MIN_PARTICLE_SPEED,
 		{red, green, blue, 1.f}, // Set random color for the particle
 		ParticleType::FIREWORK
 	};
 
-	particles.push_back(newParticle);
+	m_particles.push_back(newParticle);
 }
 
 /**
@@ -233,25 +233,25 @@ void ParticleManager::createFireworkParticle(float x, float y, float explosionRa
  * @param dt Elapsed time since the last update, in seconds.
  */
 void ParticleManager::updateRegularParticle(Particle& particle, double dt) {
-	particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
-	particle.color.r -= darkenRate;
-	particle.color.g -= darkenRate;
-	particle.color.b -= darkenRate;
+	particle.color.a -= static_cast<float>(m_OPACITY_LOSS / AEFrameRateControllerGetFrameRate());
+	particle.color.r -= m_DARKEN_RATE;
+	particle.color.g -= m_DARKEN_RATE;
+	particle.color.b -= m_DARKEN_RATE;
 
-	particle.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+	particle.sizeMultiplier -= static_cast<float>(m_SIZE_LOSS / AEFrameRateControllerGetFrameRate());
 	particle.size.x = particle.initialSize.x * particle.sizeMultiplier;
 	particle.size.y = particle.initialSize.y * particle.sizeMultiplier;
 
-	particle.vel.y += static_cast<float>(GRAVITY * dt);
+	particle.vel.y += static_cast<float>(m_GRAVITY * dt);
 
 	particle.pos.x += particle.vel.x * particle.speed * static_cast<float>(dt);
 	particle.pos.y += particle.vel.y * particle.speed * static_cast<float>(dt);
 }
 
 void ParticleManager::updateExplosionParticle(Particle& particle, double dt) {
-	particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
+	particle.color.a -= static_cast<float>(m_OPACITY_LOSS / AEFrameRateControllerGetFrameRate());
 
-	particle.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+	particle.sizeMultiplier -= static_cast<float>(m_SIZE_LOSS / AEFrameRateControllerGetFrameRate());
 	particle.size.x = particle.initialSize.x * particle.sizeMultiplier;
 	particle.size.y = particle.initialSize.y * particle.sizeMultiplier;
 
@@ -260,13 +260,13 @@ void ParticleManager::updateExplosionParticle(Particle& particle, double dt) {
 }
 
 void ParticleManager::updateFireworkParticle(Particle& particle, double dt) {
-	particle.color.a -= static_cast<float>(opacityLoss / AEFrameRateControllerGetFrameRate());
+	particle.color.a -= static_cast<float>(m_OPACITY_LOSS / AEFrameRateControllerGetFrameRate());
 
-	particle.sizeMultiplier -= static_cast<float>(sizeLoss / AEFrameRateControllerGetFrameRate());
+	particle.sizeMultiplier -= static_cast<float>(m_SIZE_LOSS / AEFrameRateControllerGetFrameRate());
 	particle.size.x = particle.initialSize.x * particle.sizeMultiplier;
 	particle.size.y = particle.initialSize.y * particle.sizeMultiplier;
 
-	particle.vel.y += static_cast<float>(GRAVITY * dt);
+	particle.vel.y += static_cast<float>(m_GRAVITY * dt);
 
 	particle.pos.x += particle.vel.x * particle.speed * static_cast<float>(dt);
 	particle.pos.y += particle.vel.y * particle.speed * static_cast<float>(dt);

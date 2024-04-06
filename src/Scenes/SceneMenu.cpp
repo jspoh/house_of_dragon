@@ -160,7 +160,7 @@ void SceneMenu::init()
  */
 void SceneMenu::update(double dt)
 {
-	if (HowToPlay::getInstance().isActive) {
+	if (HowToPlay::getInstance().m_isActive) {
 		HowToPlay::getInstance().update(dt);
 		return;
 	}
@@ -219,7 +219,7 @@ void SceneMenu::update(double dt)
 						SceneManager::getInstance()->SetActiveScene("SceneSetting");
 						break;
 					case 3:
-						HowToPlay::getInstance().isActive = true;
+						HowToPlay::getInstance().m_isActive = true;
 						break;
 					case 4:
 						if (!myMenu.quitConfirm)
@@ -340,7 +340,7 @@ void SceneMenu::update(double dt)
  */
 void SceneMenu::render()
 {
-	if (HowToPlay::getInstance().isActive) {
+	if (HowToPlay::getInstance().m_isActive) {
 		HowToPlay::getInstance().render();
 		return;
 	}

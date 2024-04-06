@@ -32,8 +32,8 @@ void GameObjectManager::update(double _dt)
 {
 	// Update all entities
 	std::list<GameObject*>::iterator it, end;
-	end = entityList.end();
-	for (it = entityList.begin(); it != end; ++it)
+	end = m_entityList.end();
+	for (it = m_entityList.begin(); it != end; ++it)
 	{
 		(*it)->update(_dt);
 	}
@@ -61,8 +61,8 @@ void GameObjectManager::update(double _dt)
 void GameObjectManager::render()
 {
 	// Render all entities
-	for (std::list<GameObject*>::iterator it = entityList.begin();
-		it != entityList.end();
+	for (std::list<GameObject*>::iterator it = m_entityList.begin();
+		it != m_entityList.end();
 		it++)
 	{
 		(*it)->render();
@@ -71,23 +71,23 @@ void GameObjectManager::render()
 
 
 // Add an entity to this GameObjectManager
-void GameObjectManager::AddEntity(GameObject* _newEntity)
+void GameObjectManager::addEntity(GameObject* _newEntity)
 {
-	entityList.push_back(_newEntity);
+	m_entityList.push_back(_newEntity);
 	cout << "GameObject Add" << "\n";
 }
 
 // Remove an entity from this GameObjectManager
-bool GameObjectManager::RemoveEntity(GameObject* _existingEntity)
+bool GameObjectManager::removeEntity(GameObject* _existingEntity)
 {
 	// Find the entity's iterator
-	std::list<GameObject*>::iterator findIter = std::find(entityList.begin(), entityList.end(), _existingEntity);
+	std::list<GameObject*>::iterator findIter = std::find(m_entityList.begin(), m_entityList.end(), _existingEntity);
 
 	// Delete the entity if found
-	if (findIter != entityList.end())
+	if (findIter != m_entityList.end())
 	{
 		delete* findIter;
-		findIter = entityList.erase(findIter);
+		findIter = m_entityList.erase(findIter);
 		return true;
 	}
 	// Return false if not found
@@ -96,26 +96,26 @@ bool GameObjectManager::RemoveEntity(GameObject* _existingEntity)
 
 std::list<GameObject*> GameObjectManager::GetEntityList()
 {
-	return entityList;
+	return m_entityList;
 }
 
 void GameObjectManager::exit()
 {
 	// Delete all scenes stored and empty the entire map
-	for (std::list<GameObject*>::iterator it = entityList.begin(); 
-		it != entityList.end(); 
+	for (std::list<GameObject*>::iterator it = m_entityList.begin(); 
+		it != m_entityList.end(); 
 		it++)
 	{
 		(*it)->exit();
 		delete (*it);
 	}
-	entityList.clear();
+	m_entityList.clear();
 }
 
-GameObject* GameObjectManager::FindInactiveObjectByReference(const std::string& _RefName)
+GameObject* GameObjectManager::findInactiveObjectByReference(const std::string& _RefName)
 {
-	for (std::list<GameObject*>::iterator it = entityList.begin();
-		it != entityList.end();
+	for (std::list<GameObject*>::iterator it = m_entityList.begin();
+		it != m_entityList.end();
 		it++)
 	{
 		if(_RefName == (*it)->m_RefName && !(*it)->m_Active)
@@ -125,10 +125,10 @@ GameObject* GameObjectManager::FindInactiveObjectByReference(const std::string& 
 	return nullptr;
 }
 
-GameObject* GameObjectManager::FindObjectByReference(const std::string& _RefName)
+GameObject* GameObjectManager::findObjectByReference(const std::string& _RefName)
 {
-	for (std::list<GameObject*>::iterator it = entityList.begin();
-		it != entityList.end();
+	for (std::list<GameObject*>::iterator it = m_entityList.begin();
+		it != m_entityList.end();
 		it++)
 	{
 		if (_RefName == (*it)->m_RefName)

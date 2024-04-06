@@ -21,9 +21,9 @@ Technology is prohibited.
 
 class Mob {
 public:
-	float maxHealth = 100;
-	float health = maxHealth;
-	float dmg;
+	const float m_maxHealth;
+	float m_health;
+	float m_dmg;
 	Element element;
 
 	Mob();

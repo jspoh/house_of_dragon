@@ -39,7 +39,7 @@ namespace {
 
 Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg* DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
 	//RenderHelper::getInstance()->registerTexture("m_shield", "./Assets/Combat_UI/m_shield.png");
-	//float StartHealth = health;		// what is this for?
+	//float StartHealth = m_health;		// what is this for?
 	// set m_shield properties
 	AEVec2Set(&m_shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
 	AEVec2Set(&m_shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
@@ -60,14 +60,13 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 	m_playerLevel = Database::getInstance().data["player"]["level"];
 
 	// increase player damage by percentages
-	//health += health * ((m_playerLevel - 1) * levelHealthIncPercentage);
-	dmg += dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
+	//m_health += m_health * ((m_playerLevel - 1) * levelHealthIncPercentage);
+	m_dmg += m_dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
 
 	m_hasAttacked = false;
-	m_startingHealth = health;
-	m_attackedRenderX = health / 80;
+	m_attackedRenderX = m_health / 80;
 
-	cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
+	cout << "Player initialized with " << m_health << " health and " << m_dmg << " damage\n";
 
 	// init inventory
 	for (const auto& [itemName, qtyHolding] : Database::getInstance().data["player"]["inventory"].items()) {
@@ -98,12 +97,12 @@ void Player::playerAttacked() {
 
 
 void Player::healthGain(float healthIncrease) {
-	float newhealth = this->health + healthIncrease;
+	float newhealth = this->m_health + healthIncrease;
 	if (newhealth < 100.f) {
-		this->health = newhealth;
+		this->m_health = newhealth;
 	}
 	else {
-		this->health = 100.f;
+		this->m_health = 100.f;
 	}
 
 }
@@ -119,12 +118,12 @@ void Player::_drawHealth(float screenX, float screenY) {
 	AEGfxGetCamPosition(&truex, &truey);
 	RenderHelper::getInstance()->texture("panel", panelPos.x + truex, panelPos.y + truey + paddingY, 270, 100);
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
-	if (this->health > 66) {
+	if (this->m_health > 66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
 		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + m_attackedRenderX * 50, panelPos.y + truey + paddingY - 20, m_attackedRenderX * 100, 15);
 		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + m_attackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
-	else if (this->health > 33) {
+	else if (this->m_health > 33) {
 		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
 		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + m_attackedRenderX * 50, panelPos.y + truey + paddingY - 20, m_attackedRenderX * 100, 15);
 		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + m_attackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
@@ -154,7 +153,7 @@ void Player::update(double dt) {
 		if (t > m_healthRenderTimeMax) {
 			t = m_healthRenderTimeMax;
 		}
-		this->m_attackedRenderX = lerp(this->m_attackedRenderXprev, health / 80, t);
+		this->m_attackedRenderX = lerp(this->m_attackedRenderXprev, m_health / 80, t);
 	}
 	else {
 		this->m_hasAttacked = false;
@@ -246,9 +245,9 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 	}
 
 	const float effectiveDmgMul = elementMul * qtMultiplier * m_dmgMul;
-	const float damage = this->dmg * effectiveDmgMul;
+	const float damage = this->m_dmg * effectiveDmgMul;
 	m_dmgMul = m_DEFAULT_DMG_MUL;
-	target.health -= damage;
+	target.m_health -= damage;
 	cout << "Attacking enemy with a total dmg multiplier of " << effectiveDmgMul << " (not inclusive of difficulty)\n";
 	return damage;
 }
@@ -660,8 +659,8 @@ int Player::getLevel() const {
 }
 
 void Player::resetHealth() {
-	health = m_startingHealth;
-	m_attackedRenderX = health / 80;
+	m_health = m_maxHealth;
+	m_attackedRenderX = m_health / 80;
 	m_attackedRenderXprev = 0;
 }
 
@@ -685,6 +684,6 @@ void Player::giveXpForEnemyKilled(int enemiesKilled) {
 		cout << "Player level up! Current level: " << m_playerLevel << "\n";
 
 		// update damage
-		dmg += dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
+		m_dmg += m_dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
 	}
 }
