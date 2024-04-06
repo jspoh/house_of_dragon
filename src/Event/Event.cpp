@@ -152,8 +152,8 @@ void Event::startRandomEvent() {
 }
 
 bool Event::setActiveEvent(EVENT_TYPES e) {
-	if (m__activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
-		m__activeEvent = e;
+	if (m_activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
+		m_activeEvent = e;
 
 		return true;
 	}
@@ -163,7 +163,7 @@ bool Event::setActiveEvent(EVENT_TYPES e) {
 
 
 EVENT_TYPES Event::getActiveEvent() {
-	return m__activeEvent;
+	return m_activeEvent;
 }
 
 void Event::init() {
@@ -177,7 +177,7 @@ void Event::init() {
 	const float sizeMultiplier = DIFFICULTY_SIZE_MULTIPLIER.at(difficulty);
 
 	// spamkey
-	_spamkeyTimeoutMs = static_cast<int>(nSPAM_KEY_TIMEOUT_MS * timerMultiplier);
+	_spamkeyTimeoutMs = static_cast<int>(m_SPAM_KEY_TIMEOUT_MS * timerMultiplier);
 	m_proc = m_PROC * sizeMultiplier;
 
 	// otimer
@@ -185,7 +185,7 @@ void Event::init() {
 
 	// mco
 	m_multiClickTimeoutMs = static_cast<int>(m_MULTICLICK_TIMEOUT_MS * timerMultiplier);
-	m__mcoRadius = m_MCO_RADIUS * sizeMultiplier;
+	m_mcoRadius = m_MCO_RADIUS * sizeMultiplier;
 
 	// typing  
 	m_typingTimeoutMs = static_cast<int>(m_TYPING_TIMEOUT_MS * timerMultiplier);
@@ -202,7 +202,7 @@ void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_K
 		m_prevMouseY = m_mouseY;
 	}
 
-	switch (m__activeEvent) {
+	switch (m_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
 	case EVENT_TYPES::SPAM_KEY:
@@ -231,7 +231,7 @@ void Event::update(EVENT_RESULTS& result, double dt, EVENT_KEYS spamkey, EVENT_K
 
 void Event::render() {
 
-	switch (m__activeEvent) {
+	switch (m_activeEvent) {
 	case EVENT_TYPES::NONE_EVENT_TYPE:
 		break;
 	case EVENT_TYPES::SPAM_KEY:
@@ -275,7 +275,7 @@ void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 }
 
 void Event::_resetState() {
-	m__activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
+	m_activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
 	_resetTime();
 	m_useOutline = true;
 	m_size = m_minSize;
@@ -286,7 +286,7 @@ void Event::_resetState() {
 	this->m_piVelocity = 0.f;
 	this->m_oTimerOpacity = 1.f;
 	this->m_piMoving = true;
-	moTimerEventState = INNER_STATES::ON_ENTER;
+	m_oTimerEventState = INNER_STATES::ON_ENTER;
 
 	// multiclick
 	m_mcoHits = 0;
@@ -442,14 +442,14 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 	}
 
 	/*logic*/
-	switch (moTimerEventState) {
+	switch (m_oTimerEventState) {
 	case INNER_STATES::ON_ENTER:
-		moTimerEventState = INNER_STATES::ON_UPDATE;
+		m_oTimerEventState = INNER_STATES::ON_UPDATE;
 		break;
 	case INNER_STATES::ON_UPDATE:
 		// check if timeout
 		if (m_totalElapsedMs >= m_oTimerTimeoutMs) {
-			moTimerEventState = INNER_STATES::ON_EXIT;
+			m_oTimerEventState = INNER_STATES::ON_EXIT;
 			m_eventMultiplier = 0;
 			m_elapsedTimeMs = 0;
 			break;
@@ -465,7 +465,7 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 			const float percentageMultiplier = ((m_barWidth / 2.f) - piDistanceToCenter) / (m_barWidth / 2.f);
 			m_eventMultiplier = percentageMultiplier * m_maxMultiplier;
 			m_eventMultiplier = precisionRound(m_eventMultiplier, m_eventMultiplierPrecision);
-			moTimerEventState = INNER_STATES::ON_EXIT;
+			m_oTimerEventState = INNER_STATES::ON_EXIT;
 		}
 
 		// power indicator movement logic. accerlerates until center of bar, then decelerates
@@ -509,7 +509,7 @@ void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT
 }
 
 void Event::_oscillatingTimerEventRender() {
-	switch (moTimerEventState) {
+	switch (m_oTimerEventState) {
 	case INNER_STATES::ON_ENTER:
 		break;
 	case INNER_STATES::ON_UPDATE: {
@@ -598,7 +598,7 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 		if (hit) {
-			m_multiClickObjectsts.erasm_multiClickObjectsects.begin() + i);
+			m_multiClickObjectsts.erase(m_multiClickObjectsts.begin() + i);
 		}
 		else if (!hit) {
 			cout << "mco missed\n";
@@ -608,11 +608,11 @@ void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 		m_mcoDisplayHits = m_mcoDisplayHits < 0 ? 0 : m_mcoDisplayHits;
 	}
 	// ensure that there are always mcoCount objects on screen
-	while (m_multiClickObjectsts.size() < m_mcoCount && !m_mcoIsTransitioningOut) {
+	while (m_multiClickObjectsts.size() < m_MCO_COUNT && !m_mcoIsTransitioningOut) {
 		m_multiClickObjectsts.push_back(MultiClickObject{
-			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowWidth() - m_spawnOffsetX * 2) + m_spawnOffsetX),
+			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowWidth() - m_SPAWN_OFFSET_X * 2) + m_SPAWN_OFFSET_X),
 			static_cast<f32>(rand() % static_cast<int>(AEGfxGetWindowHeight() - m_SPAWN_OFFSET_Y * 2) + m_SPAWN_OFFSET_Y),
-			m__mcoRadius,
+			m_mcoRadius,
 			true,
 			0.f
 			});
@@ -656,7 +656,7 @@ void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 	switch (m_typingState) {
 	case INNER_STATES::ON_ENTER:
 		// on enter state
-		m_currentWord = m__wordlist[rand() % m__wordlist.size()];
+		m_currentWord = m_wordlist[rand() % m_wordlist.size()];
 
 		m_typed.clear();
 		// init map on which letters are typed
