@@ -755,13 +755,13 @@ void CombatScene::Update(double dt)
 		for (Enemy* e : groups.enemies) {
 			e->update(dt);
 
-			if (e->isSelected) {
+			if (e->m_isSelected) {
 				// deselect all other enemies
 				CombatManager::getInstance().m_selectedEnemy = e;
 
 				for (Enemy* e2 : groups.enemies) {
 					if (e != e2) {
-						e2->isSelected = false;
+						e2->m_isSelected = false;
 					}
 				}
 			}
@@ -795,18 +795,18 @@ void CombatScene::Update(double dt)
 		/*check if success or failure and modify damage accordingly*/
 		switch (CombatManager::getInstance().m_qtEventResult) {
 		case EVENT_RESULTS::SUCCESS:
-			cout << "Event success. multiplier granted: " << Event::getInstance()->maxMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().m_selectedEnemy, CombatManager::getInstance().m_attackElement, Event::getInstance()->maxMultiplier);
+			cout << "Event success. multiplier granted: " << Event::getInstance()->m_maxMultiplier << "\n";
+			player->attack(*CombatManager::getInstance().m_selectedEnemy, CombatManager::getInstance().m_attackElement, Event::getInstance()->m_maxMultiplier);
 
 			break;
 		case EVENT_RESULTS::FAILURE:
-			cout << "Event failure. multiplier granted: " << Event::getInstance()->minMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().m_selectedEnemy, CombatManager::getInstance().m_attackElement, Event::getInstance()->minMultiplier);
+			cout << "Event failure. multiplier granted: " << Event::getInstance()->m_minMultiplier << "\n";
+			player->attack(*CombatManager::getInstance().m_selectedEnemy, CombatManager::getInstance().m_attackElement, Event::getInstance()->m_minMultiplier);
 
 			break;
 		case EVENT_RESULTS::CUSTOM_MULTIPLIER:
-			cout << "Event custom multiplier granted: " << Event::getInstance()->eventMultiplier << "\n";
-			player->attack(*CombatManager::getInstance().m_selectedEnemy, CombatManager::getInstance().m_attackElement, Event::getInstance()->eventMultiplier);
+			cout << "Event custom multiplier granted: " << Event::getInstance()->m_eventMultiplier << "\n";
+			player->attack(*CombatManager::getInstance().m_selectedEnemy, CombatManager::getInstance().m_attackElement, Event::getInstance()->m_eventMultiplier);
 
 			break;
 		}
@@ -816,7 +816,7 @@ void CombatScene::Update(double dt)
 		// reset states
 		CombatManager::getInstance().m_selectedEnemy = nullptr;
 		for (Enemy* e : groups.enemies) {
-			e->isSelected = false;
+			e->m_isSelected = false;
 		}
 		CombatManager::getInstance().m_attackElement = Element::NO_ELEMENT;
 		currentState = ACTION_BTNS::MAIN;

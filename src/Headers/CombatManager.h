@@ -52,7 +52,7 @@ public:
 
 	static constexpr int m_MIN_ATTACK_INTERVAL_MS = 1000;
 	static constexpr int m_MAX_ATTACK_INTERVAL_MS = 3000;
-	static constexpr int m_INITIAL_ENEMY_ATTACK_TIME_MS = 5000;	// if enemy starts first, wait this long before attacking player
+	static constexpr int m_INITIAL_ENEMY_ATTACK_TIME_MS = 5000;	// if enemy starts first, wait this long before m_isAttacking player
 	int m_enemyNextTurnMs = 0;
 
 
