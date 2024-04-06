@@ -25,15 +25,15 @@ private:
 
 public:
     // used to control if tutorial overlay is shown
-    bool isActive = false;
+    bool m_isActive = false;
 
     static HowToPlay& getInstance();
 
-    void Load();
-    void Init();
-    void Update(double dt);
-    void Render();
-    void Exit();
+    void load();
+    void init();
+    void update(double dt);
+    void render();
+    void exit();
 
     typedef struct {
         s8 fontID;
@@ -52,6 +52,6 @@ public:
     } Slideshow;
 
 private:
-    Slideshow slideshow{ 0 };
-    bool prevIsActive = isActive;
+    Slideshow m_slideshow{ 0 };
+    bool m_prevIsActive = m_isActive;
 };

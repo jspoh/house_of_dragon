@@ -32,7 +32,7 @@ template <typename T>
 class Singleton
 {
 public:
-	static T* GetInstance()
+	static T* getInstance()
 	{
 		if (s_mInstance == nullptr)
 			s_mInstance = new T();
@@ -40,7 +40,7 @@ public:
 		return s_mInstance;
 	}
 
-	static void Destroy()
+	static void destroy()
 	{
 		if (s_mInstance)
 		{

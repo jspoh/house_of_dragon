@@ -30,11 +30,11 @@ public:
 	CombatScene();
 	~CombatScene();
 
-	void Load();
-	void Init(CombatManager::TURN startingTurn = CombatManager::TURN::PLAYER);
-	void Update(double dt);
-	void Render();
-	void Exit();
+	void load();
+	void init(CombatManager::TURN startingTurn = CombatManager::TURN::PLAYER);
+	void update(double dt);
+	void render();
+	void exit();
 	void spawnEnemies(std::vector<std::string> enemyRefs);
 	void cleanup();
 

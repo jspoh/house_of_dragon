@@ -39,11 +39,11 @@ public:
 
 
 
-	virtual void Load();
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void load();
+	virtual void init();
+	virtual void update(double dt);
+	virtual void render();
+	virtual void exit();
 
 	typedef struct {
 		float backButtonWidth;
@@ -59,7 +59,7 @@ private:
 
 	BackButton myBackButton{ 0 };
 
-	static SceneSetting* sInstance; // The pointer to the object that gets registered
+	static SceneSetting* m_sInstance; // The pointer to the object that gets registered
 
 	/* audio */
 

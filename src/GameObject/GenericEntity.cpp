@@ -25,27 +25,27 @@ GenericEntity::~GenericEntity()
 {
 }
 
-void GenericEntity::Init()
+void GenericEntity::init()
 {
 
 }
 
-void GenericEntity::Update(double _dt)
+void GenericEntity::update(double _dt)
 {
 	UNREFERENCED_PARAMETER(_dt);
 	// Does nothing here, can inherit & override or create your own version of this class :D
 }
 
-void GenericEntity::Render()
+void GenericEntity::render()
 {
 	// Does nothing here, can inherit & override or create your own version of this class :D
 }
 
-void GenericEntity::Exit()
+void GenericEntity::exit()
 {
 }
 
-GenericEntity* Create::Entity(const std::string& _meshName,
+GenericEntity* Create::entity(const std::string& _meshName,
 	const AEVec2& _position,
 	const AEVec2& _scale)
 {
@@ -57,6 +57,6 @@ GenericEntity* Create::Entity(const std::string& _meshName,
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
 	//result->bool m_bCollider(false);
-	GameObjectManager::GetInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->addEntity(result);
 	return result;
 }

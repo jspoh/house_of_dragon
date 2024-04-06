@@ -36,7 +36,7 @@ enum class MOD_STATES {
 };
 
 
-SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::GetInstance());
+SceneSetting* SceneSetting::m_sInstance = new SceneSetting(SceneManager::getInstance());
 
 SceneSetting::SceneSetting(SceneManager* _sceneMgr)
 {
@@ -54,7 +54,7 @@ SceneSetting::~SceneSetting()
  * Textures such as the background and music note icons are loaded to be
  * used in the rendering of the scene.
  */
-void SceneSetting::Load()
+void SceneSetting::load()
 {
 	myBackButton.back = "back";
 
@@ -73,9 +73,9 @@ void SceneSetting::Load()
  * difficulty level, sound effects volume, and music volume. The initial
  * positions for the difficulty selection and audio sliders are also set.
  */
-void SceneSetting::Init()
+void SceneSetting::init()
 {
-	ParticleManager::GetInstance()->init();
+	ParticleManager::getInstance()->init();
 
 	const int btnIndex = static_cast<int>(difficulty);
 
@@ -99,7 +99,7 @@ void SceneSetting::Init()
  *
  * @param dt the delta time for the update
  */
-void SceneSetting::Update(double dt)
+void SceneSetting::update(double dt)
 {
 	// Button hovering logic for back button
 	AEVec2 p1 = { myBackButton.backButtonX - myBackButton.backButtonWidth / 2.0f, myBackButton.backButtonY + myBackButton.backButtonHeight / 2.0f };
@@ -120,25 +120,25 @@ void SceneSetting::Update(double dt)
 	{
 		if (p1.x < wMouseX && p1.y > wMouseY && p2.x > wMouseX && p2.y < wMouseY)
 		{
-			SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+			SceneManager::getInstance()->SetActiveScene("SceneMenu");
 		}
 	}
 
 
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
-		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		SceneManager::getInstance()->SetActiveScene("SceneMenu");
 
 	int mX, mY;
 	AEInputGetCursorPosition(&mX, &mY);
 
-	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
-	ParticleManager::GetInstance()->update(dt);
+	ParticleManager::getInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
+	ParticleManager::getInstance()->update(dt);
 
 	/* update slider position */
 
 	// get updated volume values
-	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
+	SoundManager::getInstance()->getVolume(sfxVolume, musicVolume);
 
 	const float sliderRadius = max(sliderScale.x, sliderScale.y);
 
@@ -168,8 +168,8 @@ void SceneSetting::Update(double dt)
 	soundSliderPos.x = minX + sfxVolume * soundBarScale.x;
 	musicSliderPos.x = minX + musicVolume * soundBarScale.x;
 
-	SoundManager::GetInstance()->setVolume(sfxVolume, false);
-	SoundManager::GetInstance()->setVolume(musicVolume, true);
+	SoundManager::getInstance()->setVolume(sfxVolume, false);
+	SoundManager::getInstance()->setVolume(musicVolume, true);
 
 	soundSliderPos.x = AEClamp(soundSliderPos.x, minX, maxX);
 
@@ -215,7 +215,7 @@ void SceneSetting::Update(double dt)
  * selection buttons, and audio sliders. The scene also renders the particle
  * effects for the user's interactions with the scene.
  */
-void SceneSetting::Render()
+void SceneSetting::render()
 {
 	// render background
 	RenderHelper::getInstance()->texture("settingbg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
@@ -248,7 +248,7 @@ void SceneSetting::Render()
 	RenderHelper::getInstance()->texture("back", myBackButton.backButtonX, myBackButton.backButtonY, myBackButton.backButtonWidth, myBackButton.backButtonHeight);
 
 
-	ParticleManager::GetInstance()->render();
+	ParticleManager::getInstance()->render();
 
 }
 
@@ -258,7 +258,7 @@ void SceneSetting::Render()
  * The settings scene is exited, and the user's settings for the difficulty
  * level and audio volume are saved to the database.
  */
-void SceneSetting::Exit()
+void SceneSetting::exit()
 {
 	Database::getInstance().data["game"]["difficulty"] = static_cast<int>(difficulty);
 

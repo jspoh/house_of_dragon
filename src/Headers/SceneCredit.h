@@ -4,7 +4,7 @@
 \author Yang yujie, yujie.yang, 2301383
 \par yujie.yang\@digipen.edu
 \date 01 Apr 2024
-\brief credits scene
+\brief m_credits scene
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -35,18 +35,18 @@ public:
 	SceneCredits(SceneManager* _sceneMgr); // This is used to register to SceneManager
 	~SceneCredits();
 
-	virtual void Load();
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Render();
-	virtual void Exit();
-	s8 pFontL;
-	s8 pFontM;
-	s8 pFontS;
-	s8 pFontxS;
+	virtual void load();
+	virtual void init();
+	virtual void update(double dt);
+	virtual void render();
+	virtual void exit();
+	s8 m_pFontL;
+	s8 m_pFontM;
+	s8 m_pFontS;
+	s8 m_pFontxS;
 
 
-	f32 textPosX, textPosY;
+	f32 m_textPosX, m_textPosY;
 
 	struct Point
 	{
@@ -59,7 +59,7 @@ public:
 		s8 fontID;
 	};
 
-	Credits credits{ 0 };
+	Credits m_credits{ 0 };
 
 	void texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 rotation, f32 positionX, f32 positionY, AEGfxVertexList* mesh, f32 transparency);
 	
@@ -67,6 +67,6 @@ public:
 private:
 
 	float m_elapsedTime;
-	static SceneCredits* sInstance; 
+	static SceneCredits* m_sInstance; 
 
 };

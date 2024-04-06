@@ -23,10 +23,10 @@ public:
 	GameObject();
 	virtual ~GameObject();
 
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double dt);
+	virtual void render();
+	virtual void exit();
 
 	AEVec2 m_LocalPos, m_WorldPos; //World Pos for Game Logic Calculation, Local Pos for Graphic Calculation
 	AEVec2 m_Scale;

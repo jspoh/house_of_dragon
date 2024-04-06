@@ -23,7 +23,7 @@ namespace {
 	bool loopIsPlaying = false;
 }
 
-SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
+SceneMenu* SceneMenu::m_sInstance = new SceneMenu(SceneManager::getInstance());
 
 SceneMenu::SceneMenu() : m_SelectedLevel{ 0 }
 {
@@ -46,9 +46,9 @@ SceneMenu::~SceneMenu()
  * Loads textures and sets up initial values for the main menu scene, such as
  * background images, button textures, and audio.
  */
-void SceneMenu::Load()
+void SceneMenu::load()
 {
-	// Load textures
+	// load textures
 	myMenu.bg = "menuBg";
 	myMenu.bg1 = "menuBg1";
 	myMenu.pointer = "dagger";
@@ -93,7 +93,7 @@ void SceneMenu::Load()
 
 	RenderHelper::getInstance()->registerTexture("back", "Assets/Menu/back1.png");
 
-	HowToPlay::getInstance().Load();
+	HowToPlay::getInstance().load();
 }
 
 /**
@@ -102,7 +102,7 @@ void SceneMenu::Load()
  * Initializes variables for the main menu scene, such as camera position,
  * button positions, and button scales.
  */
-void SceneMenu::Init()
+void SceneMenu::init()
 {
 	myMenu.quitConfirm = false;
 	myMenu.quitConfirmTimer = 0.0f;
@@ -133,7 +133,7 @@ void SceneMenu::Init()
 		myMenu.buttonSelectY[i] = 0.0f;
 		myMenu.hoveringSelect[i] = false;
 	}
-	ParticleManager::GetInstance()->init();
+	ParticleManager::getInstance()->init();
 
 	if (!loopIsPlaying) {
 		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
@@ -158,15 +158,15 @@ void SceneMenu::Init()
  *
  * @param dt Delta time
  */
-void SceneMenu::Update(double dt)
+void SceneMenu::update(double dt)
 {
-	if (HowToPlay::getInstance().isActive) {
-		HowToPlay::getInstance().Update(dt);
+	if (HowToPlay::getInstance().m_isActive) {
+		HowToPlay::getInstance().update(dt);
 		return;
 	}
 
-	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mouseX), static_cast<float>(mouseY));
-	ParticleManager::GetInstance()->update(dt);
+	ParticleManager::getInstance()->setParticlePos(static_cast<float>(mouseX), static_cast<float>(mouseY));
+	ParticleManager::getInstance()->update(dt);
 
 	float mx = static_cast<float>(mouseX);
 	float my = static_cast<float>(mouseY);
@@ -213,13 +213,13 @@ void SceneMenu::Update(double dt)
 						myMenu.levelSelecting = true;
 						break;
 					case 1:
-						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+						SceneManager::getInstance()->SetActiveScene("SceneCredits");
 						break;
 					case 2:
-						SceneManager::GetInstance()->SetActiveScene("SceneSetting");
+						SceneManager::getInstance()->SetActiveScene("SceneSetting");
 						break;
 					case 3:
-						HowToPlay::getInstance().isActive = true;
+						HowToPlay::getInstance().m_isActive = true;
 						break;
 					case 4:
 						if (!myMenu.quitConfirm)
@@ -297,7 +297,7 @@ void SceneMenu::Update(double dt)
 						SoundPlayer::stopAll();
 						loopIsPlaying = false;
 						myMenu.levelSelecting = false;
-						SceneManager::GetInstance()->SetActiveScene(nextSceneName);
+						SceneManager::getInstance()->SetActiveScene(nextSceneName);
 						break;
 					default:
 						cout << "Error in selection\n";
@@ -338,10 +338,10 @@ void SceneMenu::Update(double dt)
  *
  * Renders the menu scene by rendering the background image, menu buttons,
  */
-void SceneMenu::Render()
+void SceneMenu::render()
 {
-	if (HowToPlay::getInstance().isActive) {
-		HowToPlay::getInstance().Render();
+	if (HowToPlay::getInstance().m_isActive) {
+		HowToPlay::getInstance().render();
 		return;
 	}
 
@@ -389,7 +389,7 @@ void SceneMenu::Render()
 
 
 
-	ParticleManager::GetInstance()->render();
+	ParticleManager::getInstance()->render();
 
 }
 
@@ -398,7 +398,7 @@ void SceneMenu::Render()
  *
  * Exits the menu scene by stopping the menu audio loop.
  */
-void SceneMenu::Exit()
+void SceneMenu::exit()
 {
 	cout << "Exiting Scene Menu" << "\n";
 

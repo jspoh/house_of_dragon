@@ -4,7 +4,7 @@
 \author Yang yujie, yujie.yang, 2301383
 \par yujie.yang\@digipen.edu
 \date 01 Apr 2024
-\brief credits scene
+\brief m_credits scene
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents
@@ -28,19 +28,19 @@ static float timef;
 
 
 
-SceneCredits* SceneCredits::sInstance = new SceneCredits(SceneManager::GetInstance());
+SceneCredits* SceneCredits::m_sInstance = new SceneCredits(SceneManager::getInstance());
 
 SceneCredits::SceneCredits()
 {
-	pFontL = pFontM = pFontS = pFontxS = 0;
-	textPosX = textPosY = 0.0f;
+	m_pFontL = m_pFontM = m_pFontS = m_pFontxS = 0;
+	m_textPosX = m_textPosY = 0.0f;
 }
 
 SceneCredits::SceneCredits(SceneManager* _sceneMgr)
 {
 	_sceneMgr->AddScene("SceneCredits", this);
-	pFontL = pFontM = pFontS = pFontxS = 0;
-	textPosX = textPosY = 0.0f;
+	m_pFontL = m_pFontM = m_pFontS = m_pFontxS = 0;
+	m_textPosX = m_textPosY = 0.0f;
 }
 
 SceneCredits::~SceneCredits()
@@ -49,10 +49,10 @@ SceneCredits::~SceneCredits()
 
 
 
-void SceneCredits::Load()
+void SceneCredits::load()
 {
-	credits.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
-	//credits.mesh = 0; 
+	m_credits.bg = AEGfxTextureLoad("Assets/Menu/bg.jpg");
+	//m_credits.mesh = 0; 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFFF00FF, 0.0f, 1.0f,
@@ -62,7 +62,7 @@ void SceneCredits::Load()
 		0.5f, -0.5f, 0xFFFFFFFF, 1.0f, 1.0f,
 		0.5f, 0.5f, 0xFFFFFFFF, 1.0f, 0.0f,
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);
-	credits.mesh = AEGfxMeshEnd();
+	m_credits.mesh = AEGfxMeshEnd();
 
 
 
@@ -82,15 +82,15 @@ void SceneCredits::Load()
   * text rendering in the credit scene.
   */
 
-void SceneCredits::Init()
-{	pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
-	pFontM = AEGfxCreateFont("Assets/Fonts/liberation-mono.ttf", 40);
-	pFontS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 30);
-	pFontxS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 20);
+void SceneCredits::init()
+{	m_pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+	m_pFontM = AEGfxCreateFont("Assets/Fonts/liberation-mono.ttf", 40);
+	m_pFontS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 30);
+	m_pFontxS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 20);
 
 	f32 TextWidth = 0, TextHeight = 0;
-	textPosX = -TextWidth / 2;
-	textPosY = -TextHeight / 2;
+	m_textPosX = -TextWidth / 2;
+	m_textPosY = -TextHeight / 2;
 
 	m_elapsedTime = 0.0f;
 }
@@ -103,18 +103,18 @@ void SceneCredits::Init()
  * @param dt Delta time since the last frame update.
  */
 
-void SceneCredits::Update(double dt)
+void SceneCredits::update(double dt)
 {
 	UNREFERENCED_PARAMETER(dt);
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
-		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		SceneManager::getInstance()->SetActiveScene("SceneMenu");
 
 	m_elapsedTime += static_cast<float>(dt);
 	if (m_elapsedTime >= 20.0f)
 	{
 		// Close the application
-		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		SceneManager::getInstance()->SetActiveScene("SceneMenu");
 	}
 
 }
@@ -125,12 +125,12 @@ void SceneCredits::Update(double dt)
  * Draws the scene elements to the screen, including the scrolling text
  * and background image.
  */
-void SceneCredits::Render()
+void SceneCredits::render()
 {
 
 	scrolling += timef * speed;
 
-	texture(credits.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, credits.mesh, 1.f);
+	texture(m_credits.bg, 0.f, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()), 0.f, 0.f, m_credits.mesh, 1.f);
 	AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxTextureSet(NULL, 0, 0);
@@ -138,118 +138,118 @@ void SceneCredits::Render()
 	f32 TextWidth = 0, TextHeight = 0;
 
 	sprintf_s(strBuffer, "Press 'Q' to exit");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY + 0.20f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY + 0.20f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 
 	sprintf_s(strBuffer, "HOUSE OF DRAGON");
-	AEGfxGetPrintSize(pFontL, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontL, strBuffer, 0 - TextWidth / 2, textPosY + 0.01f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	AEGfxGetPrintSize(m_pFontL, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontL, strBuffer, 0 - TextWidth / 2, m_textPosY + 0.01f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 
 	sprintf_s(strBuffer, "Created By");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY - 0.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "SOH WEI JIE");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.3f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.3f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "POH JING SENG");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "YANG YUJIE");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.5f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.5f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "KUEK WEI JIE");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "Faculty and Advisors");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY - 0.8f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.8f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "Programming");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 0.9f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 0.9f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "CHENG DING XIANG");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 1.0f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.0f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "GERALD WONG");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 1.1f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.1f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "Created at");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY - 1.3f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.3f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "DigiPen Institute of Technology Singapore");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY - 1.40f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.40f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "PRESIDENT");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY - 1.5f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.5f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "CLAUDE COMAIR");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 1.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "EXECUTIVES");
-	AEGfxGetPrintSize(pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontM, strBuffer, 0 - TextWidth / 2, textPosY - 1.7f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontM, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.7f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "JASON CHU  SAMIR ABOU SAMRA  MICHELE COMAIR");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 1.8f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.8f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "ANGELA KUGLER  ERIK MOHRMANN");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 1.9f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.9f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "BENJAMIN ELLINGER  MELVIN GONSALVEZ");
-	AEGfxGetPrintSize(pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontS, strBuffer, 0 - TextWidth / 2, textPosY - 2.0f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.0f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "WWW.DIGIPEN.EDU");
-	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.1f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.1f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 
 	sprintf_s(strBuffer, "All content © 2024 DigiPen Institute of Technology Singapore. All Rights Reserved");
-	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, "FMOD Studio © FireLight Technologies Pty Ltd ");
-	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 	sprintf_s(strBuffer, " www.kenney.nl ");
-	AEGfxGetPrintSize(pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
-	AEGfxPrint(pFontxS, strBuffer, 0 - TextWidth / 2, textPosY - 2.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
-	textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
+	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
+	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
+	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 
 
@@ -260,14 +260,14 @@ void SceneCredits::Render()
  * Frees up the meshes and textures used by the credit scene and destroys
  * the fonts that were created.
  */
-void SceneCredits::Exit()
+void SceneCredits::exit()
 {
-	AEGfxMeshFree(credits.mesh);
-	AEGfxTextureUnload(credits.bg);
-	AEGfxDestroyFont(pFontL);
-	AEGfxDestroyFont(pFontM);
-	AEGfxDestroyFont(pFontS);
-	AEGfxDestroyFont(pFontxS);
+	AEGfxMeshFree(m_credits.mesh);
+	AEGfxTextureUnload(m_credits.bg);
+	AEGfxDestroyFont(m_pFontL);
+	AEGfxDestroyFont(m_pFontM);
+	AEGfxDestroyFont(m_pFontS);
+	AEGfxDestroyFont(m_pFontxS);
 }
 
 /**
@@ -317,8 +317,8 @@ void SceneCredits::texture(AEGfxTexture* texture, f32 scaleX, f32 scaleY, f32 ro
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(1);
 	AEGfxSetTransform(model.m);
-	AEGfxTextureSet(credits.bg, 0, 0);
-	AEGfxMeshDraw(credits.mesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxTextureSet(m_credits.bg, 0, 0);
+	AEGfxMeshDraw(m_credits.mesh, AE_GFX_MDM_TRIANGLES);
 
 
 

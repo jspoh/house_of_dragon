@@ -25,17 +25,17 @@ public:
 	GenericEntity(/*Maybe put texture here still thinking*/);
 	virtual ~GenericEntity();
 
-	virtual void Init();
-	virtual void Update(double _dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double _dt);
+	virtual void render();
+	virtual void exit();
 private:
 
 };
 
 namespace Create
 {
-	GenericEntity* Entity(const std::string& _meshName,
+	GenericEntity* entity(const std::string& _meshName,
 		const AEVec2& _position,
 		const AEVec2& _scale = { 1.0f, 1.0f });
 

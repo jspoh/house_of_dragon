@@ -43,7 +43,7 @@ namespace {
 }
 
 /*class draw*/
-RenderHelper* RenderHelper::_instance = nullptr;
+RenderHelper* RenderHelper::m_instance = nullptr;
 
 RenderHelper::RenderHelper()
 {
@@ -64,7 +64,7 @@ void RenderHelper::load() {
 		0.5f, 0.5f, 0xFF000000, 1.0f, 0.0f,    // top-right
 		-0.5f, 0.5f, 0xFF000000, 0.0f, 0.0f    // top-left
 	);
-	_defaultMesh = AEGfxMeshEnd();
+	m_defaultMesh = AEGfxMeshEnd();
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
@@ -78,21 +78,21 @@ void RenderHelper::load() {
 		0.5f, 0.5f, 0x00000000, 1.0f, 0.0f,    // top-right
 		-0.5f, 0.5f, 0x00000000, 0.0f, 0.0f    // top-left
 	);
-	_invisibleMesh = AEGfxMeshEnd();
+	m_invisibleMesh = AEGfxMeshEnd();
 
-	_meshRef["default"] = _defaultMesh;
-	_meshRef["invis"] = _invisibleMesh;
+	m_meshRef["default"] = m_defaultMesh;
+	m_meshRef["invis"] = m_invisibleMesh;
 
 	// font
-	_font = AEGfxCreateFont("./Assets/Fonts/liberation-mono.ttf", _fontSize);
+	m_font = AEGfxCreateFont("./Assets/Fonts/liberation-mono.ttf", m_fontSize);
 
 	// init static array used for int ids
-	std::fill(_textureIdRefs.begin(), _textureIdRefs.end(), nullptr);
+	std::fill(m_textureIdRefs.begin(), m_textureIdRefs.end(), nullptr);
 }
 
 bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mesh) {
 	try {
-		_meshRef[reference] = mesh;
+		m_meshRef[reference] = mesh;
 		return true;
 	}
 	catch (const std::exception& e) {
@@ -103,8 +103,8 @@ bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mes
 }
 
 AEGfxVertexList* RenderHelper::getMeshByRef(std::string reference) {
-	auto it = _meshRef.find(reference);
-	if (it != _meshRef.end()) {
+	auto it = m_meshRef.find(reference);
+	if (it != m_meshRef.end()) {
 		return it->second;
 	}
 	cerr << "ERROR: " << "Mesh with ref " << reference << " does not exist!\n";
@@ -113,8 +113,8 @@ AEGfxVertexList* RenderHelper::getMeshByRef(std::string reference) {
 
 bool RenderHelper::removeMeshByRef(std::string reference) {
 	try {
-		AEGfxMeshFree(_meshRef[reference]);
-		_meshRef.erase(reference);
+		AEGfxMeshFree(m_meshRef[reference]);
+		m_meshRef.erase(reference);
 		return true;
 	}
 	catch (const std::exception& e) {
@@ -125,22 +125,22 @@ bool RenderHelper::removeMeshByRef(std::string reference) {
 }
 
 RenderHelper::~RenderHelper() {
-	//AEGfxMeshFree(_defaultMesh);
-	//AEGfxMeshFree(_invisibleMesh);
+	//AEGfxMeshFree(m_defaultMesh);
+	//AEGfxMeshFree(m_invisibleMesh);
 	
-	for (std::pair<std::string, AEGfxTexture*> map : _textureRef) {
+	for (std::pair<std::string, AEGfxTexture*> map : m_textureRef) {
 		cout << "Automatically removing texture with ref " << map.first << "\n";
 		AEGfxTextureUnload(map.second);
 		map.second = nullptr;
 	}
 
-	for (std::pair<std::string, AEGfxVertexList*> map : _meshRef) {
+	for (std::pair<std::string, AEGfxVertexList*> map : m_meshRef) {
 		cout << "Automatically removing mesh with ref " << map.first << "\n";
 		AEGfxMeshFree(map.second);
 		map.second = nullptr;
 	}
 
-	for (AEGfxTexture* pTex : _textureIdRefs) {
+	for (AEGfxTexture* pTex : m_textureIdRefs) {
 		if (pTex == nullptr) {
 			continue;
 		}
@@ -149,15 +149,15 @@ RenderHelper::~RenderHelper() {
 		pTex = nullptr;
 	}
 
-	_textureRef.clear();
-	_meshRef.clear();
+	m_textureRef.clear();
+	m_meshRef.clear();
 }
 
 RenderHelper* RenderHelper::getInstance() {
-	if (_instance == nullptr) {
-		_instance = new RenderHelper;
+	if (m_instance == nullptr) {
+		m_instance = new RenderHelper;
 	}
-	return _instance;
+	return m_instance;
 }
 
 void RenderHelper::setBackgroundColor(Color color) {
@@ -175,17 +175,17 @@ void RenderHelper::rect(f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rota
 	AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
-	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(m_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void RenderHelper::rect(std::string meshRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 rotation, Color color, f32 opacity) {
 	// guard to ensure mesh exists
-	if (_meshRef.find(meshRef) == _meshRef.end()) {
+	if (m_meshRef.find(meshRef) == m_meshRef.end()) {
 		cerr << "ERROR: " << "Mesh with reference " << meshRef << " does not exist\n";
 		return;
 	}
 	
-	AEGfxVertexList* pMesh = _meshRef[meshRef];
+	AEGfxVertexList* pMesh = m_meshRef[meshRef];
 	
 	AEMtx33 transform = { 0 };
 	getTransformMatrix(transX, transY, scaleX, scaleY, rotation, transform);
@@ -203,7 +203,7 @@ void RenderHelper::rect(std::string meshRef, f32 transX, f32 transY, f32 scaleX,
 bool RenderHelper::registerTexture(std::string reference, std::string path) {
 	cout << "Loading texture " << path << " with reference " << reference << "\n";
 
-	if (_textureRef.find(reference) != _textureRef.end()) {
+	if (m_textureRef.find(reference) != m_textureRef.end()) {
 		// it is intended behaviour to catch all textures that has already been loaded to mitigate the issue of 
 		// load being called on state reload. we do not want to free assets that has already been loaded to save
 		// resources and load times
@@ -219,18 +219,18 @@ bool RenderHelper::registerTexture(std::string reference, std::string path) {
 		throw std::exception();
 		return false;
 	}
-	_textureRef[reference] = pTex;
+	m_textureRef[reference] = pTex;
 	cout << "Loaded texture with string reference " << reference << " at location " << pTex << "\n";
 	return true;
 }
 
 bool RenderHelper::registerTexture(int reference, std::string path) {
-	if (reference >= MAX_TEXTURE_IDS) {
+	if (reference >= m_MAX_TEXTURE_IDS) {
 		cerr << "ERROR: " << "Texture reference id(" << reference << ") cannot be greater than array size!\n";
 		throw std::exception();
 		return false;
 	}
-	if (_textureIdRefs[reference] != nullptr) {
+	if (m_textureIdRefs[reference] != nullptr) {
 		// it is intended behaviour to catch all textures that has already been loaded to mitigate the issue of 
 		// load being called on state reload. we do not want to free assets that has already been loaded to save
 		// resources and load times
@@ -246,14 +246,14 @@ bool RenderHelper::registerTexture(int reference, std::string path) {
 		throw std::exception();
 		return false;
 	}
-	_textureIdRefs[reference] = pTex;
+	m_textureIdRefs[reference] = pTex;
 	cout << "Loaded texture with int reference " << reference << " at location " << pTex << "\n";
 	return true;
 }
 
 AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
-	auto map = _textureRef.find(reference.c_str());
-	if (map == _textureRef.end() || map->second == nullptr) {  // does not exist
+	auto map = m_textureRef.find(reference.c_str());
+	if (map == m_textureRef.end() || map->second == nullptr) {  // does not exist
 		cerr << "ERROR: " << "Reference " << reference << " does not exist!\n";
 		throw std::exception();
 		return nullptr;
@@ -262,22 +262,22 @@ AEGfxTexture* RenderHelper::getTextureByRef(std::string reference) {
 }
 
 AEGfxTexture* RenderHelper::getTextureByRef(int reference) {
-	if (_textureIdRefs[reference] == nullptr) {
+	if (m_textureIdRefs[reference] == nullptr) {
 		cerr << "ERROR: " << "Reference " << reference << " has not been set!\n";
 	}
-	return _textureIdRefs[reference];
+	return m_textureIdRefs[reference];
 }
 
 void RenderHelper::removeTextureByRef(std::string reference) {
-	auto map = _textureRef.find(reference.c_str());
-	if (map == _textureRef.end()) {  // does not exist
+	auto map = m_textureRef.find(reference.c_str());
+	if (map == m_textureRef.end()) {  // does not exist
 		cerr << "ERROR: " << "Reference " << reference << " does not exist!\n";
 		return;
 	}
 
 	AEGfxTexture* pTex = getTextureByRef(reference);
 	AEGfxTextureUnload(pTex);
-	_textureRef.erase(reference);
+	m_textureRef.erase(reference);
 
 	cout << "Manually removed texture with ref " << reference << "\n";
 }
@@ -289,7 +289,7 @@ void RenderHelper::removeTextureByRef(int reference) {
 		return;
 	}
 	AEGfxTextureUnload(pTex);
-	_textureIdRefs[reference] = nullptr;
+	m_textureIdRefs[reference] = nullptr;
 
 	cout << "Manually removed texture with ref " << reference << "\n";
 }
@@ -321,7 +321,7 @@ void RenderHelper::texture(std::string textureRef, f32 transX, f32 transY, f32 s
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
-	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(m_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f32 scaleY, f32 opacity, Color addColor, f32 rotation, Color defaultColor) {
@@ -356,7 +356,7 @@ void RenderHelper::texture(int textureRef, f32 transX, f32 transY, f32 scaleX, f
 	AEGfxSetTransparency(opacity);
 	AEGfxSetTransform(transform.m);
 	AEGfxTextureSet(pTex, 0, 0);
-	AEGfxMeshDraw(_defaultMesh, AE_GFX_MDM_TRIANGLES);
+	AEGfxMeshDraw(m_defaultMesh, AE_GFX_MDM_TRIANGLES);
 }
 
 void RenderHelper::text(std::string s, float screenX, float screenY, float r, float g, float b, float a) {
@@ -365,28 +365,17 @@ void RenderHelper::text(std::string s, float screenX, float screenY, float r, fl
 	AEVec2 p = ston(screenX, screenY);
 
 	f32 width, height;
-	AEGfxGetPrintSize(_font, s.c_str(), 1, &width, &height);
-	AEGfxPrint(_font, s.c_str(), p.x - width / 2, p.y - height / 2, 1, r, g, b, a);
+	AEGfxGetPrintSize(m_font, s.c_str(), 1, &width, &height);
+	AEGfxPrint(m_font, s.c_str(), p.x - width / 2, p.y - height / 2, 1, r, g, b, a);
 }
 
 int RenderHelper::getFontSize() {
-	return _fontSize;
+	return m_fontSize;
 }
 
-AEGfxVertexList* RenderHelper::GetdefaultMesh()
+AEGfxVertexList* RenderHelper::getdefaultMesh()
 {
-	return _defaultMesh;
+	return m_defaultMesh;
 }
 
-AEGfxTexture* RenderHelper::GetTexture(int textureRef)
-{
-	AEGfxTexture* pTex = getTextureByRef(textureRef);  // doesnt
-
-	if (pTex == nullptr) {
-		cerr << "ERROR: " << "Texture with reference " << textureRef << " wasnt initialized!\n";
-		return nullptr;
-	}
-	return pTex;
-}
-/*class DrawSpritesheet*/
 

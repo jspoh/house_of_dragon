@@ -59,9 +59,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //Show Cursor - Disable when have custom cursor
     AEInputShowCursor(1);
     
-    //Load & Initialise Game System
-    GameManager& Game = GameManager::GetInstance();
-    Game.Init();
+    //load & Initialise Game System
+    GameManager& Game = GameManager::getInstance();
+    Game.init();
     
     // Game System Loop
     while (gGameRunning)
@@ -72,7 +72,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     	AEGfxSetRenderMode(AE_GFX_RM_NONE);  // MUST BE CALLED AT LEAST ONCE PER FRAME
     	
     	//Update & Render Game System
-    	Game.Run();
+    	Game.run();
     
     	// Informing the system about the loop's end
     	AESysFrameEnd();
@@ -88,7 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
     
     //Free & Unload Game System
-    Game.Exit();
+    Game.exit();
 	// free the system
 	AESysExit();
 }

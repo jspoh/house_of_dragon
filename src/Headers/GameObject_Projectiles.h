@@ -39,44 +39,44 @@ public:
 	GameObject_Projectiles(/*Maybe put texture here still thinking*/);
 	virtual ~GameObject_Projectiles();
 
-	virtual void Init();
-	virtual void Update(double _dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double _dt);
+	virtual void render();
+	virtual void exit();
 
-	void FireAtPlayer(const AEVec2& _startpos = { -100.0f, -100.0f }, const AEVec2& _startscale = { 50.0f, 50.0f }, ProjectileType _type = ProjectileType::P_FireBall_Red, double _speed = 0.2f, double _MovTimer = 1.0f);
+	void fireAtPlayer(const AEVec2& _startpos = { -100.0f, -100.0f }, const AEVec2& _startscale = { 50.0f, 50.0f }, ProjectileType _type = ProjectileType::P_FireBall_Red, double _speed = 0.2f, double _MovTimer = 1.0f);
 
 	ProjectileType m_type;
 	double m_Speed;
 private:
 	//////////////////////////////////////////////////////////////////////////
 	// Animation
-	const u32 FireBall_spritesheet_rows = 7;
-	const u32 FireBall_spritesheet_cols = 9;
-	const u32 FireBall_spritesheet_max_sprites = 60;
-	const f32 FireBall_sprite_uv_width = 1.f / FireBall_spritesheet_cols;
-	const f32 FireBall_sprite_uv_height = 1.f / FireBall_spritesheet_rows;
+	static constexpr u32 m_FIREBALL_SPRITESHEET_ROWS = 7;
+	static constexpr u32 m_FIREBALL_SPRITESHEET_COLS = 9;
+	static constexpr u32 m_FIREBALL_SPRITESHEED_MAX_SPRITES = 60;
+	static constexpr f32 m_FIREBALL_SPRITE_UV_WIDTH = 1.f / m_FIREBALL_SPRITESHEET_COLS;
+	static constexpr f32 m_FIREBALL_SPRITE_UV_HEIGHT = 1.f / m_FIREBALL_SPRITESHEET_ROWS;
 
-	const u32 EnergyBall_spritesheet_rows = 3;
-	const u32 EnergyBall_spritesheet_cols = 5;
-	const u32 EnergyBall_spritesheet_max_sprites = 11;
-	const f32 EnergyBall_sprite_uv_width = 1.f / EnergyBall_spritesheet_cols;
-	const f32 EnergyBall_sprite_uv_height = 1.f / EnergyBall_spritesheet_rows;
+	static constexpr u32 m_ENERGYBALL_SPRITESHEED_ROWS = 3;
+	static constexpr u32 m_ENERGYBALL_SPRITESHEED_COLS = 5;
+	static constexpr u32 m_ENERGYBALL_SPRITESHEED_MAX_SPRITES = 11;
+	static constexpr f32 m_ENERGYBALL_SPRITE_UV_WIDTH = 1.f / m_ENERGYBALL_SPRITESHEED_COLS;
+	static constexpr f32 m_ENERGYBALL_SPRITE_UV_HEIGHT = 1.f / m_ENERGYBALL_SPRITESHEED_ROWS;
 
 	// (Not so good) hardcoded values about our animation
-	f32 animation_timer = 0.f;
-	f32 animation_duration_per_frame = 0.02f;
-	u32 current_sprite_index = 0; // start from first sprite
-	f32 current_sprite_uv_offset_x = 0.f;
-	f32 current_sprite_uv_offset_y = 0.f;
+	f32 m_animationTimer = 0.f;
+	f32 m_animationDurationPerFrame = 0.02f;
+	u32 m_currentSpriteIndex = 0; // start from first sprite
+	f32 m_currentSpriteUvOffsetX = 0.f;
+	f32 m_currentSpriteUvOffsetY = 0.f;
 
 	// Pointer to Mesh
-	AEGfxVertexList* pFireBallMesh = 0;
-	AEGfxVertexList* pEnergyBallMesh = 0;
+	AEGfxVertexList* m_pFireBallMesh = 0;
+	AEGfxVertexList* m_pEnergyBallMesh = 0;
 
 };
 
 namespace Create
 {
-	GameObject_Projectiles* Projectiles( const AEVec2& _position = { 0.0f, 0.0f }, const AEVec2& _scale= { 200.0f, 200.0f}, GameObject_Projectiles::ProjectileType _type = GameObject_Projectiles::ProjectileType::P_FireBall_Red);
+	GameObject_Projectiles* projectiles( const AEVec2& _position = { 0.0f, 0.0f }, const AEVec2& _scale= { 200.0f, 200.0f}, GameObject_Projectiles::ProjectileType _type = GameObject_Projectiles::ProjectileType::P_FireBall_Red);
 };

@@ -17,7 +17,7 @@ Technology is prohibited.
 #include "Pch.h"
 #include "SceneSplashScreen.h"
 
-SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());
+SceneSplashScreen* SceneSplashScreen::m_sInstance = new SceneSplashScreen(SceneManager::getInstance());
 
 SceneSplashScreen::SceneSplashScreen() 
 	: m_Mesh(nullptr),
@@ -46,7 +46,7 @@ SceneSplashScreen::~SceneSplashScreen()
 {
 }
 
-void SceneSplashScreen::Load()
+void SceneSplashScreen::load()
 {
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
@@ -71,7 +71,7 @@ void SceneSplashScreen::Load()
 	m_TeamLogoTex = AEGfxTextureLoad("Assets/SplashScreen/Team_Logo.png");
 }
 
-void SceneSplashScreen::Init()
+void SceneSplashScreen::init()
 {
 	cout << "Loading Scene SplashScreen" << "\n";
 
@@ -85,7 +85,7 @@ void SceneSplashScreen::Init()
 	AEMtx33Concat(&m_TransformTeamLogoData, &trans, &scale);
 }
 
-void SceneSplashScreen::Update(double dt)
+void SceneSplashScreen::update(double dt)
 {
 	m_LogoTimer -= m_LogoTimer > 0.0f ? dt : 0;
 
@@ -93,7 +93,7 @@ void SceneSplashScreen::Update(double dt)
 	{
 		if (m_LogoIndex >= NUMOFSPLASHES * 2 - 1)
 		{
-			SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+			SceneManager::getInstance()->SetActiveScene("SceneMenu");
 			return;
 		}
 		m_LogoTimer = LogoMaxTime;
@@ -108,7 +108,7 @@ void SceneSplashScreen::Update(double dt)
 }
 
 
-void SceneSplashScreen::Render()
+void SceneSplashScreen::render()
 {
 	// Set the background to black.
 	AEGfxSetBackgroundColor(0.0f, 0.0f, 0.0f);
@@ -149,7 +149,7 @@ void SceneSplashScreen::Render()
 	AEGfxMeshDraw(m_Mesh, AE_GFX_MDM_TRIANGLES);
 }
 
-void SceneSplashScreen::Exit()
+void SceneSplashScreen::exit()
 {
 	cout << "Exiting Scene SplashScreen" << "\n";
 

@@ -35,10 +35,10 @@ public:
 	GameObject_Misc_Enemy(/*Maybe put texture here still thinking*/);
 	virtual ~GameObject_Misc_Enemy();
 
-	virtual void Init();
-	virtual void Update(double _dt);
-	virtual void Render();
-	virtual void Exit();
+	virtual void init();
+	virtual void update(double _dt);
+	virtual void render();
+	virtual void exit();
 
 	void ActivateEnemy(AEMtx33& m_transform, v_EnemyBehaviour _type = Normal);
 	void UpdateEnemyMov(double _dt);
@@ -56,5 +56,5 @@ private:
 
 namespace Create
 {
-	GameObject_Misc_Enemy* MiscEnemy( const AEVec2& _position = { 0.0f,0.0f }, const AEVec2& _scale = {1.0f, 1.0f});
+	GameObject_Misc_Enemy* miscEnemy( const AEVec2& _position = { 0.0f,0.0f }, const AEVec2& _scale = {1.0f, 1.0f});
 };

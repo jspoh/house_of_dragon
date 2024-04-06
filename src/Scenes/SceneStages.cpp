@@ -19,7 +19,7 @@ Technology is prohibited.
 
 bool SceneStagesAudio::loopIsPlaying = false;
 
-SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
+SceneStages* SceneStages::m_sInstance = new SceneStages(SceneManager::getInstance());
 
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
@@ -48,11 +48,11 @@ SceneStages::~SceneStages()
 {
 }
 
-void SceneStages::Load()
+void SceneStages::load()
 {
 }
 
-void SceneStages::Init()
+void SceneStages::init()
 {
 	cout << "Loading Scene Stages" << "\n";
 
@@ -90,7 +90,7 @@ void SceneStages::Init()
 	m_transparency = 1.8f;
 }
 
-void SceneStages::Update(double dt)
+void SceneStages::update(double dt)
 {	
 	m_LoadScreenTimer -= dt;
 	//This is to ensure that the game is on loading screen 
@@ -107,12 +107,12 @@ void SceneStages::Update(double dt)
 	//When level builder is created
 	if (m_LevelBuilder != nullptr)
 	{
-		m_LevelBuilder->Update(dt);
+		m_LevelBuilder->update(dt);
 
 		//Start the camera movement
 		AEInputGetCursorPosition(&mouseX, &mouseY);
 		//                                   |                Move Based On Mouse Pos                |  |                          Screen Shake                                     |
-		if (Pause::getInstance().isPaused) {
+		if (Pause::getInstance().m_isPaused) {
 			return;
 		}
 		AEGfxSetCamPosition(static_cast<f32>((mouseX - AEGfxGetWindowWidth() / 2) / MOUSE_SENSITIVITY - AERandFloat() * static_cast<f32>(m_ScreenShakeTimer * m_ScreenShakeModifier)),
@@ -138,17 +138,17 @@ void SceneStages::Update(double dt)
 	}
 
 	// Update the animation timer.
-	animation_timer += static_cast<float>(dt);
-	if (animation_timer >= animation_duration_per_frame)
+	m_animationTimer += static_cast<float>(dt);
+	if (m_animationTimer >= m_animationDurationPerFrame)
 	{
-		animation_timer = 0;
-		current_sprite_index = ++current_sprite_index % spritesheet_max_sprites;
+		m_animationTimer = 0;
+		m_currentSpriteIndex = ++m_currentSpriteIndex % spritesheet_max_sprites;
 
-		u32 current_sprite_row = current_sprite_index / spritesheet_cols;
-		u32 current_sprite_col = current_sprite_index % spritesheet_cols;
+		u32 current_sprite_row = m_currentSpriteIndex / spritesheet_cols;
+		u32 current_sprite_col = m_currentSpriteIndex % spritesheet_cols;
 
-		current_sprite_uv_offset_x = sprite_uv_width * current_sprite_col;
-		current_sprite_uv_offset_y = sprite_uv_height * current_sprite_row;
+		m_currentSpriteUvOffsetX = sprite_uv_width * current_sprite_col;
+		m_currentSpriteUvOffsetY = sprite_uv_height * current_sprite_row;
 
 	}
 
@@ -160,13 +160,13 @@ void SceneStages::Update(double dt)
 }
 
 
-void SceneStages::Render()
+void SceneStages::render()
 {
 	if (m_LoadScreenTimer <= 1.0 && m_LevelBuilder != nullptr && m_StartGame)
-		m_LevelBuilder->Render();
+		m_LevelBuilder->render();
 
 	/////////////////////////////////////////////////////
-	// Render Load Screen
+	// Render load Screen
 	if (m_LoadScreenTimer >= -1.0 || !m_StartGame || (m_StartGame && m_transparency >= -2.0f))
 	{
 		AEGfxSetRenderMode(AE_GFX_RM_COLOR);
@@ -176,7 +176,7 @@ void SceneStages::Render()
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 99999, 99999);
 		AEGfxSetTransform(t_curr.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 
 		AEGfxTextureSet(NULL, 0, 0);
 		f32 TextWidth = 0, TextHeight = 0;
@@ -196,13 +196,13 @@ void SceneStages::Render()
 
 		}
 			
-		//Load animation
+		//load animation
 		AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
 		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTransparency(m_transparency - 0.8f);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), m_currentSpriteUvOffsetX, m_currentSpriteUvOffsetY);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 1000.0f, 800.0f);
 		AEMtx33TransApply(&t_curr, &t_curr, 0.f, -100.0f);
@@ -211,7 +211,7 @@ void SceneStages::Render()
 	}
 }
 
-void SceneStages::Exit()
+void SceneStages::exit()
 {
 	cout << "Exiting Scene SplashScreen" << "\n";
 

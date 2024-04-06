@@ -65,63 +65,63 @@ enum class INNER_STATES {
 
 class Event {
 private:
-	static Event* _instance;
-	EVENT_TYPES _activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
-	EVENT_RESULTS _eventResult = NONE_EVENT_RESULTS;
-	bool _isRenderingEventResult = false;  // is render success/failure animation
-	static constexpr double _eventResultDuration = 1;  // event success/failure animation duration (seconds)
+	static Event* m_instance;
+	EVENT_TYPES m_activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
+	EVENT_RESULTS m_eventResult = NONE_EVENT_RESULTS;
+	bool m_isRenderingEventResult = false;  // is render success/failure animation
+	static constexpr double m_EVENT_RESULT_DURATION = 1;  // event success/failure animation duration (seconds)
 
-	int _elapsedTimeMs = 0;
-	int _totalElapsedMs = 0;
-	bool _useOutline = true;
+	int m_elapsedTimeMs = 0;
+	int m_totalElapsedMs = 0;
+	bool m_useOutline = true;
 	/*how many milliseconds before key type changes*/
-	static constexpr int _changeMs = 100;
+	static constexpr int m_changeMs = 100;
 
-	int _mouseX = 0, _mouseY = 0, _prevMouseX = 0, _prevMouseY = 0;
+	int m_mouseX = 0, m_mouseY = 0, m_prevMouseX = 0, m_prevMouseY = 0;
 
 	/*spam key vars*/
-	EVENT_KEYS _spamKeyChoice = EVENT_KEYS::E;
-	static constexpr int SPAM_KEY_TIMEOUT_MS = 5000;
-	int _spamkeyTimeoutMs = SPAM_KEY_TIMEOUT_MS;
-	static constexpr float _minSize = 100;
-	static constexpr float _targetSize = 200;
-	float _size = _minSize;
-	float _spamkeyX;
-	float _spamkeyY;
+	EVENT_KEYS m_spamKeyChoice = EVENT_KEYS::E;
+	static constexpr int m_SPAM_KEY_TIMEOUT_MS = 5000;
+	int _spamkeyTimeoutMs = m_SPAM_KEY_TIMEOUT_MS;
+	static constexpr float m_minSize = 100;
+	static constexpr float m_targetSize = 200;
+	float m_size = m_minSize;
+	float m_spamkeyX;
+	float m_spamkeyY;
 	// positive rate of change per click
-	static constexpr float _PROC = 10;
-	float _proc = _PROC;
+	static constexpr float m_PROC = 10;
+	float m_proc = m_PROC;
 	// negative rate of change per second
-	const float _nroc = 50;
+	const float m_nroc = 50;
 
 	/*oTimer vars*/
-	INNER_STATES oTimerEventState = INNER_STATES::ON_ENTER;
-	static constexpr int OTIMER_TIMEOUT_MS = 5000;
-	int _oTimerTimeoutMs = OTIMER_TIMEOUT_MS;
-	float _oTimerOpacity = 1.f;		// percentage
-	float _oTimerTimeBeforeFadeOut = 0.5f;	// seconds
-	float _oTimerFadeOutDuration = 0.5f;	// seconds
+	INNER_STATES m_oTimerEventState = INNER_STATES::ON_ENTER;
+	static constexpr int m_OTIMER_TIMEOUT_MS = 5000;
+	int m_oTimerTimeoutMs = m_OTIMER_TIMEOUT_MS;
+	float m_oTimerOpacity = 1.f;		// percentage
+	float m_oTimerTimeBeforeFadeOut = 0.5f;	// seconds
+	float m_oTimerFadeOutDuration = 0.5f;	// seconds
 
-	float _barWidth = 0.f;
-	float _barHeight = 0.f;
-	float _barX = 0.f;
-	float _barY = 0.f;
+	float m_barWidth = 0.f;
+	float m_barHeight = 0.f;
+	float m_barX = 0.f;
+	float m_barY = 0.f;
 
 	// pi -> power indicator
-	bool _piMoving = true;
-	float _piWidth = 0.f;
-	float _piHeight = 0.f;
-	float _piX = 0.f;
-	float _piY = 0.f;
-	float _piVelocity = 0.f;
-	float _piMaxVelocity = 1000.f;
+	bool m_piMoving = true;
+	float m_piWidth = 0.f;
+	float m_piHeight = 0.f;
+	float m_piX = 0.f;
+	float m_piY = 0.f;
+	float m_piVelocity = 0.f;
+	float m_piMaxVelocity = 1000.f;
 	//float __secondsToReachMaxVelocity = 0.5f;
 	// note: we are not using time based but distance based. see cpp file in constructor
 	// time based formula:
 	// 
 	// acceleration = (final velocity - initial velocity) / final time(seconds) - initial time(seconds)
 	// 
-	float _piAcc;// = (_piMaxVelocity - _piVelocity) / __secondsToReachMaxVelocity;
+	float m_piAcc;// = (m_piMaxVelocity - m_piVelocity) / __secondsToReachMaxVelocity;
 
 	/*multi click vars*/
 	struct MultiClickObject {
@@ -133,28 +133,28 @@ private:
 		bool blink;
 	};
 
-	static constexpr int _MULTICLICK_TIMEOUT_MS = 5000;
-	int _multiClickTimeoutMs = _MULTICLICK_TIMEOUT_MS;
-	int _mcoHits = 0;
-	int _mcoMisses = 0;
-	int _mcoDisplayHits = 0;
-	int _maxMcoHits = 10;
-	static constexpr int spawnOffsetX = 200;		// dont spawn within 200 pixels of border
-	static constexpr int spawnOffsetY = 200;
-	std::vector<MultiClickObject> _multiClickObjects;
+	static constexpr int m_MULTICLICK_TIMEOUT_MS = 5000;
+	int m_multiClickTimeoutMs = m_MULTICLICK_TIMEOUT_MS;
+	int m_mcoHits = 0;
+	int m_mcoMisses = 0;
+	int m_mcoDisplayHits = 0;
+	int m_maxMcoHits = 10;
+	static constexpr int m_SPAWN_OFFSET_X = 200;		// dont spawn within 200 pixels of border
+	static constexpr int m_SPAWN_OFFSET_Y = 200;
+	std::vector<MultiClickObject> m_multiClickObjectsts;
 	// mco -> multi click object
-	static constexpr int _mcoCount = 3;
-	static constexpr float _MCO_RADIUS = 25.F;
-	float _mcoRadius = _MCO_RADIUS;
+	static constexpr int m_MCO_COUNT = 3;
+	static constexpr float m_MCO_RADIUS = 25.F;
+	float m_mcoRadius = m_MCO_RADIUS;
 	// how long before transitioning to another display state (light vs dark) for blinking effect
-	static constexpr float _mcoBlinkDuration = 0.25f;
-	static constexpr float _mcoTransitionTime = 1.f;
-	bool _mcoIsTransitioningOut = false;
+	static constexpr float m_mcoBlinkDuration = 0.25f;
+	static constexpr float m_mcoTransitionTime = 1.f;
+	bool m_mcoIsTransitioningOut = false;
 
 	/*typing event vars*/
-	static constexpr int _NUM_TYPING_EVENT_WORDS = 41;
+	static constexpr int m_NUM_TYPING_EVENT_WORDS = 41;
 	// ^[a-z]+$ only (regex)
-	const std::array<std::string, _NUM_TYPING_EVENT_WORDS> _wordlist{
+	const std::array<std::string, m_NUM_TYPING_EVENT_WORDS> m_wordlist{
 		"nian",
 		"dragon",
 		"angpao",
@@ -200,34 +200,34 @@ private:
 
 	// determines whether to get a new word.
 	// when user is done typing current word, then set this to true
-	std::string _currentWord;	// current word used
-	static constexpr float _charGap = 10.f;		// gap between characters, in screen pos
-	std::vector<std::pair<char, bool>> _typed;
-	static constexpr float _typingTransitionTime = 1.f;		// time taken in seconds to transition out
-	INNER_STATES _typingState = INNER_STATES::ON_ENTER;
-	static constexpr int _TYPING_TIMEOUT_MS = 5000;
-	int _typingTimeoutMs = _TYPING_TIMEOUT_MS;			// time before typing event ends
-	int _wordsCompleted = 0;			// words player managed to type before timeends
-	static constexpr int _typingMaxScore = 5;
+	std::string m_currentWord;	// current word used
+	static constexpr float m_charGap = 10.f;		// gap between characters, in screen pos
+	std::vector<std::pair<char, bool>> m_typed;
+	static constexpr float m_typingTransitionTime = 1.f;		// time taken in seconds to transition out
+	INNER_STATES m_typingState = INNER_STATES::ON_ENTER;
+	static constexpr int m_TYPING_TIMEOUT_MS = 5000;
+	int m_typingTimeoutMs = m_TYPING_TIMEOUT_MS;			// time before typing event ends
+	int m_wordsCompleted = 0;			// words player managed to type before timeends
+	static constexpr int m_typingMaxScore = 5;
 
 	/*demon event vars*/
-	static constexpr int _ORANGE_TIMEOUT_MS = 5000;
-	int _orangeEventTimeoutMs = _ORANGE_TIMEOUT_MS;
-	static constexpr int _afterEventDisplayTimeoutMs = 1000;
-	INNER_STATES _orangeState = INNER_STATES::ON_ENTER;
-	static constexpr int spawnIntervalMs = 1000;
-	static constexpr float _ORANGE_RADIUS = 30.f;
-	float _orangeRadius = _ORANGE_RADIUS;
-	static constexpr float _orangeSpeed = 500.f;
-	static constexpr float _orangeGravity = 15.f;
-	static constexpr float _xResistance = 1.f;		// how much of speed lost per second
-	static constexpr float _speedLimit = 20.f;
-	static constexpr float _energyKeptBouncing = 0.7f;
-	static constexpr float _orangeBorderPadding = 50.f;
+	static constexpr int m_ORANGE_TIMEOUT_MS = 5000;
+	int m_orangeEventTimeoutMs = m_ORANGE_TIMEOUT_MS;
+	static constexpr int m_afterEventDisplayTimeoutMs = 1000;
+	INNER_STATES m_orangeState = INNER_STATES::ON_ENTER;
+	static constexpr int m_SPAWN_INTERVAL_MS = 1000;
+	static constexpr float m_ORANGE_RADIUS = 30.f;
+	float m_orangeRadius = m_ORANGE_RADIUS;
+	static constexpr float m_ORANGE_SPEED = 500.f;
+	static constexpr float m_ORANGE_GRAVITY = 15.f;
+	static constexpr float m_X_RESISTANCE = 1.f;		// how much of speed lost per second
+	static constexpr float m_SPEED_LIMIT = 20.f;
+	static constexpr float m_ENERGY_KEPT_BOUNCING = 0.7f;
+	static constexpr float m_ORANGE_BORDER_PADDING = 50.f;
 
-	static constexpr float _demonMinSpeed = 25.f;
-	static constexpr float _demonMaxSpeed = 200.f;
-	static constexpr float _demonRadius = 50.f;
+	static constexpr float m_DEMON_MIN_SPEED = 25.f;
+	static constexpr float m_DEMON_MAX_SPEED = 200.f;
+	static constexpr float m_DEMON_RADIUS = 50.f;
 
 	struct Orange {
 		float x;				// pos in screen coords
@@ -243,12 +243,12 @@ private:
 		float y;
 		AEVec2 vel;
 		float radius;
-		bool isActive;
+		bool m_isActive;
 	};
 
-	Orange _orangeObj{ 0 };
-	static constexpr int NUM_DEMONS = 7;
-	std::array<Demon, NUM_DEMONS> demons{ 0 };
+	Orange m_orangeObj{ 0 };
+	static constexpr int m_NUM_DEMONS = 7;
+	std::array<Demon, m_NUM_DEMONS> m_demons{ 0 };
 
 
 	/*ctor and methods*/
@@ -318,10 +318,10 @@ private:
 
 public:
 	// output variable for event multiplier
-	float eventMultiplier = 1.f;
-	float maxMultiplier = 1.5f;
-	float minMultiplier = 0.2f;
-	int eventMultiplierPrecision = 2;
+	float m_eventMultiplier = 1.f;
+	float m_maxMultiplier = 1.5f;
+	float m_minMultiplier = 0.2f;
+	int m_eventMultiplierPrecision = 2;
 
 	~Event();
 

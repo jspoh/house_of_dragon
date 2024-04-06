@@ -31,18 +31,18 @@ GameObject::~GameObject()
 }
 
 
-void GameObject::Init()
+void GameObject::init()
 {
 
 }
-void GameObject::Update([[maybe_unused]] double dt)
+void GameObject::update([[maybe_unused]] double dt)
 {
 }
-void GameObject::Render()
+void GameObject::render()
 {
 
 }
-void GameObject::Exit()
+void GameObject::exit()
 {
 
 }

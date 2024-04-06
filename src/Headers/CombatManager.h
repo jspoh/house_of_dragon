@@ -40,26 +40,26 @@ public:
 	static CombatManager& getInstance();
 	~CombatManager();
 
-	TURN turn = TURN::PLAYER;
-	EVENT_TYPES eventType;
-	EVENT_RESULTS qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
-	Element attackElement = Element::NO_ELEMENT;  // used to track user attack element
+	TURN m_turn = TURN::PLAYER;
+	EVENT_TYPES m_eventType;
+	EVENT_RESULTS m_qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;  // used to track user quicktime event result
+	Element m_attackElement = Element::NO_ELEMENT;  // used to track user attack element
 
-	bool isPlayingEvent = false;
-	bool playerFledLastFight = false;		// used to implement progression penalty if player flees from a fight
+	bool m_isPlayingEvent = false;
+	bool m_playerFledLastFight = false;		// used to implement progression penalty if player flees from a fight
 
-	Enemy* selectedEnemy = nullptr;
+	Enemy* m_selectedEnemy = nullptr;
 
-	static constexpr int minAttackIntervalMs = 1000;
-	static constexpr int maxAttackIntervalMs = 3000;
-	static constexpr int initialEnemyAttackTimeMs = 5000;	// if enemy starts first, wait this long before attacking player
-	int enemyNextTurnMs = 0;
+	static constexpr int m_MIN_ATTACK_INTERVAL_MS = 1000;
+	static constexpr int m_MAX_ATTACK_INTERVAL_MS = 3000;
+	static constexpr int m_INITIAL_ENEMY_ATTACK_TIME_MS = 5000;	// if enemy starts first, wait this long before m_isAttacking player
+	int m_enemyNextTurnMs = 0;
 
 
 	/**
 	 * for level scene to .
 	 */
-	bool isInCombat = false;
+	bool m_isInCombat = false;
 
 	/**
 	 * start combat manager turn based system.

@@ -20,44 +20,43 @@ Technology is prohibited.
 
 class Enemy : public Mob {
 private:
-	std::string _textureRef = "";
+	std::string m_textureRef = "";
 	// screen pos
-	AEVec2 _spos{ 0 };
+	AEVec2 m_spos{ 0 };
 	// world pos (rendering only!!!!)
-	AEVec2 _wpos{ 0 };
-	float _size = 50;
-	AEVec2 healthpos{ 0 };
-	float fullhealth = 0;
-	float startingHealth{ 0 };
+	AEVec2 m_wpos{ 0 };
+	float m_size = 50;
+	AEVec2 m_healthpos{ 0 };
+	float m_fullhealth = 0;
 	//attack multipler holder
 
-	AEVec2 attackPoint{ 0 };
-	AEVec2 AttackEnd{ 0};
-	float attacktime{ 0 };
+	AEVec2 m_attackPoint{ 0 };
+	AEVec2 m_attackEnd{ 0};
+	float m_attacktime{ 0 };
 	// a flag to help render the shaking
-	bool attacked{0};
-	bool attacking{ 0 };
+	bool m_attacked{0};
+	bool m_isAttacking{ 0 };
 	//shaking variables
-	float shakeDuration = 1.f; // Duration of the shake effect in seconds
-	float shakeAmplitude = 20.0f; // Maximum displacement during shake
-	float shakeFrequency = 25.0f;
+	float m_shakeDuration = 1.f; // Duration of the shake effect in seconds
+	float m_shakeAmplitude = 20.0f; // Maximum displacement during shake
+	float m_shakeFrequency = 25.0f;
 
-	float AttackedRenderX{ 0 };
-	float AttackedRenderXprev{ 0 };
-	const float healthRenderTimeMax = 0.75f;
-	float healthRenderTime{ 0 };
-	std::string elementString;
+	float m_attackedRenderX{ 0 };
+	float m_attackedRenderXprev{ 0 };
+	const float m_healthRenderTimeMax = 0.75f;
+	float m_healthRenderTime{ 0 };
+	std::string m_elementString;
 
 
 
 public:
-	bool isSelected = false;
+	bool m_isSelected = false;
 
 	std::string getTextureRef() const;
 	void elementstringinput(std::string el);
-	static constexpr int projectileTravelTimeMs = 1000;
+	static constexpr int m_PROJECTILE_TRAVEL_TIME_MS = 1000;
 	
-	Enemy(Element element, float health, float dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
+	Enemy(Element element, float m_health, float m_dmg, std::string texturePath, std::string textureRef, float screenX = 100, float screenY = 100, float size = 50);
 	~Enemy();
 
 	void update([[maybe_unused]] double dt);

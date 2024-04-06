@@ -33,11 +33,11 @@ GameObject_Misc_Enemy::~GameObject_Misc_Enemy()
 {
 }
 
-void GameObject_Misc_Enemy::Init()
+void GameObject_Misc_Enemy::init()
 {
 }
 
-void GameObject_Misc_Enemy::Update(double _dt)
+void GameObject_Misc_Enemy::update(double _dt)
 {
 	if (m_Active && m_Health > 0)
 	{
@@ -88,7 +88,7 @@ void GameObject_Misc_Enemy::Update(double _dt)
 		m_StartCombat = 1;
 }
 
-void GameObject_Misc_Enemy::Render()
+void GameObject_Misc_Enemy::render()
 {
 	if (m_Active)
 	{
@@ -99,17 +99,17 @@ void GameObject_Misc_Enemy::Render()
 		AEGfxSetTransparency(m_Transparency);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMY_STRONG"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMYJAW_UPPER"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("MISC_ENEMYJAW_LOWER"), 0, 0);
 		AEGfxSetTransform(m_TransformData.m);
-		AEGfxMeshDraw(RenderHelper::getInstance()->GetdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
 	}
 }
 
-void GameObject_Misc_Enemy::Exit()
+void GameObject_Misc_Enemy::exit()
 {
 }
 
@@ -203,15 +203,15 @@ void GameObject_Misc_Enemy::UpdateCombatTransition(double _dt)
 
 }
 
-GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& _scale)
+GameObject_Misc_Enemy* Create::miscEnemy(const AEVec2& _position, const AEVec2& _scale)
 {
 	GameObject_Misc_Enemy* result = new GameObject_Misc_Enemy();
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
 	result->m_Active = false;
 	result->m_RefName = "MiscEnemy";
-	result->Init();
+	result->init();
 	//result->bool m_bCollider(false);
-	GameObjectManager::GetInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->addEntity(result);
 	return result;
 }
