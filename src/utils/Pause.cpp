@@ -16,6 +16,7 @@ Technology is prohibited.
 #include "Pch.h"
 #include "Pause.h"
 #include "SceneManager.h"
+#include "HowToPlay.h"
 
 Pause::Pause() : isPaused{ false }, isConfirming{ false }, confirmTimer{ 0.0f }, confirmingButton{ "" } {
 }
@@ -32,6 +33,11 @@ void Pause::init() {
 }
 
 void Pause::update([[maybe_unused]] double dt) {
+    if (HowToPlay::getInstance().isActive) {
+        HowToPlay::getInstance().Update(dt);
+        return;
+    }
+
     if (AEInputCheckTriggered(PAUSE_KEY)) {
         isPaused = !isPaused;
         if (isPaused) {
@@ -58,7 +64,7 @@ void Pause::update([[maybe_unused]] double dt) {
         if (CollisionChecker::isMouseInRect(pos.x, pos.y, BTN_WIDTH * scale, BTN_HEIGHT * scale, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
             scale = HOVER_BTN_SCALE;
             if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-                if (b == "RESTART" || b == "EXIT" || b == "HOWTOPLAY") {
+                if (b == "RESTART" || b == "EXIT") {
                     if (!isConfirming) {
                         isConfirming = true;
                         confirmingButton = b;
@@ -76,15 +82,15 @@ void Pause::update([[maybe_unused]] double dt) {
                             AEGfxSetCamPosition(0, 0);
                             SceneManager::GetInstance()->SetActiveScene("SceneMenu");
                         }
-                        else if (b == "HOWTOPLAY") {
-                            SceneManager::GetInstance()->SetActiveScene("HowToPlay");
-                        }
                         isConfirming = false;
                     }
                 }
                 else {
                     if (b == "RESUME") {
                         isPaused = false;
+                    }
+                    else if (b == "HOWTOPLAY") {
+                        HowToPlay::getInstance().isActive = true;
                     }
                 }
             }
@@ -97,8 +103,8 @@ void Pause::update([[maybe_unused]] double dt) {
 
     // Update confirmation timer
     if (isConfirming) {
-        confirmTimer += dt;
-        if (confirmTimer >= 3.0f) {
+        confirmTimer += static_cast<float>(dt);
+        if (confirmTimer >= CONFIRMATION_TIME) {
             isConfirming = false;
         }
     }
@@ -106,6 +112,11 @@ void Pause::update([[maybe_unused]] double dt) {
 
 void Pause::render() const {
     if (!isPaused) {
+        return;
+    }
+
+    if (HowToPlay::getInstance().isActive) {
+        HowToPlay::getInstance().Render();
         return;
     }
 

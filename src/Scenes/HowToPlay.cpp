@@ -88,6 +88,7 @@ void HowToPlay::Init() {
 void HowToPlay::Update([[maybe_unused]] double dt) {
     if (isActive && !prevIsActive) {
         Init();
+        slideshow.currentImageIndex = 0;
     }
 
     float mx = static_cast<float>(mouseX);
@@ -120,6 +121,8 @@ void HowToPlay::Update([[maybe_unused]] double dt) {
             isActive = false;
         }
     }
+
+    prevIsActive = isActive;
 }
 
 void HowToPlay::Render() {

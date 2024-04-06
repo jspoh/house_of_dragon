@@ -25,7 +25,7 @@ private:
     static constexpr int NUM_BTNS = 4;
     std::array<std::pair<std::string, float>, NUM_BTNS> btns{
         std::pair{"RESUME", 1.f},
-        {"TUTORIAL", 1.f},
+        {"HOWTOPLAY", 1.f},
         {"RESTART", 1.f},
         {"EXIT", 1.f}
     };
@@ -38,6 +38,7 @@ private:
     bool isConfirming;
     float confirmTimer;
     std::string confirmingButton;
+    static constexpr float CONFIRMATION_TIME = 0.5f;
 
 public:
     static Pause& getInstance();
