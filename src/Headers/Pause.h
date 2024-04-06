@@ -22,10 +22,10 @@ private:
     Pause();
 
     static constexpr u8 PAUSE_KEY = AEVK_ESCAPE;
-    static constexpr int NUM_BTNS = 3;
+    static constexpr int NUM_BTNS = 4;
     std::array<std::pair<std::string, float>, NUM_BTNS> btns{
         std::pair{"RESUME", 1.f},
-        //{"HOWTOPLAY", 1.f},
+        {"TUTORIAL", 1.f},
         {"RESTART", 1.f},
         {"EXIT", 1.f}
     };

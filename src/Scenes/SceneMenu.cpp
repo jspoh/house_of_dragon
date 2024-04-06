@@ -16,8 +16,8 @@ Technology is prohibited.
 
 #include "Pch.h"
 #include "SceneMenu.h"
-#include "SoundPlayer.h"
 #include "ParticleManager.h"
+#include "HowToPlay.h"
 
 namespace {
     bool loopIsPlaying = false;
@@ -93,6 +93,7 @@ void SceneMenu::Load()
 
     RenderHelper::getInstance()->registerTexture("back", "Assets/Menu/back1.png");
 
+    HowToPlay::getInstance().Load();
 }
 
 /**
@@ -159,16 +160,16 @@ void SceneMenu::Init()
  */
 void SceneMenu::Update(double dt)
 {
-    int mX, mY;
-    AEInputGetCursorPosition(&mX, &mY);
+    if (HowToPlay::getInstance().isActive) {
+        HowToPlay::getInstance().Update(dt);
+        return;
+    }
 
-    ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
+    ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mouseX), static_cast<float>(mouseY));
     ParticleManager::GetInstance()->update(dt);
 
-    s32 mxx, myy;
-    AEInputGetCursorPosition(&mxx, &myy);
-    float mx = static_cast<float>(mxx);
-    float my = static_cast<float>(myy);
+    float mx = static_cast<float>(mouseX);
+    float my = static_cast<float>(mouseY);
     mx -= AEGfxGetWindowWidth() / 2;
 
     my = -my;
@@ -218,7 +219,7 @@ void SceneMenu::Update(double dt)
                         SceneManager::GetInstance()->SetActiveScene("SceneSetting");
                         break;
                     case 3:
-                        SceneManager::GetInstance()->SetActiveScene("HowToPlay");
+                        HowToPlay::getInstance().isActive = true;
                         break;
                     case 4:
                         if (!myMenu.quitConfirm)
@@ -339,6 +340,11 @@ void SceneMenu::Update(double dt)
  */
 void SceneMenu::Render()
 {
+    if (HowToPlay::getInstance().isActive) {
+        HowToPlay::getInstance().Render();
+        return;
+    }
+
     RenderHelper::getInstance()->texture("menuBg", 0, 0, static_cast<float>(AEGfxGetWindowWidth()), static_cast<float>(AEGfxGetWindowHeight()));
 
     // Render the menu buttons

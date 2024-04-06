@@ -19,15 +19,28 @@ Technology is prohibited.
 #include "SoundPlayer.h"
 #include "ParticleManager.h"
 
-HowToPlay* HowToPlay::sInstance = new HowToPlay(SceneManager::GetInstance());
 
-HowToPlay::HowToPlay() {}
-
-HowToPlay::HowToPlay(SceneManager* _sceneMgr) {
-    _sceneMgr->AddScene("HowToPlay", this);
+HowToPlay::HowToPlay() {
+    slideshow.buttonWidth = 100.0f;
+    slideshow.buttonHeight = 50.0f;
+    slideshow.leftButtonX = -AEGfxGetWindowWidth() / 2.0f + slideshow.buttonWidth / 2.0f + 20.0f;
+    slideshow.leftButtonY = 0.0f;
+    slideshow.rightButtonX = AEGfxGetWindowWidth() / 2.0f - slideshow.buttonWidth / 2.0f - 20.0f;
+    slideshow.rightButtonY = 0.0f;
+    slideshow.backButtonX = -AEGfxGetWindowWidth() / 2.0f + slideshow.buttonWidth / 2.0f + 20.0f;
+    slideshow.backButtonY = AEGfxGetWindowHeight() / 2.0f - slideshow.buttonHeight / 2.0f - 20.0f;
+    slideshow.hoveringLeft = false;
+    slideshow.hoveringRight = false;
+    slideshow.hoveringBack = false;
+    slideshow.currentImageIndex = 0;
 }
 
 HowToPlay::~HowToPlay() {}
+
+HowToPlay& HowToPlay::getInstance() {
+    static HowToPlay instance;
+    return instance;
+}
 
 void HowToPlay::Load() {
     slideshow.background = "menuBg";
@@ -69,36 +82,23 @@ void HowToPlay::Load() {
 }
 
 void HowToPlay::Init() {
-    slideshow.buttonWidth = 100.0f;
-    slideshow.buttonHeight = 50.0f;
-    slideshow.leftButtonX = -AEGfxGetWindowWidth() / 2.0f + slideshow.buttonWidth / 2.0f + 20.0f;
-    slideshow.leftButtonY = 0.0f;
-    slideshow.rightButtonX = AEGfxGetWindowWidth() / 2.0f - slideshow.buttonWidth / 2.0f - 20.0f;
-    slideshow.rightButtonY = 0.0f;
-    slideshow.backButtonX = -AEGfxGetWindowWidth() / 2.0f + slideshow.buttonWidth / 2.0f + 20.0f;
-    slideshow.backButtonY = AEGfxGetWindowHeight() / 2.0f - slideshow.buttonHeight / 2.0f - 20.0f;
-    slideshow.hoveringLeft = false;
-    slideshow.hoveringRight = false;
-    slideshow.hoveringBack = false;
-    slideshow.currentImageIndex = 0;
-
     AEGfxSetCamPosition(0, 0);
 }
 
-void HowToPlay::Update(double dt) {
-    UNREFERENCED_PARAMETER(dt);
-    int mX, mY;
-    AEInputGetCursorPosition(&mX, &mY);
+void HowToPlay::Update([[maybe_unused]] double dt) {
+    if (isActive && !prevIsActive) {
+        Init();
+    }
+
+    float mx = static_cast<float>(mouseX);
+    float my = static_cast<float>(mouseY);
+
+    // convert mouse position into world coords (not a very good way to do it)
+    mx -= AEGfxGetWindowWidth() / 2.f;
+    my = -my;
+    my += AEGfxGetWindowHeight() / 2.f;
 
     if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-        s32 mxx, myy;
-        AEInputGetCursorPosition(&mxx, &myy);
-        float mx = static_cast<float>(mxx);
-        float my = static_cast<float>(myy);
-        mx -= AEGfxGetWindowWidth() / 2;
-        my = -my;
-        my += AEGfxGetWindowHeight() / 2.0f;
-
         AEVec2 leftP1 = { slideshow.leftButtonX - slideshow.buttonWidth / 2.0f, slideshow.leftButtonY + slideshow.buttonHeight / 2.0f };
         AEVec2 leftP2 = { slideshow.leftButtonX + slideshow.buttonWidth / 2.0f, slideshow.leftButtonY - slideshow.buttonHeight / 2.0f };
 
@@ -117,7 +117,7 @@ void HowToPlay::Update(double dt) {
         AEVec2 backP2 = { slideshow.backButtonX + slideshow.buttonWidth / 2.0f, slideshow.backButtonY - slideshow.buttonHeight / 2.0f };
 
         if (backP1.x < mx && backP1.y > my && backP2.x > mx && backP2.y < my) {
-            SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+            isActive = false;
         }
     }
 }
