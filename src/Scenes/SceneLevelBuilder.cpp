@@ -488,6 +488,9 @@ void SceneLevelBuilder::Update(double dt)
 			{
 				if (m_currLevel < m_MAXLevel) {
 					++m_currLevel;
+
+					// mark next level as unlocked
+					Database::getInstance().data["levels"][m_currLevel]["unlocked"] = true;
 				}
 				else {
 					showGameEnd = true;
