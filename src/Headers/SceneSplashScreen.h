@@ -1,8 +1,8 @@
 /* Start Header ************************************************************************/
 /*!
 \file SceneSplashScreen.h
-\author
-\par
+\author Soh Wei Jie, weijie.soh, 2301289
+\par weijie.soh\@digipen.edu
 \date 01 Apr 2024
 \brief splash screen implementation
 /*

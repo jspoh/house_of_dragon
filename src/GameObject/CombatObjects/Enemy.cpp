@@ -1,8 +1,10 @@
 /* Start Header ************************************************************************/
 /*!
 \file Enemy.cpp
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Poh Jing Seng, jingseng.poh, 2301363 (50%, base enemy combat logic)
 \par jingseng.poh\@digipen.edu
+\author Kuek wei jie, weijie.kuek, 2301325 (50%, enemy rendering and animation logic)
+\par weijie.kuek\@digipen.edu
 \date 28 feb 2024
 \brief handles enemy in combat
 /*

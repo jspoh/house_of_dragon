@@ -1,9 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file main.cpp
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Poh Jing Seng, jingseng.poh, 2301363 (90%, debug config, structure)
 \par jingseng.poh\@digipen.edu
-\author Soh Wei Jie, weijie.soh, 2301289
+\author Soh Wei Jie, weijie.soh, 2301289 (10%, game manager init)
 \par weijie.soh\@digipen.edu
 \date 20 Jan 2024
 \brief entry point of program

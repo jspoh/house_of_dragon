@@ -1,9 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file SceneSetting.cpp
-\author Yang yujie, yujie.yang, 2301383
+\author Yang yujie, yujie.yang, 2301383 (50%, base rendering)
 \par yujie.yang\@digipen.edu
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Poh Jing Seng, jingseng.poh, 2301363 (50%, functionality)
 \par jingseng.poh\@digipen.edu
 \date 01 Apr 2024
 \brief settings scene implementation, changes of difficulty and sound settings

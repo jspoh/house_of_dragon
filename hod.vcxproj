@@ -170,7 +170,6 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClCompile Include="src\utils\SoundPlayer.cpp" />
     <ClCompile Include="src\Backend\SoundManager.cpp" />
     <ClCompile Include="src\Backend\GameManager.cpp" />
-    <ClCompile Include="src\Backend\Vector3.cpp" />
     <ClCompile Include="src\db\db.cpp" />
     <ClCompile Include="src\Event\Event.cpp" />
     <ClCompile Include="src\GameObject\CombatObjects\CombatPlayer.cpp" />
@@ -231,7 +230,6 @@ xcopy "$(SolutionDir)src\db\data.json" "$(OutDir)" /s /r /y /q</Command>
     <ClInclude Include="src\Headers\SingletonTemplate.h" />
     <ClInclude Include="src\Headers\SoundManager.h" />
     <ClInclude Include="src\Headers\utils.h" />
-    <ClInclude Include="src\Headers\Vector3.h" />
     <ClInclude Include="src\Headers\CollisionChecker.h" />
     <ClInclude Include="src\Headers\RenderHelper.h" />
   </ItemGroup>

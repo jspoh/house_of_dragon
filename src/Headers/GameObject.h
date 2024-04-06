@@ -16,11 +16,6 @@ Technology is prohibited.
 
 #pragma once
 
-#ifndef GAME_OBJECT_H
-#define GAME_OBJECT_H
-
-#include "Vector3.h"
-
 //BASE CLASS GAMEOBJECTS - CONSISTING OF COMMON FUNCTIONS AND VARIABLES
 class GameObject
 {
@@ -41,4 +36,3 @@ public:
 protected:
 
 };
-#endif
