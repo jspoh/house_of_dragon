@@ -1,9 +1,11 @@
 /* Start Header ************************************************************************/
 /*!
 \file CombatPlayer.cpp
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Poh Jing Seng, jingseng.poh, 2301363 (60%, base infra and player logic)
 \par jingseng.poh\@digipen.edu
-\author Soh Wei Jie, weijie.soh
+\author Kuek wei jie, weijie.kuek, 2301325 (30%, rendering)
+\par weijie.kuek\@digipen.edu
+\author Soh Wei Jie, weijie.soh (10%, hands rendering)
 \par weijie.soh\@digipen.edu
 \date 28 feb 2024
 \brief handles player in combat
@@ -105,6 +107,7 @@ void Player::healthGain(float healthIncrease) {
 	}
 
 }
+
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Jackie";
 		std::string level = "  Lv:1";
@@ -144,8 +147,8 @@ void Player::update(double dt) {
 
 	/* blocking stuff */
 	//HandStateAnimationType;
-	if (this->attacked == true && this->healthRenderTime < this->healthRenderTimeMax) {
-		healthRenderTime += static_cast<float>(AEFrameRateControllerGetFrameTime());
+	if (this->attacked && this->healthRenderTime < this->healthRenderTimeMax) {
+		healthRenderTime += static_cast<float>(dt);
 		float percenttime = static_cast<float>(healthRenderTime / healthRenderTimeMax);
 		float t = percenttime;
 		if (t > healthRenderTimeMax) {
@@ -652,3 +655,12 @@ void Player::_renderShield() {
 	}
 }
 
+int Player::getLevel() const {
+	return playerLevel;
+}
+
+void Player::resetHealth() {
+	health = startingHealth;
+	AttackedRenderX = health / 80;
+	AttackedRenderXprev = 0;
+}

@@ -1,8 +1,10 @@
 /* Start Header ************************************************************************/
 /*!
 \file SceneLevelBuilder.cpp
-\author Soh Wei Jie, weijie.soh, 2301289
+\author Soh Wei Jie, weijie.soh, 2301289 (90%, 3D rendering)
 \par weijie.soh\@digipen.edu
+\author Poh Jing Seng, jingseng.poh, 2301363 (10%, integration, bugfixes)
+\par jingseng.poh\@digipen.edu
 \date 21 Feb 2024
 \brief The 3D engine, the heart of the game and my pain.
 
@@ -310,6 +312,8 @@ void SceneLevelBuilder::Init()
 		if (!player) {
 			player = std::make_unique<Player>(Player((float)PLAYER_BASE_HEALTH, (float)PLAYER_BASE_DAMAGE));
 		}
+		player->resetHealth();
+
 		/////////////////////////////////////////////////////////////
 		//Creating GameObjects
 		Create::MiscEnemy();

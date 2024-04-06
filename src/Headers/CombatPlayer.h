@@ -49,12 +49,6 @@ private:
 
 	void _drawHealth(float screenX, float screenY);
 
-
-	//attack multipler holder
-	float initialAttack{ 0 };
-	int attackMultiplerTurn{ 0 };
-	int attackMultiplerTurnStart{ 0 };
-
 	void _updateBlockingHands();
 
 	void updateHands(float t_dt);
@@ -63,12 +57,13 @@ private:
 	void _updateShield(double dt);
 	void _renderShield();
 
-	float AttackedRenderX{ 0 };
-	float AttackedRenderXprev{ 0 };
 	float startingHealth{ 0 };
-	bool attacked{ 0 };
 	float healthRenderTime{ 0 };
 	const float healthRenderTimeMax = 0.75f;
+
+	float AttackedRenderX{ 0 };
+	float AttackedRenderXprev{ 0 };
+	bool attacked{ 0 };
 
 	int playerLevel;
 
@@ -136,11 +131,11 @@ public:
 	void _renderHands();
 	void playerAttacked();
 
-	void attackMultipler(int turn);
-
 	std::unordered_map<std::string, int> inventory;
 
 	int getLevel() const;
+
+	void resetHealth();
 
 private:
 	HandAnimationType HandStateAnimationType = HandAnimationType::None; //Can use enum
