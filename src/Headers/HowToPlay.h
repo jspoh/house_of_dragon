@@ -16,26 +16,24 @@ Technology is prohibited.
 
 #pragma once
 
-#ifndef SCENE_SLIDESHOW_H
-#define SCENE_SLIDESHOW_H
-
-#include "Scene.h"
-#include "SceneManager.h"
 #include "Pch.h"
 
-class SceneManager;
-
-class HowToPlay : public Scene {
-public:
+class HowToPlay {
+private:
     HowToPlay();
-    HowToPlay(SceneManager* _sceneMgr);
     ~HowToPlay();
 
-    virtual void Load();
-    virtual void Init();
-    virtual void Update(double dt);
-    virtual void Render();
-    virtual void Exit();
+public:
+    // used to control if tutorial overlay is shown
+    bool isActive = false;
+
+    static HowToPlay& getInstance();
+
+    void Load();
+    void Init();
+    void Update(double dt);
+    void Render();
+    void Exit();
 
     typedef struct {
         s8 fontID;
@@ -55,7 +53,5 @@ public:
 
 private:
     Slideshow slideshow{ 0 };
-    static HowToPlay* sInstance;
+    bool prevIsActive = isActive;
 };
-
-#endif
