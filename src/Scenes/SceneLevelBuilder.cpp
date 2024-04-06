@@ -514,13 +514,11 @@ void SceneLevelBuilder::Update(double dt)
 					m_CompletionStatus -= FLEEING_COMPLETION_PENALTY;		// penalize player for fleeing fight
 					m_CompletionStatus = m_CompletionStatus < 0 ? 0 : m_CompletionStatus;
 				}
-
 				m_CompletionStatus += SceneStages::sInstance->m_StartGame ? dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate : 0.0;
-
-				
 			}
-			//cout << "Level Done: " << m_CompletionStatus << "%\n";
 
+			if (AEInputCheckCurr(AEVK_1))
+				m_CompletionStatus += dt * m_SceneLevelDataList[m_currLevel].m_LevelCompletionRate * 10;
 		}
 		UpdateLevelGameplay(static_cast<float>(dt));
 		UpdateLensFlare(static_cast<float>(dt));
@@ -531,18 +529,6 @@ void SceneLevelBuilder::Update(double dt)
 	////////////////////////////////////////////////////////////////////////
 	//Adjustments to camera if necessary
 	{
-		/**
-		 * this set cam positioning is messing up the camera positioning
-		 * for everything used after this. uncomment the code to see the print logs
-		 * - JS
-		 * 
-		 */
-		//updateGlobals();
-		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
-		//AEGfxSetCamPosition(camX, camY - static_cast<f32>(m_PanDownCam));
-		//updateGlobals();
-		//cout << mouseX << "," << mouseY << " | " << camOffset.x << "," << camOffset.y << "\n";
-		//cout << "\n";
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -1167,6 +1153,7 @@ void SceneLevelBuilder::Render()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER
 	{
+		updateGlobals();
 		//Lvl Name
 		RenderLvlName();
 
