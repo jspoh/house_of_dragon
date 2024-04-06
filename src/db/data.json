@@ -4,7 +4,7 @@
       "sfx": 1,
       "music": 1
     },
-    "difficulty": 0
+    "difficulty": 1
   },
   "player": {
     "completedTutorial": true,
@@ -129,7 +129,7 @@
       "maxSceneOBJperTile": 4,
       "enemySpawnWeight": [
         {
-          "chicken": 1
+          "horse": 1
         }
       ],
       "SceneOBJSpawnWeight": [

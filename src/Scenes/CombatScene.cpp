@@ -897,7 +897,7 @@ void CombatScene::Update(double dt)
 
 		}
 		else if (winFlag && winButtonFlag) {
-			cout << "Transition to next level\n";
+			cout << "Transition back to walking\n";
 			CombatManager::getInstance().end();
 			CombatManager::getInstance().playerFledLastFight = false;
 		}
