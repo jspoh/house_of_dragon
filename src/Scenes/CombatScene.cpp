@@ -506,7 +506,7 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
 	RenderHelper::getInstance()->registerTexture("snakename", "./Assets/Combat_UI/snake.png");
 	RenderHelper::getInstance()->registerTexture("horsename", "./Assets/Combat_UI/horse.png");
-	RenderHelper::getInstance()->registerTexture("rabbitname", "./Assets/Combat_UI/horse.png");
+	RenderHelper::getInstance()->registerTexture("rabbitname", "./Assets/Combat_UI/rabbit.png");
 
 
 	//enemy panel  for information load 

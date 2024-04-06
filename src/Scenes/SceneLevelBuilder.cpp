@@ -261,10 +261,12 @@ SceneLevelBuilder::SceneLevelBuilder() :
 
 				for (auto& map : Database::getInstance().data["levels"][i]["enemySpawnWeight"].items())
 				{
-					for (auto type = map.value().begin(); type != map.value().end(); type++)
+					// you cannot iterate like this! wouldve caused a crash!
+					//for (auto type = map.value().begin(); type != map.value().end(); type++)
+					for (const auto& [animal, spawnWeight] : map.value().items())
 					{
-						t_curr.m_EnemyTypes.push_back(type.key());
-						t_curr.m_EnemySpawnWeight.push_back(type.value());
+						t_curr.m_EnemyTypes.push_back(animal);
+						t_curr.m_EnemySpawnWeight.push_back(spawnWeight);
 					}
 				}
 
@@ -514,7 +516,7 @@ void SceneLevelBuilder::Update(double dt)
 
 				
 			}
-			cout << "Level Done: " << m_CompletionStatus << "%\n";
+			//cout << "Level Done: " << m_CompletionStatus << "%\n";
 
 		}
 		UpdateLevelGameplay(static_cast<float>(dt));
@@ -1649,13 +1651,18 @@ std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 		for (int curr : m_SceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
 		{
 			randnum -= curr;
-			if (randnum < 0)
+			if (randnum <= 0)
 			{
 				Ref = m_SceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
 				break;
 			}
 			temp++;
 		}
+		if (Ref == "") {
+			cerr << "No enemies generated!\n";
+			throw std::exception();
+		}
+
 		m_CombatNames.push_back(Ref);
 
 		if (rand() % 100 < 10)
