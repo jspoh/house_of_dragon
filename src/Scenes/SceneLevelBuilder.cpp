@@ -7,7 +7,7 @@
 \par jingseng.poh\@digipen.edu
 \date 21 Feb 2024
 \brief The 3D engine, the heart of the game and my pain. Read the comments I have written
-       for indepth description of the files. 
+	   for indepth description of the files.
 
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
@@ -45,7 +45,7 @@ namespace {
 	bool showGameEnd = false;
 
 	// cleanup misc states
-	void cleanup() {
+	void cleanupSlb() {
 		showGameEnd = false;
 		GameScene::combatAudioLoopIsPlaying = false;
 		SceneStagesAudio::loopIsPlaying = true;
@@ -63,7 +63,7 @@ SceneLevelBuilder::v_FloorData::v_FloorData() :
 	m_currFloorTimer{ 0.0 },
 	m_floorSpeedTimer{ 0.5 },
 	m_isRender{ true },
-	m_type{0}
+	m_type{ 0 }
 {
 	AEMtx33Identity(&m_transformFloorData);
 	AEMtx33Identity(&m_transformFloorCurr);
@@ -77,7 +77,7 @@ SceneLevelBuilder::v_SceneObject::v_SceneObject()
 	m_RenderOrder{ 0 },
 	m_Transparency{ -1.5f },
 	m_type{ v_SceneObjectTypes::EType_Grass_Foliage_1 },
-	m_tobeCentered {false}
+	m_tobeCentered{ false }
 {
 	AEMtx33Identity(&m_TransformData);
 	AEMtx33Identity(&m_scale);
@@ -94,7 +94,7 @@ SceneLevelBuilder::v_SceneLevelData::v_SceneLevelData()
 	m_SceneObjSpawnWeight{},
 	m_LevelCompletionRate{ 0.0 },
 	m_Unlocked{ false },
-	m_EnemySpawnRate{0}{}
+	m_EnemySpawnRate{ 0 } {}
 ////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,14 +136,14 @@ SceneLevelBuilder::SceneLevelBuilder() :
 	m_combatPhase{ false },
 	m_combatAnimationComp{ false },
 	m_combatBufferingTime{ 0.0 },
-	m_lighting {1.0f,1.0f,1.0f,1.0f}
+	m_lighting{ 1.0f,1.0f,1.0f,1.0f }
 {
 	//////////////////////////////////////////////////////////////////////////////////////////////
-    //                       Loading of ALL Scene Textures
-    /*
-    *     All assets in scene are to be loaded here to allow loading screen to do its magic.
-    */
-    //////////////////////////////////////////////////////////////////////////////////////////////
+	//                       Loading of ALL Scene Textures
+	/*
+	*     All assets in scene are to be loaded here to allow loading screen to do its magic.
+	*/
+	//////////////////////////////////////////////////////////////////////////////////////////////
 	{
 		/*********************************************
 		//Level Header
@@ -224,7 +224,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_M_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeM_Dark.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_1, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS.png");
 		RenderHelper::getInstance()->registerTexture(EType_ForestTree_S_2, "Assets/SceneObjects/SCENE_OBJECTS/GreenTreeS_Dark.png");
-		
+
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_XL_2, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeXL_Dark.png");
 		RenderHelper::getInstance()->registerTexture(EType_NightTree_L_1, "Assets/SceneObjects/SCENE_OBJECTS/NightTreeL.png");
@@ -294,7 +294,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 				t_curr.m_LevelCompletionRate = Database::getInstance().data["levels"][i]["levelCompletionRate"];
 				t_curr.m_Completed = Database::getInstance().data["levels"][i]["completed"];
 				t_curr.m_EnemySpawnRate = Database::getInstance().data["levels"][i]["enemySpawnRate"];
-				t_curr.m_Unlocked = Database::getInstance().data["levels"][i]["unlocked"]; 
+				t_curr.m_Unlocked = Database::getInstance().data["levels"][i]["unlocked"];
 				t_curr.m_MaxEnemies = Database::getInstance().data["levels"][i]["maxEnemies"];
 				t_curr.m_DayTime = Database::getInstance().data["levels"][i]["DayTime"];
 
@@ -324,7 +324,7 @@ SceneLevelBuilder::SceneLevelBuilder() :
 			m_sceneLevelDataList -= Database::getInstance().data["levels"].size();
 		}
 	}
-	
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	//                       load Combat elements
@@ -345,7 +345,7 @@ SceneLevelBuilder::~SceneLevelBuilder()
 void SceneLevelBuilder::init()
 {
 	// cleanup again just in case
-	//cleanup();
+	//cleanupSlb();
 
 	/////////////////////////////////////////////////////////////
 	// Basic Setup of all necessary objects in scene
@@ -370,13 +370,13 @@ void SceneLevelBuilder::init()
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	//                       GENERATION OF TRANSFORMATION DATA
-	/*              
+	/*
 	*         Here lies the beginning of the 3D engine initialization, starting with the outset of
 	*         my sanity degradation \(-_-)/ and also the creation of all the relevant transformations
-	*         for each tile, the tiles will then interpolate towards the player then return 
-	*         to the back of the list at the end of its cycle, resulting in the movement of the 
+	*         for each tile, the tiles will then interpolate towards the player then return
+	*         to the back of the list at the end of its cycle, resulting in the movement of the
 	*         player.
-	*          
+	*
 	*         This engine was inspired by the world shader in Animal Crossing on DS to have
 	*         infinite scrolling by the player.
 	*/
@@ -548,7 +548,7 @@ void SceneLevelBuilder::update(double dt)
 		UpdateLvlName(static_cast<f32>(dt));//Level Name Animation
 		///////////////////////////////////////////////////////////////////////////////
 		//Level Progression Update
-		if(!m_combatPhase)
+		if (!m_combatPhase)
 		{
 			if (m_completionStatus > 100.0 && SceneStages::m_sInstance->m_StartGame)
 			{
@@ -567,7 +567,7 @@ void SceneLevelBuilder::update(double dt)
 					}
 					return;
 				}
-				
+
 				if (!showGameEnd) {
 					SceneLevelBuilder::SpawnLvlName();
 					m_completionStatus = 0.0;
@@ -586,7 +586,7 @@ void SceneLevelBuilder::update(double dt)
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 			// This is a way to speed up playtesting, uncomment this if you would like to progress and unlock the 
-		    // levels faster.
+			// levels faster.
 			//if (AEInputCheckCurr(AEVK_TAB))
 			//	m_completionStatus += dt * m_sceneLevelDataList[m_currLevel].m_LevelCompletionRate * 10;
 		}
@@ -612,6 +612,7 @@ void SceneLevelBuilder::update(double dt)
 			{
 				if (AEInputCheckTriggered(AEVK_LBUTTON))
 				{
+					SoundPlayer::CombatAudio::getInstance().playSfxPunch();
 					player->setHandStateAnimationType(Player::HandAnimationType::Punch);
 				}
 			}
@@ -700,7 +701,7 @@ void SceneLevelBuilder::update(double dt)
 					SoundPlayer::GameAudio::getInstance().playLoop();
 					GameScene::combatAudioLoopIsPlaying = false;
 					SceneStagesAudio::loopIsPlaying = true;
-					
+
 				}
 
 				CombatScene::getInstance().update(dt);
@@ -715,7 +716,7 @@ void SceneLevelBuilder::update(double dt)
 						m_completionStatus += 30; // Increment Progression of level for completing the battle
 
 				}
-					
+
 			}
 
 			/////////////////////////////////////////////////////////////////////
@@ -878,7 +879,7 @@ void SceneLevelBuilder::update(double dt)
 				{
 					//Reset Transform data
 					AEMtx33Identity(&(*it).m_TransformData);
-					
+
 					if (!m_panCloseToGround)
 					{
 						t_XModifier = t_XModifier > 2.0 ? t_XModifier - dt : t_XModifier;
@@ -907,7 +908,7 @@ void SceneLevelBuilder::update(double dt)
 					AEMtx33TransApply(&(*it).m_TransformData, &(*it).m_TransformData,
 						(*it).m_trans.m[0][2] * m_floor[j][i].m_transformFloorCurr.m[0][0] / ((t_TransScaleModifier.first) / (*it).m_scale.m[0][0]),
 						0);
-					 
+
 					//Adjusting Transparency
 					(*it).m_Transparency += static_cast<f32>(dt) * 1.5f;
 				}
@@ -1359,7 +1360,7 @@ void SceneLevelBuilder::exit()
 
 	CombatScene::getInstance().exit();
 
-	cleanup();
+	cleanupSlb();
 }
 
 

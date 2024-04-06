@@ -820,6 +820,13 @@ void CombatScene::update(double dt)
 
 			break;
 		}
+		if (rand() % 2) {
+			SoundPlayer::CombatAudio::getInstance().playSfxPunch();
+		}
+		else {
+			SoundPlayer::CombatAudio::getInstance().playSfxKnife();
+		}
+
 		SoundPlayer::CombatAudio::getInstance().playSfxAnimal(CombatManager::getInstance().m_selectedEnemy->getTextureRef());
 		CombatManager::getInstance().m_qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 
