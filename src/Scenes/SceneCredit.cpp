@@ -28,7 +28,7 @@ static float timef;
 
 
 
-SceneCredits* SceneCredits::sInstance = new SceneCredits(SceneManager::GetInstance());
+SceneCredits* SceneCredits::sInstance = new SceneCredits(SceneManager::getInstance());
 
 SceneCredits::SceneCredits()
 {
@@ -108,13 +108,13 @@ void SceneCredits::update(double dt)
 	UNREFERENCED_PARAMETER(dt);
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
-		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		SceneManager::getInstance()->SetActiveScene("SceneMenu");
 
 	m_elapsedTime += static_cast<float>(dt);
 	if (m_elapsedTime >= 20.0f)
 	{
 		// Close the application
-		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		SceneManager::getInstance()->SetActiveScene("SceneMenu");
 	}
 
 }

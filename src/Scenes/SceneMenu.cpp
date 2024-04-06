@@ -23,7 +23,7 @@ namespace {
 	bool loopIsPlaying = false;
 }
 
-SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::GetInstance());
+SceneMenu* SceneMenu::sInstance = new SceneMenu(SceneManager::getInstance());
 
 SceneMenu::SceneMenu() : m_SelectedLevel{ 0 }
 {
@@ -133,7 +133,7 @@ void SceneMenu::init()
 		myMenu.buttonSelectY[i] = 0.0f;
 		myMenu.hoveringSelect[i] = false;
 	}
-	ParticleManager::GetInstance()->init();
+	ParticleManager::getInstance()->init();
 
 	if (!loopIsPlaying) {
 		SoundPlayer::MenuAudio::getInstance().playLoopMenu();
@@ -165,8 +165,8 @@ void SceneMenu::update(double dt)
 		return;
 	}
 
-	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mouseX), static_cast<float>(mouseY));
-	ParticleManager::GetInstance()->update(dt);
+	ParticleManager::getInstance()->setParticlePos(static_cast<float>(mouseX), static_cast<float>(mouseY));
+	ParticleManager::getInstance()->update(dt);
 
 	float mx = static_cast<float>(mouseX);
 	float my = static_cast<float>(mouseY);
@@ -213,10 +213,10 @@ void SceneMenu::update(double dt)
 						myMenu.levelSelecting = true;
 						break;
 					case 1:
-						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+						SceneManager::getInstance()->SetActiveScene("SceneCredits");
 						break;
 					case 2:
-						SceneManager::GetInstance()->SetActiveScene("SceneSetting");
+						SceneManager::getInstance()->SetActiveScene("SceneSetting");
 						break;
 					case 3:
 						HowToPlay::getInstance().isActive = true;
@@ -297,7 +297,7 @@ void SceneMenu::update(double dt)
 						SoundPlayer::stopAll();
 						loopIsPlaying = false;
 						myMenu.levelSelecting = false;
-						SceneManager::GetInstance()->SetActiveScene(nextSceneName);
+						SceneManager::getInstance()->SetActiveScene(nextSceneName);
 						break;
 					default:
 						cout << "Error in selection\n";
@@ -389,7 +389,7 @@ void SceneMenu::render()
 
 
 
-	ParticleManager::GetInstance()->render();
+	ParticleManager::getInstance()->render();
 
 }
 

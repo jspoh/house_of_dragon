@@ -60,7 +60,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     AEInputShowCursor(1);
     
     //load & Initialise Game System
-    GameManager& Game = GameManager::GetInstance();
+    GameManager& Game = GameManager::getInstance();
     Game.init();
     
     // Game System Loop
@@ -72,7 +72,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     	AEGfxSetRenderMode(AE_GFX_RM_NONE);  // MUST BE CALLED AT LEAST ONCE PER FRAME
     	
     	//Update & Render Game System
-    	Game.Run();
+    	Game.run();
     
     	// Informing the system about the loop's end
     	AESysFrameEnd();

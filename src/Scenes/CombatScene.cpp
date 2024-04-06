@@ -349,12 +349,12 @@ namespace {
 		//main menu
 		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+				SceneManager::getInstance()->SetActiveScene("SceneMenu");
 			}
 		}
 		if (CollisionChecker::isMouseInRect(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
 			if (AEInputCheckTriggered(AEVK_LBUTTON)) {
-				SceneManager::GetInstance()->restartScene();
+				SceneManager::getInstance()->restartScene();
 			}
 		}
 	}
@@ -879,10 +879,10 @@ void CombatScene::update(double dt)
 				e->attack(*player, multiplier);
 				CombatManager::getInstance().next();
 
-				GameObject_Projectiles* np = Create::Projectiles();
+				GameObject_Projectiles* np = Create::projectiles();
 				//cout << "Projectile pos: " << e->getWorldPos().x << ", " << e->getWorldPos().y << "\n";
 				projectiles.push_back(np);
-				np->FireAtPlayer(e->getWorldPos(), e->getSize(), static_cast<GameObject_Projectiles::ProjectileType>(rand() % GameObject_Projectiles::ProjectileType::NUM_PROJECTILE_TYPES));
+				np->fireAtPlayer(e->getWorldPos(), e->getSize(), static_cast<GameObject_Projectiles::ProjectileType>(rand() % GameObject_Projectiles::ProjectileType::NUM_PROJECTILE_TYPES));
 			}
 		}
 

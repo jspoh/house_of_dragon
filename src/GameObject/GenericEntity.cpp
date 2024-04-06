@@ -57,6 +57,6 @@ GenericEntity* Create::Entity(const std::string& _meshName,
 	result->m_LocalPos = _position;
 	result->m_Scale = _scale;
 	//result->bool m_bCollider(false);
-	GameObjectManager::GetInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->AddEntity(result);
 	return result;
 }

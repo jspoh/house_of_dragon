@@ -41,10 +41,10 @@ void Pause::update([[maybe_unused]] double dt) {
     if (AEInputCheckTriggered(PAUSE_KEY)) {
         isPaused = !isPaused;
         if (isPaused) {
-            SoundManager::GetInstance()->pauseGroup(false);
+            SoundManager::getInstance()->pauseGroup(false);
         }
         else {
-            SoundManager::GetInstance()->resumeGroup(false);
+            SoundManager::getInstance()->resumeGroup(false);
         }
     }
 
@@ -75,12 +75,12 @@ void Pause::update([[maybe_unused]] double dt) {
                             // !TODO: call state or get scenelevelbuilder to restart combatscene
                             //SceneManager::GetInstance()->SetActiveScene("SceneMenu");
                             isPaused = false;
-                            SceneManager::GetInstance()->restartScene();
+                            SceneManager::getInstance()->restartScene();
                         }
                         else if (b == "EXIT") {
                             isPaused = false;
                             AEGfxSetCamPosition(0, 0);
-                            SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+                            SceneManager::getInstance()->SetActiveScene("SceneMenu");
                         }
                         isConfirming = false;
                     }

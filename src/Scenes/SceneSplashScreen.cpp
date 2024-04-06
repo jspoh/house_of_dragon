@@ -17,7 +17,7 @@ Technology is prohibited.
 #include "Pch.h"
 #include "SceneSplashScreen.h"
 
-SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::GetInstance());
+SceneSplashScreen* SceneSplashScreen::sInstance = new SceneSplashScreen(SceneManager::getInstance());
 
 SceneSplashScreen::SceneSplashScreen() 
 	: m_Mesh(nullptr),
@@ -93,7 +93,7 @@ void SceneSplashScreen::update(double dt)
 	{
 		if (m_LogoIndex >= NUMOFSPLASHES * 2 - 1)
 		{
-			SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+			SceneManager::getInstance()->SetActiveScene("SceneMenu");
 			return;
 		}
 		m_LogoTimer = LogoMaxTime;

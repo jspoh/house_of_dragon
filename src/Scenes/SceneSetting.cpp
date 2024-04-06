@@ -36,7 +36,7 @@ enum class MOD_STATES {
 };
 
 
-SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::GetInstance());
+SceneSetting* SceneSetting::sInstance = new SceneSetting(SceneManager::getInstance());
 
 SceneSetting::SceneSetting(SceneManager* _sceneMgr)
 {
@@ -75,7 +75,7 @@ void SceneSetting::load()
  */
 void SceneSetting::init()
 {
-	ParticleManager::GetInstance()->init();
+	ParticleManager::getInstance()->init();
 
 	const int btnIndex = static_cast<int>(difficulty);
 
@@ -120,25 +120,25 @@ void SceneSetting::update(double dt)
 	{
 		if (p1.x < wMouseX && p1.y > wMouseY && p2.x > wMouseX && p2.y < wMouseY)
 		{
-			SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+			SceneManager::getInstance()->SetActiveScene("SceneMenu");
 		}
 	}
 
 
 	//if "Escape" button triggered, go to menu state
 	if (AEInputCheckTriggered(AEVK_Q))
-		SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+		SceneManager::getInstance()->SetActiveScene("SceneMenu");
 
 	int mX, mY;
 	AEInputGetCursorPosition(&mX, &mY);
 
-	ParticleManager::GetInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
-	ParticleManager::GetInstance()->update(dt);
+	ParticleManager::getInstance()->setParticlePos(static_cast<float>(mX), static_cast<float>(mY));
+	ParticleManager::getInstance()->update(dt);
 
 	/* update slider position */
 
 	// get updated volume values
-	SoundManager::GetInstance()->getVolume(sfxVolume, musicVolume);
+	SoundManager::getInstance()->getVolume(sfxVolume, musicVolume);
 
 	const float sliderRadius = max(sliderScale.x, sliderScale.y);
 
@@ -168,8 +168,8 @@ void SceneSetting::update(double dt)
 	soundSliderPos.x = minX + sfxVolume * soundBarScale.x;
 	musicSliderPos.x = minX + musicVolume * soundBarScale.x;
 
-	SoundManager::GetInstance()->setVolume(sfxVolume, false);
-	SoundManager::GetInstance()->setVolume(musicVolume, true);
+	SoundManager::getInstance()->setVolume(sfxVolume, false);
+	SoundManager::getInstance()->setVolume(musicVolume, true);
 
 	soundSliderPos.x = AEClamp(soundSliderPos.x, minX, maxX);
 
@@ -248,7 +248,7 @@ void SceneSetting::render()
 	RenderHelper::getInstance()->texture("back", myBackButton.backButtonX, myBackButton.backButtonY, myBackButton.backButtonWidth, myBackButton.backButtonHeight);
 
 
-	ParticleManager::GetInstance()->render();
+	ParticleManager::getInstance()->render();
 
 }
 

@@ -46,7 +46,7 @@ void GameManager::init()
 	//load Textures
 
 	//Init Scene Manager
-	SceneManager::GetInstance()->SetActiveScene("SceneSplashScreen");
+	SceneManager::getInstance()->SetActiveScene("SceneSplashScreen");
 
 	//Init Sound Manager
 	//SoundManager::GetInstance()->Init();
@@ -58,7 +58,7 @@ void GameManager::init()
 	//t1.detach();
 }
 
-void GameManager::Run()
+void GameManager::run()
 {
 	////Update Current Scene
 	//scene->Update(m_timer.getElapsedTime());
@@ -92,11 +92,11 @@ void GameManager::Run()
 
 	updateGlobals();
 
-	SceneManager::GetInstance()->update((f32)AEFrameRateControllerGetFrameTime());
+	SceneManager::getInstance()->update((f32)AEFrameRateControllerGetFrameTime());
 	//GameObjectManager::GetInstance()->Update(AEGetTime(NULL));
 
 	//Render
-	SceneManager::GetInstance()->render();
+	SceneManager::getInstance()->render();
 	//GameObjectManager::GetInstance()->Render();
 }
 
@@ -104,7 +104,7 @@ void GameManager::exit()
 {
 	////Free Textures
 	////End Scene Manager
-	SceneManager::GetInstance()->exit();
+	SceneManager::getInstance()->exit();
 	////GameObjectManager::GetInstance()->Destroy();
 	////Sound Manager will destroy itself when program ends
 	
@@ -115,7 +115,7 @@ void GameManager::exit()
 	//delete CombatManager::getInstance();
 	//delete Database::getInstance();
 
-	delete ParticleManager::GetInstance();
+	delete ParticleManager::getInstance();
 	delete RenderHelper::getInstance();
 
 	// ensure that player destructor is called

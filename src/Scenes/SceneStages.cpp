@@ -19,7 +19,7 @@ Technology is prohibited.
 
 bool SceneStagesAudio::loopIsPlaying = false;
 
-SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::GetInstance());
+SceneStages* SceneStages::sInstance = new SceneStages(SceneManager::getInstance());
 
 SceneStages::SceneStages() : 
 	m_LevelBuilder(nullptr), 
@@ -138,17 +138,17 @@ void SceneStages::update(double dt)
 	}
 
 	// Update the animation timer.
-	animation_timer += static_cast<float>(dt);
-	if (animation_timer >= animation_duration_per_frame)
+	m_animationTimer += static_cast<float>(dt);
+	if (m_animationTimer >= m_animationDurationPerFrame)
 	{
-		animation_timer = 0;
-		current_sprite_index = ++current_sprite_index % spritesheet_max_sprites;
+		m_animationTimer = 0;
+		m_currentSpriteIndex = ++m_currentSpriteIndex % spritesheet_max_sprites;
 
-		u32 current_sprite_row = current_sprite_index / spritesheet_cols;
-		u32 current_sprite_col = current_sprite_index % spritesheet_cols;
+		u32 current_sprite_row = m_currentSpriteIndex / spritesheet_cols;
+		u32 current_sprite_col = m_currentSpriteIndex % spritesheet_cols;
 
-		current_sprite_uv_offset_x = sprite_uv_width * current_sprite_col;
-		current_sprite_uv_offset_y = sprite_uv_height * current_sprite_row;
+		m_currentSpriteUvOffsetX = sprite_uv_width * current_sprite_col;
+		m_currentSpriteUvOffsetY = sprite_uv_height * current_sprite_row;
 
 	}
 
@@ -202,7 +202,7 @@ void SceneStages::render()
 		AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 		AEGfxSetBlendMode(AE_GFX_BM_BLEND);
 		AEGfxSetTransparency(m_transparency - 0.8f);
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LoadAnimationRoad"), m_currentSpriteUvOffsetX, m_currentSpriteUvOffsetY);
 		AEMtx33Identity(&t_curr);
 		AEMtx33ScaleApply(&t_curr, &t_curr, 1000.0f, 800.0f);
 		AEMtx33TransApply(&t_curr, &t_curr, 0.f, -100.0f);

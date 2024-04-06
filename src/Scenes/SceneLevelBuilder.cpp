@@ -318,10 +318,10 @@ void SceneLevelBuilder::init()
 
 		/////////////////////////////////////////////////////////////
 		//Creating GameObjects
-		Create::MiscEnemy();
+		Create::miscEnemy();
 		for (int i = 0; i < 10; i++)
 		{
-			Create::Projectiles();
+			Create::projectiles();
 		}
 
 		m_CompletionStatus = 98;
@@ -494,9 +494,9 @@ void SceneLevelBuilder::update(double dt)
 				}
 				else {
 					showGameEnd = true;
-					SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+					SceneManager::getInstance()->SetActiveScene("SceneCredits");
 					if (AEInputCheckTriggered(AEVK_SPACE)) {
-						SceneManager::GetInstance()->SetActiveScene("SceneCredits");
+						SceneManager::getInstance()->SetActiveScene("SceneCredits");
 						return;			// terminate this scene state early
 					}
 					return;
@@ -809,7 +809,7 @@ void SceneLevelBuilder::update(double dt)
 		///////////////////////////////////////////////////////////////////////////
 		//UPDATE SCENEOBJs Pos and Logic
 		//////////////////////////////////////////////////////////////////////////
-		GameObjectManager::GetInstance()->update(dt);
+		GameObjectManager::getInstance()->update(dt);
 		v_SceneObject temp;
 		std::pair<int, int> t_TransScaleModifier = { 60, 48 }; //For rand on tile pos
 		static double t_XModifier = 2, t_YModifier = 225, t_MXModifier = 45, t_MYModifier = 1;
@@ -1198,7 +1198,7 @@ void SceneLevelBuilder::render()
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// GAMEOBJ RENDER
-	GameObjectManager::GetInstance()->render();
+	GameObjectManager::getInstance()->render();
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// UI / MISC RENDER PART 2
@@ -1241,8 +1241,8 @@ void SceneLevelBuilder::exit()
 	delete[] m_tileSP;
 
 	//Clear Object in scene
-	GameObjectManager::GetInstance()->exit();
-	GameObjectManager::GetInstance()->Destroy();
+	GameObjectManager::getInstance()->exit();
+	GameObjectManager::getInstance()->Destroy();
 
 	delete[] m_SceneLevelDataList;
 
@@ -1477,7 +1477,7 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 		{
 			if (rand() % 100 < m_SceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 			{
-				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::GetInstance()->FindObjectByReference("MiscEnemy"));
+				m_SceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->FindObjectByReference("MiscEnemy"));
 				m_SceneEnemy->ActivateEnemy(m_Floor[t_CenterFloorNum][m_CurrentTileNumFurthest].m_TransformFloorCurr);
 			}
 		}

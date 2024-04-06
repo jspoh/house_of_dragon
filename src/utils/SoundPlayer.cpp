@@ -36,14 +36,14 @@ void __loadAudio(const std::string& subpath) {
 	if (fs::exists(sfxPath)) {
 		for (const auto& item : fs::directory_iterator(sfxPath)) {
 			std::string filename = item.path().filename().string();
-			SoundManager::GetInstance()->registerAudio(filename, sfxPath + filename);
+			SoundManager::getInstance()->registerAudio(filename, sfxPath + filename);
 		}
 	}
 
 	if (fs::exists(musicPath)) {
 		for (const auto& item : fs::directory_iterator(musicPath)) {
 			std::string filename = item.path().filename().string();
-			SoundManager::GetInstance()->registerAudio(filename, musicPath + filename, true);
+			SoundManager::getInstance()->registerAudio(filename, musicPath + filename, true);
 		}
 	}
 }
@@ -58,7 +58,7 @@ SoundPlayer::~SoundPlayer() {
 }
 
 void SoundPlayer::stopAll() {
-	SoundManager::GetInstance()->stopAll();
+	SoundManager::getInstance()->stopAll();
 }
 
 /* global audio */
@@ -77,7 +77,7 @@ SoundPlayer::GlobalAudio& SoundPlayer::GlobalAudio::getInstance() {
 }
 
 void SoundPlayer::GlobalAudio::playSfxClick() {
-	SoundManager::GetInstance()->playAudio("click_0.wav");
+	SoundManager::getInstance()->playAudio("click_0.wav");
 }
 
 
@@ -97,11 +97,11 @@ SoundPlayer::MenuAudio& SoundPlayer::MenuAudio::getInstance() {
 }
 
 void SoundPlayer::MenuAudio::playLoopMenu() {
-	SoundManager::GetInstance()->playAudio("menu_0.wav", 1, -1, true);
+	SoundManager::getInstance()->playAudio("menu_0.wav", 1, -1, true);
 }
 
 void SoundPlayer::MenuAudio::playLoopLevelSelect() {
-	SoundManager::GetInstance()->playAudio("level_select_0.wav", 1, -1, true);
+	SoundManager::getInstance()->playAudio("level_select_0.wav", 1, -1, true);
 }
 
 
@@ -121,8 +121,8 @@ SoundPlayer::GameAudio& SoundPlayer::GameAudio::getInstance() {
 }
 
 void SoundPlayer::GameAudio::playLoop() {
-	SoundManager::GetInstance()->playAudio("footsteps_fast_0.wav", 1, -1, false);
-	SoundManager::GetInstance()->playAudio("movement_0.wav", 0.1f, -1, true);
+	SoundManager::getInstance()->playAudio("footsteps_fast_0.wav", 1, -1, false);
+	SoundManager::getInstance()->playAudio("movement_0.wav", 0.1f, -1, true);
 }
 
 
@@ -182,15 +182,15 @@ SoundPlayer::CombatAudio& SoundPlayer::CombatAudio::getInstance() {
 
 void SoundPlayer::CombatAudio::playLoop() {
 	int randNum = rand() % NUM_BATTLE_LOOPS;
-	SoundManager::GetInstance()->playAudio(battleLoopRefs[randNum], 1, -1, true);
+	SoundManager::getInstance()->playAudio(battleLoopRefs[randNum], 1, -1, true);
 }
 
 void SoundPlayer::CombatAudio::playSfxVictory() {
-	SoundManager::GetInstance()->playAudio("victory_0.wav");
+	SoundManager::getInstance()->playAudio("victory_0.wav");
 }
 
 void SoundPlayer::CombatAudio::playSfxDeath() {
-	SoundManager::GetInstance()->playAudio("death_0.wav");
+	SoundManager::getInstance()->playAudio("death_0.wav");
 }
 
 void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
@@ -211,42 +211,42 @@ void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
 	std::stringstream soundRef;
 	soundRef << "animal_" << prefix << "_" << randSoundIdx << ".wav";
 
-	SoundManager::GetInstance()->playAudio(soundRef.str());
+	SoundManager::getInstance()->playAudio(soundRef.str());
 }
 
 void SoundPlayer::CombatAudio::playSfxHealth() {
-	SoundManager::GetInstance()->playAudio("health_restore_0.wav");
+	SoundManager::getInstance()->playAudio("health_restore_0.wav");
 }
 
 void SoundPlayer::CombatAudio::playSfxHeartbeat() {
-	SoundManager::GetInstance()->playAudio("heartbeat_0.wav");
+	SoundManager::getInstance()->playAudio("heartbeat_0.wav");
 }
 
 void SoundPlayer::CombatAudio::playSfxHurt() {
 	int randNum = rand() % NUM_HURT_SFX;
-	SoundManager::GetInstance()->playAudio(hurtSfxRefs[randNum]);
+	SoundManager::getInstance()->playAudio(hurtSfxRefs[randNum]);
 }
 
 void SoundPlayer::CombatAudio::playSfxKnife() {
 	int randNum = rand() % NUM_KNIFE_SFX;
-	SoundManager::GetInstance()->playAudio(knifeSfxRefs[randNum]);
+	SoundManager::getInstance()->playAudio(knifeSfxRefs[randNum]);
 }
 
 void SoundPlayer::CombatAudio::playSfxPowerup() {
-	SoundManager::GetInstance()->playAudio("powerup_0.wav");
+	SoundManager::getInstance()->playAudio("powerup_0.wav");
 }
 
 void SoundPlayer::CombatAudio::playSfxPunch() {
 	int randNum = rand() % NUM_PUNCH_SFX;
-	SoundManager::GetInstance()->playAudio(punchSfxRefs[randNum]);
+	SoundManager::getInstance()->playAudio(punchSfxRefs[randNum]);
 }
 
 void SoundPlayer::CombatAudio::playSfxInvalid() {
-	SoundManager::GetInstance()->playAudio("invalid_0.wav");
+	SoundManager::getInstance()->playAudio("invalid_0.wav");
 }
 
 void SoundPlayer::CombatAudio::playSfxElement(Element element) {
 	std::string el = ElementProperties::getElementName(element);
 	std::transform(el.begin(), el.end(), el.begin(), [](char c) { return std::tolower(c); });
-	SoundManager::GetInstance()->playAudio(el + "_0.wav");
+	SoundManager::getInstance()->playAudio(el + "_0.wav");
 }

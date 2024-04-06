@@ -29,13 +29,13 @@ Technology is prohibited.
 class GameManager
 {
 public:
-	static GameManager& GetInstance()
+	static GameManager& getInstance()
 	{
 		static GameManager game;
 		return game;
 	}
 	void init();
-	void Run();
+	void run();
 	void exit();
 private:
 	GameManager();

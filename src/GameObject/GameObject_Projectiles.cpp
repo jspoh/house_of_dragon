@@ -25,29 +25,29 @@ GameObject_Projectiles::GameObject_Projectiles() :
 {
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFFFFFF, 0.0f, FireBall_sprite_uv_height, // bottom left
-		0.5f, -0.5f, 0xFFFFFFFF, FireBall_sprite_uv_width, FireBall_sprite_uv_height, // bottom right 
+		-0.5f, -0.5f, 0xFFFFFFFF, 0.0f, m_FIREBALL_SPRITE_UV_HEIGHT, // bottom left
+		0.5f, -0.5f, 0xFFFFFFFF, m_FIREBALL_SPRITE_UV_WIDTH, m_FIREBALL_SPRITE_UV_HEIGHT, // bottom right 
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);  // top left
 
 	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, FireBall_sprite_uv_width, FireBall_sprite_uv_height, // bottom right 
-		0.5f, 0.5f, 0xFFFFFFFF, FireBall_sprite_uv_width, 0.0f,   // top right
+		0.5f, -0.5f, 0xFFFFFFFF, m_FIREBALL_SPRITE_UV_WIDTH, m_FIREBALL_SPRITE_UV_HEIGHT, // bottom right 
+		0.5f, 0.5f, 0xFFFFFFFF, m_FIREBALL_SPRITE_UV_WIDTH, 0.0f,   // top right
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);  // bottom left
 	// Saving the mesh (list of triangles) in pMesh
-	pFireBallMesh = AEGfxMeshEnd();
+	m_pFireBallMesh = AEGfxMeshEnd();
 
 
 	AEGfxMeshStart();
 	AEGfxTriAdd(
-		-0.5f, -0.5f, 0xFFFFFFFF, 0.0f, EnergyBall_sprite_uv_height, // bottom left
-		0.5f, -0.5f, 0xFFFFFFFF, EnergyBall_sprite_uv_width, EnergyBall_sprite_uv_height, // bottom right 
+		-0.5f, -0.5f, 0xFFFFFFFF, 0.0f, m_ENERGYBALL_SPRITE_UV_HEIGHT, // bottom left
+		0.5f, -0.5f, 0xFFFFFFFF, m_ENERGYBALL_SPRITE_UV_WIDTH, m_ENERGYBALL_SPRITE_UV_HEIGHT, // bottom right 
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);  // top left
 
 	AEGfxTriAdd(
-		0.5f, -0.5f, 0xFFFFFFFF, EnergyBall_sprite_uv_width, EnergyBall_sprite_uv_height, // bottom right 
-		0.5f, 0.5f, 0xFFFFFFFF, EnergyBall_sprite_uv_width, 0.0f,   // top right
+		0.5f, -0.5f, 0xFFFFFFFF, m_ENERGYBALL_SPRITE_UV_WIDTH, m_ENERGYBALL_SPRITE_UV_HEIGHT, // bottom right 
+		0.5f, 0.5f, 0xFFFFFFFF, m_ENERGYBALL_SPRITE_UV_WIDTH, 0.0f,   // top right
 		-0.5f, 0.5f, 0xFFFFFFFF, 0.0f, 0.0f);  // bottom left
-	pEnergyBallMesh = AEGfxMeshEnd();
+	m_pEnergyBallMesh = AEGfxMeshEnd();
 }
 
 GameObject_Projectiles::~GameObject_Projectiles()
@@ -89,35 +89,35 @@ void GameObject_Projectiles::update(double _dt)
 
 		// Update the animation timer.
 		// animation_timer should go up to animation_duration_per_frame.
-		animation_timer += static_cast<float>(_dt);
-		if (animation_timer >= animation_duration_per_frame)
+		m_animationTimer += static_cast<float>(_dt);
+		if (m_animationTimer >= m_animationDurationPerFrame)
 		{
 			// Reset the timer.
-			animation_timer = 0;
+			m_animationTimer = 0;
 			u32 current_sprite_row, current_sprite_col;
 			switch (m_type)
 			{
 			case P_FireBall_Red:
 			case P_FireBall_Blue:
 			case P_FireBall_Green:
-				current_sprite_index = ++current_sprite_index % FireBall_spritesheet_max_sprites;
+				m_currentSpriteIndex = ++m_currentSpriteIndex % m_FIREBALL_SPRITESHEED_MAX_SPRITES;
 
-				current_sprite_row = current_sprite_index / FireBall_spritesheet_cols;
-				current_sprite_col = current_sprite_index % FireBall_spritesheet_cols;
+				current_sprite_row = m_currentSpriteIndex / m_FIREBALL_SPRITESHEET_COLS;
+				current_sprite_col = m_currentSpriteIndex % m_FIREBALL_SPRITESHEET_COLS;
 
-				current_sprite_uv_offset_x = FireBall_sprite_uv_width * current_sprite_col;
-				current_sprite_uv_offset_y = FireBall_sprite_uv_height * current_sprite_row;
+				m_currentSpriteUvOffsetX = m_FIREBALL_SPRITE_UV_WIDTH * current_sprite_col;
+				m_currentSpriteUvOffsetY = m_FIREBALL_SPRITE_UV_HEIGHT * current_sprite_row;
 				break;
 			case P_EnergyBall_Blue:
 			case P_EnergyBall_Dark:
 			case P_EnergyBall_Green:
-				current_sprite_index = ++current_sprite_index % EnergyBall_spritesheet_max_sprites;
+				m_currentSpriteIndex = ++m_currentSpriteIndex % m_ENERGYBALL_SPRITESHEED_MAX_SPRITES;
 
-				current_sprite_row = current_sprite_index / EnergyBall_spritesheet_cols;
-				current_sprite_col = current_sprite_index % EnergyBall_spritesheet_cols;
+				current_sprite_row = m_currentSpriteIndex / m_ENERGYBALL_SPRITESHEED_COLS;
+				current_sprite_col = m_currentSpriteIndex % m_ENERGYBALL_SPRITESHEED_COLS;
 
-				current_sprite_uv_offset_x = EnergyBall_sprite_uv_width * current_sprite_col;
-				current_sprite_uv_offset_y = EnergyBall_sprite_uv_height * current_sprite_row;
+				m_currentSpriteUvOffsetX = m_ENERGYBALL_SPRITE_UV_WIDTH * current_sprite_col;
+				m_currentSpriteUvOffsetY = m_ENERGYBALL_SPRITE_UV_HEIGHT * current_sprite_row;
 				break;
 			}
 		}
@@ -158,8 +158,8 @@ void GameObject_Projectiles::render()
 			AEGfxSetColorToMultiply(0.0f, 1.0f, 0.0f, 1.0f);
 			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 		RENDERFIREBALL:
-			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FIREBALL"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
-			AEGfxMeshDraw(pFireBallMesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("FIREBALL"), m_currentSpriteUvOffsetX, m_currentSpriteUvOffsetY);
+			AEGfxMeshDraw(m_pFireBallMesh, AE_GFX_MDM_TRIANGLES);
 			break;
 		case P_EnergyBall_Blue: goto RENDERENERGY; break;
 		case P_EnergyBall_Dark: goto RENDERENERGY; break;
@@ -167,8 +167,8 @@ void GameObject_Projectiles::render()
 			AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
 			AEGfxSetColorToAdd(0.0f, 0.0f, 0.0f, 0.0f);
 		RENDERENERGY:
-			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("ENERGYBALL"), current_sprite_uv_offset_x, current_sprite_uv_offset_y);
-			AEGfxMeshDraw(pEnergyBallMesh, AE_GFX_MDM_TRIANGLES);
+			AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("ENERGYBALL"), m_currentSpriteUvOffsetX, m_currentSpriteUvOffsetY);
+			AEGfxMeshDraw(m_pEnergyBallMesh, AE_GFX_MDM_TRIANGLES);
 			break;
 		}
 
@@ -181,11 +181,11 @@ void GameObject_Projectiles::render()
 
 void GameObject_Projectiles::exit()
 {
-	AEGfxMeshFree(pFireBallMesh);
-	AEGfxMeshFree(pEnergyBallMesh);
+	AEGfxMeshFree(m_pFireBallMesh);
+	AEGfxMeshFree(m_pEnergyBallMesh);
 }
 
-void GameObject_Projectiles::FireAtPlayer(const AEVec2& _startpos, 
+void GameObject_Projectiles::fireAtPlayer(const AEVec2& _startpos, 
 	const AEVec2& _startscale, 
 	GameObject_Projectiles::ProjectileType _type,
 	double _speed,
@@ -199,7 +199,7 @@ void GameObject_Projectiles::FireAtPlayer(const AEVec2& _startpos,
 	m_Active = true;
 }
 
-GameObject_Projectiles* Create::Projectiles(const AEVec2& _position, const AEVec2& _scale, GameObject_Projectiles::ProjectileType _type)
+GameObject_Projectiles* Create::projectiles(const AEVec2& _position, const AEVec2& _scale, GameObject_Projectiles::ProjectileType _type)
 {
 	GameObject_Projectiles* result = new GameObject_Projectiles();
 	result->m_LocalPos = _position;
@@ -209,6 +209,6 @@ GameObject_Projectiles* Create::Projectiles(const AEVec2& _position, const AEVec
 	result->m_type = _type;
 	result->init();
 	//result->bool m_bCollider(false);
-	GameObjectManager::GetInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->AddEntity(result);
 	return result;
 }

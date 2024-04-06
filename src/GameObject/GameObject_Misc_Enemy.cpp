@@ -203,7 +203,7 @@ void GameObject_Misc_Enemy::UpdateCombatTransition(double _dt)
 
 }
 
-GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& _scale)
+GameObject_Misc_Enemy* Create::miscEnemy(const AEVec2& _position, const AEVec2& _scale)
 {
 	GameObject_Misc_Enemy* result = new GameObject_Misc_Enemy();
 	result->m_LocalPos = _position;
@@ -212,6 +212,6 @@ GameObject_Misc_Enemy* Create::MiscEnemy(const AEVec2& _position, const AEVec2& 
 	result->m_RefName = "MiscEnemy";
 	result->init();
 	//result->bool m_bCollider(false);
-	GameObjectManager::GetInstance()->AddEntity(result);
+	GameObjectManager::getInstance()->AddEntity(result);
 	return result;
 }

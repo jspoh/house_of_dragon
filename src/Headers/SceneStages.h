@@ -66,11 +66,11 @@ private:
 	const f32 sprite_uv_height = 1.f / spritesheet_rows;
 
 	// (Not so good) hardcoded values about our animation
-	f32 animation_timer = 0.f;
-	f32 animation_duration_per_frame = 0.02f;
-	u32 current_sprite_index = 0; // start from first sprite
-	f32 current_sprite_uv_offset_x = 0.f;
-	f32 current_sprite_uv_offset_y = 0.f;
+	f32 m_animationTimer = 0.f;
+	f32 m_animationDurationPerFrame = 0.02f;
+	u32 m_currentSpriteIndex = 0; // start from first sprite
+	f32 m_currentSpriteUvOffsetX = 0.f;
+	f32 m_currentSpriteUvOffsetY = 0.f;
 
 	// Pointer to Mesh
 	AEGfxVertexList* pMesh = 0;
