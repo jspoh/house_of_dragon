@@ -58,10 +58,8 @@ private:
 	float m_healthRenderTime{ 0 };
 	static constexpr float m_HEALTH_RENDER_TIME_MAX = 1.f;
 
-	float m_renderX{ 0 };
-	float m_renderXprev{ 0 };
-	bool m_hasBeenAttacked{ 0 };
-	bool m_healthIncrease{ 0 };
+	float m_renderX{ 0 };		// variable used to lerp player health transitions
+	float m_renderXprev{ 0 };	// value of player health before lerp
 
 	int m_playerLevel;
 

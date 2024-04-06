@@ -63,9 +63,7 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 	//m_health += m_health * ((m_playerLevel - 1) * levelHealthIncPercentage);
 	m_dmg += m_dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
 
-	m_hasBeenAttacked = false;
-	m_healthIncrease = false;
-	m_renderX = m_health / m_maxHealth;
+	m_renderX = m_health;
 
 	cout << "Player initialized with " << m_health << " health and " << m_dmg << " damage\n";
 
@@ -90,7 +88,6 @@ Player::~Player() {
 }
 
 void Player::playerAttacked() {
-	this->m_hasBeenAttacked = true;
 	this->m_renderXprev = m_renderX;
 	m_healthRenderTime = 0.f;
 
@@ -98,9 +95,6 @@ void Player::playerAttacked() {
 
 
 void Player::healthGain(float healthIncrease) {
-	cout << "error here";
-
-	m_healthIncrease = true;
 	this->m_renderXprev = m_renderX;
 	m_healthRenderTime = 0.f;
 
@@ -127,7 +121,7 @@ void Player::_drawHealth(float screenX, float screenY) {
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 
 	const float widthMultiplier = m_renderX / 100.f;
-	constexpr float HEALTHBAR_WIDTH_MULTIPLIER = 175.f;		// change this to increase/decrease healthbar width
+	constexpr float HEALTHBAR_WIDTH_MULTIPLIER = 170.f;		// change this to increase/decrease healthbar width
 
 	if (this->m_health / m_maxHealth > 0.66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
@@ -171,7 +165,6 @@ void Player::update(double dt) {
 		}
 	}
 	else {
-		this->m_hasBeenAttacked = false;
 		this->m_healthRenderTime = 0.f;
 	}
 
