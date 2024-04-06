@@ -282,7 +282,7 @@ void SceneMenu::update(double dt)
 				AEVec2 p1 = { myMenu.buttonSelectX[i] - myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] + myMenu.buttonHeight / 4.f };
 				AEVec2 p2 = { myMenu.buttonSelectX[i] + myMenu.buttonWidth / 6.f, myMenu.buttonSelectY[i] - myMenu.buttonHeight / 4.f };
 
-				if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my && Database::getInstance().data["levels"][i + 1]["unlocked"])
+				if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my && (Database::getInstance().data["levels"][i + 1]["unlocked"] || DEBUG))
 				{
 					switch (i)
 					{

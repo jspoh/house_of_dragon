@@ -75,7 +75,7 @@ public:
         float buttonSelectWidth, buttonSelectHeight;
         float buttonSelectX[7];
         float buttonSelectY[7];
-        bool hoveringSelect[5];
+        bool hoveringSelect[7];
         float buttonSelectScale[7]; // Add this line
 
         std::string back;

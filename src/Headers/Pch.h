@@ -67,7 +67,7 @@ public:
     ~NullStream() = default;
 
     template <typename T>
-    NullStream& operator<<(T _) {
+    NullStream& operator<<([[maybe_unused]] T _) {
         return *this;
     }
 };
