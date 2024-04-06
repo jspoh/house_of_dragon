@@ -509,8 +509,8 @@ void SceneLevelBuilder::Update(double dt)
 			}
 
 			if (!showGameEnd) {
-				if (CombatManager::getInstance().playerFledLastFight) {
-					CombatManager::getInstance().playerFledLastFight = false;		// reset flag
+				if (CombatManager::getInstance().m_playerFledLastFight) {
+					CombatManager::getInstance().m_playerFledLastFight = false;		// reset flag
 					m_CompletionStatus -= FLEEING_COMPLETION_PENALTY;		// penalize player for fleeing fight
 					m_CompletionStatus = m_CompletionStatus < 0 ? 0 : m_CompletionStatus;
 				}
@@ -640,7 +640,7 @@ void SceneLevelBuilder::Update(double dt)
 			{
 				// check if combat is over and update accordingly
 				bool prevCombatPhaseState = m_CombatPhase;
-				m_CombatPhase = CombatManager::getInstance().isInCombat;
+				m_CombatPhase = CombatManager::getInstance().m_isInCombat;
 
 				// switch combat audio back to game audio
 				if (prevCombatPhaseState && !m_CombatPhase) {

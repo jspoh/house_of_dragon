@@ -38,40 +38,40 @@ namespace {
 
 
 Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg* DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
-	//RenderHelper::getInstance()->registerTexture("shield", "./Assets/Combat_UI/shield.png");
+	//RenderHelper::getInstance()->registerTexture("m_shield", "./Assets/Combat_UI/m_shield.png");
 	//float StartHealth = health;		// what is this for?
-	// set shield properties
-	AEVec2Set(&shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
-	AEVec2Set(&shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
+	// set m_shield properties
+	AEVec2Set(&m_shield.pos, -AEGfxGetWindowWidth() / 2.f, -AEGfxGetWindowHeight() / 2.f * 2.f);
+	AEVec2Set(&m_shield.size, AEGfxGetWindowWidth() * 0.75f, (AEGfxGetWindowWidth() / 2.f) * 2.f);
 
-	AEVec2Set(&shieldInitialPos, shield.pos.x, shield.pos.y);
-	AEVec2Set(&shieldBlockingPos, 0, -AEGfxGetWindowHeight() * 0.8f);
+	AEVec2Set(&m_shieldInitialPos, m_shield.pos.x, m_shield.pos.y);
+	AEVec2Set(&m_shieldBlockingPos, 0, -AEGfxGetWindowHeight() * 0.8f);
 
-	// set vector from shield inital to final position
-	AEVec2Set(&shieldInitialToShieldBlocking_vector, shieldBlockingPos.x - shieldInitialPos.x, shieldBlockingPos.y - shieldInitialPos.y);
-	AEVec2Normalize(&shieldInitialToShieldBlocking_vector, &shieldInitialToShieldBlocking_vector);
+	// set vector from m_shield inital to final position
+	AEVec2Set(&m_shieldInitialToShieldBlockingVector, m_shieldBlockingPos.x - m_shieldInitialPos.x, m_shieldBlockingPos.y - m_shieldInitialPos.y);
+	AEVec2Normalize(&m_shieldInitialToShieldBlockingVector, &m_shieldInitialToShieldBlockingVector);
 
 	// get transition speed
-	float initialFinalDistance = AEVec2Distance(&shieldInitialPos, &shieldBlockingPos);
-	transitionUpSpeed = initialFinalDistance / (shieldUpTransitionTimeMs / 1000.f);
-	transitionDownSpeed = initialFinalDistance / (shieldDownTransitionTimeMs / 1000.f);
+	float initialFinalDistance = AEVec2Distance(&m_shieldInitialPos, &m_shieldBlockingPos);
+	m_transitionUpSpeed = initialFinalDistance / (m_shieldUpTransitionTimeMs / 1000.f);
+	m_transitionDownSpeed = initialFinalDistance / (m_shieldDownTransitionTimeMs / 1000.f);
 
 	// init level
-	playerLevel = Database::getInstance().data["player"]["level"];
+	m_playerLevel = Database::getInstance().data["player"]["level"];
 
 	// increase player damage by percentages
-	//health += health * ((playerLevel - 1) * levelHealthIncPercentage);
-	dmg += dmg * ((playerLevel - 1) * levelDmgIncPercentage);
+	//health += health * ((m_playerLevel - 1) * levelHealthIncPercentage);
+	dmg += dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
 
-	attacked = false;
-	startingHealth = health;
-	AttackedRenderX = health / 80;
+	m_hasAttacked = false;
+	m_startingHealth = health;
+	m_attackedRenderX = health / 80;
 
 	cout << "Player initialized with " << health << " health and " << dmg << " damage\n";
 
 	// init inventory
 	for (const auto& [itemName, qtyHolding] : Database::getInstance().data["player"]["inventory"].items()) {
-		inventory[itemName] = qtyHolding;
+		m_inventory[itemName] = qtyHolding;
 		cout << "Created item in inventory with type " << itemName << " with qty " << Database::getInstance().data["player"]["inventory"][itemName] << "\n";
 	}
 
@@ -79,20 +79,20 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 }
 
 Player::~Player() {
-	//RenderHelper::getInstance()->removeTextureByRef("shield");	// let renderhelper manage
+	//RenderHelper::getInstance()->removeTextureByRef("m_shield");	// let renderhelper manage
 
-	for (const auto& [itemName, itemQty] : inventory) {
+	for (const auto& [itemName, itemQty] : m_inventory) {
 		Database::getInstance().data["player"]["inventory"][itemName] = itemQty;
 	}
 
-	Database::getInstance().data["player"]["level"] = playerLevel;
+	Database::getInstance().data["player"]["level"] = m_playerLevel;
 
 }
 
 void Player::playerAttacked() {
-	this->attacked = true;
-	this->AttackedRenderXprev = AttackedRenderX;
-	healthRenderTime = 0.f;
+	this->m_hasAttacked = true;
+	this->m_attackedRenderXprev = m_attackedRenderX;
+	m_healthRenderTime = 0.f;
 
 }
 
@@ -110,7 +110,7 @@ void Player::healthGain(float healthIncrease) {
 
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Player";
-	std::string level = "  Lv:" + std::to_string(playerLevel);
+	std::string level = "  Lv:" + std::to_string(m_playerLevel);
 	float paddingY = 50;
 	float paddingX = 90;
 	AEVec2 panelPos = stow(screenX, screenY);
@@ -121,24 +121,24 @@ void Player::_drawHealth(float screenX, float screenY) {
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 	if (this->health > 66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
-		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + m_attackedRenderX * 50, panelPos.y + truey + paddingY - 20, m_attackedRenderX * 100, 15);
+		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + m_attackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else if (this->health > 33) {
 		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
-		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + m_attackedRenderX * 50, panelPos.y + truey + paddingY - 20, m_attackedRenderX * 100, 15);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + m_attackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else {
 		RenderHelper::getInstance()->texture("redbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + AttackedRenderX * 50, panelPos.y + truey + paddingY - 20, AttackedRenderX * 100, 15);
-		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + AttackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + m_attackedRenderX * 50, panelPos.y + truey + paddingY - 20, m_attackedRenderX * 100, 15);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + m_attackedRenderX * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 
 	}
 }
 
 void Player::update(double dt) {
-	elapsedTimeMs += static_cast<int>(dt * 1000);
+	m_elapsedTimeMs += static_cast<int>(dt * 1000);
 
 	updateHands(static_cast<float>(dt));
 
@@ -147,66 +147,66 @@ void Player::update(double dt) {
 
 	/* blocking stuff */
 	//HandStateAnimationType;
-	if (this->attacked && this->healthRenderTime < this->healthRenderTimeMax) {
-		healthRenderTime += static_cast<float>(dt);
-		float percenttime = static_cast<float>(healthRenderTime / healthRenderTimeMax);
+	if (this->m_hasAttacked && this->m_healthRenderTime < this->m_healthRenderTimeMax) {
+		m_healthRenderTime += static_cast<float>(dt);
+		float percenttime = static_cast<float>(m_healthRenderTime / m_healthRenderTimeMax);
 		float t = percenttime;
-		if (t > healthRenderTimeMax) {
-			t = healthRenderTimeMax;
+		if (t > m_healthRenderTimeMax) {
+			t = m_healthRenderTimeMax;
 		}
-		this->AttackedRenderX = lerp(this->AttackedRenderXprev, health / 80, t);
+		this->m_attackedRenderX = lerp(this->m_attackedRenderXprev, health / 80, t);
 	}
 	else {
-		this->attacked = false;
-		this->healthRenderTime = 0.f;
+		this->m_hasAttacked = false;
+		this->m_healthRenderTime = 0.f;
 	}
 
 	if (
 		AEInputCheckTriggered(AEVK_SPACE)
-		&& blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING
-		&& CombatManager::getInstance().turn == CombatManager::TURN::ENEMY
+		&& m_blockingState == PLAYER_BLOCKING_STATES::NOT_BLOCKING
+		&& CombatManager::getInstance().m_turn == CombatManager::TURN::ENEMY
 		) {
 		setHandStateAnimationType(HandAnimationType::Block);
 	}
-	//else if (!AEInputCheckCurr(AEVK_SPACE) && blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && blockingState != PLAYER_BLOCKING_STATES::ON_COOLDOWN) {
-	//	elapsedTimeMs = 0;
-	//	blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
+	//else if (!AEInputCheckCurr(AEVK_SPACE) && m_blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && m_blockingState != PLAYER_BLOCKING_STATES::ON_COOLDOWN) {
+	//	m_elapsedTimeMs = 0;
+	//	m_blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
 	//}
 
-	//cout << static_cast<int>(blockingState) << "\n";
+	//cout << static_cast<int>(m_blockingState) << "\n";
 
-	switch (blockingState) {
+	switch (m_blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 		//cout << "Player blocking state: NOT_BLOCKING\n";
-		elapsedTimeMs = 0;
+		m_elapsedTimeMs = 0;
 		break;
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
 		//cout << "Player blocking state: ON_ENTER\n";
-		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
-			blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
-			elapsedTimeMs = 0;
+		if (m_elapsedTimeMs >= m_shieldUpTransitionTimeMs || AEVec2Distance(&m_shield.pos, &m_shieldBlockingPos) <= m_snapThreshold) {
+			m_blockingState = PLAYER_BLOCKING_STATES::ON_UPDATE;
+			m_elapsedTimeMs = 0;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
 		//cout << "Player blocking state: ON_UPDATE\n";
-		if (elapsedTimeMs >= shieldUpTimeMs) {
-			blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
-			elapsedTimeMs = 0;
+		if (m_elapsedTimeMs >= m_shieldUpTimeMs) {
+			m_blockingState = PLAYER_BLOCKING_STATES::ON_EXIT;
+			m_elapsedTimeMs = 0;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
 		//cout << "Player blocking state: ON_EXIT\n";
-		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
-			blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
-			elapsedTimeMs = 0;
+		if (m_elapsedTimeMs >= m_shieldDownTransitionTimeMs || AEVec2Distance(&m_shield.pos, &m_shieldInitialPos) <= m_snapThreshold) {
+			m_blockingState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
+			m_elapsedTimeMs = 0;
 		}
 		break;
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
 		//cout << "Player blocking state: ON_COOLDOWN\n";
-		if (elapsedTimeMs >= timeBeforeNextBlockMs) {
-			elapsedTimeMs = 0;
-			HandStateAnimationType = HandAnimationType::None;
-			blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
+		if (m_elapsedTimeMs >= m_timeBeforeNextBlockMs) {
+			m_elapsedTimeMs = 0;
+			m_HandStateAnimationType = HandAnimationType::None;
+			m_blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
 		}
 		break;
 	}
@@ -224,7 +224,7 @@ void Player::renderHealth(double x, double y) {
 }
 
 void Player::setNextAttackDmgMul(float mul) {
-	dmgMul = mul;
+	m_dmgMul = mul;
 }
 
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
@@ -245,9 +245,9 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 		break;
 	}
 
-	const float effectiveDmgMul = elementMul * qtMultiplier * dmgMul;
+	const float effectiveDmgMul = elementMul * qtMultiplier * m_dmgMul;
 	const float damage = this->dmg * effectiveDmgMul;
-	dmgMul = DEFAULT_DMG_MUL;
+	m_dmgMul = m_DEFAULT_DMG_MUL;
 	target.health -= damage;
 	cout << "Attacking enemy with a total dmg multiplier of " << effectiveDmgMul << " (not inclusive of difficulty)\n";
 	return damage;
@@ -255,15 +255,15 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
 
 void Player::setHandStateAnimationType(HandAnimationType t) {
-	HandStateAnimationType = t;
+	m_HandStateAnimationType = t;
 
-	switch (HandStateAnimationType) {
+	switch (m_HandStateAnimationType) {
 	case HandAnimationType::Block:
-		if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+		if (m_blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
 			break;		// dont allow player to try to trigger block while not not blocking (yes its not not blocking and not just blocking)
 		}
-		elapsedTimeMs = 0;
-		blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
+		m_elapsedTimeMs = 0;
+		m_blockingState = PLAYER_BLOCKING_STATES::ON_ENTER;
 		break;
 	}
 }
@@ -274,7 +274,7 @@ void Player::updateHands(float t_dt)
 	updateGlobals();
 
 	static int mX{}, mY{};
-	switch (HandStateAnimationType)
+	switch (m_HandStateAnimationType)
 	{
 	case HandAnimationType::Punch:
 
@@ -332,7 +332,7 @@ void Player::updateHands(float t_dt)
 			else
 			{
 				t_AnimationFrame = 0;
-				HandStateAnimationType = HandAnimationType::None;
+				m_HandStateAnimationType = HandAnimationType::None;
 			}
 			t_AnimationDuration = 9999.0;
 			if (t_AnimationFrame == 0)
@@ -429,9 +429,9 @@ void Player::_updateBlockingHands() {
 
 	static PLAYER_BLOCKING_STATES prevState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
 
-	//cout << static_cast<int>(blockingState) << ", " << static_cast<int>(prevState) << "\n";
+	//cout << static_cast<int>(m_blockingState) << ", " << static_cast<int>(prevState) << "\n";
 
-	if (blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
+	if (m_blockingState != PLAYER_BLOCKING_STATES::NOT_BLOCKING && prevState == PLAYER_BLOCKING_STATES::NOT_BLOCKING) {
 		LeftSide = rand() % 2 - 1;
 		if (!LeftSide) {
 			AEMtx33Identity(&Hand3PosData.second);
@@ -455,11 +455,11 @@ void Player::_updateBlockingHands() {
 		}
 	}
 
-	//cout << static_cast<int>(blockingState) << "\n";
+	//cout << static_cast<int>(m_blockingState) << "\n";
 	//LeftSide = false;
 
 	if (!LeftSide) //Right Hand Blocking
-		switch (blockingState)
+		switch (m_blockingState)
 		{
 		case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 			//Init
@@ -510,7 +510,7 @@ void Player::_updateBlockingHands() {
 			cout << "ERROR IN BLOCKING ANIMATION\n";
 		}
 	else //Left Hand Blocking
-		switch (blockingState)
+		switch (m_blockingState)
 		{
 		case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 			//Init
@@ -570,7 +570,7 @@ void Player::_updateBlockingHands() {
 			cout << "ERROR IN BLOCKING ANIMATION\n";
 		}
 
-	prevState = blockingState;
+	prevState = m_blockingState;
 }
 
 void Player::_renderHands()
@@ -606,21 +606,21 @@ void Player::_renderHands()
 }
 
 void Player::_updateShield(double dt) {
-	switch (blockingState) {
+	switch (m_blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 		break;
 
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
 		//cout << "Player blocking state: ON_ENTER\n";
-		if (elapsedTimeMs >= shieldUpTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldBlockingPos) <= snapThreshold) {
-			// force shield to go to final pos
-			AEVec2Set(&shield.pos, shieldBlockingPos.x, shieldBlockingPos.y);
+		if (m_elapsedTimeMs >= m_shieldUpTransitionTimeMs || AEVec2Distance(&m_shield.pos, &m_shieldBlockingPos) <= m_snapThreshold) {
+			// force m_shield to go to final pos
+			AEVec2Set(&m_shield.pos, m_shieldBlockingPos.x, m_shieldBlockingPos.y);
 			break;
 		}
 
-		// translate the shield up
-		shield.pos.x += static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionUpSpeed * dt);
-		shield.pos.y += static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionUpSpeed * dt);
+		// translate the m_shield up
+		m_shield.pos.x += static_cast<float>(m_shieldInitialToShieldBlockingVector.x * m_transitionUpSpeed * dt);
+		m_shield.pos.y += static_cast<float>(m_shieldInitialToShieldBlockingVector.y * m_transitionUpSpeed * dt);
 		break;
 
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
@@ -628,14 +628,14 @@ void Player::_updateShield(double dt) {
 
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
 		//cout << "Player blocking state: ON_EXIT\n";
-		if (elapsedTimeMs >= shieldDownTransitionTimeMs || AEVec2Distance(&shield.pos, &shieldInitialPos) <= snapThreshold) {
-			// force shield to go to initial pos
-			AEVec2Set(&shield.pos, shieldInitialPos.x, shieldInitialPos.y);
+		if (m_elapsedTimeMs >= m_shieldDownTransitionTimeMs || AEVec2Distance(&m_shield.pos, &m_shieldInitialPos) <= m_snapThreshold) {
+			// force m_shield to go to initial pos
+			AEVec2Set(&m_shield.pos, m_shieldInitialPos.x, m_shieldInitialPos.y);
 			break;
 		}
 
-		shield.pos.x -= static_cast<float>(shieldInitialToShieldBlocking_vector.x * transitionDownSpeed * dt);
-		shield.pos.y -= static_cast<float>(shieldInitialToShieldBlocking_vector.y * transitionDownSpeed * dt);
+		m_shield.pos.x -= static_cast<float>(m_shieldInitialToShieldBlockingVector.x * m_transitionDownSpeed * dt);
+		m_shield.pos.y -= static_cast<float>(m_shieldInitialToShieldBlockingVector.y * m_transitionDownSpeed * dt);
 		break;
 
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
@@ -644,25 +644,25 @@ void Player::_updateShield(double dt) {
 }
 
 void Player::_renderShield() {
-	switch (blockingState) {
+	switch (m_blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
 	case PLAYER_BLOCKING_STATES::ON_ENTER:
 	case PLAYER_BLOCKING_STATES::ON_UPDATE:
 	case PLAYER_BLOCKING_STATES::ON_EXIT:
 	case PLAYER_BLOCKING_STATES::ON_COOLDOWN:
-		RenderHelper::getInstance()->texture("shield", shield.pos.x + camOffset.x, shield.pos.y + camOffset.y, shield.size.x, shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
+		RenderHelper::getInstance()->texture("shield", m_shield.pos.x + camOffset.x, m_shield.pos.y + camOffset.y, m_shield.size.x, m_shield.size.y, 1, Color{ 0,0,0,0 }, Math::m_PI);
 		break;
 	}
 }
 
 int Player::getLevel() const {
-	return playerLevel;
+	return m_playerLevel;
 }
 
 void Player::resetHealth() {
-	health = startingHealth;
-	AttackedRenderX = health / 80;
-	AttackedRenderXprev = 0;
+	health = m_startingHealth;
+	m_attackedRenderX = health / 80;
+	m_attackedRenderXprev = 0;
 }
 
 void Player::giveXpForEnemyKilled(int enemiesKilled) {
@@ -677,14 +677,14 @@ void Player::giveXpForEnemyKilled(int enemiesKilled) {
 	// level^2 + base
 	//
 	//	so it will get quadratically harder to level up
-	const int xpNeeded = playerLevel * playerLevel + data["player"]["baseXpToLevelUp"];
+	const int xpNeeded = m_playerLevel * m_playerLevel + data["player"]["baseXpToLevelUp"];
 
 	if (data["player"]["currentXp"] >= xpNeeded) {
 		data["player"]["currentXp"] = data["player"]["currentXp"] - xpNeeded;
-		playerLevel++;
-		cout << "Player level up! Current level: " << playerLevel << "\n";
+		m_playerLevel++;
+		cout << "Player level up! Current level: " << m_playerLevel << "\n";
 
 		// update damage
-		dmg += dmg * ((playerLevel - 1) * levelDmgIncPercentage);
+		dmg += dmg * ((m_playerLevel - 1) * m_LEVEL_DAMAGE_INC_PERCENTAGE);
 	}
 }

@@ -81,10 +81,10 @@ void Enemy::render() {
     //AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
 
 
-    // shaking motion when enemy is attacked
+    // shaking motion when enemy is m_hasAttacked
     if(this->attacked){
         if (this->shakeDuration > 0) {
-            // Apply shake effect only when attacked (so smart to use sin fr thats crazy -js)
+            // Apply shake effect only when m_hasAttacked (so smart to use sin fr thats crazy -js)
             float shakeOffset = sin(this->shakeFrequency * this->shakeDuration) * this->shakeAmplitude * this->shakeDuration;
             RenderHelper::getInstance()->texture(this->_textureRef, this->_wpos.x + shakeOffset, this->_wpos.y , this->_size, this->_size);
             this->shakeDuration -= static_cast<float>(AEFrameRateControllerGetFrameTime());

@@ -35,15 +35,15 @@ struct Shield {
 
 class Player : public Mob {
 private:
-	AEVec2 shieldInitialPos{ 0,0 };		// set in constructor
-	AEVec2 shieldBlockingPos{ 0, 0 };
-	AEVec2 shieldInitialToShieldBlocking_vector;		// vector from shield initial pos to final blocking pos
-	float transitionUpSpeed;
-	float transitionDownSpeed;
-	int elapsedTimeMs = 0;
-	static constexpr float snapThreshold = 20.f;		// distance before shield snaps
+	AEVec2 m_shieldInitialPos{ 0,0 };		// set in constructor
+	AEVec2 m_shieldBlockingPos{ 0, 0 };
+	AEVec2 m_shieldInitialToShieldBlockingVector;		// vector from m_shield initial pos to final blocking pos
+	float m_transitionUpSpeed;
+	float m_transitionDownSpeed;
+	int m_elapsedTimeMs = 0;
+	static constexpr float m_snapThreshold = 20.f;		// distance before m_shield snaps
 
-	Shield shield;
+	Shield m_shield;
 
 	void _drawHealth(float screenX, float screenY);
 
@@ -55,22 +55,22 @@ private:
 	void _updateShield(double dt);
 	void _renderShield();
 
-	float startingHealth{ 0 };
-	float healthRenderTime{ 0 };
-	const float healthRenderTimeMax = 0.75f;
+	float m_startingHealth{ 0 };
+	float m_healthRenderTime{ 0 };
+	const float m_healthRenderTimeMax = 0.75f;
 
-	float AttackedRenderX{ 0 };
-	float AttackedRenderXprev{ 0 };
-	bool attacked{ 0 };
+	float m_attackedRenderX{ 0 };
+	float m_attackedRenderXprev{ 0 };
+	bool m_hasAttacked{ 0 };
 
-	int playerLevel;
+	int m_playerLevel;
 
 	// for every level increment, increase dmg by percentage
-	static constexpr float levelDmgIncPercentage = 0.1f;
+	static constexpr float m_LEVEL_DAMAGE_INC_PERCENTAGE = 0.1f;
 
 	// dmgMul is used when player consumes an item that grants a damage boost
-	static constexpr float DEFAULT_DMG_MUL = 1;
-	float dmgMul = DEFAULT_DMG_MUL;
+	static constexpr float m_DEFAULT_DMG_MUL = 1;
+	float m_dmgMul = m_DEFAULT_DMG_MUL;
 
 public:
 	enum class HandAnimationType {
@@ -80,10 +80,10 @@ public:
 		Ready,
 	};
 
-	static constexpr int shieldUpTransitionTimeMs = 100;
-	static constexpr int shieldDownTransitionTimeMs = 300;
-	static constexpr int shieldUpTimeMs = 1000;
-	static constexpr int timeBeforeNextBlockMs = 1000;
+	static constexpr int m_shieldUpTransitionTimeMs = 100;
+	static constexpr int m_shieldDownTransitionTimeMs = 300;
+	static constexpr int m_shieldUpTimeMs = 1000;
+	static constexpr int m_timeBeforeNextBlockMs = 1000;
 
 	/**
 	 * used to trigger hand animations.
@@ -96,16 +96,16 @@ public:
 	Player(float health = 100, float dmg = 10, Element element = Element::NO_ELEMENT);
 	~Player();
 
-	static constexpr int BLOCKING_TIMEOUT_MS = 2000;
-	static constexpr int BLOCKING_DURATION = 2000;
+	static constexpr int m_BLOCKING_TIMEOUT_MS = 2000;
+	static constexpr int m_BLOCKING_DURATION = 2000;
 
-	PLAYER_BLOCKING_STATES blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
+	PLAYER_BLOCKING_STATES m_blockingState = PLAYER_BLOCKING_STATES::NOT_BLOCKING;
 
 	/**
 	 * .
 	 *
 	 * \param target
-	 * \param attackEl element player attacked with
+	 * \param attackEl element player m_hasAttacked with
 	 * \param qtMultiplier quicktime event multiplier
 	 * \return damage dealt
 	 */
@@ -130,7 +130,7 @@ public:
 	void _renderHands();
 	void playerAttacked();
 
-	std::unordered_map<std::string, int> inventory;
+	std::unordered_map<std::string, int> m_inventory;
 
 	int getLevel() const;
 
@@ -139,6 +139,6 @@ public:
 	void giveXpForEnemyKilled(int enemiesKilled = 1);
 
 private:
-	HandAnimationType HandStateAnimationType = HandAnimationType::None; //Can use enum
+	HandAnimationType m_HandStateAnimationType = HandAnimationType::None; //Can use enum
 };
 
