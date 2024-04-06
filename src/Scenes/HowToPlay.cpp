@@ -42,6 +42,13 @@ void HowToPlay::Load() {
     slideshow.images[5] = "image6";
     slideshow.images[6] = "image7";
     slideshow.images[7] = "image8";
+    slideshow.images[8] = "image9";
+    slideshow.images[9] = "image10";
+    slideshow.images[10] = "image11";
+    slideshow.images[11] = "image12";
+
+
+
 
     RenderHelper::getInstance()->registerTexture("menuBg", "Assets/Menu/bg.png");
     RenderHelper::getInstance()->registerTexture("leftButton", "Assets/Menu/leftButton.png");
@@ -55,6 +62,10 @@ void HowToPlay::Load() {
     RenderHelper::getInstance()->registerTexture("image6", "Assets/Menu/06.png");
     RenderHelper::getInstance()->registerTexture("image7", "Assets/Menu/07.png");
     RenderHelper::getInstance()->registerTexture("image8", "Assets/Menu/08.png");
+    RenderHelper::getInstance()->registerTexture("image9", "Assets/Menu/09.png");
+    RenderHelper::getInstance()->registerTexture("image10", "Assets/Menu/10.png");
+    RenderHelper::getInstance()->registerTexture("image11", "Assets/Menu/11.png");
+    RenderHelper::getInstance()->registerTexture("image12", "Assets/Menu/12.png");
 }
 
 void HowToPlay::Init() {
@@ -92,14 +103,14 @@ void HowToPlay::Update(double dt) {
         AEVec2 leftP2 = { slideshow.leftButtonX + slideshow.buttonWidth / 2.0f, slideshow.leftButtonY - slideshow.buttonHeight / 2.0f };
 
         if (leftP1.x < mx && leftP1.y > my && leftP2.x > mx && leftP2.y < my) {
-            slideshow.currentImageIndex = (slideshow.currentImageIndex - 1 + 8) % 8;
+            slideshow.currentImageIndex = (slideshow.currentImageIndex - 1 + 12) % 12;
         }
 
         AEVec2 rightP1 = { slideshow.rightButtonX - slideshow.buttonWidth / 2.0f, slideshow.rightButtonY + slideshow.buttonHeight / 2.0f };
         AEVec2 rightP2 = { slideshow.rightButtonX + slideshow.buttonWidth / 2.0f, slideshow.rightButtonY - slideshow.buttonHeight / 2.0f };
 
         if (rightP1.x < mx && rightP1.y > my && rightP2.x > mx && rightP2.y < my) {
-            slideshow.currentImageIndex = (slideshow.currentImageIndex + 1) % 8;
+            slideshow.currentImageIndex = (slideshow.currentImageIndex + 1) % 12;
         }
 
         AEVec2 backP1 = { slideshow.backButtonX - slideshow.buttonWidth / 2.0f, slideshow.backButtonY + slideshow.buttonHeight / 2.0f };
