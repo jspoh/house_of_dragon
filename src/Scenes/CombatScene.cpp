@@ -332,7 +332,6 @@ namespace {
 					RenderHelper::getInstance()->texture("button", btnPos.x + camOffset.x, panelfinalY + camOffset.y - btnDecreaseY + btnIncreaseY, btnWidth, btnHeight + btnWordPadding, 1, Color{ 0,0,0,0 }, 0, itemUsedSinceLastAttack && bv == "ITEMS" ? Color{ 0.5f,0.5f,0.5f,1 } : Color{ 1,1,1,1 });
 				}
 
-				//RenderHelper::getInstance()->rect(btnPos.x + camOffset.x, btnPos.y + camOffset.y, btnWidth, btnHeight, 0, Color{ 0.5f, 0.5f, 0.5f, 1.f });  // render normal when no hovering
 			}
 			if (currentState != ACTION_BTNS::ITEMS || lower(bv) == lower("back")) {
 				RenderHelper::getInstance()->text(bv, bPosX, btnText.y + btnDecreaseY - btnIncreaseY);
@@ -368,7 +367,7 @@ namespace {
 		RenderHelper::getInstance()->texture("button", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
 		RenderHelper::getInstance()->texture("button", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd, deathbtnHeightEnd);
 		RenderHelper::getInstance()->texture("mainMenu", trueCoordinatesMenu.x + camOffset.x, trueCoordinatesMenu.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
-		RenderHelper::getInstance()->texture("respawn", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
+		RenderHelper::getInstance()->texture("restart", trueCoordinatesRespawn.x + camOffset.x, trueCoordinatesRespawn.y + camOffset.y, deathBtnWidthEnd / 2, deathbtnHeightEnd / 2);
 
 
 
@@ -463,7 +462,7 @@ void CombatScene::Load()
 	// textures for when player is dead load
 	RenderHelper::getInstance()->registerTexture("playerdead", "./Assets/Combat_UI/playerdeadscreen.png");
 	RenderHelper::getInstance()->registerTexture("button", "./Assets/Combat_UI/Button.png");
-	RenderHelper::getInstance()->registerTexture("respawn", "./Assets/Combat_UI/respawn.png");
+	RenderHelper::getInstance()->registerTexture("restart", "./Assets/Combat_UI/restart.png");
 	RenderHelper::getInstance()->registerTexture("mainMenu", "./Assets/Combat_UI/MainMenu.png");
 
 	// textures for when player wins the combat load
@@ -499,14 +498,16 @@ void CombatScene::Load()
 	RenderHelper::getInstance()->registerTexture("wood", "./Assets/Combat_UI/wood.png");
 
 	// enemies name load
-	// !TODO: kuek, missing bull (might have more, im not sure, currently json only have 10(?) animals)
 	RenderHelper::getInstance()->registerTexture("pigname", "./Assets/Combat_UI/pig.png");
 	RenderHelper::getInstance()->registerTexture("goatname", "./Assets/Combat_UI/goat.png");
 	RenderHelper::getInstance()->registerTexture("chickenname", "./Assets/Combat_UI/chicken.png");
 	RenderHelper::getInstance()->registerTexture("dragonname", "./Assets/Combat_UI/dragon.png");
-	RenderHelper::getInstance()->registerTexture("cowname", "./Assets/Combat_UI/cow.png");
+	RenderHelper::getInstance()->registerTexture("bullname", "./Assets/Combat_UI/bull.png");
 	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
 	RenderHelper::getInstance()->registerTexture("snakename", "./Assets/Combat_UI/snake.png");
+	RenderHelper::getInstance()->registerTexture("horsename", "./Assets/Combat_UI/horse.png");
+	RenderHelper::getInstance()->registerTexture("rabbitname", "./Assets/Combat_UI/horse.png");
+
 
 	//enemy panel  for information load 
 	RenderHelper::getInstance()->registerTexture("enemyPanel", "./Assets/Combat_UI/enemyPanel.png");
@@ -633,8 +634,6 @@ void CombatScene::Update(double dt)
 		projectiles.erase(projectiles.begin() + i);
 	}
 
-	// !TODO: kuek im not really sure what this is for/about, but i have shrank the scope of this conditional statement -js
-	// this is a temp workaround - js
 	//reset dialogue state after enough time pass
 	if (dialogueState != DIALOGUE::NONE) {
 		if (dialougeTime < dialogueMaxTime) {
@@ -661,8 +660,7 @@ void CombatScene::Update(double dt)
 
 	// player death flag set 
 	if (!playerAlive) {
-		// !TODO: kuek no need to `== true` lol, is already a boolean value but not a big deal
-		if (extraflagtest == true) {
+		if (extraflagtest) {
 			extraflagtest = false;
 			panelflag = true;
 			currentTime = 0.0f; // Reset the time for sliding animation
@@ -676,7 +674,7 @@ void CombatScene::Update(double dt)
 
 	// player death flag set 
 	if (!playerAlive) {
-		if (extraflagtest == true) {
+		if (extraflagtest) {
 			extraflagtest = false;
 			panelflag = true;
 			currentTime = 0.0f; // Reset the time for sliding animation
@@ -946,8 +944,6 @@ void CombatScene::Render()
 		// render enemies
 		for (Enemy* enemy : groups.enemies) { // check for dead/alive
 			if (enemy->isDead()) {
-				// !TODO: kuek is this still used? 
-				RenderHelper::getInstance()->text("Enemy is dead", AEGfxGetWindowWidth() / 2.f, AEGfxGetWindowHeight() / 2.f); // need to adapt to pointer to the pos
 				deadEnemies.push_back(i);
 			}
 			enemy->render();
@@ -956,8 +952,8 @@ void CombatScene::Render()
 
 		// rendering health when player active in the game and dont playing an event
 		if (!CombatManager::getInstance().isPlayingEvent) {
-			// !TODO: kuek no magic numbers pls
-			player->renderHealth(150, 150);
+			constexpr float screenLength = 150.f;
+			player->renderHealth(screenLength, screenLength);
 		}
 
 		// player interact ui

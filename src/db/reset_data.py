@@ -69,13 +69,13 @@ def constructData() -> dict:
             },
             "goat": {
                 "texturePath": "./Assets/Combat_Enemy/goat.png",
-                "element": "earth",
+                "element": "wood",
                 "health": 90,
                 "damage": 25
             },
             "rabbit": {
                 "texturePath": "./Assets/Combat_Enemy/rabbit.png",
-                "element": "earth",
+                "element": "water",
                 "health": 90,
                 "damage": 25
             },

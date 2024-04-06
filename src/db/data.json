@@ -51,13 +51,13 @@
     },
     "goat": {
       "texturePath": "./Assets/Combat_Enemy/goat.png",
-      "element": "earth",
+      "element": "wood",
       "health": 90,
       "damage": 25
     },
     "rabbit": {
       "texturePath": "./Assets/Combat_Enemy/rabbit.png",
-      "element": "earth",
+      "element": "water",
       "health": 90,
       "damage": 25
     },
@@ -105,8 +105,8 @@
       "maxSceneOBJperTile": 2,
       "enemySpawnWeight": [
         {
-          "bull": 1,
-          "chicken": 5
+          "cat": 2,
+          "dragon": 1
         }
       ],
       "SceneOBJSpawnWeight": [
@@ -128,8 +128,8 @@
       "maxSceneOBJperTile": 4,
       "enemySpawnWeight": [
         {
-          "bull": 1,
-          "chicken": 5
+          "dragon": 2,
+          "snake": 3
         }
       ],
       "SceneOBJSpawnWeight": [

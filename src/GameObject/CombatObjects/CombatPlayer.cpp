@@ -61,8 +61,6 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 	// increase player health by percentages
 	health += health * ((playerLevel - 1) * levelHealthIncPercentage);
 
-	// !TODO: kuek pls document this idk why it is required
-	initialAttack = dmg;
 	attacked = false;
 	startingHealth = health;
 	AttackedRenderX = health / 80;
@@ -212,8 +210,6 @@ void Player::update(double dt) {
 
 	//_updateShield(dt);
 	_updateBlockingHands();
-	//cout << "Shield pos: " << shield.pos.x << " | " << shield.pos.y << "\n";
-	//cout << elapsedTimeMs << " / " << shieldTransitionTimeMs << "\n";
 }
 
 void Player::render() {
@@ -230,22 +226,6 @@ void Player::setNextAttackDmgMul(float mul) {
 
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
-	// !TODO: kuek what is this for ah? -js
-	if (this->attackMultiplerTurn > 0) {
-		if (attackMultiplerTurnStart >= this->attackMultiplerTurn) {
-			//item finished its usage
-			attackMultiplerTurn = 0;
-			attackMultiplerTurnStart = 0;
-			this->dmg = initialAttack;
-		}
-		else {
-			if (attackMultiplerTurnStart == 0) {
-				//increase by 25 percent
-				this->dmg = initialAttack * 105.25f;
-			}
-			attackMultiplerTurnStart++;
-		}
-	}
 
 
 	DamageMultiplier dm = ElementProperties::getEffectiveDamage(attackEl, target.element);
@@ -268,11 +248,6 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 	target.health -= damage;
 	cout << "Attacking enemy with a total dmg multiplier of " << effectiveDmgMul << " (not inclusive of difficulty)\n";
 	return damage;
-}
-
-
-void Player::attackMultipler(int turn) {
-	this->attackMultiplerTurn = turn;
 }
 
 
