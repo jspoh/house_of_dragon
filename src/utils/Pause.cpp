@@ -72,12 +72,12 @@ void Pause::update([[maybe_unused]] double dt) {
                     }
                     else if (m_confirmingButton == b) {
                         if (b == "RESTART") {
-                            // !TODO: call state or get scenelevelbuilder to restart combatscene
-                            //SceneManager::GetInstance()->SetActiveScene("SceneMenu");
+                            SoundManager::getInstance()->resumeGroup(false);
                             m_isPaused = false;
                             SceneManager::getInstance()->restartScene();
                         }
                         else if (b == "EXIT") {
+                            SoundManager::getInstance()->resumeGroup(false);
                             m_isPaused = false;
                             AEGfxSetCamPosition(0, 0);
                             SceneManager::getInstance()->SetActiveScene("SceneMenu");
@@ -88,6 +88,7 @@ void Pause::update([[maybe_unused]] double dt) {
                 else {
                     if (b == "RESUME") {
                         m_isPaused = false;
+                        SoundManager::getInstance()->resumeGroup(false);
                     }
                     else if (b == "HOWTOPLAY") {
                         HowToPlay::getInstance().m_isActive = true;
