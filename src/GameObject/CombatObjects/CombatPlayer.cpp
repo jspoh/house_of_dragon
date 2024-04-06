@@ -110,7 +110,7 @@ void Player::healthGain(float healthIncrease) {
 
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Player";
-	std::string level = "  Lv: " + std::to_string(playerLevel);
+	std::string level = "  Lv:" + std::to_string(playerLevel);
 	float paddingY = 50;
 	float paddingX = 90;
 	AEVec2 panelPos = stow(screenX, screenY);
