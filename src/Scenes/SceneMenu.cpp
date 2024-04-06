@@ -304,6 +304,9 @@ void SceneMenu::update(double dt)
 					}
 					m_SelectedLevel = i;
 				}
+				else if (p1.x < mx && p1.y > my && p2.x > mx && p2.y < my && !Database::getInstance().data["levels"][i + 1]["unlocked"]){
+					SoundPlayer::CombatAudio::getInstance().playSfxInvalid();
+				}
 			}
 
 			// Check if the back button is clicked

@@ -182,7 +182,7 @@ SoundPlayer::CombatAudio& SoundPlayer::CombatAudio::getInstance() {
 
 void SoundPlayer::CombatAudio::playLoop() {
 	int randNum = rand() % m_NUM_BATTLE_LOOPS;
-	SoundManager::getInstance()->playAudio(m_battleLoopRefs[randNum], 1, -1, true);
+	SoundManager::getInstance()->playAudio(m_battleLoopRefs[randNum], 0.5f, -1, true);
 }
 
 void SoundPlayer::CombatAudio::playSfxVictory() {

@@ -186,6 +186,9 @@ namespace {
 							if (!(itemUsedSinceLastAttack && bv == "ITEMS")) {
 								currentState = stateMap.find(bv)->second;
 							}
+							else {
+								SoundPlayer::CombatAudio::getInstance().playSfxInvalid();
+							}
 						}
 						else if (bv == "BACK" || bv == "NO") {
 							currentState = ACTION_BTNS::MAIN;
@@ -248,6 +251,12 @@ namespace {
 								}
 								cout << bv << " eaten\n";
 								cout << "Player recovered " << healthInc << " health and was granted " << dmgMul << "x damage multiplier\n";
+								if (dmgMul) {
+									SoundPlayer::CombatAudio::getInstance().playSfxPowerup();
+								}
+								else if (healthInc) {
+									SoundPlayer::CombatAudio::getInstance().playSfxHealth();
+								}
 
 								if (player->m_inventory[lower(bv)] <= 0) {
 									cerr << "Player just ate something that he does not have!\n";
@@ -263,6 +272,7 @@ namespace {
 							else {
 								cout << "Does not have any of " << bv << " in m_inventory\n";
 								//currentState = ACTION_BTNS::MAIN;
+								SoundPlayer::CombatAudio::getInstance().playSfxInvalid();
 							}
 						}
 					}
@@ -875,7 +885,8 @@ void CombatScene::update(double dt)
 
 				Enemy* e = groups.enemies[randEnemyIndex];
 
-				SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
+				//SoundPlayer::CombatAudio::getInstance().playSfxAnimal(e->getTextureRef());
+				SoundPlayer::CombatAudio::getInstance().playSfxHurt();
 				e->attack(*player, multiplier);
 				CombatManager::getInstance().next();
 
