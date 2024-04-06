@@ -2,9 +2,7 @@
 /*!
 \file CombatPlayer.h
 \author Poh Jing Seng, jingseng.poh, 2301363
-\author Soh Wei Jie, weijie.soh, 
 \par jingseng.poh\@digipen.edu
-\par weijie.soh\@digipen.edu
 \date 28 feb 2024
 \brief handles player in combat
 /*

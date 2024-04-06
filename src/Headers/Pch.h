@@ -1,9 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file pch.h
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Poh Jing Seng, jingseng.poh, 2301363 (50%, maintaining completed headers, debug config)
 \par jingseng.poh\@digipen.edu
-\author Soh Wei Jie, weijie.soh, 2301289
+\author Soh Wei Jie, weijie.soh, 2301289 (50%, base structure)
 \par weijie.soh\@digipen.edu
 \date Jan 18, 2024
 \brief  This is a precompiled header file.
@@ -51,7 +51,6 @@ Technology is prohibited.
 #include "db.h"
 #include "Event.h"
 #include "CollisionChecker.h"
-#include "Vector3.h"
 #include "SingletonTemplate.h"
 #include "MyMath.h"
 #include "SoundManager.h"

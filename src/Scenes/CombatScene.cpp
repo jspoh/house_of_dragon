@@ -1,9 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file CombatScene.cpp
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Poh Jing Seng, jingseng.poh, 2301363 (50%, prototyping and logic)
 \par jingseng.poh\@digipen.edu
-\author Kuek wei jie, weijie.kuek, 2301325
+\author Kuek wei jie, weijie.kuek, 2301325 (50%, flow and rendering)
 \par weijie.kuek\@digipen.edu
 \date 28 feb 2024
 \brief renders and manages the combat scene

@@ -22,11 +22,13 @@ def constructData() -> dict:
                 "sfx": 1,
                 "music": 1
             },
-            "difficulty": 0
+            "difficulty": 1
         },
         "player": {
             "completedTutorial": True,
-            "xpToNextLevel": 0,
+            "baseXpToLevelUp": 3,
+            "xpPerEnemyKilled": 1,
+            "currentXp": 0,
             "level": 1,
             "inventory": {
                 "bacon": 0,
@@ -123,8 +125,7 @@ def constructData() -> dict:
                 "maxSceneOBJperTile": 2,
                 "enemySpawnWeight": [
                     {
-                        "cat": 2,
-                        "dragon": 1
+                        "pig": 1
                     }
                 ],
                 "SceneOBJSpawnWeight": [
@@ -139,15 +140,15 @@ def constructData() -> dict:
             {
                 "levelName": "Level 1: Plains",
                 "levelCompletionRate": 0.9,
-                "unlocked": False,
+                "unlocked": True,
                 "completed": False,
                 "maxEnemies": 2,
                 "enemySpawnRate": 9,
                 "maxSceneOBJperTile": 4,
                 "enemySpawnWeight": [
                     {
-                        "dragon": 2,
-                        "snake": 3
+                        "horse": 1,
+                        "pig": 1
                     }
                 ],
                 "SceneOBJSpawnWeight": [
@@ -288,7 +289,6 @@ def constructData() -> dict:
             }
         ]
     }
-
     return data
 
 

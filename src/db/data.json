@@ -129,7 +129,8 @@
       "maxSceneOBJperTile": 4,
       "enemySpawnWeight": [
         {
-          "horse": 1
+          "horse": 1,
+          "pig": 1
         }
       ],
       "SceneOBJSpawnWeight": [

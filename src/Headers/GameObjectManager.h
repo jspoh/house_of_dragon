@@ -13,10 +13,7 @@ Technology is prohibited.
 */
 /* End Header **************************************************************************/
 #pragma once
-#ifndef GAMEOBJECT_MANAGER_H
-#define GAMEOBJECT_MANAGER_H
 
-#include "Vector3.h"
 #include "GameObject.h"
 
 #include "GameObject_Misc_Enemy.h"
@@ -47,5 +44,3 @@ private:
 
 	std::list<GameObject*> entityList;
 };
-
-#endif
