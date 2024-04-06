@@ -127,21 +127,22 @@ void Player::_drawHealth(float screenX, float screenY) {
 	RenderHelper::getInstance()->text(name + level, screenX, screenY - 65);
 
 	const float widthMultiplier = m_renderX / 100.f;
+	constexpr float HEALTHBAR_WIDTH_MULTIPLIER = 175.f;		// change this to increase/decrease healthbar width
 
 	if (this->m_health / m_maxHealth > 0.66) {
 		RenderHelper::getInstance()->texture("greenbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * 50, panelPos.y + truey + paddingY - 20, widthMultiplier * 100, 15);
-		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + widthMultiplier * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("greenbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER / 2, panelPos.y + truey + paddingY - 20, widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER, 15);
+		RenderHelper::getInstance()->texture("greenbar2", panelPos.x + truex + widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else if (this->m_health / m_maxHealth > 0.33) {
 		RenderHelper::getInstance()->texture("yellowbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * 50, panelPos.y + truey + paddingY - 20, widthMultiplier * 100, 15);
-		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + widthMultiplier * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("yellowbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER / 2, panelPos.y + truey + paddingY - 20, widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER, 15);
+		RenderHelper::getInstance()->texture("yellowbar2", panelPos.x + truex + widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 	}
 	else {
 		RenderHelper::getInstance()->texture("redbar1", panelPos.x - paddingX + truex, panelPos.y + truey + paddingY - 20, 10, 15); //start point, but coordinates is centralised so need to take account of the widthw
-		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * 50, panelPos.y + truey + paddingY - 20, widthMultiplier * 100, 15);
-		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + widthMultiplier * 100 - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
+		RenderHelper::getInstance()->texture("redbar3", panelPos.x + truex - paddingX + 5 + widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER / 2, panelPos.y + truey + paddingY - 20, widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER, 15);
+		RenderHelper::getInstance()->texture("redbar2", panelPos.x + truex + widthMultiplier * HEALTHBAR_WIDTH_MULTIPLIER - paddingX + 10, panelPos.y + truey + paddingY - 20, 10, 15);
 
 	}
 }
