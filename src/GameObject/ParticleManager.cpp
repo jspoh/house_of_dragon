@@ -1,9 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file ParticleManager.cpp
-\author Yang yujie, yujie.yang, 2301383 (90%, particle logic implementation)
+\author Yang yujie, yujie.yang, 2301383 (80%, particle logic implementation)
 \par yujie.yang\@digipen.edu
-\author Poh Jing Seng, jingseng.poh, 2301363 (10%, bugfixes, structure)
+\author Poh Jing Seng, jingseng.poh, 2301363 (20%, bugfixes, structure)
 \par jingseng.poh\@digipen.edu
 \date 01 Apr 2024
 \brief particle manager implementation

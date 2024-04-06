@@ -22,7 +22,6 @@ Technology is prohibited.
 #include <stdlib.h>
 #include "Pch.h"
 #include "SceneManager.h"
-////#include "../GameObject/GameObjectManager.h"
 #include "CombatManager.h"
 #include "ParticleManager.h"
 

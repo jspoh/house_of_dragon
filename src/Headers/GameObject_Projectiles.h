@@ -15,10 +15,7 @@ Technology is prohibited.
 
 
 #pragma once
-/////////////////////////////////////////////////////////////
-// THIS IS AN EXAMPLE DELETE THIS FOR BETA TEST
-// ///////////////////////////////////////////////////////////
-//Basic Entity in game (COPY THIS TO MAKE YOUR PLAYER ENTITY / ENEMY ENTITIES / ETC)
+
 #include "GameObject.h"
 #include "Pch.h"
 
