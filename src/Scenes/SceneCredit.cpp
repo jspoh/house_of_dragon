@@ -215,17 +215,17 @@ void SceneCredits::render()
 	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.7f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "JASON CHU  SAMIR ABOU SAMRA  MICHELE COMAIR");
+	sprintf_s(strBuffer, "JASON CHU   JOHN BAUER  SAMIR ABOU SAMRA");
 	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.8f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "ANGELA KUGLER  ERIK MOHRMANN");
+	sprintf_s(strBuffer, "RAYMOND YAN  PRASANNA GHALI   MICHELE COMAIR");
 	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.9f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "BENJAMIN ELLINGER  MELVIN GONSALVEZ");
+	sprintf_s(strBuffer, "XIN LI   ANGELA KUGLER MELVIN GONSALVEZ   MEIGHAN MCKELVEY");
 	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.0f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
@@ -236,12 +236,12 @@ void SceneCredits::render()
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 
-	sprintf_s(strBuffer, "All content � 2024�DigiPen Institute of Technology Singapore. All Rights Reserved");
+	sprintf_s(strBuffer, "All content 2024 DigiPen Institute of Technology Singapore. All Rights Reserved");
 	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "FMOD Studio � FireLight Technologies Pty Ltd ");
+	sprintf_s(strBuffer, "FMOD Studio FireLight Technologies Pty Ltd ");
 	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
