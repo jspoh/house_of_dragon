@@ -31,6 +31,10 @@ enum class DIFFICULTY_SETTINGS {
 
 extern DIFFICULTY_SETTINGS difficulty;
 
+/**
+ * Config for difficulty multipliers. Done in here instead of in json file because these are not meant to be easily editable by the player
+ */
+
 // time multiplier for different difficulty settings
 const std::unordered_map<DIFFICULTY_SETTINGS, float> DIFFICULTY_TIME_MULTIPLIER{
 	{DIFFICULTY_SETTINGS::EASY, 2.f},
