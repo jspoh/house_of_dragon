@@ -246,7 +246,7 @@ void SceneCredits::render()
 	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, " www.kenney.nl ");
+	sprintf_s(strBuffer, "www.kenney.nl");
 	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.6f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
