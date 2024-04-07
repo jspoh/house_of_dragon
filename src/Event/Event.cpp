@@ -844,11 +844,15 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(m_orangeObj.x, m_orangeObj.y, m_orangeObj.radius, static_cast<f32>(m_mouseX), static_cast<f32>(m_mouseY))) {
 			m_orangeObj.isHeld = true;
 		}
-		// check to ensure that the user cannot hold the ball past 75% of the screen
-		static constexpr float DEADZONE = 0.25f;
-		if (m_orangeObj.isHeld && (m_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE || m_orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()))) {
+		// check to ensure that the user cannot hold the ball past 85% of the screen
+		static constexpr float DEADZONE = 0.15f;
+		if (m_orangeObj.isHeld && 
+			(m_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE + m_ORANGE_BORDER_PADDING || m_orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()) - m_ORANGE_BORDER_PADDING)
+			) {
 			m_orangeObj.isHeld = false;	// force user to let go
 			AEVec2Set(&m_orangeObj.vel, 0, 0);			// reset velocity to 0
+			// dont allow ball to enter deadzone when is held by player
+			m_orangeObj.y = AEClamp(m_orangeObj.y, AEGfxGetWindowHeight() * DEADZONE + m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowHeight() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
 		}
 
 		if (m_orangeObj.isHeld && AEInputCheckCurr(AEVK_LBUTTON)) {
@@ -864,14 +868,20 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 
-		//cout << (m_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE) << "\n";
+		// clamp velocity (needed when thrown by user)
+		m_orangeObj.vel.x = AEClamp(m_orangeObj.vel.x, -m_SPEED_LIMIT, m_SPEED_LIMIT);
+		m_orangeObj.vel.y = AEClamp(m_orangeObj.vel.y, -m_SPEED_LIMIT, m_SPEED_LIMIT);
+
+
+		cout << (m_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE + m_ORANGE_BORDER_PADDING) << "\n";
 
 		//cout << "obj vel: " << m_orangeObj.vel.x << ", " << m_orangeObj.vel.y << "\n";
 
 		// obj not held, apply normal physics to object
 		if (!m_orangeObj.isHeld) {
 			// gravity
-			if (m_orangeObj.y + m_orangeObj.radius + m_ORANGE_BORDER_PADDING <= AEGfxGetWindowHeight()) {
+			static constexpr int ORANGE_SNAPPING_ALLOWANCE = 5;		// stop orange from bouncing when below certain height
+			if (m_orangeObj.y + m_orangeObj.radius + m_ORANGE_BORDER_PADDING + ORANGE_SNAPPING_ALLOWANCE <= AEGfxGetWindowHeight()) {
 				m_orangeObj.vel.y += static_cast<f32>(m_ORANGE_GRAVITY * dt);
 			}
 
@@ -915,12 +925,6 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 				}
 			}
 
-			// clamp velocity
-			m_orangeObj.vel.x = AEClamp(m_orangeObj.vel.x, -m_SPEED_LIMIT, m_SPEED_LIMIT);
-			m_orangeObj.vel.y = AEClamp(m_orangeObj.vel.y, -m_SPEED_LIMIT, m_SPEED_LIMIT);
-
-			cout << m_orangeObj.vel.y << "\n";
-
 			// invert x/y vector when collide w wall to provide illusion of bouncing
 			if (CollisionChecker::isRectTouchingScreenXBorder(m_orangeObj.x, m_orangeObj.y, m_orangeObj.radius * 2, m_orangeObj.radius * 2, m_ORANGE_BORDER_PADDING)) {
 				m_orangeObj.vel.x = -m_orangeObj.vel.x * m_ENERGY_KEPT_BOUNCING;
@@ -929,14 +933,14 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 				m_orangeObj.vel.y = -m_orangeObj.vel.y * m_ENERGY_KEPT_BOUNCING;
 			}
 
-			cout << m_orangeObj.vel.y << "\n\n";
+			//cout << m_orangeObj.vel.y << "\n\n";
 
 			m_orangeObj.x += static_cast<f32>(m_orangeObj.vel.x * AEFrameRateControllerGetFrameRate() * dt);
 			m_orangeObj.y += static_cast<f32>(m_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
 			// clamp positions !TODO: jspoh really -1 and +1?
-			m_orangeObj.x = AEClamp(m_orangeObj.x, m_orangeObj.radius + m_ORANGE_BORDER_PADDING - 1, AEGfxGetWindowWidth() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING + 1);
-			m_orangeObj.y = AEClamp(m_orangeObj.y, m_orangeObj.radius + m_ORANGE_BORDER_PADDING - 1, AEGfxGetWindowHeight() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING + 1);
+			m_orangeObj.x = AEClamp(m_orangeObj.x, m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowWidth() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
+			m_orangeObj.y = AEClamp(m_orangeObj.y, m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowHeight() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
 		}
 
 		// update demon
