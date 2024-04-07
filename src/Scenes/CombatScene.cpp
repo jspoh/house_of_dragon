@@ -273,7 +273,7 @@ namespace {
 
 								if (player->m_inventory[lower(bv)] <= 0) {
 									cerr << "Player just ate something that he does not have!\n";
-									throw std::exception();
+									//throw std::exception();
 								}
 
 								player->m_inventory[lower(bv)]--;

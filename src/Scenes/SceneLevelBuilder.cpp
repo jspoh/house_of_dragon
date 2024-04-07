@@ -1351,7 +1351,7 @@ std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
 		}
 		if (Ref == "") {
 			cerr << "No enemies generated!\n";
-			throw std::exception();
+			//throw std::exception();
 		}
 
 		m_combatNames.push_back(Ref);

@@ -80,7 +80,7 @@ void SceneManager::AddScene(const std::string& _name, Scene* _scene)
 	if (CheckSceneExist(_name))
 	{
 		// Scene Exist, unable to proceed
-		throw std::exception("Duplicate scene name provided");
+		//throw std::exception("Duplicate scene name provided");
 	}
 
 	if (_scene == nullptr)
@@ -101,7 +101,7 @@ void SceneManager::RemoveScene(const std::string& _name)
 	Scene* target = sceneMap[_name];
 	if (target == activeScene || target == nextScene)
 	{
-		throw std::exception("Unable to remove active/next scene");
+		//throw std::exception("Unable to remove active/next scene");
 	}
 
 	// Delete and remove from our map
@@ -114,7 +114,7 @@ void SceneManager::SetActiveScene(const std::string& _name)
 	if (!CheckSceneExist(_name))
 	{
 		// Scene does not exist
-		throw std::exception("Scene does not exist");
+		//throw std::exception("Scene does not exist");
 	}
 
 	// Scene exist, set the next scene pointer to that scene
