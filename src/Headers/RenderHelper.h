@@ -161,14 +161,3 @@ public:
 
 	AEGfxVertexList* getdefaultMesh();
 };
-
-/*
-class DrawSpritesheet {
-private:
-	std::vector<AEGfxVertexList*> _meshes;
-
-public:
-	DrawSpritesheet();
-	~DrawSpritesheet();
-};
-*/
