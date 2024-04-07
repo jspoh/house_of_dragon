@@ -843,8 +843,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(m_orangeObj.x, m_orangeObj.y, m_orangeObj.radius, static_cast<f32>(m_mouseX), static_cast<f32>(m_mouseY))) {
 			m_orangeObj.isHeld = true;
 		}
-		// check to ensure that the user cannot hold the ball past 85% of the screen
-		static constexpr float DEADZONE = 0.15f;
+		// check to ensure that the user cannot hold the ball past 20% of the screen
+		static constexpr float DEADZONE = 0.2f;
 		if (m_orangeObj.isHeld && 
 			(m_orangeObj.y <= AEGfxGetWindowHeight() * DEADZONE + m_ORANGE_BORDER_PADDING || m_orangeObj.y >= static_cast<f32>(AEGfxGetWindowHeight()) - m_ORANGE_BORDER_PADDING)
 			) {
