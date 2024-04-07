@@ -41,7 +41,7 @@ public:
         std::string leftButton;
         std::string rightButton;
         std::string backButton;
-        std::string images[12];
+        std::string images[13];
         s32 cursorX, cursorY;
         float leftButtonX, leftButtonY;
         float rightButtonX, rightButtonY;

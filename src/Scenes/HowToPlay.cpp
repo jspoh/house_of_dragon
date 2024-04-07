@@ -52,14 +52,14 @@ void HowToPlay::load() {
     m_slideshow.images[2] = "image2";
     m_slideshow.images[3] = "image3";
     m_slideshow.images[4] = "image4";
-    m_slideshow.images[4] = "image5";
-    m_slideshow.images[5] = "image6";
-    m_slideshow.images[6] = "image7";
-    m_slideshow.images[7] = "image8";
-    m_slideshow.images[8] = "image9";
-    m_slideshow.images[9] = "image10";
-    m_slideshow.images[10] = "image11";
-    m_slideshow.images[11] = "image12";
+    m_slideshow.images[5] = "image5";
+    m_slideshow.images[6] = "image6";
+    m_slideshow.images[7] = "image7";
+    m_slideshow.images[8] = "image8";
+    m_slideshow.images[9] = "image9";
+    m_slideshow.images[10] = "image10";
+    m_slideshow.images[11] = "image11";
+    m_slideshow.images[12] = "image12";
 
 
 
@@ -68,6 +68,7 @@ void HowToPlay::load() {
     RenderHelper::getInstance()->registerTexture("leftButton", "Assets/Menu/leftButton.png");
     RenderHelper::getInstance()->registerTexture("rightButton", "Assets/Menu/rightButton.png");
     RenderHelper::getInstance()->registerTexture("backButton", "Assets/Menu/back1.png");
+
     RenderHelper::getInstance()->registerTexture("image0", "Assets/Menu/00.png");
     RenderHelper::getInstance()->registerTexture("image1", "Assets/Menu/01.png");
     RenderHelper::getInstance()->registerTexture("image2", "Assets/Menu/02.png");
