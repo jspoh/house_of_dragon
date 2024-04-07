@@ -45,21 +45,17 @@ Credits:
       - Gerald Wong
 
   Digipen Institute of Singapore:
-    Directors:
-      - Claude Comair
-      - Jason Chu Yeu Tat
-      - Michele Comair
-      - Christopher Comair
-      - Alexander Comair
-
-    Executives:
-      - Claude Comair
-      - Jason Chu Yeu Tat
-      - Michael Gats
-      - Tan Chek Ming
-      - Prasanna Kumar Ghali
-      - Mandy Wong
-      - Johnny Deek
+    - Claude Comair
+    - Jason Chu Yeu Tat
+    - John Bauer
+    - Samir Abou Samra
+    - Raymond Yan
+    - Prasanna Ghali
+    - Michele Comair
+    - Xin Li
+    - Angela Kugler
+    - Melvin Gonsalvez
+    - Meighan Mckelvey
 
   Tools and resources:
   - FMOD Studio
