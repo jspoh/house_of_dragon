@@ -799,7 +799,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		for (Demon& d : m_demons) {
 			const float demonSpeed = rand() % static_cast<int>(m_DEMON_MAX_SPEED - m_DEMON_MIN_SPEED) + m_DEMON_MIN_SPEED;
 
-			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - m_DEMON_RADIUS * 2) + m_DEMON_RADIUS;
+			d.x = rand() % static_cast<int>(AEGfxGetWindowWidth() - m_DEMON_RADIUS * 2 - m_ORANGE_BORDER_PADDING * 2) + m_DEMON_RADIUS + m_ORANGE_BORDER_PADDING;
 			d.y = AEGfxGetWindowHeight() * 0.15f;
 			AEVec2Set(&d.vel, rand() % 2 == 0 ? demonSpeed : -demonSpeed, 0);
 			d.radius = m_DEMON_RADIUS;
