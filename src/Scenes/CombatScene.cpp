@@ -33,17 +33,22 @@ extern std::unique_ptr<Player> player;
 namespace {
 	bool itemUsedSinceLastAttack = false;
 
-	// game objects
+	// game objects flags
 	bool playerAlive;
 	bool extraflagtest;
 	bool deadfinalflag;
 	bool winFlag;
+	bool winButtonFlag;
+
+
+	//time for rendering
 	constexpr float slideAnimationDuration = 1.f;
 	constexpr float dialogueMaxTime = 1.2f;
 	float dialougeTime;
 	float winTime;
 	float itemTime;
-	bool winButtonFlag;
+
+	//panel coordinates
 	float itemPanelY;
 	AEVec2 ItemPanel;
 
@@ -93,6 +98,11 @@ namespace {
 	float btnDecreaseStart = -170.f;
 	constexpr float btnFinalY = 170.f;
 
+	//button rendering variables
+	constexpr float btnPadding = 50.f;
+	constexpr float spacing = 50.f;
+	constexpr float btnY = 550;
+	constexpr float maxBtnHeight = 100.f;
 
 	enemiesGroup groups;
 
@@ -146,23 +156,26 @@ namespace {
 		{"BACON", "BEEF", "CHICKEN", "BACK"},  // items
 		{"YES", "NO"},  // confirmation. only used for flee option
 	};
-	constexpr float btnPadding = 50.f;
-	constexpr float spacing = 50.f;
 
-
-	constexpr float btnY = 550;
-	constexpr float maxBtnHeight = 100.f;
-
+	//projectiles vector
 	std::vector<GameObject_Projectiles*> projectiles;
 
 
-
+	/*********************************************************************************
+	resets the Dialogue state and time.
+	**********************************************************************************/
 	void resetDialogue() {
 		dialougeTime = 0.f;
 		dialogueState = DIALOGUE::NONE;
 	}
 
-	// update loop for combat panel buttons
+
+
+
+
+	/*********************************************************************************
+	* updates the buttons coordinates and rendering based on game current combat gameplay and player's clicking
+	**********************************************************************************/
 	void updateBtns(std::vector<std::string> bvalues) {
 		// rendering coordinates 
 		float btnWidth = static_cast<float>((AEGfxGetWindowWidth() - (btnPadding * 2) - (bvalues.size() - 1) * spacing) / bvalues.size());
@@ -283,7 +296,10 @@ namespace {
 		}
 	}
 
+
+	/*********************************************************************************
 	// render loop for combat panel buttons
+**********************************************************************************/
 	void renderBtns(std::vector<std::string> bvalues) {
 
 
@@ -355,6 +371,11 @@ namespace {
 
 	}
 
+
+
+	/*********************************************************************************
+	// update loop for death panel buttons.
+**********************************************************************************/
 	void updateDeathBtns() {
 		//main menu
 		if (CollisionChecker::isMouseInRect(deathBtnMenuPoint.x, deathBtnMenuPoint.y, deathBtnWidthEnd - 5.f, deathbtnHeightEnd, static_cast<float>(mouseX), static_cast<float>(mouseY))) {
@@ -369,6 +390,10 @@ namespace {
 		}
 	}
 
+
+	/*********************************************************************************
+// render loop for death panel buttons.
+**********************************************************************************/
 	void renderDeathBtns() {
 		AEVec2 trueCoordinatesMenu = stow(deathBtnMenuPoint.x, deathBtnMenuPoint.y);
 		AEVec2 trueCoordinatesRespawn = stow(deathBtnRespawnPoint.x, deathBtnRespawnPoint.y);
@@ -386,6 +411,10 @@ namespace {
 
 }
 
+
+/*********************************************************************************
+spawns enemies based on given vector of strings and updates the item drop for the current combat.
+**********************************************************************************/
 void CombatScene::spawnEnemies(std::vector<std::string> enemyRefs) {
 	// this function works by creating taking in the vector of enemies; but this means i dont have to 
 	itemdrops = { 0,0,0 };
@@ -443,6 +472,12 @@ CombatScene& CombatScene::getInstance() {
 	return instance;
 }
 
+
+
+
+/*********************************************************************************
+Load the assets required for combat
+**********************************************************************************/
 void CombatScene::load()
 {
 	Event::getInstance();
@@ -510,7 +545,7 @@ void CombatScene::load()
 	// enemies name load
 	RenderHelper::getInstance()->registerTexture("pigname", "./Assets/Combat_UI/pig.png");
 	RenderHelper::getInstance()->registerTexture("goatname", "./Assets/Combat_UI/goat.png");
-	RenderHelper::getInstance()->registerTexture("chickenname", "./Assets/Combat_UI/chicken.png");
+	RenderHelper::getInstance()->registerTexture("chickenname", "./Assets/Combat_UI/chickenName.png");
 	RenderHelper::getInstance()->registerTexture("dragonname", "./Assets/Combat_UI/dragon.png");
 	RenderHelper::getInstance()->registerTexture("bullname", "./Assets/Combat_UI/bull.png");
 	RenderHelper::getInstance()->registerTexture("monkeyname", "./Assets/Combat_UI/monkey.png");
@@ -547,6 +582,9 @@ void CombatScene::load()
 }
 
 
+/*********************************************************************************
+Initialise the values for combat scene
+**********************************************************************************/
 void CombatScene::init(CombatManager::TURN startingTurn)
 {
 	// cleanup again just in case
@@ -616,6 +654,11 @@ void CombatScene::init(CombatManager::TURN startingTurn)
 	Event::getInstance()->init();
 }
 
+
+
+/*********************************************************************************
+Update loop for combat scene
+**********************************************************************************/
 void CombatScene::update(double dt)
 {
 	updateGlobals();
@@ -946,6 +989,10 @@ void CombatScene::update(double dt)
 }
 
 
+
+/*********************************************************************************
+render loop for combat scene
+**********************************************************************************/
 void CombatScene::render()
 {
 	// dont render if no longer in combat

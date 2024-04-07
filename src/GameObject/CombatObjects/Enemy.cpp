@@ -1,10 +1,10 @@
 /* Start Header ************************************************************************/
 /*!
 \file Enemy.cpp
-\author Poh Jing Seng, jingseng.poh, 2301363 (50%, base enemy combat logic)
-\par jingseng.poh\@digipen.edu
-\author Kuek wei jie, weijie.kuek, 2301325 (50%, enemy rendering and animation logic)
+\author Kuek wei jie, weijie.kuek, 2301325 (75%, enemy rendering and attacked logic)
 \par weijie.kuek\@digipen.edu
+\author Poh Jing Seng, jingseng.poh, 2301363 (25%, base enemy class combat logic)
+\par jingseng.poh\@digipen.edu
 \date 28 feb 2024
 \brief handles enemy in combat
 /*
@@ -27,6 +27,10 @@ Technology is prohibited.
 float paddingY = 120.f;
 float paddingInfoY = 110.f;
 
+
+/*********************************************************************************
+Constructor for Enemy
+**********************************************************************************/
 Enemy::Enemy(Element element, float m_health, float m_dmg, std::string texturePath, std::string textureRef, float screenX, float screenY, float size)
     : Mob(element, m_health, m_dmg), m_textureRef(textureRef), m_size(size) {
     this->m_spos.x = screenX;
@@ -47,10 +51,18 @@ Enemy::Enemy(Element element, float m_health, float m_dmg, std::string texturePa
     //RenderHelper::getInstance()->texture(m_textureRef, m_wpos.x, m_wpos.y, m_size, m_size);
 }
 
-
+/*********************************************************************************
+Update the string value of the enemy element
+**********************************************************************************/
 void Enemy::elementstringinput(std::string el) {
     this->m_elementString = el;
 }
+
+
+
+/*********************************************************************************
+Update loop for the enemy
+**********************************************************************************/
 void Enemy::update([[maybe_unused]] double dt) {
 
     AEVec2 pos = wtos(m_wpos.x - camOffset.x, m_wpos.y - camOffset.y);
@@ -75,6 +87,10 @@ void Enemy::update([[maybe_unused]] double dt) {
 }
 
 
+
+/*********************************************************************************
+Render loop for the enemy
+**********************************************************************************/
 void Enemy::render() {
     //AEVec2 camOffset;
     //AEGfxGetCamPosition(&camOffset.x, &camOffset.y);
@@ -111,7 +127,7 @@ void Enemy::render() {
     RenderHelper::getInstance()->texture((m_textureRef + "name"), this->m_wpos.x -10.f, this->m_healthpos.y - paddingInfoY + 5.f, 70, 20); //start point, but coordinates is centralised so need to take account of the widthw
 
     //  health over 2/3, green bar
-    if (this->m_health > 66) {
+    if (this->m_health  > 66) {
         RenderHelper::getInstance()->texture("greenbar1", this->m_wpos.x - 50, this->m_healthpos.y - paddingY, 10, 10); //start point, but coordinates is centralised so need to take account of the widthw
         RenderHelper::getInstance()->texture("greenbar3", this->m_wpos.x - 45 + m_attackedRenderX * 50 , this->m_healthpos.y - paddingY, m_attackedRenderX * 100, 10);
         RenderHelper::getInstance()->texture("greenbar2", this->m_wpos.x + m_attackedRenderX * 100 - 40, this->m_healthpos.y - paddingY, 10, 10);
@@ -131,13 +147,13 @@ void Enemy::render() {
 
     }
 
-
-
-
-
-
 }
 
+
+
+/*********************************************************************************
+Destructor for the enemy
+**********************************************************************************/
 Enemy::~Enemy() {
     cout << "Destroying enemy with texture ref: " << this->m_textureRef << "\n";
     // dont free here!!!!!!!!!!!!
@@ -147,6 +163,13 @@ Enemy::~Enemy() {
     //RenderHelper::getInstance()->removeTextureByRef("healthbar3");
 }
 
+
+
+
+
+/*********************************************************************************
+Updates the values needed to lerp the health bar after enemy is attacked
+**********************************************************************************/
 void Enemy::enemyAttacked() {
     this->m_attacked = true;
     this->m_attackedRenderXprev = m_attackedRenderX;
@@ -154,10 +177,20 @@ void Enemy::enemyAttacked() {
 
 }
 
+
+
+/*********************************************************************************
+Get texture reference of the enemy
+**********************************************************************************/
 std::string Enemy::getTextureRef() const {
     return m_textureRef;
 }
 
+
+
+/*********************************************************************************
+Lerp loop for enemy Attacking
+**********************************************************************************/
 void Enemy::enemyAttacking(float timeleft) {
     //this->m_isAttacking = true;
     // udpating the coordinates
@@ -175,18 +208,19 @@ void Enemy::enemyAttacking(float timeleft) {
 
     }
 }
-void Enemy::EnemyAttackStop() {
-    //this->m_isAttacking = false;
-    //this->m_attacktime = 0.f;
-    //this->m_attackPoint.x = (m_wpos.x);
-    //this->m_attackPoint.y = (m_wpos.y);
-    return;
-}
 
+
+/*********************************************************************************
+Get the enemy world position
+**********************************************************************************/
 AEVec2 Enemy::getWorldPos() const {
     return m_wpos;
 }
 
+
+/*********************************************************************************
+Get the enemy size
+**********************************************************************************/
 AEVec2 Enemy::getSize() const {
     return { this->m_size, this->m_size };
 }

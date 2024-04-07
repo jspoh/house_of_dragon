@@ -1,7 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file Enemy.h
-\author Poh Jing Seng, jingseng.poh, 2301363
+\author Kuek wei jie, weijie.kuek, 2301325 (75%, enemy rendering and attacked logic)
+\par weijie.kuek\@digipen.edu
+\author Poh Jing Seng, jingseng.poh, 2301363 (25%, base enemy class combat logic)
 \par jingseng.poh\@digipen.edu
 \date 28 feb 2024
 \brief handles enemy in combat
@@ -63,10 +65,7 @@ public:
 	void render();
 	void enemyAttacked();
 	void enemyAttacking(float timeleft);
-	void EnemyAttackStop();
-
 	AEVec2 getWorldPos() const;
-
 	AEVec2 getSize() const;
 };
 

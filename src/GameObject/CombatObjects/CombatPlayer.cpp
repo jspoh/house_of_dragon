@@ -1,9 +1,9 @@
 /* Start Header ************************************************************************/
 /*!
 \file CombatPlayer.cpp
-\author Poh Jing Seng, jingseng.poh, 2301363 (60%, base infra and player logic)
+\author Poh Jing Seng, jingseng.poh, 2301363 (50%, base infra and player logic)
 \par jingseng.poh\@digipen.edu
-\author Kuek wei jie, weijie.kuek, 2301325 (30%, rendering)
+\author Kuek wei jie, weijie.kuek, 2301325 (40%, rendering, and healthbar decrement/inccrement)
 \par weijie.kuek\@digipen.edu
 \author Soh Wei Jie, weijie.soh (10%, hands rendering)
 \par weijie.soh\@digipen.edu
@@ -36,7 +36,9 @@ namespace {
 	f32 camX, camY;
 }
 
-
+/*********************************************************************************
+Player constructor
+**********************************************************************************/
 Player::Player(float _health, float _dmg, Element element) : Mob(element, _health, _dmg* DIFFICULTY_PLAYER_DAMAGE_MULTIPLIER.at(difficulty)) {
 	//RenderHelper::getInstance()->registerTexture("m_shield", "./Assets/Combat_UI/m_shield.png");
 
@@ -76,6 +78,10 @@ Player::Player(float _health, float _dmg, Element element) : Mob(element, _healt
 
 }
 
+
+/*********************************************************************************
+Player destructor
+**********************************************************************************/
 Player::~Player() {
 	//RenderHelper::getInstance()->removeTextureByRef("m_shield");	// let renderhelper manage
 
@@ -87,13 +93,19 @@ Player::~Player() {
 
 }
 
+
+/*********************************************************************************
+Update the variables when player is attacked
+**********************************************************************************/
 void Player::playerAttacked() {
 	this->m_renderXprev = m_renderX;
 	m_healthRenderTime = 0.f;
 
 }
 
-
+/*********************************************************************************
+Update the variables when player use item and gain health
+**********************************************************************************/
 void Player::healthGain(float healthIncrease) {
 	this->m_renderXprev = m_renderX;
 	m_healthRenderTime = 0.f;
@@ -108,6 +120,9 @@ void Player::healthGain(float healthIncrease) {
 
 }
 
+/*********************************************************************************
+Render loop for the player's health
+**********************************************************************************/
 void Player::_drawHealth(float screenX, float screenY) {
 	std::string name = "Player";
 	std::string level = "  Lv:" + std::to_string(m_playerLevel);
@@ -141,6 +156,11 @@ void Player::_drawHealth(float screenX, float screenY) {
 	}
 }
 
+
+
+/*********************************************************************************
+Update loop for the player
+**********************************************************************************/
 void Player::update(double dt) {
 	m_elapsedTimeMs += static_cast<int>(dt * 1000);
 
@@ -168,34 +188,6 @@ void Player::update(double dt) {
 		this->m_healthRenderTime = 0.f;
 	}
 
-
-	//if (!this->m_hasBeenAttacked && (this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) && this->m_healthIncrease ) {
-	//	m_healthRenderTime += static_cast<float>(dt);
-	//	float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
-	//	float t = percenttime;
-	//	if (t > m_HEALTH_RENDER_TIME_MAX) {
-	//		t = m_HEALTH_RENDER_TIME_MAX;
-	//	}
-	//	this->m_renderX = lerp(this->m_renderXprev, m_health / m_maxHealth, t);
-	//}
-	//else {
-	//	this->m_healthIncrease = false;
-	//	this->m_healthRenderTime = 0.f;
-	//}
-
-	//if (this->m_healthIncrease && this->m_healthRenderTime < this->m_HEALTH_RENDER_TIME_MAX) {
-	//	m_healthRenderTime += static_cast<float>(dt);
-	//	float percenttime = static_cast<float>(m_healthRenderTime / m_HEALTH_RENDER_TIME_MAX);
-	//	float t = percenttime;
-	//	if (t > m_HEALTH_RENDER_TIME_MAX) {
-	//		t = m_HEALTH_RENDER_TIME_MAX;
-	//	}
-	//	this->m_renderX = lerp(this->m_renderXprev, m_health / m_maxHealth, t);
-	//}
-	//else {
-	//	this->m_healthIncrease = false;
-	//	this->m_healthRenderTime = 0.f;
-	//}
 
 
 	/* blocking stuff */
@@ -254,18 +246,36 @@ void Player::update(double dt) {
 	_updateBlockingHands();
 }
 
+
+/*********************************************************************************
+Render loop for the player's hands
+**********************************************************************************/
 void Player::render() {
 	//_renderShield();
 	_renderHands();
 }
+
+/*********************************************************************************
+Render function for the player's health
+**********************************************************************************/
 void Player::renderHealth(double x, double y) {
 	this->_drawHealth(static_cast<float>(x), static_cast<float>(y));
 }
 
+
+
+/*********************************************************************************
+Updates the attack multipler for player's attack
+**********************************************************************************/
 void Player::setNextAttackDmgMul(float mul) {
 	m_dmgMul = mul;
 }
 
+
+
+/*********************************************************************************
+Update variables  when player attack
+**********************************************************************************/
 float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 
 
@@ -293,6 +303,10 @@ float Player::attack(Mob& target, Element attackEl, float qtMultiplier) {
 }
 
 
+
+/*********************************************************************************
+Set player's hand animation state
+**********************************************************************************/
 void Player::setHandStateAnimationType(HandAnimationType t) {
 	m_HandStateAnimationType = t;
 
@@ -307,6 +321,10 @@ void Player::setHandStateAnimationType(HandAnimationType t) {
 	}
 }
 
+
+/*********************************************************************************
+Update loop for player's hand
+**********************************************************************************/
 void Player::updateHands(float t_dt)
 {
 	LerpSpeed = 10.0;
@@ -464,6 +482,10 @@ void Player::updateHands(float t_dt)
 
 }
 
+
+/*********************************************************************************
+Update loop for player's hand blocking movement
+**********************************************************************************/
 void Player::_updateBlockingHands() {
 
 	static PLAYER_BLOCKING_STATES prevState = PLAYER_BLOCKING_STATES::ON_COOLDOWN;
@@ -611,7 +633,9 @@ void Player::_updateBlockingHands() {
 
 	prevState = m_blockingState;
 }
-
+/*********************************************************************************
+Render loop for player's hand
+**********************************************************************************/
 void Player::_renderHands()
 {
 	AEGfxSetRenderMode(AE_GFX_RM_TEXTURE);
@@ -644,6 +668,10 @@ void Player::_renderHands()
 
 }
 
+
+/*********************************************************************************
+Update loop for player's hand shielding block
+**********************************************************************************/
 void Player::_updateShield(double dt) {
 	switch (m_blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
@@ -682,6 +710,9 @@ void Player::_updateShield(double dt) {
 	}
 }
 
+/*********************************************************************************
+Render loop for player's hand shielding block
+**********************************************************************************/
 void Player::_renderShield() {
 	switch (m_blockingState) {
 	case PLAYER_BLOCKING_STATES::NOT_BLOCKING:
@@ -694,16 +725,29 @@ void Player::_renderShield() {
 	}
 }
 
+/*********************************************************************************
+Get player's level
+**********************************************************************************/
 int Player::getLevel() const {
 	return m_playerLevel;
 }
 
+
+
+/*********************************************************************************
+Reset player's health
+**********************************************************************************/
 void Player::resetHealth() {
 	m_health = m_maxHealth;
 	m_renderX = m_health;
 	m_renderXprev = m_health;
 }
 
+
+
+/*********************************************************************************
+update the player level with the experience dropped by enemies killed
+**********************************************************************************/
 void Player::giveXpForEnemyKilled(int enemiesKilled) {
 	auto& data = Database::getInstance().data;
 
