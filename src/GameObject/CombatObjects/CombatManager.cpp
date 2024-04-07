@@ -44,4 +44,6 @@ void CombatManager::end() {
     m_turn = TURN::NONE_TURN;
     m_isInCombat = false;
     m_selectedEnemy = nullptr;
+    m_qtEventResult = NONE_EVENT_RESULTS;
+    m_isPlayingEvent = false;
 }

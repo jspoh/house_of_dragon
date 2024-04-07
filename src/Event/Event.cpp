@@ -146,13 +146,10 @@ void Event::startRandomEvent() {
 }
 
 bool Event::setActiveEvent(EVENT_TYPES e) {
-	if (m_activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
-		m_activeEvent = e;
-		_resetState();
-		return true;
-	}
-	cerr << "ERROR: " << "An event is already running!\n";
-	return false;
+	_resetState();
+	m_activeEvent = e;
+	return true;
+
 }
 
 

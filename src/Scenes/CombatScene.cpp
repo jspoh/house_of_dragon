@@ -1200,14 +1200,17 @@ void CombatScene::cleanup() {
 	resetDialogue();
 	itemUsedSinceLastAttack = false;
 	currentState = ACTION_BTNS::MAIN;
+	CombatManager::getInstance().end();
+
+	// cleanup event instance too, on stuff like restarting state
+	Event::getInstance()->setActiveEvent(EVENT_TYPES::NONE_EVENT_TYPE);
+	Event::getInstance()->m_eventMultiplier = 1;
 }
 
 void CombatScene::exit()
 {
 	cout << "Exiting CombatScene\n";
 	cleanup();
-	CombatManager::getInstance().end();
-	Event::getInstance()->setActiveEvent(EVENT_TYPES::NONE_EVENT_TYPE);
 }
 
 
