@@ -236,12 +236,12 @@ void SceneCredits::render()
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
 
-	sprintf_s(strBuffer, "All content © 2024 DigiPen Institute of Technology Singapore. All Rights Reserved");
+	sprintf_s(strBuffer, "All content ï¿½ 2024ï¿½DigiPen Institute of Technology Singapore. All Rights Reserved");
 	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.2f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "FMOD Studio © FireLight Technologies Pty Ltd ");
+	sprintf_s(strBuffer, "FMOD Studio ï¿½ FireLight Technologies Pty Ltd ");
 	AEGfxGetPrintSize(m_pFontxS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontxS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.4f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
