@@ -100,6 +100,7 @@ bool RenderHelper::registerMeshByRef(std::string reference, AEGfxVertexList* mes
 		//throw std::exception();
 		return false;
 	}
+	return false;
 }
 
 AEGfxVertexList* RenderHelper::getMeshByRef(std::string reference) {
@@ -109,6 +110,7 @@ AEGfxVertexList* RenderHelper::getMeshByRef(std::string reference) {
 	}
 	cerr << "ERROR: " << "Mesh with ref " << reference << " does not exist!\n";
 	//throw std::exception();
+	return nullptr;
 }
 
 bool RenderHelper::removeMeshByRef(std::string reference) {
@@ -122,6 +124,7 @@ bool RenderHelper::removeMeshByRef(std::string reference) {
 		//throw std::exception();
 		return false;
 	}
+	return false;
 }
 
 RenderHelper::~RenderHelper() {
