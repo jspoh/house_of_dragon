@@ -499,7 +499,7 @@ void CombatScene::load()
 	RenderHelper::getInstance()->registerTexture("bar2", "./Assets/Health/end.png");
 	RenderHelper::getInstance()->registerTexture("bar3", "./Assets/Health/bar.png");
 
-	// dynamic enemy load !TODO: test this! spawn all kinds of animals and ensure no crashes
+	// dynamic enemy load
 	for (const auto& [animalName, details] : Database::getInstance().data["enemyAttributes"].items()) {
 		RenderHelper::getInstance()->registerTexture(animalName, details["texturePath"]);
 	}

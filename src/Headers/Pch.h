@@ -76,7 +76,7 @@ extern NullStream nullstream;
 #ifndef NDEBUG
 #define cout std::cout
 #define endl std::endl
-#define cerr std::cerr    // !TODO: jspoh for submission
+#define cerr std::cerr
 #else
 #define cout nullstream
 #define cerr nullstream

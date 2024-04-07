@@ -1158,7 +1158,6 @@ void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
 	// Auto Spawning of enemies
 	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
 	m_TryTimer -= dt;
-	// !TODO: jspoh consider removing debugging enemy spawner?
 	if (m_TryTimer < 0 || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
 	{
 		if (m_sceneEnemy == nullptr && !m_combatPhase && SceneStages::m_sInstance->m_StartGame)

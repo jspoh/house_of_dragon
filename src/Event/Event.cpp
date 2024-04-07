@@ -140,7 +140,7 @@ void Event::startRandomEvent() {
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  		// for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  					// for testing
 	//e = EVENT_TYPES::TYPING;  							// for testing
-	e = EVENT_TYPES::ORANGE_THROWING;  			// for testing	!TODO: jspoh revert this
+	//e = EVENT_TYPES::ORANGE_THROWING;  			// for testing
 	cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -819,7 +819,6 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			activeDemons++;
 		}
 
-		m_orangeEventTimeoutMs = 999999999;			// !TODO: jspoh revert this
 		if (m_elapsedTimeMs >= m_orangeEventTimeoutMs || activeDemons == 0) {
 			int hits{};
 			for (const Demon& d : m_demons) {
@@ -938,7 +937,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			m_orangeObj.x += static_cast<f32>(m_orangeObj.vel.x * AEFrameRateControllerGetFrameRate() * dt);
 			m_orangeObj.y += static_cast<f32>(m_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
-			// clamp positions !TODO: jspoh really -1 and +1?
+			// clamp positions
 			m_orangeObj.x = AEClamp(m_orangeObj.x, m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowWidth() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
 			m_orangeObj.y = AEClamp(m_orangeObj.y, m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowHeight() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
 		}
