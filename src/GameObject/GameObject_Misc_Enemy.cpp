@@ -4,7 +4,8 @@
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date 01 Apr 2024
-\brief misc enemy implementation
+\brief Misc Enemy implementation in scene to start the combat ( The one that player has
+       to click)
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents

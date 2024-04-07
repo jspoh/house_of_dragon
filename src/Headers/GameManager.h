@@ -4,7 +4,8 @@
 \author Soh Wei Jie, weijie.soh, 2301289
 \par weijie.soh\@digipen.edu
 \date 28 feb 2024
-\brief base game manager
+\brief Game Manager that handles the basic call of update and render to the managers in
+       the game. Also handles destruction of said managers.
 /*
 Copyright (C) 2024 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents

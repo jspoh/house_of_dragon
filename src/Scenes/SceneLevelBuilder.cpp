@@ -942,6 +942,431 @@ void SceneLevelBuilder::update(double dt)
 	}
 }
 
+/*********************************************************************************
+Scene Object Spawning
+**********************************************************************************/
+void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
+{
+	//srand(static_cast<unsigned> (time(0)));
+
+	//if(false) //Delete if not used
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		//Skip centre
+		if (j == t_centerFloorNum)
+			continue;
+
+		//Spawn objs based on MAX_NUM_SCENEOBJS_TILE
+		for (int i = static_cast<int>(AEClamp(static_cast<f32>(rand() % MAX_NUM_SCENEOBJS_TILE), 1.0f, static_cast<f32>(MAX_NUM_SCENEOBJS_TILE))); i > 0; i--)
+		{
+			v_SceneObject newObj;
+
+			//Selecting Entity Group to Spawn
+			int TotalProb = 0; //Get total probability
+			for (int curr : m_sceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			{
+				TotalProb += curr;
+			}
+			std::string Ref = "";
+			int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
+			int temp = 0;//Disregard this: for loop below
+			for (int curr : m_sceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
+			{
+				randnum -= curr;
+				if (randnum < 0)
+				{
+					Ref = m_sceneLevelDataList[m_currLevel].m_SceneObjTypes[temp];
+					break;
+				}
+				temp++;
+			}
+
+			//Selecting Entity from entity group to spawn
+			if (Ref == "Grass")
+			{
+				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Grass - v_SceneObjectTypes::TYPE_Grass) + v_SceneObjectTypes::TYPE_Grass),
+					static_cast<f32>(v_SceneObjectTypes::TYPE_Grass + 1),
+					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Grass - 1)));
+				newObj.m_tobeCentered = true;
+			}
+			else if (Ref == "Tree")
+			{
+				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Tree - v_SceneObjectTypes::TYPE_Tree) + v_SceneObjectTypes::TYPE_Tree),
+					static_cast<f32>(v_SceneObjectTypes::TYPE_Tree + 1),
+					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Tree - 1)));
+				newObj.m_tobeCentered = false;
+			}
+			else if (Ref == "Rock")
+			{
+				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Rock - v_SceneObjectTypes::TYPE_Rock) + v_SceneObjectTypes::TYPE_Rock),
+					static_cast<f32>(v_SceneObjectTypes::TYPE_Rock + 1),
+					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Rock - 1)));
+				newObj.m_tobeCentered = true;
+			}
+
+			//Random Selection of Spawn location on tile
+			int t_RandX, t_RandY;
+			if (!newObj.m_tobeCentered)
+			{
+				if (j == t_centerFloorNum - 1 || j == t_centerFloorNum + 1)
+				{
+					t_RandX = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
+					t_RandY = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
+				}
+				else
+				{
+					t_RandX = rand() % NUM_OF_TILESPAWNPOINTS;
+					t_RandY = rand() % NUM_OF_TILESPAWNPOINTS;
+				}
+			}
+			else
+			{
+				t_RandX = t_RandY = 0;
+			}
+
+
+			if (j < t_centerFloorNum)//Left Side
+			{
+				AEMtx33Trans(&newObj.m_trans, m_tileSP[t_RandY][t_RandX].m_X + m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
+			}
+			else//Right Side
+			{
+				AEMtx33Trans(&newObj.m_trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
+			}
+
+			//Scaling (Uniform Scaling)
+			AEMtx33Scale(&newObj.m_scale, 2.5f, 2.5f);
+
+			//Push into OBJlist in tile (Determine which to render first based on Spawnpoint m_Y
+			std::list<v_SceneObject>::iterator it = m_floorOBJs[j][t_tileNum].begin();
+			newObj.m_RenderOrder = t_RandY; //Spawnpoint m_y
+			for (; it != m_floorOBJs[j][t_tileNum].end(); it++)
+			{
+				if (newObj.m_RenderOrder <= (*it).m_RenderOrder)
+					break;
+			}
+			m_floorOBJs[j][t_tileNum].insert(it, newObj);
+		}
+	}
+}
+void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
+{
+	for (int j = 0; j < SIZE_OF_FLOOR; j++)
+	{
+		m_floorOBJs[j][t_tileNum].clear();
+	}
+}
+
+
+/*********************************************************************************
+Level Name
+**********************************************************************************/
+void SceneLevelBuilder::SpawnLvlName()
+{
+	m_lvlNameTimer = MAX_LVLNAMETIMER;
+	m_lvlNameTransparency = -1.2f;
+}
+void SceneLevelBuilder::UpdateLvlName(f32 t_dt)
+{
+	if (m_lvlNameTimer > MAX_LVLNAMETIMER - 1.0)
+	{
+		m_lvlNameTransparency += m_lvlNameTransparency > 1.0f ? 0.0f : 0.08f;
+	}
+	else if (m_lvlNameTimer < 1.0)
+	{
+		m_lvlNameTransparency -= m_lvlNameTransparency < -1.0f ? 0.0f : 0.08f;
+	}
+	m_lvlNameTimer -= t_dt;
+}
+void SceneLevelBuilder::RenderLvlName()
+{
+	f32 t_camX, t_camY;
+	AEGfxGetCamPosition(&t_camX, &t_camY);
+
+	AEVec2 RightOriginalHeaderPos{ 27.5f, 205.7f };
+	AEVec2 LeftOriginalHeaderPos{ -27.5f, 205.7f };
+	AEVec2 RightMaxHeaderPos{ -15.0f + m_sceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
+	AEVec2 LeftMaxHeaderPos{ 15.0f - m_sceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
+	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
+	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
+	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;
+	currLeftHeaderPos.x += currLeftHeaderPos.x > LeftMaxHeaderPos.x ? (LeftMaxHeaderPos.x - currLeftHeaderPos.x) / 30 : 0;
+
+	if (m_lvlNameTimer > 0.0 && m_currLevel > -1)
+	{
+		AEGfxTextureSet(NULL, 0, 0);
+		f32 TextWidth = 0, TextHeight = 0;
+		char strBuffer[1024];
+		sprintf_s(strBuffer, m_sceneLevelDataList[m_currLevel].m_LevelName.c_str());
+		AEGfxGetPrintSize(m_pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
+		AEGfxPrint(m_pTextFont, strBuffer, -TextWidth / 2.0f - 0.01f, 0.61f, 0.8f, 0.f, 0.f, 0.f, m_lvlNameTransparency);
+		AEGfxPrint(m_pTextFont, strBuffer, -TextWidth / 2.0f, 0.6f, 0.8f, 1.0f, 0.75f, 0.0f, m_lvlNameTransparency);
+
+
+		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
+		if (m_lvlNameTimer < 1.0) AEGfxSetTransparency(m_lvlNameTransparency - 0.9f);
+		else AEGfxSetTransparency(m_lvlNameTransparency + 0.2f);
+
+		AEMtx33 trans{};
+		AEMtx33Identity(&trans);
+		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
+		AEMtx33TransApply(&trans, &trans, currRightHeaderPos.x + t_camX - 3.75f, currRightHeaderPos.y + t_camY + 4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+
+
+		AEMtx33Identity(&trans);
+		AEMtx33RotDeg(&trans, 180);
+		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
+		AEMtx33TransApply(&trans, &trans, currLeftHeaderPos.x + t_camX - 3.75f, currLeftHeaderPos.y + t_camY + 4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
+		AEGfxSetTransform(trans.m);
+		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
+		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
+	}
+	else
+	{
+		currRightHeaderPos = RightOriginalHeaderPos;
+		currLeftHeaderPos = LeftOriginalHeaderPos;
+	}
+}
+
+/*********************************************************************************
+Screen Transition
+**********************************************************************************/
+void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
+{
+	m_currTransitionTransparency += (m_setTransitionTransparency - m_currTransitionTransparency) / (600 * t_dt);
+}
+void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
+void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
+
+/*********************************************************************************
+GENERIC UPDATE FUNCTIONS (PARALLAX SCROLLING)
+**********************************************************************************/
+void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
+{
+	/////////////////////////////////////////////////////////////////////////
+	// Auto Spawning of enemies
+	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
+	m_TryTimer -= dt;
+	// !TODO: jspoh consider removing debugging enemy spawner?
+	if (m_TryTimer < 0 || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
+	{
+		if (m_sceneEnemy == nullptr && !m_combatPhase && SceneStages::m_sInstance->m_StartGame)
+		{
+			if (rand() % 100 < m_sceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
+			{
+				m_sceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->findObjectByReference("MiscEnemy"));
+				m_sceneEnemy->ActivateEnemy(m_floor[t_centerFloorNum][m_currentTileNumFurthest].m_transformFloorCurr);
+			}
+		}
+		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
+	}
+
+	/////////////////////////////////////////////////////////////////////
+	/*
+			  Anything written in this part is meant for generic changes
+			  like lighting
+	*/
+	/////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
+	// Update backdrop main position or light filter 
+	// betweem each level to seamlessly transit
+	static double t_r, t_g, t_b;
+	if (m_currLevel < m_maxLevel) //Check the stats for next level
+	{
+		/////////////////////////////////////////////////////////////////////
+		//Change to nighttime
+		if (!m_sceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = -0.39; t_g = 0.06; t_b = 0.3;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to Dawn
+		else if (!m_sceneLevelDataList[m_currLevel - 1].m_DayTime && m_sceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = 1.0; t_g = 0.7; t_b = 1.0;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to Dusk
+		else if (!m_sceneLevelDataList[m_currLevel + 1].m_DayTime && m_sceneLevelDataList[m_currLevel].m_DayTime)
+		{
+			t_r = 1.0; t_g = 0.34; t_b = 0.3;
+		}
+		/////////////////////////////////////////////////////////////////////
+		//Change to DayTime
+		else
+		{
+			t_r = 1.0; t_g = 1.0; t_b = 1.0;
+		}
+	}
+	/////////////////////////////////////////////////////////////////////
+	//Change to DayTime
+	else
+	{
+		t_r = 1.0; t_g = 1.0; t_b = 1.0;
+	}
+
+	m_lighting.r += m_lighting.r > static_cast<float>(t_r) && abs(t_r - m_lighting.r) > dt ? -dt / LERPING_SPEED : m_lighting.r < static_cast<float>(t_r) && abs(m_lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
+	m_lighting.g += m_lighting.g > static_cast<float>(t_g) && abs(t_g - m_lighting.g) > dt ? -dt / LERPING_SPEED : m_lighting.g < static_cast<float>(t_g) && abs(m_lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
+	m_lighting.b += m_lighting.b > static_cast<float>(t_b) && abs(t_b - m_lighting.b) > dt ? -dt / LERPING_SPEED : m_lighting.b < static_cast<float>(t_b) && abs(m_lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
+
+	/////////////////////////////////////////////////////////////////////
+	/*
+			  Anything written below this part is meant for specific
+			  stages. SO BASICALLY HARD CODED FOR THAT STAGE
+	*/
+	/////////////////////////////////////////////////////////////////////
+	{
+
+	}
+}
+void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
+{
+	UNREFERENCED_PARAMETER(t_dt);
+
+	int mX, mY;
+	AEInputGetCursorPosition(&mX, &mY);
+
+	mX -= AEGfxGetWindowWidth() / 2;
+	mX = static_cast<int>(mX * 1.5);
+	static int y = -120;
+	mY = static_cast<int>(mY / 1.5 + y);
+	mY *= -1;
+
+	//Furthest from sun -> Closest to sun
+	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
+	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
+	for (int i = 0; i < m_transformSunLensData.size(); i++)
+	{
+		AEMtx33Identity(&m_transformSunLensData[i]);
+		AEMtx33ScaleApply(&m_transformSunLensData[i], &m_transformSunLensData[i], m_sunOverlayScale.x + scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
+		AEMtx33TransApply(&m_transformSunLensData[i], &m_transformSunLensData[i], mX + (m_sunPos.x - mX) * (i + varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
+	}
+}
+void SceneLevelBuilder::UpdateClouds(f32 t_dt)
+{
+	float t_CloudMaxSpeed = 10.0f;// - to go left, + to go right
+	for (int i = 0; i < m_transformCloudsData.size(); i++)
+	{
+		if (i / 3 != 1)//Special case for this texture pack
+		{
+			AEMtx33Identity(&m_transformCloudsData[i]);
+			AEMtx33ScaleApply(&m_transformCloudsData[i], &m_transformCloudsData[i], 1700.0f, 600.f);
+			/***********************************************************************************************************************
+			The Clouds interpolation works by having three different tiles for each layer.
+
+			When the tiles reach or exceed their position by their size, they move to the back by teleporting
+			(300 move right ->)     Tile 1         (1700 value apart)            Tile 2             (1700 value apart)             Tile 3
+											  ||
+											  \/
+			Tile 3     (1700 value apart)       Tile 1         (1700 value apart)            Tile 2
+			and vice versa.
+
+			The second calculation is the parallax movement relative to the mouse position. The movement of the mouse creates slight movement
+			in the clouds, creating depth.
+			************************************************************************************************************************/
+			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
+			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
+				305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
+		}
+		else
+		{
+			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], t_CloudMaxSpeed * t_dt, 0.0f);;
+		}
+
+		//To do infinite Interpolation
+		if (m_transformCloudsData[i].m[0][2] > m_transformCloudsData[i].m[0][0])
+			m_transformCloudsData[i].m[0][2] -= m_transformCloudsData[i].m[0][0] * 2;
+		if (m_transformCloudsData[i].m[0][2] < -m_transformCloudsData[i].m[0][0])
+			m_transformCloudsData[i].m[0][2] += m_transformCloudsData[i].m[0][0] * 2;
+	}
+}
+void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
+{
+	UNREFERENCED_PARAMETER(t_dt);
+	for (int i = 0; i < 9; i++)
+	{
+		AEMtx33Identity(&m_transformBackDrops1Data[i]);
+		AEMtx33ScaleApply(&m_transformBackDrops1Data[i], &m_transformBackDrops1Data[i], 240.0f, 360.f);
+		AEMtx33TransApply(&m_transformBackDrops1Data[i], &m_transformBackDrops1Data[i], (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
+			205.f + static_cast<f32>(mouseY / 90.0f));
+
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		AEMtx33Identity(&m_transformBackDrops2Data[i]);
+		AEMtx33ScaleApply(&m_transformBackDrops2Data[i], &m_transformBackDrops2Data[i], 640.0f, 360.0f);
+		AEMtx33TransApply(&m_transformBackDrops2Data[i], &m_transformBackDrops2Data[i], (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
+			205.f + static_cast<f32>(mouseY / 70.0f));
+	}
+
+
+	if (m_currLevel <= 5)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			AEMtx33Identity(&m_transformBackDrops3Data[i]);
+			AEMtx33ScaleApply(&m_transformBackDrops3Data[i], &m_transformBackDrops3Data[i], 480.0f, 360.f);
+			AEMtx33TransApply(&m_transformBackDrops3Data[i], &m_transformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
+				205.f + static_cast<f32>(mouseY / 50.0f));
+		}
+	}
+	else
+		for (int i = 0; i < 5; i++) AEMtx33Identity(&m_transformBackDrops3Data[i]);
+}
+
+std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
+{
+	m_combatNames.clear();
+	int TotalProb = 0; //Get total probability
+	for (int curr : m_sceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+	{
+		TotalProb += curr;
+	}
+	for (int i = 0; i < m_sceneLevelDataList[m_currLevel].m_MaxEnemies; i++)
+	{
+		std::string Ref = "";
+		int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
+		int temp = 0;//Disregard this: for loop below
+		for (int curr : m_sceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
+		{
+			randnum -= curr;
+			if (randnum <= 0)
+			{
+				Ref = m_sceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
+				break;
+			}
+			temp++;
+		}
+		if (Ref == "") {
+			cerr << "No enemies generated!\n";
+			throw std::exception();
+		}
+
+		m_combatNames.push_back(Ref);
+
+		if (rand() % 100 < 10)
+		{
+			break;
+		}
+	}
+
+
+	return m_combatNames;
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /***************************************************************************************************************************************
 
@@ -1375,433 +1800,6 @@ void SceneLevelBuilder::exit()
 
 	cleanupSlb();
 }
-
-
-/*********************************************************************************
-Scene Object Spawning
-**********************************************************************************/
-void SceneLevelBuilder::CreateRowOBJs(int t_tileNum)
-{
-	//srand(static_cast<unsigned> (time(0)));
-
-	//if(false) //Delete if not used
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
-	{
-		//Skip centre
-		if (j == t_centerFloorNum)
-			continue;
-
-		//Spawn objs based on MAX_NUM_SCENEOBJS_TILE
-		for (int i = static_cast<int>(AEClamp(static_cast<f32>(rand() % MAX_NUM_SCENEOBJS_TILE), 1.0f, static_cast<f32>(MAX_NUM_SCENEOBJS_TILE))); i > 0; i--)
-		{
-			v_SceneObject newObj;
-
-			//Selecting Entity Group to Spawn
-			int TotalProb = 0; //Get total probability
-			for (int curr : m_sceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
-			{
-				TotalProb += curr;
-			}
-			std::string Ref = "";
-			int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
-			int temp = 0;//Disregard this: for loop below
-			for (int curr : m_sceneLevelDataList[m_currLevel].m_SceneObjSpawnWeight)
-			{
-				randnum -= curr;
-				if (randnum < 0)
-				{
-					Ref = m_sceneLevelDataList[m_currLevel].m_SceneObjTypes[temp];
-					break;
-				}
-				temp++;
-			}
-
-			//Selecting Entity from entity group to spawn
-			if (Ref == "Grass")
-			{
-				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Grass - v_SceneObjectTypes::TYPE_Grass) + v_SceneObjectTypes::TYPE_Grass),
-					static_cast<f32>(v_SceneObjectTypes::TYPE_Grass + 1),
-					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Grass - 1)));
-				newObj.m_tobeCentered = true;
-			}
-			else if (Ref == "Tree")
-			{
-				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Tree - v_SceneObjectTypes::TYPE_Tree) + v_SceneObjectTypes::TYPE_Tree),
-					static_cast<f32>(v_SceneObjectTypes::TYPE_Tree + 1),
-					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Tree - 1)));
-				newObj.m_tobeCentered = false;
-			}
-			else if (Ref == "Rock")
-			{
-				newObj.m_type = static_cast<v_SceneObjectTypes>(AEClamp(static_cast<f32>(rand() % (v_SceneObjectTypes::TYPE_End_Rock - v_SceneObjectTypes::TYPE_Rock) + v_SceneObjectTypes::TYPE_Rock),
-					static_cast<f32>(v_SceneObjectTypes::TYPE_Rock + 1),
-					static_cast<f32>(v_SceneObjectTypes::TYPE_End_Rock - 1)));
-				newObj.m_tobeCentered = true;
-			}
-
-			//Random Selection of Spawn location on tile
-			int t_RandX, t_RandY;
-			if (!newObj.m_tobeCentered)
-			{
-				if (j == t_centerFloorNum - 1 || j == t_centerFloorNum + 1)
-				{
-					t_RandX = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
-					t_RandY = static_cast<int>(rand() % NUM_OF_TILESPAWNPOINTS / 2);
-				}
-				else
-				{
-					t_RandX = rand() % NUM_OF_TILESPAWNPOINTS;
-					t_RandY = rand() % NUM_OF_TILESPAWNPOINTS;
-				}
-			}
-			else
-			{
-				t_RandX = t_RandY = 0;
-			}
-
-
-			if (j < t_centerFloorNum)//Left Side
-			{
-				AEMtx33Trans(&newObj.m_trans, m_tileSP[t_RandY][t_RandX].m_X + m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
-			}
-			else//Right Side
-			{
-				AEMtx33Trans(&newObj.m_trans, -m_tileSP[t_RandY][t_RandX].m_X - m_tileSP[t_RandY][t_RandX].m_Y / 3, m_tileSP[t_RandY][t_RandX].m_Y);
-			}
-
-			//Scaling (Uniform Scaling)
-			AEMtx33Scale(&newObj.m_scale, 2.5f, 2.5f);
-
-			//Push into OBJlist in tile (Determine which to render first based on Spawnpoint m_Y
-			std::list<v_SceneObject>::iterator it = m_floorOBJs[j][t_tileNum].begin();
-			newObj.m_RenderOrder = t_RandY; //Spawnpoint m_y
-			for (; it != m_floorOBJs[j][t_tileNum].end(); it++)
-			{
-				if (newObj.m_RenderOrder <= (*it).m_RenderOrder)
-					break;
-			}
-			m_floorOBJs[j][t_tileNum].insert(it, newObj);
-		}
-	}
-}
-void SceneLevelBuilder::DestroyRowOBJs(int t_tileNum)
-{
-	for (int j = 0; j < SIZE_OF_FLOOR; j++)
-	{
-		m_floorOBJs[j][t_tileNum].clear();
-	}
-}
-
-
-/*********************************************************************************
-Level Name
-**********************************************************************************/
-void SceneLevelBuilder::SpawnLvlName()
-{
-	m_lvlNameTimer = MAX_LVLNAMETIMER;
-	m_lvlNameTransparency = -1.2f;
-}
-void SceneLevelBuilder::UpdateLvlName(f32 t_dt)
-{
-	if (m_lvlNameTimer > MAX_LVLNAMETIMER - 1.0)
-	{
-		m_lvlNameTransparency += m_lvlNameTransparency > 1.0f ? 0.0f : 0.08f;
-	}
-	else if (m_lvlNameTimer < 1.0)
-	{
-		m_lvlNameTransparency -= m_lvlNameTransparency < -1.0f ? 0.0f : 0.08f;
-	}
-	m_lvlNameTimer -= t_dt;
-}
-void SceneLevelBuilder::RenderLvlName()
-{
-	f32 t_camX, t_camY;
-	AEGfxGetCamPosition(&t_camX, &t_camY);
-
-	AEVec2 RightOriginalHeaderPos{ 27.5f, 205.7f };
-	AEVec2 LeftOriginalHeaderPos{ -27.5f, 205.7f };
-	AEVec2 RightMaxHeaderPos{ -15.0f + m_sceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
-	AEVec2 LeftMaxHeaderPos{ 15.0f - m_sceneLevelDataList[m_currLevel].m_LevelName.size() * 13.7f, 205.7f };
-	static AEVec2 currRightHeaderPos{ RightOriginalHeaderPos };
-	static AEVec2 currLeftHeaderPos{ LeftOriginalHeaderPos };
-	currRightHeaderPos.x += currRightHeaderPos.x < RightMaxHeaderPos.x ? (RightMaxHeaderPos.x - currRightHeaderPos.x) / 30 : 0;
-	currLeftHeaderPos.x += currLeftHeaderPos.x > LeftMaxHeaderPos.x ? (LeftMaxHeaderPos.x - currLeftHeaderPos.x) / 30 : 0;
-
-	if (m_lvlNameTimer > 0.0 && m_currLevel > -1)
-	{
-		AEGfxTextureSet(NULL, 0, 0);
-		f32 TextWidth = 0, TextHeight = 0;
-		char strBuffer[1024];
-		sprintf_s(strBuffer, m_sceneLevelDataList[m_currLevel].m_LevelName.c_str());
-		AEGfxGetPrintSize(m_pTextFont, strBuffer, 0.8f, &TextWidth, &TextHeight);
-		AEGfxPrint(m_pTextFont, strBuffer, -TextWidth / 2.0f - 0.01f, 0.61f, 0.8f, 0.f, 0.f, 0.f, m_lvlNameTransparency);
-		AEGfxPrint(m_pTextFont, strBuffer, -TextWidth / 2.0f, 0.6f, 0.8f, 1.0f, 0.75f, 0.0f, m_lvlNameTransparency);
-
-
-		AEGfxTextureSet(RenderHelper::getInstance()->getTextureByRef("LVL_HEADER"), 0, 0);
-		if (m_lvlNameTimer < 1.0) AEGfxSetTransparency(m_lvlNameTransparency - 0.9f);
-		else AEGfxSetTransparency(m_lvlNameTransparency + 0.2f);
-
-		AEMtx33 trans{};
-		AEMtx33Identity(&trans);
-		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
-		AEMtx33TransApply(&trans, &trans, currRightHeaderPos.x + t_camX - 3.75f, currRightHeaderPos.y + t_camY + 4.0f);
-		AEGfxSetTransform(trans.m);
-		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
-		AEGfxSetTransform(trans.m);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-
-
-		AEMtx33Identity(&trans);
-		AEMtx33RotDeg(&trans, 180);
-		AEMtx33ScaleApply(&trans, &trans, 214.5, 32.5);
-		AEMtx33TransApply(&trans, &trans, currLeftHeaderPos.x + t_camX - 3.75f, currLeftHeaderPos.y + t_camY + 4.0f);
-		AEGfxSetTransform(trans.m);
-		AEGfxSetColorToMultiply(0.0f, 0.0f, 0.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-		AEMtx33TransApply(&trans, &trans, 3.75f, -4.0f);
-		AEGfxSetTransform(trans.m);
-		AEGfxSetColorToMultiply(1.0f, 1.0f, 1.0f, 1.0f);
-		AEGfxMeshDraw(RenderHelper::getInstance()->getdefaultMesh(), AE_GFX_MDM_TRIANGLES);
-	}
-	else
-	{
-		currRightHeaderPos = RightOriginalHeaderPos;
-		currLeftHeaderPos = LeftOriginalHeaderPos;
-	}
-}
-
-/*********************************************************************************
-Screen Transition
-**********************************************************************************/
-void SceneLevelBuilder::UpdateScreenTransition(f32 t_dt)
-{
-	m_currTransitionTransparency += (m_setTransitionTransparency - m_currTransitionTransparency) / (600 * t_dt);
-}
-void SceneLevelBuilder::FadeINBlack() { m_setTransitionTransparency = 1.0f; }
-void SceneLevelBuilder::FadeOutBlack() { m_setTransitionTransparency = -1.0f; }
-
-/*********************************************************************************
-GENERIC UPDATE FUNCTIONS (PARALLAX SCROLLING)
-**********************************************************************************/
-void SceneLevelBuilder::UpdateLevelGameplay(f32 dt)
-{
-	/////////////////////////////////////////////////////////////////////////
-	// Auto Spawning of enemies
-	static double m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
-	m_TryTimer -= dt;
-	// !TODO: jspoh consider removing debugging enemy spawner?
-	if (m_TryTimer < 0 || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
-	{
-		if (m_sceneEnemy == nullptr && !m_combatPhase && SceneStages::m_sInstance->m_StartGame)
-		{
-			if (rand() % 100 < m_sceneLevelDataList[m_currLevel].m_EnemySpawnRate || (DEBUG && AEInputCheckTriggered(AEVK_RBUTTON)))
-			{
-				m_sceneEnemy = dynamic_cast<GameObject_Misc_Enemy*>(GameObjectManager::getInstance()->findObjectByReference("MiscEnemy"));
-				m_sceneEnemy->ActivateEnemy(m_floor[t_centerFloorNum][m_currentTileNumFurthest].m_transformFloorCurr);
-			}
-		}
-		m_TryTimer = TRY_TO_SPAWN_ENEMY_TIMER;
-	}
-
-	/////////////////////////////////////////////////////////////////////
-	/*
-			  Anything written in this part is meant for generic changes
-			  like lighting
-	*/
-	/////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////
-	// Update backdrop main position or light filter 
-	// betweem each level to seamlessly transit
-	static double t_r, t_g, t_b;
-	if (m_currLevel < m_maxLevel) //Check the stats for next level
-	{
-		/////////////////////////////////////////////////////////////////////
-		//Change to nighttime
-		if (!m_sceneLevelDataList[m_currLevel].m_DayTime)
-		{
-			t_r = -0.39; t_g = 0.06; t_b = 0.3;
-		}
-		/////////////////////////////////////////////////////////////////////
-		//Change to Dawn
-		else if (!m_sceneLevelDataList[m_currLevel - 1].m_DayTime && m_sceneLevelDataList[m_currLevel].m_DayTime)
-		{
-			t_r = 1.0; t_g = 0.7; t_b = 1.0;
-		}
-		/////////////////////////////////////////////////////////////////////
-		//Change to Dusk
-		else if (!m_sceneLevelDataList[m_currLevel + 1].m_DayTime && m_sceneLevelDataList[m_currLevel].m_DayTime)
-		{
-			t_r = 1.0; t_g = 0.34; t_b = 0.3;
-		}
-		/////////////////////////////////////////////////////////////////////
-		//Change to DayTime
-		else
-		{
-			t_r = 1.0; t_g = 1.0; t_b = 1.0;
-		}
-	}
-	/////////////////////////////////////////////////////////////////////
-	//Change to DayTime
-	else
-	{
-		t_r = 1.0; t_g = 1.0; t_b = 1.0;
-	}
-
-	m_lighting.r += m_lighting.r > static_cast<float>(t_r) && abs(t_r - m_lighting.r) > dt ? -dt / LERPING_SPEED : m_lighting.r < static_cast<float>(t_r) && abs(m_lighting.r - t_r) > dt ? dt / LERPING_SPEED : 0;
-	m_lighting.g += m_lighting.g > static_cast<float>(t_g) && abs(t_g - m_lighting.g) > dt ? -dt / LERPING_SPEED : m_lighting.g < static_cast<float>(t_g) && abs(m_lighting.g - t_g) > dt ? dt / LERPING_SPEED : 0;
-	m_lighting.b += m_lighting.b > static_cast<float>(t_b) && abs(t_b - m_lighting.b) > dt ? -dt / LERPING_SPEED : m_lighting.b < static_cast<float>(t_b) && abs(m_lighting.b - t_b) > dt ? dt / LERPING_SPEED : 0;
-
-	/////////////////////////////////////////////////////////////////////
-	/*
-			  Anything written below this part is meant for specific
-			  stages. SO BASICALLY HARD CODED FOR THAT STAGE
-	*/
-	/////////////////////////////////////////////////////////////////////
-	{
-
-	}
-}
-void SceneLevelBuilder::UpdateLensFlare(f32 t_dt)
-{
-	UNREFERENCED_PARAMETER(t_dt);
-
-	int mX, mY;
-	AEInputGetCursorPosition(&mX, &mY);
-
-	mX -= AEGfxGetWindowWidth() / 2;
-	mX = static_cast<int>(mX * 1.5);
-	static int y = -120;
-	mY = static_cast<int>(mY / 1.5 + y);
-	mY *= -1;
-
-	//Furthest from sun -> Closest to sun
-	static f32 varience[8] = { -2.7f, -2.7f, -1.9f,-2.f, -2.55f, 0.72f, 0.25f, -0.1f };
-	static f32 scaleIncr[8] = { 320,240 ,350 ,30 ,-100 ,-90,-40,60 };
-	for (int i = 0; i < m_transformSunLensData.size(); i++)
-	{
-		AEMtx33Identity(&m_transformSunLensData[i]);
-		AEMtx33ScaleApply(&m_transformSunLensData[i], &m_transformSunLensData[i], m_sunOverlayScale.x + scaleIncr[i], m_sunOverlayScale.y + scaleIncr[i]);
-		AEMtx33TransApply(&m_transformSunLensData[i], &m_transformSunLensData[i], mX + (m_sunPos.x - mX) * (i + varience[i] + 1) / 8, mY + (m_sunPos.y - mY) * (i + varience[i] + 1) / 8);
-	}
-}
-void SceneLevelBuilder::UpdateClouds(f32 t_dt)
-{
-	float t_CloudMaxSpeed = 10.0f;// - to go left, + to go right
-	for (int i = 0; i < m_transformCloudsData.size(); i++)
-	{
-		if (i / 3 != 1)//Special case for this texture pack
-		{
-			AEMtx33Identity(&m_transformCloudsData[i]);
-			AEMtx33ScaleApply(&m_transformCloudsData[i], &m_transformCloudsData[i], 1700.0f, 600.f);
-			/***********************************************************************************************************************
-			The Clouds interpolation works by having three different tiles for each layer.
-
-			When the tiles reach or exceed their position by their size, they move to the back by teleporting
-			(300 move right ->)     Tile 1         (1700 value apart)            Tile 2             (1700 value apart)             Tile 3
-											  ||
-											  \/
-			Tile 3     (1700 value apart)       Tile 1         (1700 value apart)            Tile 2
-			and vice versa.
-
-			The second calculation is the parallax movement relative to the mouse position. The movement of the mouse creates slight movement
-			in the clouds, creating depth.
-			************************************************************************************************************************/
-			//                                                                      |   Pos for each tile |          | Parallax Movement based on mouse position |     
-			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], (i % 3 - 1) * 1700.0f - static_cast<f32>(mouseX) / static_cast<f32>(((65) / (3 - i / 3))),
-				305.f + static_cast<f32>(mouseY) / static_cast<f32>(((100) / (3 - i / 3))));
-		}
-		else
-		{
-			AEMtx33TransApply(&m_transformCloudsData[i], &m_transformCloudsData[i], t_CloudMaxSpeed * t_dt, 0.0f);;
-		}
-
-		//To do infinite Interpolation
-		if (m_transformCloudsData[i].m[0][2] > m_transformCloudsData[i].m[0][0])
-			m_transformCloudsData[i].m[0][2] -= m_transformCloudsData[i].m[0][0] * 2;
-		if (m_transformCloudsData[i].m[0][2] < -m_transformCloudsData[i].m[0][0])
-			m_transformCloudsData[i].m[0][2] += m_transformCloudsData[i].m[0][0] * 2;
-	}
-}
-void SceneLevelBuilder::UpdateBackdrop(f32 t_dt)
-{
-	UNREFERENCED_PARAMETER(t_dt);
-	for (int i = 0; i < 9; i++)
-	{
-		AEMtx33Identity(&m_transformBackDrops1Data[i]);
-		AEMtx33ScaleApply(&m_transformBackDrops1Data[i], &m_transformBackDrops1Data[i], 240.0f, 360.f);
-		AEMtx33TransApply(&m_transformBackDrops1Data[i], &m_transformBackDrops1Data[i], (i - 4) * 240.0f - static_cast<f32>(mouseX / 50.0f),
-			205.f + static_cast<f32>(mouseY / 90.0f));
-
-	}
-
-	for (int i = 0; i < 5; i++)
-	{
-		AEMtx33Identity(&m_transformBackDrops2Data[i]);
-		AEMtx33ScaleApply(&m_transformBackDrops2Data[i], &m_transformBackDrops2Data[i], 640.0f, 360.0f);
-		AEMtx33TransApply(&m_transformBackDrops2Data[i], &m_transformBackDrops2Data[i], (i - 2) * 640.0f - static_cast<f32>(mouseX / 35.0f),
-			205.f + static_cast<f32>(mouseY / 70.0f));
-	}
-
-
-	if (m_currLevel <= 5)
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			AEMtx33Identity(&m_transformBackDrops3Data[i]);
-			AEMtx33ScaleApply(&m_transformBackDrops3Data[i], &m_transformBackDrops3Data[i], 480.0f, 360.f);
-			AEMtx33TransApply(&m_transformBackDrops3Data[i], &m_transformBackDrops3Data[i], (i - 2) * 480.0f - static_cast<f32>(mouseX / 27.0f),
-				205.f + static_cast<f32>(mouseY / 50.0f));
-		}
-	}
-	else
-		for (int i = 0; i < 5; i++) AEMtx33Identity(&m_transformBackDrops3Data[i]);
-}
-
-std::vector<std::string> SceneLevelBuilder::GenerateEnemyToSpawn()
-{
-	m_combatNames.clear();
-	int TotalProb = 0; //Get total probability
-	for (int curr : m_sceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
-	{
-		TotalProb += curr;
-	}
-	for (int i = 0; i < m_sceneLevelDataList[m_currLevel].m_MaxEnemies; i++)
-	{
-		std::string Ref = "";
-		int randnum = static_cast<int>(AEClamp(static_cast<f32>(rand() % TotalProb), 1.0f, static_cast<f32>(TotalProb)));//This is the rand probability of which type of sceneobjects to spawn
-		int temp = 0;//Disregard this: for loop below
-		for (int curr : m_sceneLevelDataList[m_currLevel].m_EnemySpawnWeight)
-		{
-			randnum -= curr;
-			if (randnum <= 0)
-			{
-				Ref = m_sceneLevelDataList[m_currLevel].m_EnemyTypes[temp];
-				break;
-			}
-			temp++;
-		}
-		if (Ref == "") {
-			cerr << "No enemies generated!\n";
-			throw std::exception();
-		}
-
-		m_combatNames.push_back(Ref);
-
-		if (rand() % 100 < 10)
-		{
-			break;
-		}
-	}
-
-
-	return m_combatNames;
-}
-
-
 
 
 /*******************************************************************************************************************************************

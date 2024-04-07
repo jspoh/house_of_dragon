@@ -47,13 +47,9 @@ SceneSplashScreen::~SceneSplashScreen()
 }
 
 void SceneSplashScreen::load()
-{
+{ 
 	// Informing the library that we're about to start adding triangles
 	AEGfxMeshStart();
-
-	// This shape has 2 triangles that makes up a square
-	// Color parameters represent colours as ARGB
-	// UV coordinates to read from loaded textures
 	AEGfxTriAdd(
 		-0.5f, -0.5f, 0xFFFF0000, 0.0f, 1.0f,  // bottom-left: red
 		0.5f, -0.5f, 0xFF00FF00, 1.0f, 1.0f,   // bottom-right: green
