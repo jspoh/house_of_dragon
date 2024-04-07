@@ -140,7 +140,7 @@ void Event::startRandomEvent() {
 	//e = EVENT_TYPES::OSCILLATING_TIMER;  		// for testing
 	//e = EVENT_TYPES::MULTI_CLICK;  					// for testing
 	//e = EVENT_TYPES::TYPING;  							// for testing
-	//e = EVENT_TYPES::ORANGE_THROWING;  			// for testing
+	e = EVENT_TYPES::ORANGE_THROWING;  			// for testing	!TODO: jspoh revert this
 	cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -148,7 +148,7 @@ void Event::startRandomEvent() {
 bool Event::setActiveEvent(EVENT_TYPES e) {
 	if (m_activeEvent == EVENT_TYPES::NONE_EVENT_TYPE) {
 		m_activeEvent = e;
-
+		_resetState();
 		return true;
 	}
 	cerr << "ERROR: " << "An event is already running!\n";
@@ -822,7 +822,7 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			activeDemons++;
 		}
 
-
+		m_orangeEventTimeoutMs = 999999999;			// !TODO: jspoh revert this
 		if (m_elapsedTimeMs >= m_orangeEventTimeoutMs || activeDemons == 0) {
 			int hits{};
 			for (const Demon& d : m_demons) {
@@ -838,10 +838,10 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 		}
 
 		/*new impl*/
-		if (AEInputCheckTriggered(AEVK_R)) {
+		if (AEInputCheckTriggered(AEVK_R) && DEBUG) {
 			AEVec2Set(&m_orangeObj.vel, 0, 0);
-			m_orangeObj.x = 0;
-			m_orangeObj.y = 0;
+			m_orangeObj.x = static_cast<float>(AEGfxGetWindowWidth());
+			m_orangeObj.y = static_cast<float>(AEGfxGetWindowHeight());
 		}
 
 		if (AEInputCheckCurr(AEVK_LBUTTON) && CollisionChecker::isMouseInCircle(m_orangeObj.x, m_orangeObj.y, m_orangeObj.radius, static_cast<f32>(m_mouseX), static_cast<f32>(m_mouseY))) {
@@ -922,6 +922,8 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 			m_orangeObj.vel.x = AEClamp(m_orangeObj.vel.x, -m_SPEED_LIMIT, m_SPEED_LIMIT);
 			m_orangeObj.vel.y = AEClamp(m_orangeObj.vel.y, -m_SPEED_LIMIT, m_SPEED_LIMIT);
 
+			cout << m_orangeObj.vel.y << "\n";
+
 			// invert x/y vector when collide w wall to provide illusion of bouncing
 			if (CollisionChecker::isRectTouchingScreenXBorder(m_orangeObj.x, m_orangeObj.y, m_orangeObj.radius * 2, m_orangeObj.radius * 2, m_ORANGE_BORDER_PADDING)) {
 				m_orangeObj.vel.x = -m_orangeObj.vel.x * m_ENERGY_KEPT_BOUNCING;
@@ -930,12 +932,14 @@ void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 				m_orangeObj.vel.y = -m_orangeObj.vel.y * m_ENERGY_KEPT_BOUNCING;
 			}
 
+			cout << m_orangeObj.vel.y << "\n\n";
+
 			m_orangeObj.x += static_cast<f32>(m_orangeObj.vel.x * AEFrameRateControllerGetFrameRate() * dt);
 			m_orangeObj.y += static_cast<f32>(m_orangeObj.vel.y * AEFrameRateControllerGetFrameRate() * dt);
 
-			// clamp positions
-			m_orangeObj.x = AEClamp(m_orangeObj.x, m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowWidth() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
-			m_orangeObj.y = AEClamp(m_orangeObj.y, m_orangeObj.radius + m_ORANGE_BORDER_PADDING, AEGfxGetWindowHeight() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING);
+			// clamp positions !TODO: jspoh really -1 and +1?
+			m_orangeObj.x = AEClamp(m_orangeObj.x, m_orangeObj.radius + m_ORANGE_BORDER_PADDING - 1, AEGfxGetWindowWidth() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING + 1);
+			m_orangeObj.y = AEClamp(m_orangeObj.y, m_orangeObj.radius + m_ORANGE_BORDER_PADDING - 1, AEGfxGetWindowHeight() - m_orangeObj.radius - m_ORANGE_BORDER_PADDING + 1);
 		}
 
 		// update demon

@@ -43,4 +43,5 @@ void CombatManager::next() {
 void CombatManager::end() {
     m_turn = TURN::NONE_TURN;
     m_isInCombat = false;
+    m_selectedEnemy = nullptr;
 }

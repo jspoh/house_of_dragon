@@ -870,7 +870,9 @@ void CombatScene::update(double dt)
 			SoundPlayer::CombatAudio::getInstance().playSfxKnife();
 		}
 
-		SoundPlayer::CombatAudio::getInstance().playSfxAnimal(CombatManager::getInstance().m_selectedEnemy->getTextureRef());
+		if (CombatManager::getInstance().m_selectedEnemy != nullptr) {
+			SoundPlayer::CombatAudio::getInstance().playSfxAnimal(CombatManager::getInstance().m_selectedEnemy->getTextureRef());
+		}
 		CombatManager::getInstance().m_qtEventResult = EVENT_RESULTS::NONE_EVENT_RESULTS;
 
 		// reset states
@@ -1204,6 +1206,8 @@ void CombatScene::exit()
 {
 	cout << "Exiting CombatScene\n";
 	cleanup();
+	CombatManager::getInstance().end();
+	Event::getInstance()->setActiveEvent(EVENT_TYPES::NONE_EVENT_TYPE);
 }
 
 

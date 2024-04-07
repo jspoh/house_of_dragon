@@ -47,7 +47,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // printing (cout, cerr) is only available when compiling in debug mode!
     // check pch.h for more details
 //#ifndef NDEBUG
-	AESysInit(hInstance, nCmdShow, 1200, 750, 0, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 1200, 750, 1, 60, true, NULL);
 //#else
 //    AESysInit(hInstance, nCmdShow, 1200, 750, 0, 60, true, NULL);
 //#endif
