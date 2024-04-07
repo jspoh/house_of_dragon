@@ -3,8 +3,6 @@
 \file ParticleManager.h
 \author Yang yujie, yujie.yang, 2301383
 \par yujie.yang\@digipen.edu
-\author Poh Jing Seng, jingseng.poh, 2301363
-\par jingseng.poh\@digipen.edu
 \date 01 Apr 2024
 \brief particle manager implementation
 /*

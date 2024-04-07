@@ -1,11 +1,11 @@
 /* Start Header ************************************************************************/
 /*!
 \file CombatPlayer.h
-\author Poh Jing Seng, jingseng.poh, 2301363 (50%, base infra and player logic)
+\author Poh Jing Seng, jingseng.poh, 2301363 (40%, base infra and player logic)
 \par jingseng.poh\@digipen.edu
-\author Kuek wei jie, weijie.kuek, 2301325 (40%, rendering, and healthbar decrement/inccrement)
+\author Kuek wei jie, weijie.kuek, 2301325 (40%, rendering, and healthbar decrement/increment)
 \par weijie.kuek\@digipen.edu
-\author Soh Wei Jie, weijie.soh (10%, hands rendering)
+\author Soh Wei Jie, weijie.soh (20%, hands rendering)
 \par weijie.soh\@digipen.edu
 \date 28 feb 2024
 \brief handles player in combat

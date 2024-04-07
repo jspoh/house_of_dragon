@@ -123,13 +123,7 @@ Event::Event() {
 }
 
 Event::~Event() {
-	//for (const std::string& ref : meshReferences) {
-	//	RenderHelper::getInstance()->removeMeshByRef(ref);
-	//}
 
-	//for (const std::string& ref : textureReferences) {
-	//	RenderHelper::getInstance()->removeTextureByRef(ref);
-	//}
 }
 
 Event* Event::getInstance() {
@@ -142,11 +136,11 @@ Event* Event::getInstance() {
 void Event::startRandomEvent() {
 	// start a random quicktime event
 	EVENT_TYPES e = static_cast<EVENT_TYPES>((rand() % NUM_EVENT_TYPES));
-	//e = EVENT_TYPES::SPAM_KEY;  // hardcoded for testing
-	//e = EVENT_TYPES::OSCILLATING_TIMER;  // hardcoded for testing
-	//e = EVENT_TYPES::MULTI_CLICK;  // hardcoded for testing
-	//e = EVENT_TYPES::TYPING;  // hardcoded for testing
-	//e = EVENT_TYPES::ORANGE_THROWING;  // hardcoded for testing
+	//e = EVENT_TYPES::SPAM_KEY;  						// for testing
+	//e = EVENT_TYPES::OSCILLATING_TIMER;  		// for testing
+	//e = EVENT_TYPES::MULTI_CLICK;  					// for testing
+	//e = EVENT_TYPES::TYPING;  							// for testing
+	//e = EVENT_TYPES::ORANGE_THROWING;  			// for testing
 	cout << "Random event: " << e << "\n";
 	Event::getInstance()->setActiveEvent(e);
 }
@@ -257,14 +251,22 @@ void Event::render() {
 
 
 /*private*/
+
+/**
+ * @brief render circle timer indicating how much time is left for event
+ *
+ * @param elapsedTimeMs
+ * @param timeoutMs
+ */
 void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
-	float x = AEGfxGetWindowWidth() * 0.95f;
-	float y = AEGfxGetWindowHeight() * 0.8f;
+	const float x = AEGfxGetWindowWidth() * 0.95f;		// positioning based on % of screen to prevent issues when resizing
+	const float y = AEGfxGetWindowHeight() * 0.8f;
 	AEVec2 world = stow(x, y);
 
-	std::array<int, 5> thresholds = { 100,75,50,25,0 };
+	// threshold where the sprite rendered will change
+	constexpr std::array<int, 5> thresholds = { 100,75,50,25,0 };
 
-	int timeLeftPctg = static_cast<int>(ceil((static_cast<f32>(elapsedTimeMs) / timeoutMs) * 100));		// time left percentage
+	const int timeLeftPctg = static_cast<int>(ceil((static_cast<f32>(elapsedTimeMs) / timeoutMs) * 100));		// time left percentage
 
 	for (const int t : thresholds) {
 		if (timeLeftPctg >= t) {
@@ -274,6 +276,7 @@ void Event::_renderTimer(int elapsedTimeMs, int timeoutMs) {
 	}
 }
 
+// used to reset event state after an event is over
 void Event::_resetState() {
 	m_activeEvent = EVENT_TYPES::NONE_EVENT_TYPE;
 	_resetTime();
@@ -305,6 +308,7 @@ void Event::_resetState() {
 	m_orangeState = INNER_STATES::ON_ENTER;
 }
 
+// reset elapsed time counters
 void Event::_resetTime() {
 	m_elapsedTimeMs = 0;
 	m_totalElapsedMs = 0;
@@ -317,6 +321,12 @@ void Event::_updateTime(double dt) {
 	m_totalElapsedMs += idt;
 }
 
+/**
+ * @brief show if spam key was successful or not
+ *
+ * @param screenX
+ * @param screenY
+ */
 void Event::_showEventSpamKeyResult(float screenX, float screenY) {
 	if (m_eventResult == EVENT_RESULTS::SUCCESS) {
 		// draw success
@@ -364,6 +374,7 @@ void Event::_spamKeyEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key
 		return;
 	}
 
+	// assign key to spam
 	u8 aevk = AEVK_E;
 	switch (key) {
 	case E:
@@ -420,6 +431,8 @@ void Event::_spamKeyEventRender() {
 		RenderHelper::getInstance()->texture("key_" + skey, worldX, worldY, m_size, m_size);
 	}
 }
+
+/* oscillating timer event*/
 
 void Event::_oscillatingTimerEventUpdate(EVENT_RESULTS& result, double dt, EVENT_KEYS key) {
 	_updateTime(dt);
@@ -553,6 +566,8 @@ void Event::_oscillatingTimerEventRender() {
 
 }
 
+/* multi click event */
+
 void Event::_multiClickEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
 
@@ -648,6 +663,8 @@ void Event::_multiClickEventRender() {
 		}
 	}
 }
+
+/* typing event */
 
 void Event::_typingEventUpdate(EVENT_RESULTS& result, double dt) {
 	/*update*/
@@ -768,6 +785,7 @@ void Event::_typingEventRender() {
 	}
 }
 
+/* orange throwing event */
 
 void Event::_orangeEventUpdate(EVENT_RESULTS& result, double dt) {
 	_updateTime(dt);
