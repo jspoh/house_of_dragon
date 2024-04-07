@@ -87,7 +87,7 @@ public:
 
 		void playLoopMenu();
 
-		void playLoopLevelSelect();
+		//void playLoopLevelSelect();
 	};
 
 
@@ -132,15 +132,15 @@ public:
 
 		void playLoop();
 
-		void playSfxVictory();
+		//void playSfxVictory();
 
-		void playSfxDeath();
+		//void playSfxDeath();
 
 		void playSfxAnimal(const std::string& animal);
 
 		void playSfxHealth();
 
-		void playSfxHeartbeat();
+		//void playSfxHeartbeat();
 
 		void playSfxHurt();
 
@@ -157,7 +157,7 @@ public:
 		 *
 		 * \param element
 		 */
-		void playSfxElement(Element element);
+		//void playSfxElement(Element element);
 	};
 };
 

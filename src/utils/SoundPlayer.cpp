@@ -100,9 +100,9 @@ void SoundPlayer::MenuAudio::playLoopMenu() {
 	SoundManager::getInstance()->playAudio("menu_0.wav", 1, -1, true);
 }
 
-void SoundPlayer::MenuAudio::playLoopLevelSelect() {
-	SoundManager::getInstance()->playAudio("level_select_0.wav", 1, -1, true);
-}
+//void SoundPlayer::MenuAudio::playLoopLevelSelect() {
+//	SoundManager::getInstance()->playAudio("level_select_0.wav", 1, -1, true);
+//}
 
 
 /* game audio */
@@ -185,13 +185,13 @@ void SoundPlayer::CombatAudio::playLoop() {
 	SoundManager::getInstance()->playAudio(m_battleLoopRefs[randNum], 0.5f, -1, true);
 }
 
-void SoundPlayer::CombatAudio::playSfxVictory() {
-	SoundManager::getInstance()->playAudio("victory_0.wav");
-}
+//void SoundPlayer::CombatAudio::playSfxVictory() {
+//	SoundManager::getInstance()->playAudio("victory_0.wav");
+//}
 
-void SoundPlayer::CombatAudio::playSfxDeath() {
-	SoundManager::getInstance()->playAudio("death_0.wav");
-}
+//void SoundPlayer::CombatAudio::playSfxDeath() {
+//	SoundManager::getInstance()->playAudio("death_0.wav");
+//}
 
 void SoundPlayer::CombatAudio::playSfxAnimal(const std::string& animal) {
 	int availSounds{};
@@ -218,9 +218,9 @@ void SoundPlayer::CombatAudio::playSfxHealth() {
 	SoundManager::getInstance()->playAudio("health_restore_0.wav");
 }
 
-void SoundPlayer::CombatAudio::playSfxHeartbeat() {
-	SoundManager::getInstance()->playAudio("heartbeat_0.wav");
-}
+//void SoundPlayer::CombatAudio::playSfxHeartbeat() {
+//	SoundManager::getInstance()->playAudio("heartbeat_0.wav");
+//}
 
 void SoundPlayer::CombatAudio::playSfxHurt() {
 	int randNum = rand() % m_NUM_HURT_SFX;
@@ -245,8 +245,8 @@ void SoundPlayer::CombatAudio::playSfxInvalid() {
 	SoundManager::getInstance()->playAudio("invalid_0.wav");
 }
 
-void SoundPlayer::CombatAudio::playSfxElement(Element element) {
-	std::string el = ElementProperties::getElementName(element);
-	std::transform(el.begin(), el.end(), el.begin(), [](char c) { return std::tolower(c); });
-	SoundManager::getInstance()->playAudio(el + "_0.wav");
-}
+//void SoundPlayer::CombatAudio::playSfxElement(Element element) {
+//	std::string el = ElementProperties::getElementName(element);
+//	std::transform(el.begin(), el.end(), el.begin(), [](char c) { return std::tolower(c); });
+//	SoundManager::getInstance()->playAudio(el + "_0.wav");
+//}
