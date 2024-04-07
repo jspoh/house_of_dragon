@@ -97,7 +97,7 @@ SoundPlayer::MenuAudio& SoundPlayer::MenuAudio::getInstance() {
 }
 
 void SoundPlayer::MenuAudio::playLoopMenu() {
-	SoundManager::getInstance()->playAudio("menu_0.wav", 1, -1, true);
+	SoundManager::getInstance()->playAudio("menu_0.mp3", 1, -1, true);
 }
 
 //void SoundPlayer::MenuAudio::playLoopLevelSelect() {
@@ -121,7 +121,7 @@ SoundPlayer::GameAudio& SoundPlayer::GameAudio::getInstance() {
 }
 
 void SoundPlayer::GameAudio::playLoop() {
-	SoundManager::getInstance()->playAudio("footsteps_fast_0.wav", 1, -1, false);
+	SoundManager::getInstance()->playAudio("footsteps_fast_0.mp3", 1, -1, false);
 	SoundManager::getInstance()->playAudio("movement_0.wav", 0.1f, -1, true);
 }
 
