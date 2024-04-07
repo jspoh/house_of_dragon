@@ -121,12 +121,10 @@ void SceneStages::update(double dt)
 		//Shaking Camera additional logic
 		if (m_ScreenShakeTimer > 0.0f)
 		{
-			AESysSetWindowTitle("ooooooooowwwwww");
 			m_ScreenShakeTimer -= dt;
 		}
 		else
 		{
-			AESysSetWindowTitle("House_OF_Dragon v0.LETSFINISHTHIS");
 			m_ScreenShakeTimer = 0.f;
 		}
 	}
