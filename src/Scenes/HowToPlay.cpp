@@ -47,10 +47,11 @@ void HowToPlay::load() {
     m_slideshow.leftButton = "leftButton";
     m_slideshow.rightButton = "rightButton";
     m_slideshow.backButton = "backButton";
-    m_slideshow.images[0] = "image1";
-    m_slideshow.images[1] = "image2";
-    m_slideshow.images[2] = "image3";
-    m_slideshow.images[3] = "image4";
+    m_slideshow.images[0] = "image0";
+    m_slideshow.images[1] = "image1";
+    m_slideshow.images[2] = "image2";
+    m_slideshow.images[3] = "image3";
+    m_slideshow.images[4] = "image4";
     m_slideshow.images[4] = "image5";
     m_slideshow.images[5] = "image6";
     m_slideshow.images[6] = "image7";
@@ -67,6 +68,7 @@ void HowToPlay::load() {
     RenderHelper::getInstance()->registerTexture("leftButton", "Assets/Menu/leftButton.png");
     RenderHelper::getInstance()->registerTexture("rightButton", "Assets/Menu/rightButton.png");
     RenderHelper::getInstance()->registerTexture("backButton", "Assets/Menu/back1.png");
+    RenderHelper::getInstance()->registerTexture("image0", "Assets/Menu/00.png");
     RenderHelper::getInstance()->registerTexture("image1", "Assets/Menu/01.png");
     RenderHelper::getInstance()->registerTexture("image2", "Assets/Menu/02.png");
     RenderHelper::getInstance()->registerTexture("image3", "Assets/Menu/03.png");
@@ -104,14 +106,14 @@ void HowToPlay::update([[maybe_unused]] double dt) {
         AEVec2 leftP2 = { m_slideshow.leftButtonX + m_slideshow.buttonWidth / 2.0f, m_slideshow.leftButtonY - m_slideshow.buttonHeight / 2.0f };
 
         if (leftP1.x < mx && leftP1.y > my && leftP2.x > mx && leftP2.y < my) {
-            m_slideshow.currentImageIndex = (m_slideshow.currentImageIndex - 1 + 12) % 12;
+            m_slideshow.currentImageIndex = (m_slideshow.currentImageIndex - 1 + 13) % 13;
         }
 
         AEVec2 rightP1 = { m_slideshow.rightButtonX - m_slideshow.buttonWidth / 2.0f, m_slideshow.rightButtonY + m_slideshow.buttonHeight / 2.0f };
         AEVec2 rightP2 = { m_slideshow.rightButtonX + m_slideshow.buttonWidth / 2.0f, m_slideshow.rightButtonY - m_slideshow.buttonHeight / 2.0f };
 
         if (rightP1.x < mx && rightP1.y > my && rightP2.x > mx && rightP2.y < my) {
-            m_slideshow.currentImageIndex = (m_slideshow.currentImageIndex + 1) % 12;
+            m_slideshow.currentImageIndex = (m_slideshow.currentImageIndex + 1) % 13;
         }
 
         AEVec2 backP1 = { m_slideshow.backButtonX - m_slideshow.buttonWidth / 2.0f, m_slideshow.backButtonY + m_slideshow.buttonHeight / 2.0f };
