@@ -65,7 +65,10 @@ void SceneCredits::load()
 	m_credits.mesh = AEGfxMeshEnd();
 
 
-
+	m_pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
+	m_pFontM = AEGfxCreateFont("Assets/Fonts/liberation-mono.ttf", 40);
+	m_pFontS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 30);
+	m_pFontxS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 20);
 }
 
 /**
@@ -83,10 +86,7 @@ void SceneCredits::load()
   */
 
 void SceneCredits::init()
-{	m_pFontL = AEGfxCreateFont("Assets/Fonts/TokyoMidnight.otf", 50);
-	m_pFontM = AEGfxCreateFont("Assets/Fonts/liberation-mono.ttf", 40);
-	m_pFontS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 30);
-	m_pFontxS = AEGfxCreateFont("Assets/Fonts/MangaBold.otf", 20);
+{	
 
 	f32 TextWidth = 0, TextHeight = 0;
 	m_textPosX = -TextWidth / 2;
@@ -215,17 +215,17 @@ void SceneCredits::render()
 	AEGfxPrint(m_pFontM, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.7f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "JASON CHU   JOHN BAUER  SAMIR ABOU SAMRA");
+	sprintf_s(strBuffer, "JASON CHU JOHN BAUER SAMIR ABOU SAMRA");
 	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.8f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "RAYMOND YAN  PRASANNA GHALI   MICHELE COMAIR");
+	sprintf_s(strBuffer, "RAYMOND YAN PRASANNA GHALI MICHELE COMAIR");
 	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 1.9f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
 
-	sprintf_s(strBuffer, "XIN LI   ANGELA KUGLER MELVIN GONSALVEZ   MEIGHAN MCKELVEY");
+	sprintf_s(strBuffer, "XIN LI ANGELA KUGLER MELVIN GONSALVEZ MEIGHAN MCKELVEY");
 	AEGfxGetPrintSize(m_pFontS, strBuffer, 1.0f, &TextWidth, &TextHeight);
 	AEGfxPrint(m_pFontS, strBuffer, 0 - TextWidth / 2, m_textPosY - 2.0f, 1.f, 1.f, 1.f, 1.f, 1.0f);
 	m_textPosY += speed * (f32)AEFrameRateControllerGetFrameTime() / AEGfxGetWindowHeight();
