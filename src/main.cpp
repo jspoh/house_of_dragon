@@ -44,9 +44,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	// Using custom window procedure
 //#ifndef NDEBUG
-	AESysInit(hInstance, nCmdShow, 1200, 750, 1, 60, true, NULL);
+	AESysInit(hInstance, nCmdShow, 1600, 900, 0, 60, true, NULL);
 //#else
-//    AESysInit(hInstance, nCmdShow, 1200, 750, 0, 60, true, NULL);
+//    AESysInit(hInstance, nCmdShow, 1600, 900, 0, 60, true, NULL);
 //#endif
 
     // Changing the window title
