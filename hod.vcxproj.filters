@@ -51,7 +51,7 @@
     <ClCompile Include="src\utils\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\db\db.cpp">
+    <ClCompile Include="src\db\Db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameObject\CombatObjects\Elements.cpp">
@@ -128,7 +128,7 @@
     <ClInclude Include="src\Headers\CombatPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Headers\db.h">
+    <ClInclude Include="src\Headers\Db.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\Event.h">
@@ -182,7 +182,7 @@
     <ClInclude Include="src\Headers\SoundManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Headers\utils.h">
+    <ClInclude Include="src\Headers\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Headers\CombatScene.h">

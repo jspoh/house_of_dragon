@@ -47,8 +47,8 @@ Technology is prohibited.
 #include "AEEngine.h"
 #include "json.hpp"
 
-#include "utils.h"
-#include "db.h"
+#include "Utils.h"
+#include "Db.h"
 #include "Event.h"
 #include "CollisionChecker.h"
 #include "SingletonTemplate.h"
